@@ -94,16 +94,25 @@ body {
   height: 38px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: 0 1rem;
 }
 
 .top-config-inner {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 100%;
   max-width: 1320px;
+  gap: 0.55rem;
+}
+
+.top-config-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+  font-weight: 600;
 }
 
 /* Switcher + logo cluster */

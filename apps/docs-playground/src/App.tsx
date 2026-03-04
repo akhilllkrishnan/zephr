@@ -95,7 +95,7 @@ type WorkspaceView =
   "components" |
   "api-reference" |
   "templates";
-type TopTab = "setup" | "components" | "pages" | "changelog";
+type TopTab = "setup" | "audit" | "components" | "pages" | "changelog";
 
 interface SearchResultItem {
   id: string;
@@ -428,7 +428,7 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
-  if (view === "audit") return "setup";
+  if (view === "audit") return "audit";
   if (view === "templates") return "pages";
   if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
@@ -2253,6 +2253,10 @@ export default function App() {
       setView("introduction");
       return;
     }
+    if (tab === "audit") {
+      setView("audit");
+      return;
+    }
     if (tab === "components") {
       setView("component-gallery");
       return;
@@ -2544,6 +2548,7 @@ export default function App() {
 
         <div className="top-config-strip">
           <div className="top-config-inner">
+            <span className="top-config-label">Theme &amp; Accent</span>
             <div className="header-preview-controls">
               <select
                 className="header-theme-select"
@@ -2606,6 +2611,7 @@ export default function App() {
 
         <nav className="top-tabs" aria-label="Top tabs">
           <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
+          <button type="button" className={`tab ${topTab === "audit" ? "active" : ""}`} onClick={() => activateTopTab("audit")}>Audit</button>
           <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
           <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
           <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Changelog</button>
@@ -2673,6 +2679,23 @@ export default function App() {
                 }}
               >
                 Team
+              </button>
+            </div>
+          )}
+
+          {topTab === "audit" && (
+            <div className="nav-group">
+              <p className="group-title">Audit</p>
+              <button
+                type="button"
+                className={`sidebar-link ${view === "audit" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("audit");
+                  setView("audit");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Audit Lite
               </button>
             </div>
           )}
