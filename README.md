@@ -80,8 +80,8 @@ This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20Syste
 2. Framework preset: `Other`.
 3. Vercel will use:
    - install: `corepack enable && corepack pnpm install --frozen-lockfile`
-   - build: `corepack pnpm --filter @zephyr/docs-playground build`
-   - output: `apps/docs-playground/dist`
+   - build: `corepack pnpm --filter @zephyr/docs-playground build && rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/`
+   - output: `dist`
 4. After first deploy, open Project Settings -> Domains and add your domain.
 5. Add DNS records in your domain provider exactly as Vercel shows.
 
