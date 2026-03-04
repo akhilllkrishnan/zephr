@@ -1,6 +1,76 @@
 # Zephyr Project Handoff
 
-Last updated: March 4, 2026 (Session 6: Zephr-Audit Lite MVP)
+Last updated: March 4, 2026 (Session 7: Zephr-Audit Lite extended + deploy fixes)
+
+## 0) Latest Delta (March 4, 2026 — Session 7: Zephr-Audit Lite extended + deploy fixes)
+
+Completed in this pass:
+
+1. **Zephr-Audit Lite completed end-to-end**
+   - Added top-level `Audit` tab in docs playground.
+   - Added audit form with URL, screenshot URL, notes.
+   - Added direct API key controls on the audit page itself (`Save API key`, `Use local only`).
+   - Added results UI: score, status, issue cards, recommendations, predicted attention map.
+   - Added generated **AI remediation prompt** with one-click copy for Codex/Claude/Cursor workflows.
+
+2. **Cloud API audit route added**
+   - `POST /v1/audit/url` added in `apps/cloud-api/src/index.ts`.
+   - New heuristic scanner module `apps/cloud-api/src/audit.ts` with checks for:
+     - title/meta/viewport/lang/main landmarks
+     - heading hierarchy
+     - image alt coverage
+     - form labels
+     - CTA clarity/navigation semantics
+   - Returns structured report with score + status + recommendations + predicted attention areas.
+
+3. **Cloud SDK audit support added**
+   - Added audit request/report interfaces in `packages/cloud-sdk/src/types.ts`.
+   - Added `runUrlAudit()` client method in `packages/cloud-sdk/src/index.ts`.
+
+4. **Validation and tests**
+   - `@zephyr/cloud-sdk` tests passing.
+   - `@zephyr/cloud-api` tests passing (module + HTTP).
+   - `@zephyr/docs-playground` build passing.
+   - Monorepo build passing.
+
+5. **Vercel deployment path issue resolved**
+   - Updated `vercel.json` to resilient build/output behavior for monorepo path differences.
+   - Verified successful production deployment in Vercel logs after fix.
+
+6. **Git status / commits**
+   - `e51bccf` — Add Zephr-Audit Lite MVP with cloud and docs integration.
+   - `1b21960` — Add direct API key controls to Audit Lite page.
+   - Both pushed to `origin/main`.
+
+### Runbook (current)
+
+1. Start cloud API:
+   - `corepack pnpm --filter @zephyr/cloud-api build`
+   - `node apps/cloud-api/dist/index.js`
+2. Start docs playground:
+   - `corepack pnpm --filter @zephyr/docs-playground dev`
+3. Open:
+   - `http://localhost:4172/?view=audit` (or current Vite port)
+4. For cloud scan mode, use key:
+   - `dev_local_key`
+
+### Known Open Decisions / Pending
+
+1. **Product naming alignment**
+   - Project docs currently use both `Zephyr` and `Zephr-*` naming variants.
+   - Decision needed: lock brand string to `Zephyr` or `Zephr` across UI, domain, and package docs.
+
+2. **Theme model simplification**
+   - User preference is moving toward single base theme + accent-only personalization.
+   - Current docs still contain style pack controls in some places; cleanup pass pending.
+
+3. **Audit roadmap (next implementation)**
+   - Add screenshot file upload (not only URL).
+   - Add saved audit history endpoint + UI.
+   - Add export actions (markdown/json/ticket payload).
+   - Add continuous deploy-hook checks for `Zephr-Guard`.
+
+---
 
 ## 0) Latest Delta (March 4, 2026 — Session 6: Zephr-Audit Lite MVP)
 
