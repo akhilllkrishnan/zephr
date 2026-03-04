@@ -8,3 +8,4 @@ coverage
 .env
 .env.*
 figma/variables.generated.json
+.vercel

@@ -680,7 +680,36 @@ Added to 5 components:
 ## 10) What Is Still Pending
 
 ### P1 (remaining)
-- ~~All P1 items complete~~ — see session 3 delta above.
+
+#### 🚀 Deploy docs playground for external sharing
+**Goal:** Give testers a real URL — no local setup required.
+**Blockers to shareability (as of March 4, 2026):**
+- `@zephyr/ui-react` not published to npm — install commands in docs are aspirational, not functional
+- Docs playground runs on `localhost` only — no public URL exists
+- No hosted demo means every tester must clone + run the monorepo locally
+
+**Tasks:**
+1. **Deploy docs playground to Vercel** ← fastest win, unblocks sharing immediately
+   - `vercel.json` already exists with a resilient build config (from Session 7)
+   - Set build command: `pnpm --filter @zephyr/docs-playground build`
+   - Set output dir: `apps/docs-playground/dist`
+   - Verify Vite aliases survive Vercel's build environment
+   - Result: shareable URL like `zephyr-docs.vercel.app`
+
+2. **Mark install commands "coming soon"** (before sharing)
+   - Any snippet showing `npm install @zephyr/ui-react` should have a "Private beta — install via CLI coming soon" note
+   - Prevents confusion when testers try to actually install and get a 404 from npm
+
+3. **Publish `@zephyr/ui-react` to npm** ← required for full usability
+   - `scripts/publish.sh` exists with dry-run guard
+   - Needs: npm org `@zephyr` claimed, `NPM_TOKEN` secret set, then run `--no-dry-run`
+   - Once published, remove the "coming soon" notes and install commands work for real
+
+**Priority:** Deploy to Vercel first (30 min), npm publish second (separate task).
+
+---
+
+- ~~All other P1 items complete~~ — see session 3 delta above.
 
 
 ### P1 (done — no longer pending)

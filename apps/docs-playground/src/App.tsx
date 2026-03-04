@@ -1,4 +1,5 @@
 import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Accordion,
   Alert,
@@ -243,9 +244,9 @@ function parseCloudError(feature: "icons" | "avatars" | "logos", error: unknown)
   return `Cloud ${feature} unavailable. Using local catalog.`;
 }
 
-function severityBadgeTone(severity: UrlAuditSeverity): "danger" | "warning" | "neutral" {
+function severityBadgeTone(severity: UrlAuditSeverity): "danger" | "info" | "neutral" {
   if (severity === "high") return "danger";
-  if (severity === "medium") return "warning";
+  if (severity === "medium") return "info";
   return "neutral";
 }
 
@@ -1444,14 +1445,10 @@ function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
         aria-expanded={open}
         aria-haspopup="dialog"
       >
-        <span className="app-switcher-dots" aria-hidden="true">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <span key={i} className="app-switcher-dot" />
-          ))}
-        </span>
+        <span className="ms app-switcher-icon" aria-hidden="true">apps</span>
       </button>
 
-      {open && (
+      {open && createPortal(
         <>
           <div className="app-switcher-backdrop" onClick={() => setOpen(false)} />
           <div className="app-switcher-panel" role="dialog" aria-label="Zephyr apps">
@@ -1460,6 +1457,7 @@ function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
               {ZEPHYR_APPS.map((app: ZephyrApp, i) => {
                 const isActive = app.id === currentAppId;
                 const isSoon = app.status === "soon";
+                const isAlpha = app.status === "alpha";
                 return (
                   <button
                     key={app.id}
@@ -1467,7 +1465,7 @@ function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
                     className={`app-card ${isActive ? "is-active" : ""} ${isSoon ? "is-soon" : ""}`}
                     style={{ "--card-delay": `${i * 40}ms` } as React.CSSProperties}
                     disabled={isSoon}
-                    title={isSoon ? "Coming soon" : app.name}
+                    title={isSoon ? `${app.name} — Coming soon` : app.name}
                     onClick={() => {
                       if (app.url) window.location.href = app.url;
                       setOpen(false);
@@ -1475,16 +1473,15 @@ function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
                   >
                     <span className="app-card-icon ms">{app.icon}</span>
                     <span className="app-card-name">{app.name}</span>
-                    <span className="app-card-tagline">{app.tagline}</span>
-                    {isActive && <span className="app-card-badge is-active-badge">Active</span>}
-                    {app.status === "alpha" && !isActive && <span className="app-card-badge is-alpha-badge">Alpha</span>}
-                    {isSoon && <span className="app-card-badge is-soon-badge">Soon</span>}
+                    {isAlpha && <span className="app-card-pill is-alpha-pill">Alpha</span>}
+                    {isSoon && <span className="app-card-pill is-soon-pill">Soon</span>}
                   </button>
                 );
               })}
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );
@@ -1616,7 +1613,9 @@ export default function App() {
   const [accentColor, setAccentColor] = useState(initial.accentColor);
   const [accentDraft, setAccentDraft] = useState(initial.accentColor);
   const [accentPopoverOpen, setAccentPopoverOpen] = useState(false);
+  const [accentPopoverPos, setAccentPopoverPos] = useState<{ top: number; left: number } | null>(null);
   const accentPopoverRef = useRef<HTMLDivElement>(null);
+  const accentTriggerRef = useRef<HTMLButtonElement>(null);
   const [view, setView] = useState<WorkspaceView>(initial.view);
   const [topTab, setTopTab] = useState<TopTab>(() => getTopTabForView(initial.view));
   const [activeRegistryId, setActiveRegistryId] = useState(initial.componentId);
@@ -1803,13 +1802,14 @@ export default function App() {
     sessionStorage.setItem("zephyr-style-pack", stylePack);
   }, [stylePack]);
 
-  // Close accent popover on outside click
+  // Close accent popover on outside click (portal-aware)
   useEffect(() => {
     if (!accentPopoverOpen) return;
     function handleOutside(e: MouseEvent) {
-      if (accentPopoverRef.current && !accentPopoverRef.current.contains(e.target as Node)) {
-        setAccentPopoverOpen(false);
-      }
+      const t = e.target as Node;
+      const inTrigger = accentPopoverRef.current?.contains(t);
+      const inPortal = (t as Element).closest?.(".accent-dropdown-popover");
+      if (!inTrigger && !inPortal) setAccentPopoverOpen(false);
     }
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
@@ -2559,12 +2559,25 @@ export default function App() {
           </div>
         </div>
 
-        <div className="top-config-strip">
-          <div className="top-config-inner">
-            <span className="top-config-label">Theme &amp; Accent</span>
-            <div className="header-preview-controls">
+        <nav className="top-tabs" aria-label="Top tabs">
+          <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
+          <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
+          <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
+          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Changelog</button>
+        </nav>
+      </header>
+
+      {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
+
+      <div className="docs-layout">
+        <aside className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
+
+          {/* ── Sidebar Theme & Accent ── */}
+          <div className="sidebar-theme-section">
+            <p className="sidebar-theme-label">Theme &amp; Accent</p>
+            <div className="sidebar-theme-controls">
               <select
-                className="header-theme-select"
+                className="sidebar-theme-select"
                 value={stylePack}
                 onChange={(e) => handleStylePackChange(e.target.value as StylePackName)}
                 aria-label="Select theme"
@@ -2575,17 +2588,27 @@ export default function App() {
               </select>
               <div className="accent-dropdown" ref={accentPopoverRef}>
                 <button
+                  ref={accentTriggerRef}
                   type="button"
                   className="header-accent-trigger"
-                  onClick={() => setAccentPopoverOpen((o) => !o)}
+                  onClick={() => {
+                    if (!accentPopoverOpen && accentTriggerRef.current) {
+                      const r = accentTriggerRef.current.getBoundingClientRect();
+                      setAccentPopoverPos({ top: r.bottom + 6, left: r.left });
+                    }
+                    setAccentPopoverOpen((o) => !o);
+                  }}
                   aria-label="Choose accent color"
                   aria-expanded={accentPopoverOpen}
                 >
                   <span className="accent-dropdown-dot" style={{ backgroundColor: accentColor }} />
                   <span className="ms accent-dropdown-chevron">expand_more</span>
                 </button>
-                {accentPopoverOpen && (
-                  <div className="accent-dropdown-popover accent-popover-right">
+                {accentPopoverOpen && accentPopoverPos && createPortal(
+                  <div
+                    className="accent-dropdown-popover"
+                    style={{ position: "fixed", top: accentPopoverPos.top, left: accentPopoverPos.left, zIndex: 300 }}
+                  >
                     <div className="accent-dropdown-swatches">
                       {accentPresets.map((color) => (
                         <button
@@ -2615,26 +2638,13 @@ export default function App() {
                         aria-label="Accent color hex"
                       />
                     </div>
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        <nav className="top-tabs" aria-label="Top tabs">
-          <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
-          <button type="button" className={`tab ${topTab === "audit" ? "active" : ""}`} onClick={() => activateTopTab("audit")}>Audit</button>
-          <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
-          <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
-          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Changelog</button>
-        </nav>
-      </header>
-
-      {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
-
-      <div className="docs-layout">
-        <aside className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
           {topTab === "setup" && (
             <div className="nav-group">
               <p className="group-title">Setup</p>
@@ -4376,7 +4386,7 @@ injectSpeedInsights();`}
                       Audit docs
                     </Button>
                   </div>
-                  {auditError ? <Alert tone="danger">{auditError}</Alert> : null}
+                  {auditError ? <Alert title={auditError} status="error" /> : null}
                 </form>
               </section>
 
@@ -4390,7 +4400,7 @@ injectSpeedInsights();`}
                           <p>{auditReport.summary}</p>
                         </div>
                         <div className="audit-score-wrap">
-                          <Badge tone={auditReport.status === "pass" ? "success" : auditReport.status === "warn" ? "warning" : "danger"}>
+                          <Badge tone={auditReport.status === "pass" ? "success" : auditReport.status === "warn" ? "info" : "danger"}>
                             {auditReport.status.toUpperCase()}
                           </Badge>
                           <span className="audit-score-value">{auditReport.score}/100</span>
@@ -4427,7 +4437,7 @@ injectSpeedInsights();`}
                           </article>
                         ))
                       ) : (
-                        <Alert tone="success">No issues flagged in this scan.</Alert>
+                        <Alert title="No issues flagged in this scan." status="success" />
                       )}
                     </div>
                   </section>
