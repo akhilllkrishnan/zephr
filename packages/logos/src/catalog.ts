@@ -9,7 +9,7 @@ interface SeedLogo {
 }
 
 const seedLogos: SeedLogo[] = [
-  { name: "Zephyr", domain: "zephyr.design", category: "platform", color: "#121212", tags: ["ui", "design-system", "developer"] },
+  { name: "Zephyr", domain: "zephr.local", category: "platform", color: "#121212", tags: ["ui", "design-system", "developer"] },
   { name: "OpenAI", domain: "openai.com", category: "ai", color: "#111827", tags: ["ai", "llm", "assistant"] },
   { name: "Anthropic", domain: "anthropic.com", category: "ai", color: "#d97706", tags: ["ai", "claude", "model"] },
   { name: "Perplexity", domain: "perplexity.ai", category: "ai", color: "#0f766e", tags: ["ai", "search", "assistant"] },

@@ -86,7 +86,7 @@ import { Button, FormField, Input, DashboardPage } from "@zephyr/ui-react";
 
 ## Cloud APIs (optional)
 
-Base URL: `https://api.zephyr.design`
+Base URL: `https://api.zephr.local`
 Authentication: `Authorization: Bearer <ZEPHYR_API_KEY>`
 
 | Endpoint | Purpose |

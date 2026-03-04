@@ -15,7 +15,7 @@ export class HttpLogoProvider implements LogoProvider {
 
   constructor(options: HttpLogoProviderOptions = {}) {
     this.id = options.id ?? "http-provider";
-    this.baseUrl = options.baseUrl ?? "https://assets.zephyr.design/logos";
+    this.baseUrl = options.baseUrl ?? "https://assets.zephr.local/logos";
     this.attribution = options.attribution ?? "Zephyr hosted logo asset";
   }
 

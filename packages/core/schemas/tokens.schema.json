@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://zephyr.design/schemas/tokens.schema.json",
+  "$id": "https://zephr.local/schemas/tokens.schema.json",
   "title": "Zephyr Design Tokens",
   "type": "object",
   "required": [

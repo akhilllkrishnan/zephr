@@ -578,7 +578,7 @@ function PreviewSurface({
             <Input
               id="preview-input-email"
               placeholder="Type your email"
-              defaultValue={previewState === "filled" ? "hello@zephyr.design" : ""}
+              defaultValue={previewState === "filled" ? "hello@zephr.local" : ""}
               disabled={inputDisabled}
             />
           </FormField>
@@ -2369,7 +2369,7 @@ export default function App() {
   const brandLogoSrc = darkMode ? zephyrLogoLight : zephyrLogoDark;
 
   const shareUrl = useMemo(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://zephyr.design";
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:4172";
     const path = typeof window !== "undefined" ? window.location.pathname : "/studio";
     const params = new URLSearchParams();
     params.set("component", selectedEntry.id);
@@ -2533,7 +2533,7 @@ export default function App() {
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() => openExternal("https://zephyr.design/support", "Support")}
+                onClick={() => showToast("Support portal coming soon")}
               >
                 Support
               </Button>
@@ -2542,7 +2542,7 @@ export default function App() {
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() => openExternal("https://zephyr.design/feature-request", "Feature Request")}
+                onClick={() => showToast("Feature request portal coming soon")}
               >
                 Feature Request
               </Button>
@@ -4376,12 +4376,7 @@ injectSpeedInsights();`}
                     <Button
                       type="button"
                       variant="secondary"
-                      onClick={() =>
-                        openExternal(
-                          "https://zephyr.design/audit",
-                          "Audit docs"
-                        )
-                      }
+                      onClick={() => showToast("Audit docs coming soon")}
                     >
                       Audit docs
                     </Button>
@@ -5162,7 +5157,7 @@ injectSpeedInsights();`}
             setShowUpgradeModal(false);
             showToast(result.message || "Pro access enabled");
           }}
-          onGetKey={() => openExternal("https://zephyr.design/pro", "License key page")}
+          onGetKey={() => showToast("License key portal coming soon")}
           onRemove={() => {
             setLicenseKey("");
             setUserTier("free");

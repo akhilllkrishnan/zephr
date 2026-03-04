@@ -1,6 +1,6 @@
 # @zephyr/ui-react
 
-React component library for the [Zephyr design system](https://zephyr.design).  
+React component library for the Zephyr design system.  
 40+ production-ready components across atoms, molecules, organisms, and full page templates.
 
 ## Install

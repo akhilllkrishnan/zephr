@@ -183,9 +183,8 @@ function Toast({ message }: { message: string }) {
 // ─── Main App ─────────────────────────────────────────────────
 
 const CLOUD_BASE_URL =
-  typeof window !== "undefined" && window.location.hostname !== "localhost"
-    ? "https://api.zephyr.design"
-    : "http://localhost:4177";
+  (import.meta.env.VITE_ZEPHYR_CLOUD_URL as string | undefined)?.trim() ||
+  "http://localhost:4177";
 
 export default function AuditApp() {
   // theme

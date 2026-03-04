@@ -162,7 +162,7 @@ export async function runUrlAudit(
       redirect: "follow",
       signal: timeout.signal,
       headers: {
-        "User-Agent": "Zephyr-Audit-Lite/0.1 (+https://zephyr.design)"
+        "User-Agent": "Zephyr-Audit-Lite/0.1"
       }
     });
 

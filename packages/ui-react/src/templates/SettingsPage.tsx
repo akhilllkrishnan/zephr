@@ -66,7 +66,7 @@ export interface SettingsPageProps {
 
 function ProfileSection() {
   const [name, setName] = useState("Akhil Krishnan");
-  const [email, setEmail] = useState("akhil@zephyr.design");
+  const [email, setEmail] = useState("akhil@zephr.local");
   const [bio, setBio] = useState("");
   const [pending, setPending] = useState(false);
   const [success, setSuccess] = useState("");
@@ -207,10 +207,10 @@ function NotificationsSection() {
 
 function TeamSection() {
   const members = [
-    { name: "Akhil Krishnan", email: "akhil@zephyr.design", role: "Owner" },
-    { name: "Maya Carter", email: "maya@zephyr.design", role: "Admin" },
-    { name: "Noah Kim", email: "noah@zephyr.design", role: "Member" },
-    { name: "Liam Torres", email: "liam@zephyr.design", role: "Member" }
+    { name: "Akhil Krishnan", email: "akhil@zephr.local", role: "Owner" },
+    { name: "Maya Carter", email: "maya@zephr.local", role: "Admin" },
+    { name: "Noah Kim", email: "noah@zephr.local", role: "Member" },
+    { name: "Liam Torres", email: "liam@zephr.local", role: "Member" }
   ];
 
   const roleTone: Record<string, "success" | "info" | "neutral"> = {
