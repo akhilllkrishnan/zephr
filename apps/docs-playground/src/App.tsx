@@ -3850,6 +3850,26 @@ export default function App() {
                       placeholder="Example: Improve onboarding conversion for first-time users."
                     />
                   </label>
+                  <label className="field">
+                    <span>Cloud API key (optional)</span>
+                    <Input
+                      type="password"
+                      value={cloudApiKeyDraft}
+                      onChange={(event) => setCloudApiKeyDraft(event.target.value)}
+                      placeholder="dev_local_key"
+                    />
+                  </label>
+                  <div className="inline-actions">
+                    <Button type="button" size="sm" variant="secondary" onClick={saveCloudApiKey}>
+                      Save API key
+                    </Button>
+                    <Button type="button" size="sm" variant="secondary" onClick={clearCloudApiKey}>
+                      Use local only
+                    </Button>
+                    <Badge tone={cloudClient ? "success" : "neutral"}>
+                      {cloudClient ? "Cloud scanner active" : "Local fallback mode"}
+                    </Badge>
+                  </div>
                   <div className="inline-actions">
                     <Button type="submit" loading={auditLoading}>
                       Run Audit Lite
