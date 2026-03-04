@@ -10,6 +10,8 @@ import {
   LicenseValidationRequest,
   LicenseValidationResponse,
   LogoResponse,
+  UrlAuditReport,
+  UrlAuditRequest,
   SnippetRequest,
   SnippetResponse,
   TakedownRequest
@@ -132,6 +134,13 @@ export class ZephyrCloudClient {
 
   validateLicense(payload: LicenseValidationRequest): Promise<LicenseValidationResponse> {
     return this.request<LicenseValidationResponse>("/v1/licenses/validate", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  runUrlAudit(payload: UrlAuditRequest): Promise<UrlAuditReport> {
+    return this.request<UrlAuditReport>("/v1/audit/url", {
       method: "POST",
       body: JSON.stringify(payload)
     });

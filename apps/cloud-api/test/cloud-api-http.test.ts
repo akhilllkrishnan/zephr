@@ -91,6 +91,43 @@ async function testHandler(req: IncomingMessage, res: ServerResponse): Promise<v
         return;
     }
 
+    if (req.method === "POST" && url.pathname === "/v1/audit/url") {
+        if (!hasScope(principal, "assets:read")) {
+            sendJson(res, 403, { error: "Forbidden: assets:read required." });
+            return;
+        }
+        const body = await readJsonBody<{ url?: string }>(req);
+        if (!body.url) {
+            sendJson(res, 400, { error: "Missing required field: url" });
+            return;
+        }
+        sendJson(res, 200, {
+            url: body.url,
+            scannedAt: new Date().toISOString(),
+            source: "cloud",
+            score: 84,
+            status: "warn",
+            pageTitle: "Mock audit target",
+            summary: "0 high, 1 medium, 0 low issues detected.",
+            issues: [
+                {
+                    id: "hierarchy-cta",
+                    severity: "medium",
+                    category: "conversion",
+                    title: "Primary CTA contrast",
+                    summary: "CTA could be more distinct.",
+                    evidence: "Mock issue from test route.",
+                    recommendation: "Increase contrast and visual prominence."
+                }
+            ],
+            recommendations: ["Increase CTA contrast and visual prominence."],
+            heatmap: [
+                { id: "hero", label: "Hero", attention: 78, rationale: "Top fold headings and CTA." }
+            ]
+        }, headers);
+        return;
+    }
+
     if (req.method === "GET" && url.pathname === "/v1/icons") {
         if (!hasScope(principal, "assets:read")) {
             sendJson(res, 403, { error: "Forbidden: assets:read required." });
@@ -218,6 +255,14 @@ describe("Cloud API — HTTP integration", () => {
         const json = await res.json() as unknown[];
         expect(Array.isArray(json)).toBe(true);
         expect(json).toContain("Studio");
+    });
+
+    it("POST /v1/audit/url → returns structured report", async () => {
+        const res = await post("/v1/audit/url", { url: "https://example.com" });
+        expect(res.status).toBe(200);
+        const json = await res.json() as { score: number; issues: unknown[] };
+        expect(json.score).toBeGreaterThan(0);
+        expect(Array.isArray(json.issues)).toBe(true);
     });
 
     // Principal introspection

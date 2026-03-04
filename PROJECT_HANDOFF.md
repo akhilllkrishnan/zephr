@@ -1,6 +1,63 @@
 # Zephyr Project Handoff
 
-Last updated: March 4, 2026 (Session 5: Component preview redesign — variant grid + browser chrome)
+Last updated: March 4, 2026 (Session 6: Zephr-Audit Lite MVP)
+
+## 0) Latest Delta (March 4, 2026 — Session 6: Zephr-Audit Lite MVP)
+
+Completed in this pass:
+
+1. **Audit service model added**
+   - New cloud-sdk types for audit: `UrlAuditRequest`, `UrlAuditReport`, `UrlAuditIssue`, `UrlAuditHeatmapArea`.
+   - New client method: `ZephyrCloudClient.runUrlAudit(payload)` calling `POST /v1/audit/url`.
+
+2. **Cloud API endpoint added**
+   - New route: `POST /v1/audit/url` (auth + `assets:read` scope).
+   - Added `apps/cloud-api/src/audit.ts` with a real heuristic engine:
+     - title/meta checks
+     - viewport/lang/main landmark checks
+     - heading hierarchy checks
+     - image alt coverage checks
+     - form label coverage checks
+     - CTA clarity heuristics
+   - Response includes:
+     - numeric score and pass/warn/fail status
+     - prioritized issues with severity + evidence + recommendation
+     - top recommendations
+     - predicted attention map (hero/mid/footer).
+
+3. **Docs Playground: new Audit tab/page**
+   - Top nav now includes `Audit`.
+   - New `view="audit"` route state and left-nav section.
+   - New page `Zephr-Audit Lite` with:
+     - URL input
+     - optional screenshot URL
+     - optional context notes
+     - `Run Audit Lite` action
+   - Result view includes:
+     - score badge + metadata
+     - issue cards
+     - recommendation list
+     - predicted attention map bars
+     - generated **AI remediation prompt** with one-click copy.
+
+4. **Fallback behavior implemented**
+   - Added `apps/docs-playground/src/auditLite.ts`.
+   - If cloud client/key is unavailable or scan fails, docs auto-generates a local-lite heuristic report and surfaces fallback message.
+
+5. **Tests and builds**
+   - `@zephyr/cloud-sdk` tests pass (includes new audit client method test).
+   - `@zephyr/cloud-api` tests pass (module + HTTP).
+   - `@zephyr/docs-playground` build passes.
+   - Full monorepo build passes.
+
+### Next Steps
+
+- Add screenshot file upload (not just URL) with local preview thumbnail in audit form.
+- Add authenticated report history (`/v1/audit/history`) for saved scans.
+- Add export actions: markdown report, JSON report, and issue ticket payload (Linear/Jira).
+- Add deploy hook integration so Zephr-Guard can run audit automatically per preview URL.
+
+---
 
 ## 0) Latest Delta (March 4, 2026 — Session 5: Component Preview Redesign)
 

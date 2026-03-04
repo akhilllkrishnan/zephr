@@ -1,6 +1,7 @@
 import { Readable } from "node:stream";
 import { describe, expect, it } from "vitest";
 import { requirePrincipal } from "../src/auth";
+import { runUrlAudit } from "../src/audit";
 import { readJsonBody, sendJson } from "../src/http";
 import { validateLicenseKey } from "../src/license";
 import { InMemoryRateLimiter } from "../src/rateLimit";
@@ -69,5 +70,34 @@ describe("@zephyr/cloud-api module tests", () => {
 
     expect(result.valid).toBe(false);
     expect(result.status).toBe("invalid");
+  });
+
+  it("runs URL audit and returns structured issues", async () => {
+    const html = `
+      <html>
+        <head>
+          <title>Demo</title>
+        </head>
+        <body>
+          <img src="/hero.png" />
+          <input type="email" />
+          <button>Submit</button>
+        </body>
+      </html>
+    `;
+
+    const report = await runUrlAudit(
+      { url: "https://example.com" },
+      async () => ({
+        ok: true,
+        status: 200,
+        text: async () => html
+      })
+    );
+
+    expect(report.url).toBe("https://example.com");
+    expect(report.source).toBe("cloud");
+    expect(report.issues.length).toBeGreaterThan(0);
+    expect(report.recommendations.length).toBeGreaterThan(0);
   });
 });

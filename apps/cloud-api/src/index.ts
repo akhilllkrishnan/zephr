@@ -12,6 +12,7 @@ import { searchMaterialIcons, type MaterialIconStyle } from "@zephyr/icons-mater
 import { LogoClient } from "@zephyr/logos";
 import { listLogoCatalog, searchLogoCatalog } from "@zephyr/logos";
 import { requirePrincipal, hasScope } from "./auth";
+import { runUrlAudit, type UrlAuditRequest } from "./audit";
 import { readJsonBody, sendJson } from "./http";
 import { validateLicenseKey } from "./license";
 import { createRateLimiter } from "./rateLimit";
@@ -214,6 +215,43 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
   if (request.method === "GET" && url.pathname === "/v1/themes") {
     sendJson(response, 200, stylePackNames, rateHeaders);
     auditLog(principal.key, request, 200);
+    return;
+  }
+
+  // --- POST /v1/audit/url (requires assets:read) ---
+  if (request.method === "POST" && url.pathname === "/v1/audit/url") {
+    if (!hasScope(principal, "assets:read")) {
+      forbidden(response, "assets:read");
+      auditLog(principal.key, request, 403, { scope: "assets:read" });
+      return;
+    }
+
+    const body = await readJsonBody<UrlAuditRequest>(request);
+    if (!body.url) {
+      sendJson(response, 400, { error: "Missing required field: url" }, rateHeaders);
+      auditLog(principal.key, request, 400);
+      return;
+    }
+
+    try {
+      const report = await runUrlAudit(body);
+      sendJson(response, 200, report, rateHeaders);
+      auditLog(principal.key, request, 200, {
+        targetUrl: body.url,
+        score: report.score,
+        issues: report.issues.length
+      });
+    } catch (error) {
+      sendJson(
+        response,
+        502,
+        {
+          error: error instanceof Error ? error.message : "Audit failed"
+        },
+        rateHeaders
+      );
+      auditLog(principal.key, request, 502, { targetUrl: body.url });
+    }
     return;
   }
 

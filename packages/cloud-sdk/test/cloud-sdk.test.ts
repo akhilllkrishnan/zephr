@@ -96,4 +96,46 @@ describe("@zephyr/cloud-sdk", () => {
     expect(init.method).toBe("POST");
     expect(init.body).toBe(JSON.stringify({ licenseKey: "zephyr-pro-demo-2026" }));
   });
+
+  it("posts URL audit payload and returns report data", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        url: "https://example.com",
+        scannedAt: "2026-03-04T00:00:00.000Z",
+        source: "cloud",
+        score: 82,
+        status: "warn",
+        pageTitle: "Example Domain",
+        summary: "1 high, 1 medium issue found.",
+        issues: [],
+        recommendations: [],
+        heatmap: []
+      })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ZephyrCloudClient({
+      baseUrl: "http://localhost:8787"
+    });
+
+    const report = await client.runUrlAudit({
+      url: "https://example.com",
+      notes: "Landing page review"
+    });
+
+    expect(report.url).toBe("https://example.com");
+    expect(report.status).toBe("warn");
+
+    const call = fetchMock.mock.calls[0];
+    expect(call[0]).toBe("http://localhost:8787/v1/audit/url");
+    const init = call[1] as RequestInit;
+    expect(init.method).toBe("POST");
+    expect(init.body).toBe(
+      JSON.stringify({
+        url: "https://example.com",
+        notes: "Landing page review"
+      })
+    );
+  });
 });

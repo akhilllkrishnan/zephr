@@ -90,3 +90,41 @@ export interface LicenseValidationResponse {
   message: string;
   expiresAt?: string;
 }
+
+export type UrlAuditSeverity = "high" | "medium" | "low";
+
+export interface UrlAuditIssue {
+  id: string;
+  severity: UrlAuditSeverity;
+  category: "accessibility" | "hierarchy" | "conversion" | "trust" | "usability";
+  title: string;
+  summary: string;
+  evidence: string;
+  recommendation: string;
+}
+
+export interface UrlAuditHeatmapArea {
+  id: string;
+  label: string;
+  attention: number;
+  rationale: string;
+}
+
+export interface UrlAuditRequest {
+  url: string;
+  screenshotUrl?: string;
+  notes?: string;
+}
+
+export interface UrlAuditReport {
+  url: string;
+  scannedAt: string;
+  source: "cloud" | "local";
+  score: number;
+  status: "pass" | "warn" | "fail";
+  pageTitle: string | null;
+  summary: string;
+  issues: UrlAuditIssue[];
+  recommendations: string[];
+  heatmap: UrlAuditHeatmapArea[];
+}

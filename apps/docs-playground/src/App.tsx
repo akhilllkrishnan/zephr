@@ -55,9 +55,11 @@ import {
 import registryData from "@zephyr/ai-registry/registry/components.json";
 import { LiveCodeEditor } from "./LiveCodeEditor";
 import { ZephyrCloudClient } from "@zephyr/cloud-sdk";
+import type { UrlAuditReport, UrlAuditSeverity } from "@zephyr/cloud-sdk";
 import type { AvatarStyleDefinition } from "@zephyr/avatars";
 import type { MaterialIconDefinition, MaterialIconStyle } from "@zephyr/icons-material";
 import type { LogoCatalogEntry } from "@zephyr/logos";
+import { createLocalAuditReport } from "./auditLite";
 import zephyrLogoDark from "../../../logo/zephyr-dark.png";
 import zephyrLogoLight from "../../../logo/zephyr-light.png";
 
@@ -80,10 +82,11 @@ type WorkspaceView =
   "foundations" |
   "mission" |
   "team" |
+  "audit" |
   "components" |
   "api-reference" |
   "templates";
-type TopTab = "setup" | "components" | "pages" | "changelog";
+type TopTab = "setup" | "audit" | "components" | "pages" | "changelog";
 
 interface SearchResultItem {
   id: string;
@@ -230,6 +233,12 @@ function parseCloudError(feature: "icons" | "avatars" | "logos", error: unknown)
   return `Cloud ${feature} unavailable. Using local catalog.`;
 }
 
+function severityBadgeTone(severity: UrlAuditSeverity): "danger" | "warning" | "neutral" {
+  if (severity === "high") return "danger";
+  if (severity === "medium") return "warning";
+  return "neutral";
+}
+
 function managerInstallCommand(manager: AiPackageManager, dependencies: string[]): string {
   const joined = dependencies.join(" ");
   if (manager === "npm") return `npm install ${joined}`;
@@ -372,6 +381,7 @@ function fromSearchParams(): {
           viewParam === "foundations" ? "foundations" :
             viewParam === "mission" ? "mission" :
               viewParam === "team" ? "team" :
+                viewParam === "audit" ? "audit" :
                 viewParam === "templates" ? "templates" :
                   "introduction";
 
@@ -408,6 +418,7 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
+  if (view === "audit") return "audit";
   if (view === "templates") return "pages";
   if (view === "components" || view === "api-reference") return "components";
   return "setup";
@@ -1559,6 +1570,12 @@ export default function App() {
   const [logoCloudState, setLogoCloudState] = useState<CloudAssetState>(() =>
     defaultCloudAssetState("Using local logo catalog. Add API key to use cloud sync.")
   );
+  const [auditUrl, setAuditUrl] = useState("https://example.com");
+  const [auditScreenshotUrl, setAuditScreenshotUrl] = useState("");
+  const [auditNotes, setAuditNotes] = useState("");
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditError, setAuditError] = useState("");
+  const [auditReport, setAuditReport] = useState<UrlAuditReport | null>(null);
 
 
   const [intentText, setIntentText] = useState(() => getDefaultIntent(initial.componentId));
@@ -1995,6 +2012,15 @@ export default function App() {
         anchor: "team-overview"
       },
       {
+        id: "doc-audit-lite",
+        kind: "doc",
+        label: "Audit Lite",
+        detail: "Audit",
+        tab: "audit",
+        view: "audit",
+        anchor: "audit-overview"
+      },
+      {
         id: "doc-pages-templates",
         kind: "doc",
         label: "Page Templates",
@@ -2095,10 +2121,58 @@ export default function App() {
     showToast("Cloud key removed. Using local fallback.");
   }
 
+  async function runAudit(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    const url = auditUrl.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      setAuditError("Enter a valid public URL starting with http:// or https://.");
+      setAuditReport(null);
+      return;
+    }
+
+    setAuditLoading(true);
+    setAuditError("");
+    try {
+      if (!cloudClient) {
+        const report = createLocalAuditReport({
+          url,
+          screenshotUrl: auditScreenshotUrl.trim() || undefined,
+          notes: auditNotes.trim() || undefined
+        });
+        setAuditReport(report);
+        showToast("Audit completed in local lite mode");
+        return;
+      }
+
+      const report = await cloudClient.runUrlAudit({
+        url,
+        screenshotUrl: auditScreenshotUrl.trim() || undefined,
+        notes: auditNotes.trim() || undefined
+      });
+      setAuditReport(report);
+      showToast("Audit completed from cloud scanner");
+    } catch (error) {
+      const fallback = createLocalAuditReport({
+        url,
+        screenshotUrl: auditScreenshotUrl.trim() || undefined,
+        notes: auditNotes.trim() || undefined
+      });
+      setAuditReport(fallback);
+      const message = error instanceof Error ? error.message : String(error);
+      setAuditError(`${message}. Showing local lite audit as fallback.`);
+    } finally {
+      setAuditLoading(false);
+    }
+  }
+
   function activateTopTab(tab: TopTab): void {
     setTopTab(tab);
     if (tab === "setup") {
       setView("introduction");
+      return;
+    }
+    if (tab === "audit") {
+      setView("audit");
       return;
     }
     if (tab === "components") {
@@ -2210,6 +2284,34 @@ export default function App() {
     params.set("view", view);
     return `${origin}${path}?${params.toString()}`;
   }, [accentColor, selectedEntry.id, stylePack, view]);
+  const auditFixPrompt = useMemo(() => {
+    if (!auditReport) {
+      return "";
+    }
+    const lines = auditReport.issues
+      .slice(0, 6)
+      .map(
+        (issue, index) =>
+          `${index + 1}. [${issue.severity.toUpperCase()} | ${issue.category}] ${issue.title}: ${issue.recommendation}`
+      );
+    return [
+      `Audit target: ${auditReport.url}`,
+      `Score: ${auditReport.score}/100 (${auditReport.status})`,
+      "",
+      "Apply these fixes in priority order:",
+      ...lines,
+      "",
+      "Constraints:",
+      "- Keep semantics and accessibility first (labels, landmarks, heading hierarchy).",
+      "- Preserve visual consistency with Zephyr components and current accent color.",
+      `- Accent color: ${accentColor}`,
+      "",
+      "Return:",
+      "1) Updated UI code",
+      "2) Short changelog of UX improvements",
+      "3) Any unresolved assumptions"
+    ].join("\n");
+  }, [accentColor, auditReport]);
 
   function setAccentIfValid(value: string): void {
     setAccentDraft(value);
@@ -2420,6 +2522,7 @@ export default function App() {
 
         <nav className="top-tabs" aria-label="Top tabs">
           <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
+          <button type="button" className={`tab ${topTab === "audit" ? "active" : ""}`} onClick={() => activateTopTab("audit")}>Audit</button>
           <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
           <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
           <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Change Log</button>
@@ -2487,6 +2590,23 @@ export default function App() {
                 }}
               >
                 Team
+              </button>
+            </div>
+          )}
+
+          {topTab === "audit" && (
+            <div className="nav-group">
+              <p className="group-title">Audit</p>
+              <button
+                type="button"
+                className={`sidebar-link ${view === "audit" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("audit");
+                  setView("audit");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Audit Lite
               </button>
             </div>
           )}
@@ -3687,6 +3807,164 @@ export default function App() {
                 </div>
               </section>
             </>
+          ) : view === "audit" ? (
+            <>
+              <section id="audit-overview" className="doc-section hero">
+                <p className="breadcrumbs">Audit</p>
+                <h1>Zephr-Audit Lite</h1>
+                <p className="lead">
+                  Paste a public URL and run a fast UX + UI heuristic scan.
+                  Uploading a screenshot URL improves visual hierarchy and spacing checks.
+                </p>
+              </section>
+
+              <section id="audit-run" className="doc-section">
+                <div className="section-heading">
+                  <h2>Run audit</h2>
+                  <p>Lite mode uses cloud scanning when available, with automatic local fallback.</p>
+                </div>
+                <form className="audit-form" onSubmit={runAudit}>
+                  <label className="field">
+                    <span>Public page URL</span>
+                    <Input
+                      value={auditUrl}
+                      onChange={(event) => setAuditUrl(event.target.value)}
+                      placeholder="https://your-startup.com/pricing"
+                      required
+                    />
+                  </label>
+                  <label className="field">
+                    <span>Screenshot URL (optional)</span>
+                    <Input
+                      value={auditScreenshotUrl}
+                      onChange={(event) => setAuditScreenshotUrl(event.target.value)}
+                      placeholder="https://cdn.yourapp.com/screen.png"
+                    />
+                  </label>
+                  <label className="field">
+                    <span>Goal context (optional)</span>
+                    <Textarea
+                      rows={3}
+                      value={auditNotes}
+                      onChange={(event) => setAuditNotes(event.target.value)}
+                      placeholder="Example: Improve onboarding conversion for first-time users."
+                    />
+                  </label>
+                  <div className="inline-actions">
+                    <Button type="submit" loading={auditLoading}>
+                      Run Audit Lite
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() =>
+                        openExternal(
+                          "https://zephyr.design/audit",
+                          "Audit docs"
+                        )
+                      }
+                    >
+                      Audit docs
+                    </Button>
+                  </div>
+                  {auditError ? <Alert tone="danger">{auditError}</Alert> : null}
+                </form>
+              </section>
+
+              {auditReport ? (
+                <>
+                  <section id="audit-score" className="doc-section">
+                    <div className="section-heading">
+                      <div className="section-heading-row">
+                        <div>
+                          <h2>Audit result</h2>
+                          <p>{auditReport.summary}</p>
+                        </div>
+                        <div className="audit-score-wrap">
+                          <Badge tone={auditReport.status === "pass" ? "success" : auditReport.status === "warn" ? "warning" : "danger"}>
+                            {auditReport.status.toUpperCase()}
+                          </Badge>
+                          <span className="audit-score-value">{auditReport.score}/100</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="audit-metadata">
+                      <span><strong>URL:</strong> {auditReport.url}</span>
+                      <span><strong>Source:</strong> {auditReport.source}</span>
+                      <span><strong>Scanned:</strong> {new Date(auditReport.scannedAt).toLocaleString()}</span>
+                      {auditReport.pageTitle ? <span><strong>Page title:</strong> {auditReport.pageTitle}</span> : null}
+                    </div>
+                  </section>
+
+                  <section id="audit-issues" className="doc-section">
+                    <div className="section-heading">
+                      <h2>Issues</h2>
+                      <p>Prioritized findings with concrete fixes.</p>
+                    </div>
+                    <div className="audit-issue-list">
+                      {auditReport.issues.length ? (
+                        auditReport.issues.map((issue) => (
+                          <article key={issue.id} className="audit-issue-card">
+                            <div className="audit-issue-head">
+                              <Badge tone={severityBadgeTone(issue.severity)}>
+                                {issue.severity.toUpperCase()}
+                              </Badge>
+                              <span className="audit-issue-category">{issue.category}</span>
+                            </div>
+                            <h3>{issue.title}</h3>
+                            <p>{issue.summary}</p>
+                            <p className="audit-issue-evidence"><strong>Evidence:</strong> {issue.evidence}</p>
+                            <p className="audit-issue-recommendation"><strong>Fix:</strong> {issue.recommendation}</p>
+                          </article>
+                        ))
+                      ) : (
+                        <Alert tone="success">No issues flagged in this scan.</Alert>
+                      )}
+                    </div>
+                  </section>
+
+                  <section id="audit-recommendations" className="doc-section">
+                    <div className="section-heading">
+                      <h2>Top recommendations</h2>
+                      <p>Action list you can hand directly to your AI IDE assistant.</p>
+                    </div>
+                    <ol className="audit-recommendations">
+                      {auditReport.recommendations.map((item, index) => (
+                        <li key={`${index}-${item}`}>{item}</li>
+                      ))}
+                    </ol>
+                    <div className="snippet-stack" style={{ marginTop: "0.85rem" }}>
+                      <SnippetItem
+                        label="AI remediation prompt"
+                        code={auditFixPrompt}
+                        onCopy={() => copyAndFlash("Audit fix prompt", auditFixPrompt)}
+                      />
+                    </div>
+                  </section>
+
+                  <section id="audit-heatmap" className="doc-section">
+                    <div className="section-heading">
+                      <h2>Predicted attention map</h2>
+                      <p>This is a model-based estimate, not clickstream heatmap telemetry.</p>
+                    </div>
+                    <div className="audit-heatmap-list">
+                      {auditReport.heatmap.map((zone) => (
+                        <div key={zone.id} className="audit-heatmap-row">
+                          <div className="audit-heatmap-meta">
+                            <strong>{zone.label}</strong>
+                            <span>{zone.rationale}</span>
+                          </div>
+                          <div className="audit-heatmap-track" aria-hidden="true">
+                            <span className="audit-heatmap-fill" style={{ width: `${zone.attention}%` }} />
+                          </div>
+                          <span className="audit-heatmap-score">{zone.attention}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </>
+              ) : null}
+            </>
           ) : view === "api-reference" ? (
             <>
               <div className="component-page-tabs">
@@ -4237,6 +4515,16 @@ export default function App() {
               <a className="toc-link" href="#team-overview">Overview</a>
               <a className="toc-link" href="#team-directory">Core team</a>
               <a className="toc-link" href="#team-process">How we ship</a>
+            </>
+          )}
+          {topTab !== "changelog" && view === "audit" && (
+            <>
+              <a className="toc-link" href="#audit-overview">Overview</a>
+              <a className="toc-link" href="#audit-run">Run audit</a>
+              {auditReport ? <a className="toc-link" href="#audit-score">Score</a> : null}
+              {auditReport ? <a className="toc-link" href="#audit-issues">Issues</a> : null}
+              {auditReport ? <a className="toc-link" href="#audit-recommendations">Recommendations</a> : null}
+              {auditReport ? <a className="toc-link" href="#audit-heatmap">Predicted heatmap</a> : null}
             </>
           )}
           {topTab !== "changelog" && view === "templates" && (
