@@ -2,7 +2,7 @@
 
 Zephyr is an AI-native design system platform that combines:
 
-- A framework-agnostic styling core with token-driven style packs
+- A framework-agnostic styling core with token-driven theming
 - A React-first UI component library
 - Cloud APIs for logos, avatars, and snippet generation
 - AI discovery via a machine-readable registry and MCP server
@@ -20,7 +20,7 @@ Zephyr is an AI-native design system platform that combines:
 - `packages/cli` - `zephyr` CLI (`init`, `add`, `theme`, `doctor`)
 - `packages/cloud-sdk` - typed REST client for Zephyr cloud APIs
 - `apps/cloud-api` - Node API implementing `/v1` endpoints
-- `apps/docs-playground` - live docs playground with prop controls and style-pack switcher
+- `apps/docs-playground` - live docs playground with accent controls + interactive preview states
 - `docs` - human + AI docs (`llms.txt`, `llms-full.txt`, OpenAPI)
 
 ## Quick Start
@@ -71,6 +71,19 @@ Run Storybook:
 ```bash
 pnpm storybook
 ```
+
+## Deploy + Custom Domain (Vercel)
+
+This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20System%20Library/vercel.json) for monorepo deployment of `@zephyr/docs-playground`.
+
+1. In Vercel, import GitHub repo: `akhilllkrishnan/zephyr`.
+2. Framework preset: `Other`.
+3. Vercel will use:
+   - install: `corepack enable && corepack pnpm install --frozen-lockfile`
+   - build: `corepack pnpm --filter @zephyr/docs-playground build`
+   - output: `apps/docs-playground/dist`
+4. After first deploy, open Project Settings -> Domains and add your domain.
+5. Add DNS records in your domain provider exactly as Vercel shows.
 
 ## API Key Model
 
