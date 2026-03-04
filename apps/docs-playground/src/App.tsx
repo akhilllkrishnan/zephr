@@ -55,26 +55,15 @@ import {
 } from "@zephyr/ai-registry";
 import registryData from "@zephyr/ai-registry/registry/components.json";
 import { ZephyrCloudClient } from "@zephyr/cloud-sdk";
-import type { UrlAuditReport, UrlAuditSeverity } from "@zephyr/cloud-sdk";
 import type { AvatarStyleDefinition } from "@zephyr/avatars";
 import type { MaterialIconDefinition, MaterialIconStyle } from "@zephyr/icons-material";
 import type { LogoCatalogEntry } from "@zephyr/logos";
-import { createLocalAuditReport } from "./auditLite";
 import zephyrLogoDark from "../../../logo/zephyr-dark.png";
 import zephyrLogoLight from "../../../logo/zephyr-light.png";
 
 const THEME_STYLE_ID = "zephyr-docs-playground-theme";
 const registry = registryData as unknown as RegistryEntry[];
 const DEFAULT_STYLE_PACK: StylePackName = "Clarity";
-
-const ZEPHYR_APPS = [
-  { id: "ui",    name: "UI",    icon: "widgets",       tagline: "Component library",  status: "active" as const, url: null },
-  { id: "audit", name: "Audit", icon: "manage_search", tagline: "UX scanner",         status: "alpha"  as const, url: "http://localhost:4175" },
-  { id: "proto", name: "Proto", icon: "bolt",          tagline: "AI page builder",    status: "soon"   as const, url: null },
-  { id: "copy",  name: "Copy",  icon: "edit_note",     tagline: "Microcopy AI",       status: "soon"   as const, url: null },
-  { id: "brand", name: "Brand", icon: "palette",       tagline: "Brand token gen",    status: "soon"   as const, url: null },
-  { id: "flow",  name: "Flow",  icon: "account_tree",  tagline: "Journey mapper",     status: "soon"   as const, url: null },
-] as const;
 
 const STYLE_PACK_META: Record<StylePackName, { label: string; description: string; free: boolean }> = {
   Studio: { label: "Studio", description: "Neutral gray base with warm orange accents. The reliable all-rounder.", free: true },
@@ -92,12 +81,11 @@ type WorkspaceView =
   "foundations" |
   "mission" |
   "team" |
-  "audit" |
   "component-gallery" |
   "components" |
   "api-reference" |
   "templates";
-type TopTab = "setup" | "audit" | "components" | "pages" | "changelog";
+type TopTab = "setup" | "components" | "pages" | "changelog";
 
 interface SearchResultItem {
   id: string;
@@ -244,12 +232,6 @@ function parseCloudError(feature: "icons" | "avatars" | "logos", error: unknown)
   return `Cloud ${feature} unavailable. Using local catalog.`;
 }
 
-function severityBadgeTone(severity: UrlAuditSeverity): "danger" | "info" | "neutral" {
-  if (severity === "high") return "danger";
-  if (severity === "medium") return "info";
-  return "neutral";
-}
-
 function managerInstallCommand(manager: AiPackageManager, dependencies: string[]): string {
   const joined = dependencies.join(" ");
   if (manager === "npm") return `npm install ${joined}`;
@@ -394,7 +376,6 @@ function fromSearchParams(): {
             viewParam === "speed-insights" ? "speed-insights" :
               viewParam === "mission" ? "mission" :
                 viewParam === "team" ? "team" :
-                  viewParam === "audit" ? "audit" :
                   viewParam === "templates" ? "templates" :
                     "component-gallery";
 
@@ -431,7 +412,6 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
-  if (view === "audit") return "audit";
   if (view === "templates") return "pages";
   if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
@@ -1419,74 +1399,6 @@ function LicenseKeyModal({
   );
 }
 
-/* ---------- App Switcher ---------- */
-type ZephyrApp = typeof ZEPHYR_APPS[number];
-
-function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
-
-  return (
-    <div className="app-switcher" ref={ref}>
-      <button
-        type="button"
-        className={`app-switcher-trigger ${open ? "is-open" : ""}`}
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Switch Zephyr app"
-        aria-expanded={open}
-        aria-haspopup="dialog"
-      >
-        <span className="ms app-switcher-icon" aria-hidden="true">apps</span>
-      </button>
-
-      {open && createPortal(
-        <>
-          <div className="app-switcher-backdrop" onClick={() => setOpen(false)} />
-          <div className="app-switcher-panel" role="dialog" aria-label="Zephyr apps">
-            <p className="app-switcher-heading">Zephyr Suite</p>
-            <div className="app-switcher-grid">
-              {ZEPHYR_APPS.map((app: ZephyrApp, i) => {
-                const isActive = app.id === currentAppId;
-                const isSoon = app.status === "soon";
-                const isAlpha = app.status === "alpha";
-                return (
-                  <button
-                    key={app.id}
-                    type="button"
-                    className={`app-card ${isActive ? "is-active" : ""} ${isSoon ? "is-soon" : ""}`}
-                    style={{ "--card-delay": `${i * 40}ms` } as React.CSSProperties}
-                    disabled={isSoon}
-                    title={isSoon ? `${app.name} — Coming soon` : app.name}
-                    onClick={() => {
-                      if (app.url) window.location.href = app.url;
-                      setOpen(false);
-                    }}
-                  >
-                    <span className="app-card-icon ms">{app.icon}</span>
-                    <span className="app-card-name">{app.name}</span>
-                    {isAlpha && <span className="app-card-pill is-alpha-pill">Alpha</span>}
-                    {isSoon && <span className="app-card-pill is-soon-pill">Soon</span>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </>,
-        document.body
-      )}
-    </div>
-  );
-}
-
 /* ---------- Style Pack Card ---------- */
 function StylePackCard({
   packName,
@@ -1655,13 +1567,6 @@ export default function App() {
   const [logoCloudState, setLogoCloudState] = useState<CloudAssetState>(() =>
     defaultCloudAssetState("Using local logo catalog. Add API key to use cloud sync.")
   );
-  const [auditUrl, setAuditUrl] = useState("https://example.com");
-  const [auditScreenshotUrl, setAuditScreenshotUrl] = useState("");
-  const [auditNotes, setAuditNotes] = useState("");
-  const [auditLoading, setAuditLoading] = useState(false);
-  const [auditError, setAuditError] = useState("");
-  const [auditReport, setAuditReport] = useState<UrlAuditReport | null>(null);
-
 
   const [intentText, setIntentText] = useState(() => getDefaultIntent(initial.componentId));
 
@@ -1750,9 +1655,12 @@ export default function App() {
       `Set up Zephyr UI in this ${aiProjectLabels[aiProject]} project.`,
       `Assistant target: ${assistantLabel}`,
       "",
+      "Note: @zephyr/ui-react is in private beta and not yet published to npm.",
+      "Skip the install step for now — import paths will work once the package is published.",
+      "",
       "Steps:",
       `1. Create app: ${aiProjectInitCommand}`,
-      `2. Install Zephyr: ${aiInstallCommand}`,
+      `2. Install Zephyr (coming soon): ${aiInstallCommand}`,
       "3. Import components from `@zephyr/ui-react`.",
       `4. Set accent to "${accentColor}" (base theme is "${stylePack}").`,
       "5. Keep generated code accessible and production-ready."
@@ -2107,15 +2015,6 @@ export default function App() {
         anchor: "team-overview"
       },
       {
-        id: "doc-audit-lite",
-        kind: "doc",
-        label: "Audit Lite",
-        detail: "Audit",
-        tab: "audit",
-        view: "audit",
-        anchor: "audit-overview"
-      },
-      {
         id: "doc-pages-templates",
         kind: "doc",
         label: "Page Templates",
@@ -2193,13 +2092,6 @@ export default function App() {
     }, 2200);
   }
 
-  function openExternal(url: string, label: string): void {
-    if (typeof window !== "undefined") {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-    showToast(`${label} opened in a new tab`);
-  }
-
   function saveCloudApiKey(): void {
     const next = cloudApiKeyDraft.trim();
     setCloudApiKey(next);
@@ -2216,58 +2108,10 @@ export default function App() {
     showToast("Cloud key removed. Using local fallback.");
   }
 
-  async function runAudit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    const url = auditUrl.trim();
-    if (!/^https?:\/\//i.test(url)) {
-      setAuditError("Enter a valid public URL starting with http:// or https://.");
-      setAuditReport(null);
-      return;
-    }
-
-    setAuditLoading(true);
-    setAuditError("");
-    try {
-      if (!cloudClient) {
-        const report = createLocalAuditReport({
-          url,
-          screenshotUrl: auditScreenshotUrl.trim() || undefined,
-          notes: auditNotes.trim() || undefined
-        });
-        setAuditReport(report);
-        showToast("Audit completed in local lite mode");
-        return;
-      }
-
-      const report = await cloudClient.runUrlAudit({
-        url,
-        screenshotUrl: auditScreenshotUrl.trim() || undefined,
-        notes: auditNotes.trim() || undefined
-      });
-      setAuditReport(report);
-      showToast("Audit completed from cloud scanner");
-    } catch (error) {
-      const fallback = createLocalAuditReport({
-        url,
-        screenshotUrl: auditScreenshotUrl.trim() || undefined,
-        notes: auditNotes.trim() || undefined
-      });
-      setAuditReport(fallback);
-      const message = error instanceof Error ? error.message : String(error);
-      setAuditError(`${message}. Showing local lite audit as fallback.`);
-    } finally {
-      setAuditLoading(false);
-    }
-  }
-
   function activateTopTab(tab: TopTab): void {
     setTopTab(tab);
     if (tab === "setup") {
       setView("introduction");
-      return;
-    }
-    if (tab === "audit") {
-      setView("audit");
       return;
     }
     if (tab === "components") {
@@ -2379,34 +2223,6 @@ export default function App() {
     params.set("view", view);
     return `${origin}${path}?${params.toString()}`;
   }, [accentColor, selectedEntry.id, stylePack, view]);
-  const auditFixPrompt = useMemo(() => {
-    if (!auditReport) {
-      return "";
-    }
-    const lines = auditReport.issues
-      .slice(0, 6)
-      .map(
-        (issue, index) =>
-          `${index + 1}. [${issue.severity.toUpperCase()} | ${issue.category}] ${issue.title}: ${issue.recommendation}`
-      );
-    return [
-      `Audit target: ${auditReport.url}`,
-      `Score: ${auditReport.score}/100 (${auditReport.status})`,
-      "",
-      "Apply these fixes in priority order:",
-      ...lines,
-      "",
-      "Constraints:",
-      "- Keep semantics and accessibility first (labels, landmarks, heading hierarchy).",
-      "- Preserve visual consistency with Zephyr components and current accent color.",
-      `- Accent color: ${accentColor}`,
-      "",
-      "Return:",
-      "1) Updated UI code",
-      "2) Short changelog of UX improvements",
-      "3) Any unresolved assumptions"
-    ].join("\n");
-  }, [accentColor, auditReport]);
 
   function setAccentIfValid(value: string): void {
     setAccentDraft(value);
@@ -2459,8 +2275,6 @@ export default function App() {
           >
             <span className="ms">{mobileNavOpen ? "close" : "menu"}</span>
           </button>
-          <AppSwitcher currentAppId="ui" />
-
           <div className="brand-wrap">
             <img src={brandLogoSrc} alt="Zephyr" className="brand-logo" />
           </div>
@@ -2716,24 +2530,6 @@ export default function App() {
               </button>
             </div>
           )}
-
-          {topTab === "audit" && (
-            <div className="nav-group">
-              <p className="group-title">Audit</p>
-              <button
-                type="button"
-                className={`sidebar-link ${view === "audit" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("audit");
-                  setView("audit");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Audit Lite
-              </button>
-            </div>
-          )}
-
           {topTab === "components" && (
             <div className="nav-group">
               <p className="group-title">Components</p>
@@ -3478,9 +3274,7 @@ export default function App() {
                   <h2>Enable Speed Insights in Vercel</h2>
                   <p>On the Vercel dashboard, select your Project followed by the <strong>Speed Insights</strong> tab. Then, select <strong>Enable</strong> from the dialog.</p>
                 </div>
-                <Alert tone="info">
-                  <strong>Note:</strong> Enabling Speed Insights will add new routes (scoped at <code>/_vercel/speed-insights/*</code>) after your next deployment.
-                </Alert>
+                <Alert status="info" title={<><strong>Note:</strong> Enabling Speed Insights will add new routes (scoped at <code>/_vercel/speed-insights/*</code>) after your next deployment.</>} />
               </section>
 
               <section id="add-package" className="doc-section">
@@ -3516,9 +3310,7 @@ export default function App() {
                     <SnippetItem label="Install" code="bun add @vercel/speed-insights" onCopy={() => copyAndFlash("Install", "bun add @vercel/speed-insights")} />
                   )}
                 </div>
-                <Alert tone="info">
-                  <strong>HTML Implementation Note:</strong> When using the HTML implementation, there is no need to install the @vercel/speed-insights package.
-                </Alert>
+                <Alert status="info" title={<><strong>HTML Implementation Note:</strong> When using the HTML implementation, there is no need to install the @vercel/speed-insights package.</>} />
               </section>
 
               <section id="add-component" className="doc-section">
@@ -3566,9 +3358,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 export default MyApp;`}
                       onCopy={() => copyAndFlash("Next.js Pages", "Next.js Pages integration code")} 
                     />
-                    <Alert tone="info">
-                      <strong>For Next.js versions older than 13.5:</strong> Import the SpeedInsights component from <code>@vercel/speed-insights/react</code> and pass it the pathname of the route.
-                    </Alert>
+                    <Alert status="info" title={<><strong>For Next.js versions older than 13.5:</strong> Import the SpeedInsights component from <code>@vercel/speed-insights/react</code> and pass it the pathname of the route.</>} />
                   </div>
                 )}
 
@@ -3599,9 +3389,7 @@ export default function RootLayout({
 }`}
                       onCopy={() => copyAndFlash("Next.js App", "Next.js App Router integration code")} 
                     />
-                    <Alert tone="info">
-                      <strong>For Next.js versions older than 13.5:</strong> Import from <code>@vercel/speed-insights/react</code> and create a dedicated component to avoid opting out from SSR on the layout.
-                    </Alert>
+                    <Alert status="info" title={<><strong>For Next.js versions older than 13.5:</strong> Import from <code>@vercel/speed-insights/react</code> and create a dedicated component to avoid opting out from SSR on the layout.</>} />
                   </div>
                 )}
 
@@ -3715,9 +3503,7 @@ const { title, description } = Astro.props;
 <SpeedInsights />`}
                       onCopy={() => copyAndFlash("Astro", "Astro integration code")} 
                     />
-                    <Alert tone="info">
-                      <strong>Optional:</strong> You can remove sensitive information from the URL by adding a <code>speedInsightsBeforeSend</code> function to the global window object.
-                    </Alert>
+                    <Alert status="info" title={<><strong>Optional:</strong> You can remove sensitive information from the URL by adding a <code>speedInsightsBeforeSend</code> function to the global window object.</>} />
                   </div>
                 )}
 
@@ -3761,9 +3547,7 @@ injectSpeedInsights();`}
                     onCopy={() => copyAndFlash("Deploy", "vercel deploy")} 
                   />
                   <p>Alternatively, you can connect your project's git repository, which will enable Vercel to deploy your latest pushes and merges to main.</p>
-                  <Alert tone="info">
-                    <strong>Note:</strong> If everything is set up correctly, you should be able to find the <code>/_vercel/speed-insights/script.js</code> script inside the body tag of your page.
-                  </Alert>
+                  <Alert status="info" title={<><strong>Note:</strong> If everything is set up correctly, you should be able to find the <code>/_vercel/speed-insights/script.js</code> script inside the body tag of your page.</>} />
                 </div>
               </section>
 
@@ -4306,179 +4090,6 @@ injectSpeedInsights();`}
                 </div>
               </section>
             </>
-          ) : view === "audit" ? (
-            <>
-              <section id="audit-overview" className="doc-section hero">
-                <p className="breadcrumbs">Audit</p>
-                <h1>Zephr-Audit Lite</h1>
-                <p className="lead">
-                  Paste a public URL and run a fast UX + UI heuristic scan.
-                  Uploading a screenshot URL improves visual hierarchy and spacing checks.
-                </p>
-              </section>
-
-              <section id="audit-run" className="doc-section">
-                <div className="section-heading">
-                  <h2>Run audit</h2>
-                  <p>Lite mode uses cloud scanning when available, with automatic local fallback.</p>
-                </div>
-                <form className="audit-form" onSubmit={runAudit}>
-                  <label className="field">
-                    <span>Public page URL</span>
-                    <Input
-                      value={auditUrl}
-                      onChange={(event) => setAuditUrl(event.target.value)}
-                      placeholder="https://your-startup.com/pricing"
-                      required
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Screenshot URL (optional)</span>
-                    <Input
-                      value={auditScreenshotUrl}
-                      onChange={(event) => setAuditScreenshotUrl(event.target.value)}
-                      placeholder="https://cdn.yourapp.com/screen.png"
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Goal context (optional)</span>
-                    <Textarea
-                      rows={3}
-                      value={auditNotes}
-                      onChange={(event) => setAuditNotes(event.target.value)}
-                      placeholder="Example: Improve onboarding conversion for first-time users."
-                    />
-                  </label>
-                  <label className="field">
-                    <span>Cloud API key (optional)</span>
-                    <Input
-                      type="password"
-                      value={cloudApiKeyDraft}
-                      onChange={(event) => setCloudApiKeyDraft(event.target.value)}
-                      placeholder="dev_local_key"
-                    />
-                  </label>
-                  <div className="inline-actions">
-                    <Button type="button" size="sm" variant="secondary" onClick={saveCloudApiKey}>
-                      Save API key
-                    </Button>
-                    <Button type="button" size="sm" variant="secondary" onClick={clearCloudApiKey}>
-                      Use local only
-                    </Button>
-                    <Badge tone={cloudClient ? "success" : "neutral"}>
-                      {cloudClient ? "Cloud scanner active" : "Local fallback mode"}
-                    </Badge>
-                  </div>
-                  <div className="inline-actions">
-                    <Button type="submit" loading={auditLoading}>
-                      Run Audit Lite
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={() => showToast("Audit docs coming soon")}
-                    >
-                      Audit docs
-                    </Button>
-                  </div>
-                  {auditError ? <Alert title={auditError} status="error" /> : null}
-                </form>
-              </section>
-
-              {auditReport ? (
-                <>
-                  <section id="audit-score" className="doc-section">
-                    <div className="section-heading">
-                      <div className="section-heading-row">
-                        <div>
-                          <h2>Audit result</h2>
-                          <p>{auditReport.summary}</p>
-                        </div>
-                        <div className="audit-score-wrap">
-                          <Badge tone={auditReport.status === "pass" ? "success" : auditReport.status === "warn" ? "info" : "danger"}>
-                            {auditReport.status.toUpperCase()}
-                          </Badge>
-                          <span className="audit-score-value">{auditReport.score}/100</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="audit-metadata">
-                      <span><strong>URL:</strong> {auditReport.url}</span>
-                      <span><strong>Source:</strong> {auditReport.source}</span>
-                      <span><strong>Scanned:</strong> {new Date(auditReport.scannedAt).toLocaleString()}</span>
-                      {auditReport.pageTitle ? <span><strong>Page title:</strong> {auditReport.pageTitle}</span> : null}
-                    </div>
-                  </section>
-
-                  <section id="audit-issues" className="doc-section">
-                    <div className="section-heading">
-                      <h2>Issues</h2>
-                      <p>Prioritized findings with concrete fixes.</p>
-                    </div>
-                    <div className="audit-issue-list">
-                      {auditReport.issues.length ? (
-                        auditReport.issues.map((issue) => (
-                          <article key={issue.id} className="audit-issue-card">
-                            <div className="audit-issue-head">
-                              <Badge tone={severityBadgeTone(issue.severity)}>
-                                {issue.severity.toUpperCase()}
-                              </Badge>
-                              <span className="audit-issue-category">{issue.category}</span>
-                            </div>
-                            <h3>{issue.title}</h3>
-                            <p>{issue.summary}</p>
-                            <p className="audit-issue-evidence"><strong>Evidence:</strong> {issue.evidence}</p>
-                            <p className="audit-issue-recommendation"><strong>Fix:</strong> {issue.recommendation}</p>
-                          </article>
-                        ))
-                      ) : (
-                        <Alert title="No issues flagged in this scan." status="success" />
-                      )}
-                    </div>
-                  </section>
-
-                  <section id="audit-recommendations" className="doc-section">
-                    <div className="section-heading">
-                      <h2>Top recommendations</h2>
-                      <p>Action list you can hand directly to your AI IDE assistant.</p>
-                    </div>
-                    <ol className="audit-recommendations">
-                      {auditReport.recommendations.map((item, index) => (
-                        <li key={`${index}-${item}`}>{item}</li>
-                      ))}
-                    </ol>
-                    <div className="snippet-stack" style={{ marginTop: "0.85rem" }}>
-                      <SnippetItem
-                        label="AI remediation prompt"
-                        code={auditFixPrompt}
-                        onCopy={() => copyAndFlash("Audit fix prompt", auditFixPrompt)}
-                      />
-                    </div>
-                  </section>
-
-                  <section id="audit-heatmap" className="doc-section">
-                    <div className="section-heading">
-                      <h2>Predicted attention map</h2>
-                      <p>This is a model-based estimate, not clickstream heatmap telemetry.</p>
-                    </div>
-                    <div className="audit-heatmap-list">
-                      {auditReport.heatmap.map((zone) => (
-                        <div key={zone.id} className="audit-heatmap-row">
-                          <div className="audit-heatmap-meta">
-                            <strong>{zone.label}</strong>
-                            <span>{zone.rationale}</span>
-                          </div>
-                          <div className="audit-heatmap-track" aria-hidden="true">
-                            <span className="audit-heatmap-fill" style={{ width: `${zone.attention}%` }} />
-                          </div>
-                          <span className="audit-heatmap-score">{zone.attention}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                </>
-              ) : null}
-            </>
           ) : view === "api-reference" ? (
             <>
               <div className="component-page-tabs">
@@ -4998,10 +4609,12 @@ injectSpeedInsights();`}
 
                 <div className="snippet-stack">
                   <SnippetItem
+                    beta
                     label="Install"
                     code={installCommand}
                     onCopy={() => copyAndFlash("Install command", installCommand)}
                   />
+                  <p className="beta-notice">@zephyr/ui-react is not yet published to npm — install command coming soon.</p>
                   <SnippetItem
                     label="Import"
                     code={importSnippet}
@@ -5082,16 +4695,6 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#team-overview">Overview</a>
               <a className="toc-link" href="#team-directory">Core team</a>
               <a className="toc-link" href="#team-process">How we ship</a>
-            </>
-          )}
-          {topTab !== "changelog" && view === "audit" && (
-            <>
-              <a className="toc-link" href="#audit-overview">Overview</a>
-              <a className="toc-link" href="#audit-run">Run audit</a>
-              {auditReport ? <a className="toc-link" href="#audit-score">Score</a> : null}
-              {auditReport ? <a className="toc-link" href="#audit-issues">Issues</a> : null}
-              {auditReport ? <a className="toc-link" href="#audit-recommendations">Recommendations</a> : null}
-              {auditReport ? <a className="toc-link" href="#audit-heatmap">Predicted heatmap</a> : null}
             </>
           )}
           {topTab !== "changelog" && view === "templates" && (
