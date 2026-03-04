@@ -1,0 +1,3339 @@
+[
+  {
+    "id": "button",
+    "name": "Button",
+    "category": "atom",
+    "tier": "free",
+    "description": "Primary action trigger with multiple tones and sizes.",
+    "propsSchema": {
+      "variant": {
+        "type": "enum",
+        "values": [
+          "primary",
+          "secondary",
+          "ghost",
+          "danger"
+        ],
+        "description": "Visual treatment of the button.",
+        "required": false,
+        "default": "primary",
+        "deprecated": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "description": "Density and size preset.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Disables interaction and applies disabled styling.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Set descriptive text content.",
+      "Avoid icon-only buttons unless aria-label is provided."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for primary and secondary actions.",
+      "Prefer `variant=secondary` for non-destructive secondary actions."
+    ],
+    "usageExamples": [
+      "import { Button } from '@zephyr/ui-react';\n<Button variant='primary'>Save</Button>"
+    ]
+  },
+  {
+    "id": "input",
+    "name": "Input",
+    "category": "atom",
+    "tier": "free",
+    "description": "Text input field for forms and filters.",
+    "propsSchema": {
+      "type": {
+        "type": "string",
+        "description": "Native input type attribute.",
+        "required": false,
+        "default": "text",
+        "deprecated": false
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "Text value for placeholder.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "value": {
+        "type": "string",
+        "description": "Controlled value of the input.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(event) => void",
+        "description": "Called whenever input value changes.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use with `<label>` or `aria-label`.",
+      "Describe validation states with helper or error text."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Wrap in FormField when label/hint/error text is needed."
+    ],
+    "usageExamples": [
+      "import { Input } from '@zephyr/ui-react';\n<Input placeholder='Email address' />"
+    ]
+  },
+  {
+    "id": "icon-button",
+    "name": "IconButton",
+    "category": "atom",
+    "tier": "free",
+    "description": "Compact icon-only button for toolbars and contextual actions.",
+    "propsSchema": {
+      "icon": {
+        "type": "ReactNode",
+        "description": "Configuration for icon.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "label": {
+        "type": "string",
+        "description": "Text value for label.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "default",
+          "primary",
+          "danger"
+        ],
+        "description": "Available options for tone.",
+        "required": false,
+        "default": "default",
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Always provide a meaningful `label` for screen readers.",
+      "Use danger tone only for destructive actions."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/icons-material"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in dense nav bars, command rows, and table action columns."
+    ],
+    "usageExamples": [
+      "import { IconButton } from '@zephyr/ui-react';\nimport { MaterialIcon } from '@zephyr/icons-material';\n<IconButton icon={<MaterialIcon name='search' />} label='Search' />"
+    ]
+  },
+  {
+    "id": "textarea",
+    "name": "Textarea",
+    "category": "atom",
+    "tier": "free",
+    "description": "Multiline text input for long-form content and notes.",
+    "propsSchema": {
+      "rows": {
+        "type": "number",
+        "description": "Numeric value for rows.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "Text value for placeholder.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "value": {
+        "type": "string",
+        "description": "Text value for value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(event) => void",
+        "description": "Callback fired for on change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pair with an explicit label or `aria-label`.",
+      "Show helper text for character limits when applicable."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for feedback forms, release notes, and message composers."
+    ],
+    "usageExamples": [
+      "import { Textarea } from '@zephyr/ui-react';\n<Textarea rows={5} placeholder='Add details' />"
+    ]
+  },
+  {
+    "id": "select",
+    "name": "Select",
+    "category": "atom",
+    "tier": "free",
+    "description": "Native select control wrapped with Zephyr tokens and spacing.",
+    "propsSchema": {
+      "value": {
+        "type": "string",
+        "description": "Text value for value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(event) => void",
+        "description": "Callback fired for on change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "children": {
+        "type": "option elements",
+        "description": "Nested content rendered inside the component.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use a visible label and descriptive option text.",
+      "Avoid using select for very long lists without search."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in filters, settings, and configuration forms."
+    ],
+    "usageExamples": [
+      "import { Select } from '@zephyr/ui-react';\n<Select><option>Studio</option><option>Editorial</option></Select>"
+    ]
+  },
+  {
+    "id": "checkbox",
+    "name": "Checkbox",
+    "category": "atom",
+    "tier": "free",
+    "description": "Binary form control for multi-select preferences.",
+    "propsSchema": {
+      "checked": {
+        "type": "boolean",
+        "description": "Toggles checked behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(event) => void",
+        "description": "Callback fired for on change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Toggles disabled behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Wrap with label text for accessible interaction.",
+      "Group related checkboxes in a fieldset when possible."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for settings toggles that can be independently selected."
+    ],
+    "usageExamples": [
+      "import { Checkbox } from '@zephyr/ui-react';\n<label><Checkbox /> Enable notifications</label>"
+    ]
+  },
+  {
+    "id": "radio",
+    "name": "Radio",
+    "category": "atom",
+    "tier": "free",
+    "description": "Single-choice selector inside mutually exclusive option groups.",
+    "propsSchema": {
+      "name": {
+        "type": "string",
+        "description": "Text value for name.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "checked": {
+        "type": "boolean",
+        "description": "Toggles checked behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(event) => void",
+        "description": "Callback fired for on change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Share the same `name` value within each radio group.",
+      "Use fieldset and legend for grouped context."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for plan/theme choices where only one option is allowed."
+    ],
+    "usageExamples": [
+      "import { Radio } from '@zephyr/ui-react';\n<label><Radio name='theme' /> Studio</label>"
+    ]
+  },
+  {
+    "id": "switch",
+    "name": "Switch",
+    "category": "atom",
+    "tier": "free",
+    "description": "Accessible toggle switch for immediate on/off states.",
+    "propsSchema": {
+      "checked": {
+        "type": "boolean",
+        "description": "Toggles checked behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(next: boolean) => void",
+        "description": "Callback fired for on change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Toggles disabled behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Renders `role=switch` with keyboard support for Enter and Space.",
+      "Use concise labels describing current behavior."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for feature flags and preference toggles."
+    ],
+    "usageExamples": [
+      "import { Switch } from '@zephyr/ui-react';\n<Switch checked={enabled} onChange={setEnabled} label='Enable beta' />"
+    ]
+  },
+  {
+    "id": "badge",
+    "name": "Badge",
+    "category": "atom",
+    "tier": "free",
+    "description": "Small status label for metadata, state, and tags.",
+    "propsSchema": {
+      "tone": {
+        "type": "enum",
+        "values": [
+          "neutral",
+          "info",
+          "success",
+          "danger"
+        ],
+        "description": "Available options for tone.",
+        "required": false,
+        "default": "neutral",
+        "deprecated": false
+      },
+      "children": {
+        "type": "ReactNode",
+        "description": "Nested content rendered inside the component.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Do not rely only on badge color to communicate meaning.",
+      "Include readable text in every badge."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for item status, release labels, and category chips."
+    ],
+    "usageExamples": [
+      "import { Badge } from '@zephyr/ui-react';\n<Badge tone='success'>Synced</Badge>"
+    ]
+  },
+  {
+    "id": "avatar",
+    "name": "Avatar",
+    "category": "atom",
+    "tier": "free",
+    "description": "User identity image with deterministic text fallback.",
+    "propsSchema": {
+      "name": {
+        "type": "string",
+        "description": "Text value for name.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "src": {
+        "type": "string",
+        "description": "Text value for src.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "size": {
+        "type": "number",
+        "description": "Numeric value for size.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pass a human-readable `name` for the image alt/aria label.",
+      "Keep avatar size large enough for recognition in dense UI."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/avatars"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in nav headers, comments, tables, and collaboration views."
+    ],
+    "usageExamples": [
+      "import { Avatar } from '@zephyr/ui-react';\n<Avatar name='Akhil Krishnan' />"
+    ]
+  },
+  {
+    "id": "logo",
+    "name": "Logo",
+    "category": "atom",
+    "tier": "free",
+    "description": "Brand logo image with initials fallback and tokenized shape.",
+    "propsSchema": {
+      "name": {
+        "type": "string",
+        "description": "Text value for name.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "src": {
+        "type": "string",
+        "description": "Text value for src.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "size": {
+        "type": "number",
+        "description": "Numeric value for size.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Set `name` to provide meaningful logo alt text.",
+      "Use compliance-approved sources when rendering third-party logos."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/logos"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in ecosystem cards, integration lists, and partner sections."
+    ],
+    "usageExamples": [
+      "import { Logo } from '@zephyr/ui-react';\n<Logo name='OpenAI' src={logoDataUri} />"
+    ]
+  },
+  {
+    "id": "form-field",
+    "name": "FormField",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Label, control, hint, and error wrapper for form inputs.",
+    "propsSchema": {
+      "label": {
+        "type": "string",
+        "description": "Text value for label.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "hint": {
+        "type": "string",
+        "description": "Text value for hint.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "error": {
+        "type": "string",
+        "description": "Text value for error.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "htmlFor": {
+        "type": "string",
+        "description": "Text value for html for.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Links label and control using `htmlFor`/`id` pairing.",
+      "Expose validation errors in readable text below the control."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for every labeled form input block in onboarding and settings."
+    ],
+    "usageExamples": [
+      "import { FormField, Input } from '@zephyr/ui-react';\n<FormField label='Email' htmlFor='email'><Input id='email' /></FormField>"
+    ]
+  },
+  {
+    "id": "search-box",
+    "name": "SearchBox",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Input + submit action for query workflows.",
+    "propsSchema": {
+      "value": {
+        "type": "string",
+        "description": "Text value for value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onValueChange": {
+        "type": "(value: string) => void",
+        "description": "Callback fired for on value change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onSearch": {
+        "type": "(query: string) => void",
+        "description": "Callback fired for on search events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Includes form semantics for Enter-to-search keyboard flow."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use near table/list headers to drive filtering."
+    ],
+    "usageExamples": [
+      "import { SearchBox } from '@zephyr/ui-react';\n<SearchBox value={query} onValueChange={setQuery} onSearch={runSearch} />"
+    ]
+  },
+  {
+    "id": "tabs",
+    "name": "Tabs",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Segmented content switcher with accessible tab semantics.",
+    "propsSchema": {
+      "items": {
+        "type": "Array<{ id, label, content }>",
+        "description": "Configuration for items.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "initialTabId": {
+        "type": "string",
+        "description": "Text value for initial tab id.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses `tablist`, `tab`, and `tabpanel` semantics."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for compact section switching in settings and dashboards."
+    ],
+    "usageExamples": [
+      "import { Tabs } from '@zephyr/ui-react';\n<Tabs items={[{ id: 'overview', label: 'Overview', content: <div /> }]} />"
+    ]
+  },
+  {
+    "id": "accordion",
+    "name": "Accordion",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Collapsible content sections for FAQs, settings, and guided documentation.",
+    "propsSchema": {
+      "items": {
+        "type": "Array<{id,title,description?,content?,defaultOpen?}>",
+        "description": "Accordion item list with id/title/content metadata.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "allowMultiple": {
+        "type": "boolean",
+        "description": "Toggles allow multiple behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "defaultOpenIds": {
+        "type": "string[]",
+        "description": "Configuration for default open ids.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "iconPosition": {
+        "type": "enum",
+        "values": [
+          "left",
+          "right"
+        ],
+        "description": "Available options for icon position.",
+        "required": false,
+        "default": "left",
+        "deprecated": false
+      },
+      "emptyState": {
+        "type": "ReactNode",
+        "description": "Custom content displayed when the items array is empty.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses button semantics with `aria-expanded` and `aria-controls`.",
+      "Each open panel is announced via a labeled region."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for FAQ sections and progressive reveal flows.",
+      "Prefer concise titles and short supporting descriptions."
+    ],
+    "usageExamples": [
+      "import { Accordion } from '@zephyr/ui-react';\n<Accordion items={[{ id: 'q1', title: 'What is Zephyr?', description: 'A plug-and-play UI framework.' }]} />"
+    ]
+  },
+  {
+    "id": "alert",
+    "name": "Alert",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Inline feedback banner with status, action link, and dismiss control.",
+    "propsSchema": {
+      "title": {
+        "type": "ReactNode",
+        "description": "Configuration for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "description": {
+        "type": "ReactNode",
+        "description": "Configuration for description.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "status": {
+        "type": "enum",
+        "values": [
+          "error",
+          "warning",
+          "success",
+          "info",
+          "feature"
+        ],
+        "description": "Available options for status.",
+        "required": false,
+        "default": "error",
+        "deprecated": false
+      },
+      "variant": {
+        "type": "enum",
+        "values": [
+          "filled",
+          "light",
+          "stroke"
+        ],
+        "description": "Visual weight for alert surface.",
+        "required": false,
+        "default": "light",
+        "deprecated": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "xs",
+          "sm",
+          "lg"
+        ],
+        "description": "Available options for size.",
+        "required": false,
+        "default": "xs",
+        "deprecated": false
+      },
+      "actionLabel": {
+        "type": "string",
+        "description": "Text value for action label.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "dismissible": {
+        "type": "boolean",
+        "description": "Toggles dismissible behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Rendered with `role=status` for assistive technologies.",
+      "Do not rely only on color to communicate message meaning."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for system feedback and policy notices.",
+      "Use stroke style in dense layouts to reduce visual weight."
+    ],
+    "usageExamples": [
+      "import { Alert } from '@zephyr/ui-react';\n<Alert status='error' variant='filled' title='Something went wrong' actionLabel='Retry' />"
+    ]
+  },
+  {
+    "id": "toast",
+    "name": "Toast",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Transient status surface optimized for notifications and AI action feedback.",
+    "propsSchema": {
+      "open": {
+        "type": "boolean",
+        "description": "Toggles open behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "title": {
+        "type": "ReactNode",
+        "description": "Configuration for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "description": {
+        "type": "ReactNode",
+        "description": "Configuration for description.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "status": {
+        "type": "enum",
+        "values": [
+          "error",
+          "warning",
+          "success",
+          "info",
+          "feature"
+        ],
+        "description": "Available options for status.",
+        "required": false,
+        "default": "error",
+        "deprecated": false
+      },
+      "actionLabel": {
+        "type": "string",
+        "description": "Optional CTA rendered on the right.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onClose": {
+        "type": "() => void",
+        "description": "Callback fired for on close events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "When multiple toasts are shown, keep order predictable and manageable.",
+      "Use concise text so announcements are quickly understood."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for async completion, copy confirmations, and background sync notices."
+    ],
+    "usageExamples": [
+      "import { Toast } from '@zephyr/ui-react';\n<Toast open status='success' title='Prompt copied' onClose={() => {}} />"
+    ]
+  },
+  {
+    "id": "breadcrumbs",
+    "name": "Breadcrumbs",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Hierarchical navigation trail for deep pages.",
+    "propsSchema": {
+      "items": {
+        "type": "Array<{ id, label, href?, onClick? }>",
+        "description": "Configuration for items.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "separator": {
+        "type": "string",
+        "description": "Text value for separator.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Rendered inside a nav landmark with `aria-label='Breadcrumb'."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use on docs and admin pages above the main title."
+    ],
+    "usageExamples": [
+      "import { Breadcrumbs } from '@zephyr/ui-react';\n<Breadcrumbs items={[{ id: 'home', label: 'Home', href: '/' }]} />"
+    ]
+  },
+  {
+    "id": "pagination",
+    "name": "Pagination",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Previous/next navigation with page count context.",
+    "propsSchema": {
+      "page": {
+        "type": "number",
+        "description": "Numeric value for page.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "totalPages": {
+        "type": "number",
+        "description": "Numeric value for total pages.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onPageChange": {
+        "type": "(nextPage: number) => void",
+        "description": "Callback fired for on page change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Buttons expose disabled state for first/last boundaries."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use below tables and result lists."
+    ],
+    "usageExamples": [
+      "import { Pagination } from '@zephyr/ui-react';\n<Pagination page={page} totalPages={10} onPageChange={setPage} />"
+    ]
+  },
+  {
+    "id": "command-bar",
+    "name": "CommandBar",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Inline command launcher with query input and action buttons.",
+    "propsSchema": {
+      "query": {
+        "type": "string",
+        "description": "Text value for query.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onQueryChange": {
+        "type": "(value: string) => void",
+        "description": "Callback fired for on query change events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "actions": {
+        "type": "Array<{ id, label, icon?, onRun }>",
+        "description": "Configuration for actions.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses form semantics for Enter-to-run on primary action."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in command palettes and quick actions headers."
+    ],
+    "usageExamples": [
+      "import { CommandBar } from '@zephyr/ui-react';\n<CommandBar query={query} onQueryChange={setQuery} actions={actions} />"
+    ]
+  },
+  {
+    "id": "input-group",
+    "name": "InputGroup",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Input field with optional leading/trailing adornments.",
+    "propsSchema": {
+      "startAdornment": {
+        "type": "ReactNode",
+        "description": "Configuration for start adornment.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "endAdornment": {
+        "type": "ReactNode",
+        "description": "Configuration for end adornment.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "Text value for placeholder.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pair with labels or aria-label for form accessibility."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for currency, search, and prefixed text fields."
+    ],
+    "usageExamples": [
+      "import { InputGroup } from '@zephyr/ui-react';\n<InputGroup startAdornment='$' placeholder='Budget' />"
+    ]
+  },
+  {
+    "id": "dropdown",
+    "name": "Dropdown",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Compact disclosure menu using native details/summary.",
+    "propsSchema": {
+      "label": {
+        "type": "string",
+        "description": "Text value for label.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "items": {
+        "type": "Array<{ id, label, onSelect }>",
+        "description": "Configuration for items.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "align": {
+        "type": "enum",
+        "values": [
+          "start",
+          "end"
+        ],
+        "description": "Available options for align.",
+        "required": false,
+        "default": "start",
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Menu entries are focusable buttons for keyboard support."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for overflow actions and contextual menus."
+    ],
+    "usageExamples": [
+      "import { Dropdown } from '@zephyr/ui-react';\n<Dropdown label='Actions' items={[{ id: 'edit', label: 'Edit', onSelect: () => {} }]} />"
+    ]
+  },
+  {
+    "id": "navbar",
+    "name": "Navbar",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Top-level navigation with brand, links, and action slot.",
+    "propsSchema": {
+      "brand": {
+        "type": "ReactNode",
+        "description": "Configuration for brand.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "links": {
+        "type": "Array<{ id, label, href }>",
+        "description": "Configuration for links.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "actions": {
+        "type": "ReactNode",
+        "description": "Configuration for actions.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use inside `<nav>` for semantic navigation landmarks."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use as top-level layout shell in admin and SaaS products."
+    ],
+    "usageExamples": [
+      "import { Navbar } from '@zephyr/ui-react';\n<Navbar brand={<strong>Zephyr</strong>} links={[{ id: 'home', label: 'Home', href: '/' }]} />"
+    ]
+  },
+  {
+    "id": "header",
+    "name": "Header",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Section header with title, subtitle, and actions slot.",
+    "propsSchema": {
+      "title": {
+        "type": "string",
+        "description": "Text value for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "subtitle": {
+        "type": "string",
+        "description": "Text value for subtitle.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "actions": {
+        "type": "ReactNode",
+        "description": "Configuration for actions.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Prefer one primary heading per section hierarchy.",
+      "Keep action labels explicit when multiple controls are present."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use above card/table sections to establish context and actions."
+    ],
+    "usageExamples": [
+      "import { Header, Button } from '@zephyr/ui-react';\n<Header title='Workspace' subtitle='Manage your project' actions={<Button>New</Button>} />"
+    ]
+  },
+  {
+    "id": "data-table",
+    "name": "DataTable",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Typed data table with custom rendering per column.",
+    "propsSchema": {
+      "data": {
+        "type": "array",
+        "description": "Configuration for data.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "columns": {
+        "type": "Array<{ id, header, accessor?, render? }>",
+        "description": "Configuration for columns.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "rowKey": {
+        "type": "(row, index) => string",
+        "description": "Configuration for row key.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "emptyState": {
+        "type": "ReactNode",
+        "description": "Configuration for empty state.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use `<th>` headers and keep row actions keyboard accessible."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Pair with SearchBox and FiltersBar for interactive data screens."
+    ],
+    "usageExamples": [
+      "import { DataTable } from '@zephyr/ui-react';\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
+    ]
+  },
+  {
+    "id": "modal-dialog",
+    "name": "ModalDialog",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Confirmation and workflow modal with controlled open state.",
+    "propsSchema": {
+      "open": {
+        "type": "boolean",
+        "description": "Toggles open behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "title": {
+        "type": "string",
+        "description": "Text value for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onCancel": {
+        "type": "() => void",
+        "description": "Callback fired for on cancel events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onConfirm": {
+        "type": "() => void",
+        "description": "Callback fired for on confirm events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "error": {
+        "type": "string",
+        "description": "Text value for error.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses dialog semantics and backdrop click-to-close.",
+      "Ensure focus management in host application if nested flows are used."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for destructive confirmations and short multi-step flows."
+    ],
+    "usageExamples": [
+      "import { ModalDialog } from '@zephyr/ui-react';\n<ModalDialog open={open} title='Delete item' onCancel={close} onConfirm={remove} />"
+    ]
+  },
+  {
+    "id": "sidebar-nav",
+    "name": "SidebarNav",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Sectioned vertical navigation for docs/admin layouts.",
+    "propsSchema": {
+      "sections": {
+        "type": "Array<{ id, title, items: Array<{ id, label, href, active? }> }>",
+        "description": "Configuration for sections.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "emptyState": {
+        "type": "ReactNode",
+        "description": "Configuration for empty state.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use within an aside landmark and ensure clear active indication."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for persistent left navigation in documentation and apps."
+    ],
+    "usageExamples": [
+      "import { SidebarNav } from '@zephyr/ui-react';\n<SidebarNav sections={sections} />"
+    ]
+  },
+  {
+    "id": "filters-bar",
+    "name": "FiltersBar",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Horizontal filter controls row with optional reset action.",
+    "propsSchema": {
+      "items": {
+        "type": "Array<{ id, label, control }>",
+        "description": "Configuration for items.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onReset": {
+        "type": "() => void",
+        "description": "Callback fired for on reset events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Filter controls should expose labels and keyboard interaction."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Pair with DataTable and SearchBox on data screens."
+    ],
+    "usageExamples": [
+      "import { FiltersBar } from '@zephyr/ui-react';\n<FiltersBar items={filters} onReset={resetFilters} />"
+    ]
+  },
+  {
+    "id": "search-results-panel",
+    "name": "SearchResultsPanel",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Query summary with selectable search result list.",
+    "propsSchema": {
+      "query": {
+        "type": "string",
+        "description": "Text value for query.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "results": {
+        "type": "Array<{ id, title, description?, metadata?, onSelect? }>",
+        "description": "Configuration for results.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Each result row is rendered as an interactive button."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in command/search experiences and discovery pages."
+    ],
+    "usageExamples": [
+      "import { SearchResultsPanel } from '@zephyr/ui-react';\n<SearchResultsPanel query={query} results={results} />"
+    ]
+  },
+  {
+    "id": "layout-shell",
+    "name": "LayoutShell",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Page scaffold with top nav, sidebar, content area, and optional right rail.",
+    "propsSchema": {
+      "topNav": {
+        "type": "ReactNode",
+        "description": "Configuration for top nav.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "sidebar": {
+        "type": "ReactNode",
+        "description": "Configuration for sidebar.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "header": {
+        "type": "ReactNode",
+        "description": "Configuration for header.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "rightRail": {
+        "type": "ReactNode",
+        "description": "Configuration for right rail.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "children": {
+        "type": "ReactNode",
+        "description": "Nested content rendered inside the component.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use semantic landmarks (`nav`, `aside`, `main`) for better screen reader navigation."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use as a starting point for docs portals and admin dashboards."
+    ],
+    "usageExamples": [
+      "import { LayoutShell, Navbar } from '@zephyr/ui-react';\n<LayoutShell topNav={<Navbar brand='Zephyr' links={[]} />}>...</LayoutShell>"
+    ]
+  },
+  {
+    "id": "icon-library",
+    "name": "IconLibrary",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Searchable Material icon browser with style variants and copy-on-click behavior.",
+    "propsSchema": {
+      "initialQuery": {
+        "type": "string",
+        "description": "Initial search query for icon discovery.",
+        "required": false,
+        "default": "",
+        "deprecated": false
+      },
+      "initialStyle": {
+        "type": "enum",
+        "values": [
+          "filled",
+          "outlined",
+          "rounded",
+          "sharp"
+        ],
+        "description": "Available options for initial style.",
+        "required": false,
+        "default": "filled",
+        "deprecated": false
+      },
+      "limit": {
+        "type": "number",
+        "description": "Maximum icons rendered per query.",
+        "required": false,
+        "default": 120,
+        "deprecated": false
+      },
+      "onCopy": {
+        "type": "(iconName: string) => void",
+        "description": "Callback fired for on copy events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Keep icon cards keyboard focusable and expose icon names in readable text.",
+      "Use explicit labels for icon-only UI controls after insertion."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/icons-material"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for icon pickers, command palettes, and design handoff tooling.",
+      "Support semantic search terms (e.g., settings, billing, support)."
+    ],
+    "usageExamples": [
+      "import { IconLibrary } from '@zephyr/ui-react';\n<IconLibrary initialQuery='settings' onCopy={(name) => console.log(name)} />"
+    ]
+  },
+  {
+    "id": "avatar-library",
+    "name": "AvatarLibrary",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Searchable in-house avatar style browser with deterministic style previews.",
+    "propsSchema": {
+      "initialQuery": {
+        "type": "string",
+        "description": "Text value for initial query.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "sampleName": {
+        "type": "string",
+        "description": "Display name used to render avatar previews.",
+        "required": false,
+        "default": "Akhil Krishnan",
+        "deprecated": false
+      },
+      "onCopy": {
+        "type": "(styleName: string) => void",
+        "description": "Callback fired for on copy events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Display style names as text labels so previews are understandable without color.",
+      "Ensure copied style ids are announced with toast or status text."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/avatars"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for profile setup flows and collaborative presence pickers.",
+      "Expose style + seed controls for deterministic generation."
+    ],
+    "usageExamples": [
+      "import { AvatarLibrary } from '@zephyr/ui-react';\n<AvatarLibrary initialQuery='retro' onCopy={(style) => console.log(style)} />"
+    ]
+  },
+  {
+    "id": "logo-library",
+    "name": "LogoLibrary",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Searchable first-party brand logo browser with domain copy workflow.",
+    "propsSchema": {
+      "initialQuery": {
+        "type": "string",
+        "description": "Initial brand/domain query.",
+        "required": false,
+        "default": "",
+        "deprecated": false
+      },
+      "onCopy": {
+        "type": "(domainOrName: string) => void",
+        "description": "Callback fired for on copy events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Show brand name and domain text next to each logo tile.",
+      "Do not rely on color alone to distinguish brands."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/logos"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use in integration galleries, partner lists, and asset pickers.",
+      "Allow searching by brand name, domain, and category tags."
+    ],
+    "usageExamples": [
+      "import { LogoLibrary } from '@zephyr/ui-react';\n<LogoLibrary initialQuery='developer' onCopy={(domain) => console.log(domain)} />"
+    ]
+  },
+  {
+    "id": "stack",
+    "name": "Stack",
+    "category": "foundation",
+    "tier": "free",
+    "description": "Flexbox layout primitive for vertical and horizontal stacking with token-based gap.",
+    "propsSchema": {
+      "direction": {
+        "type": "enum",
+        "values": [
+          "row",
+          "column"
+        ],
+        "description": "Available options for direction.",
+        "required": false,
+        "default": "row",
+        "deprecated": false
+      },
+      "gap": {
+        "type": "number",
+        "description": "Numeric value for gap.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "align": {
+        "type": "string",
+        "description": "Text value for align.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "justify": {
+        "type": "string",
+        "description": "Text value for justify.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "wrap": {
+        "type": "boolean",
+        "description": "Toggles wrap behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "fullWidth": {
+        "type": "boolean",
+        "description": "Toggles full width behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "as": {
+        "type": "string",
+        "description": "Text value for as.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pure layout — no semantic role. Use appropriate landmarks on children."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for arranging groups of elements with consistent spacing.",
+      "Prefer Stack over manual flexbox styles."
+    ],
+    "usageExamples": [
+      "import { Stack, Button } from '@zephyr/ui-react';\n<Stack direction='row' gap={3}><Button>Cancel</Button><Button variant='primary'>Save</Button></Stack>"
+    ]
+  },
+  {
+    "id": "grid",
+    "name": "Grid",
+    "category": "foundation",
+    "tier": "free",
+    "description": "CSS Grid layout primitive with token-based columns and gap.",
+    "propsSchema": {
+      "columns": {
+        "type": "number | string",
+        "description": "Configuration for columns.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "gap": {
+        "type": "number",
+        "description": "Numeric value for gap.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "rowGap": {
+        "type": "number",
+        "description": "Numeric value for row gap.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "columnGap": {
+        "type": "number",
+        "description": "Numeric value for column gap.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "align": {
+        "type": "string",
+        "description": "Text value for align.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "justify": {
+        "type": "string",
+        "description": "Text value for justify.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "as": {
+        "type": "string",
+        "description": "Text value for as.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pure layout — no semantic role. Use appropriate landmarks on children."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for card grids, feature sections, and dashboard stat rows.",
+      "Prefer Grid over manual CSS grid styles."
+    ],
+    "usageExamples": [
+      "import { Grid, Box } from '@zephyr/ui-react';\n<Grid columns={3} gap={4}><Box>Card 1</Box><Box>Card 2</Box><Box>Card 3</Box></Grid>"
+    ]
+  },
+  {
+    "id": "box",
+    "name": "Box",
+    "category": "foundation",
+    "tier": "free",
+    "description": "Generic container with token-based padding, margin, radius, and background.",
+    "propsSchema": {
+      "padding": {
+        "type": "number",
+        "description": "Numeric value for padding.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "paddingX": {
+        "type": "number",
+        "description": "Numeric value for padding x.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "paddingY": {
+        "type": "number",
+        "description": "Numeric value for padding y.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "margin": {
+        "type": "number",
+        "description": "Numeric value for margin.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "radius": {
+        "type": "enum",
+        "values": [
+          "none",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "pill"
+        ],
+        "description": "Available options for radius.",
+        "required": false,
+        "default": "none",
+        "deprecated": false
+      },
+      "background": {
+        "type": "string",
+        "description": "Text value for background.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "border": {
+        "type": "boolean",
+        "description": "Toggles border behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "as": {
+        "type": "string",
+        "description": "Text value for as.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Pure layout — no semantic role. Use appropriate landmarks on children."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use as a card container, section wrapper, or styled panel.",
+      "Prefer Box over manual div + inline style."
+    ],
+    "usageExamples": [
+      "import { Box } from '@zephyr/ui-react';\n<Box padding={4} radius='md' border>Content here</Box>"
+    ]
+  },
+  {
+    "id": "spacer",
+    "name": "Spacer",
+    "category": "foundation",
+    "tier": "free",
+    "description": "Invisible spacing element for inserting vertical or horizontal gaps.",
+    "propsSchema": {
+      "size": {
+        "type": "number",
+        "description": "Numeric value for size.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "axis": {
+        "type": "enum",
+        "values": [
+          "vertical",
+          "horizontal"
+        ],
+        "description": "Available options for axis.",
+        "required": false,
+        "default": "vertical",
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Decorative only — hidden from assistive technologies."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use between sections when Stack gap is insufficient.",
+      "Prefer Stack with gap over multiple Spacer elements."
+    ],
+    "usageExamples": [
+      "import { Spacer } from '@zephyr/ui-react';\n<Spacer size={6} />"
+    ]
+  },
+  {
+    "id": "dashboard-page",
+    "name": "DashboardPage",
+    "category": "template",
+    "tier": "pro",
+    "description": "Full dashboard layout with stat cards, data table, and activity feed sidebar.",
+    "propsSchema": {
+      "title": {
+        "type": "string",
+        "description": "Text value for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "subtitle": {
+        "type": "string",
+        "description": "Text value for subtitle.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "stats": {
+        "type": "Array<{ label, value, change?, trend? }>",
+        "description": "Configuration for stats.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "tableData": {
+        "type": "Array<Record<string, unknown>>",
+        "description": "Configuration for table data.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "activity": {
+        "type": "Array<{ user, action, time }>",
+        "description": "Configuration for activity.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onNewItem": {
+        "type": "() => void",
+        "description": "Callback fired for on new item events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use heading hierarchy for stat labels and table headers.",
+      "Ensure stat change indicators include text, not just color."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use as a starting point for admin dashboards and project overview pages.",
+      "Compose with DataTable, Badge, Avatar, Grid, Stack, and Box."
+    ],
+    "usageExamples": [
+      "import { DashboardPage } from '@zephyr/ui-react';\n<DashboardPage title='Analytics' onNewItem={() => {}} />"
+    ]
+  },
+  {
+    "id": "auth-page",
+    "name": "AuthPage",
+    "category": "template",
+    "tier": "pro",
+    "description": "Sign-in / sign-up page with email form, OAuth providers, and mode switching.",
+    "propsSchema": {
+      "brand": {
+        "type": "ReactNode",
+        "description": "Configuration for brand.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "title": {
+        "type": "string",
+        "description": "Text value for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "subtitle": {
+        "type": "string",
+        "description": "Text value for subtitle.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "providers": {
+        "type": "Array<{ id, label, icon? }>",
+        "description": "Configuration for providers.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onSubmit": {
+        "type": "(email: string, password: string) => void | Promise<void>",
+        "description": "Callback fired for on submit events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "mode": {
+        "type": "enum",
+        "values": [
+          "sign-in",
+          "sign-up"
+        ],
+        "description": "Available options for mode.",
+        "required": false,
+        "default": "sign-in",
+        "deprecated": false
+      },
+      "onModeSwitch": {
+        "type": "() => void",
+        "description": "Callback fired for on mode switch events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "footerNote": {
+        "type": "ReactNode",
+        "description": "Configuration for footer note.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use form landmarks and associate labels with inputs.",
+      "Announce validation errors to screen readers."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for login and registration flows.",
+      "Compose with FormField, Input, Button, and Stack."
+    ],
+    "usageExamples": [
+      "import { AuthPage } from '@zephyr/ui-react';\n<AuthPage brand='Zephyr' mode='sign-in' onSubmit={handleAuth} onModeSwitch={toggleMode} />"
+    ]
+  },
+  {
+    "id": "settings-page",
+    "name": "SettingsPage",
+    "category": "template",
+    "tier": "pro",
+    "description": "Application settings page with grouped form sections and save action.",
+    "propsSchema": {
+      "title": {
+        "type": "string",
+        "description": "Text value for title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "sections": {
+        "type": "Array<{ id, title, children }>",
+        "description": "Configuration for sections.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onSave": {
+        "type": "() => void | Promise<void>",
+        "description": "Callback fired for on save events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Toggles loading behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Group related settings in fieldsets with legends.",
+      "Announce save confirmation via status toast."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for account, profile, and application configuration pages.",
+      "Compose with FormField, Input, Switch, Select, and Button."
+    ],
+    "usageExamples": [
+      "import { SettingsPage } from '@zephyr/ui-react';\n<SettingsPage title='Account Settings' onSave={saveSettings} />"
+    ]
+  },
+  {
+    "id": "onboarding-page",
+    "name": "OnboardingPage",
+    "category": "template",
+    "tier": "pro",
+    "description": "Multi-step onboarding wizard with progress indicator and validation.",
+    "propsSchema": {
+      "steps": {
+        "type": "Array<{ id, title, content }>",
+        "description": "Configuration for steps.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onComplete": {
+        "type": "(data: Record<string, unknown>) => void",
+        "description": "Callback fired for on complete events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "brand": {
+        "type": "ReactNode",
+        "description": "Configuration for brand.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Announce step transitions and progress to screen readers.",
+      "Keep step titles concise and descriptive."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for product setup, profile completion, and guided tours.",
+      "Compose with FormField, Input, Button, Stack, and Badge."
+    ],
+    "usageExamples": [
+      "import { OnboardingPage } from '@zephyr/ui-react';\n<OnboardingPage steps={steps} onComplete={handleComplete} />"
+    ]
+  },
+  {
+    "id": "marketing-page",
+    "name": "MarketingPage",
+    "category": "template",
+    "tier": "pro",
+    "description": "Landing page template with hero, feature grid, pricing cards, social proof, and CTA.",
+    "propsSchema": {
+      "brand": {
+        "type": "ReactNode",
+        "description": "Configuration for brand.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "heroTitle": {
+        "type": "string",
+        "description": "Text value for hero title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "heroSubtitle": {
+        "type": "string",
+        "description": "Text value for hero subtitle.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "features": {
+        "type": "Array<{ title, description, icon? }>",
+        "description": "Configuration for features.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "pricingPlans": {
+        "type": "Array<{ name, price, description, features, cta, highlighted? }>",
+        "description": "Configuration for pricing plans.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "logos": {
+        "type": "Array<{ name, src? }>",
+        "description": "Configuration for logos.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "ctaLabel": {
+        "type": "string",
+        "description": "Text value for cta label.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onCtaClick": {
+        "type": "() => void",
+        "description": "Callback fired for on cta click events.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use heading hierarchy for hero and section titles.",
+      "Ensure pricing comparison is accessible via table semantics or structured list."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react",
+      "@zephyr/core"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for product landing pages, marketing sites, and launch pages.",
+      "Compose with Button, Grid, Stack, Box, Badge, and Logo."
+    ],
+    "usageExamples": [
+      "import { MarketingPage } from '@zephyr/ui-react';\n<MarketingPage heroTitle='Build faster' heroSubtitle='Ship beautiful products' ctaLabel='Get Started' onCtaClick={() => {}} />"
+    ]
+  },
+  {
+    "id": "card",
+    "name": "Card",
+    "category": "atom",
+    "tier": "free",
+    "description": "Surface container with configurable shadow, padding, and border. Supports clickable variant and CardHeader/CardFooter sub-components.",
+    "propsSchema": {
+      "shadow": {
+        "type": "enum",
+        "values": [
+          "none",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "description": "Box shadow elevation.",
+        "required": false,
+        "default": "sm",
+        "deprecated": false
+      },
+      "padding": {
+        "type": "enum",
+        "values": [
+          "none",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "description": "Inner padding size.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "variant": {
+        "type": "enum",
+        "values": [
+          "outlined",
+          "filled",
+          "elevated"
+        ],
+        "description": "Border and fill treatment.",
+        "required": false,
+        "default": "outlined",
+        "deprecated": false
+      },
+      "onClick": {
+        "type": "() => void",
+        "description": "Makes the card a clickable button.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "When using onClick, a focusable button element is rendered instead of a div."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use as the primary surface container for dashboard panels, list items, and settings sections.",
+      "Compose with CardHeader and CardFooter for structured content areas."
+    ],
+    "usageExamples": [
+      "import { Card, CardHeader, CardFooter } from '@zephyr/ui-react';\n<Card shadow='md' padding='md'>\n  <CardHeader><h3>Card title</h3></CardHeader>\n  Content here\n  <CardFooter><Button>Save</Button></CardFooter>\n</Card>"
+    ]
+  },
+  {
+    "id": "divider",
+    "name": "Divider",
+    "category": "atom",
+    "tier": "free",
+    "description": "Horizontal or vertical separator rule with optional label. Uses role=separator.",
+    "propsSchema": {
+      "orientation": {
+        "type": "enum",
+        "values": [
+          "horizontal",
+          "vertical"
+        ],
+        "description": "Axis the divider spans.",
+        "required": false,
+        "default": "horizontal",
+        "deprecated": false
+      },
+      "label": {
+        "type": "ReactNode",
+        "description": "Optional center label text.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=separator. Vertical dividers work best inside flex rows."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use between sections, list groups, and sidebar menu items."
+    ],
+    "usageExamples": [
+      "import { Divider } from '@zephyr/ui-react';\n<Divider />\n<Divider label='or' />\n<Divider orientation='vertical' />"
+    ]
+  },
+  {
+    "id": "progress",
+    "name": "Progress",
+    "category": "atom",
+    "tier": "free",
+    "description": "Determinate or indeterminate progress bar with accessible role=progressbar semantics.",
+    "propsSchema": {
+      "value": {
+        "type": "number",
+        "description": "0–100. Omit for indeterminate animation.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "tone": {
+        "type": "enum",
+        "values": [
+          "primary",
+          "success",
+          "danger",
+          "warning"
+        ],
+        "description": "Bar fill color.",
+        "required": false,
+        "default": "primary",
+        "deprecated": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "description": "Track height.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "showValue": {
+        "type": "boolean",
+        "description": "Show percentage text label.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses aria-valuenow/aria-valuemin/aria-valuemax when determinate.",
+      "Indeterminate state uses aria-label without value attributes."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for file uploads, step completion, and onboarding flows.",
+      "Pair with label text above the bar for context."
+    ],
+    "usageExamples": [
+      "import { Progress } from '@zephyr/ui-react';\n<Progress value={65} tone='primary' showValue />\n<Progress label='Uploading' />"
+    ]
+  },
+  {
+    "id": "skeleton",
+    "name": "Skeleton",
+    "category": "atom",
+    "tier": "free",
+    "description": "Shimmer placeholder block shown while content is loading. Supports single blocks and multi-line text patterns.",
+    "propsSchema": {
+      "width": {
+        "type": "string | number",
+        "description": "CSS width or px value.",
+        "required": false,
+        "default": "100%",
+        "deprecated": false
+      },
+      "height": {
+        "type": "string | number",
+        "description": "CSS height or px value.",
+        "required": false,
+        "default": "1.25em",
+        "deprecated": false
+      },
+      "lines": {
+        "type": "number",
+        "description": "Stack multiple text-line skeletons.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "radius": {
+        "type": "enum",
+        "values": [
+          "none",
+          "sm",
+          "md",
+          "lg",
+          "full"
+        ],
+        "description": "Border radius preset.",
+        "required": false,
+        "default": "sm",
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses aria-busy=true. Wrap loading areas in a live region for screen reader announcements."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use inside Card or list items as loading placeholders.",
+      "Use lines={3} for paragraph text placeholders."
+    ],
+    "usageExamples": [
+      "import { Skeleton } from '@zephyr/ui-react';\n<Skeleton height={20} width='60%' />\n<Skeleton lines={3} />\n<Skeleton width={48} height={48} radius='full' />"
+    ]
+  },
+  {
+    "id": "slider",
+    "name": "Slider",
+    "category": "atom",
+    "tier": "free",
+    "description": "Draggable range input with keyboard navigation, value bubble, and min/max labels.",
+    "propsSchema": {
+      "value": {
+        "type": "number",
+        "description": "Controlled value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "min": {
+        "type": "number",
+        "description": "Minimum value.",
+        "required": false,
+        "default": 0,
+        "deprecated": false
+      },
+      "max": {
+        "type": "number",
+        "description": "Maximum value.",
+        "required": false,
+        "default": 100,
+        "deprecated": false
+      },
+      "step": {
+        "type": "number",
+        "description": "Step increment.",
+        "required": false,
+        "default": 1,
+        "deprecated": false
+      },
+      "showValue": {
+        "type": "boolean",
+        "description": "Show value bubble above thumb.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(value: number) => void",
+        "description": "Called on value change.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=slider with aria-valuenow/min/max.",
+      "Full keyboard support: arrows, Home, End."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for volume, opacity, price range, and settings controls."
+    ],
+    "usageExamples": [
+      "import { Slider } from '@zephyr/ui-react';\n<Slider value={volume} min={0} max={100} onChange={setVolume} showValue />"
+    ]
+  },
+  {
+    "id": "tooltip",
+    "name": "Tooltip",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Floating label shown on hover or focus. Supports four placement sides and configurable delay.",
+    "propsSchema": {
+      "content": {
+        "type": "ReactNode",
+        "description": "Tooltip bubble content.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "side": {
+        "type": "enum",
+        "values": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "description": "Preferred placement side.",
+        "required": false,
+        "default": "top",
+        "deprecated": false
+      },
+      "delayMs": {
+        "type": "number",
+        "description": "Hover delay before showing (ms).",
+        "required": false,
+        "default": 400,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses aria-describedby to link the tooltip to its trigger.",
+      "Tooltip is hidden from screen readers when not visible."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Wrap any interactive element to add a descriptive label.",
+      "Prefer short text (< 10 words) in tooltip content."
+    ],
+    "usageExamples": [
+      "import { Tooltip } from '@zephyr/ui-react';\n<Tooltip content='Save your changes' side='top'>\n  <Button variant='ghost'>Save</Button>\n</Tooltip>"
+    ]
+  },
+  {
+    "id": "popover",
+    "name": "Popover",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Click-triggered floating panel for menus, pickers, and inline forms. Supported controlled and uncontrolled modes.",
+    "propsSchema": {
+      "trigger": {
+        "type": "ReactNode",
+        "description": "The element that opens the popover.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "side": {
+        "type": "enum",
+        "values": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "description": "Preferred side.",
+        "required": false,
+        "default": "bottom",
+        "deprecated": false
+      },
+      "align": {
+        "type": "enum",
+        "values": [
+          "start",
+          "center",
+          "end"
+        ],
+        "description": "Cross-axis alignment.",
+        "required": false,
+        "default": "start",
+        "deprecated": false
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Controlled open state.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onOpenChange": {
+        "type": "(open: boolean) => void",
+        "description": "Called when open state changes.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=dialog. Close on Escape and outside click."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for date pickers, color pickers, filter panels, and inline form flows."
+    ],
+    "usageExamples": [
+      "import { Popover, Button } from '@zephyr/ui-react';\n<Popover trigger={<Button variant='ghost'>Options</Button>}>\n  <p>Popover content here</p>\n</Popover>"
+    ]
+  },
+  {
+    "id": "combo-box",
+    "name": "ComboBox",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Searchable select with keyboard navigation, async loading state, and optional custom value entry.",
+    "propsSchema": {
+      "options": {
+        "type": "ComboBoxOption[]",
+        "description": "Array of { value, label, disabled?, description? } items.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "value": {
+        "type": "string",
+        "description": "Controlled selected value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(value: string) => void",
+        "description": "Called on selection change.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Shows loading state for async options.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "allowCustomValue": {
+        "type": "boolean",
+        "description": "Allow typing values not in the list.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=combobox with aria-expanded, aria-controls, and aria-activedescendant.",
+      "Full keyboard support: arrows, Enter, Escape."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use instead of Select when the options list is long or searchable.",
+      "For async search, update options and set loading=true while fetching."
+    ],
+    "usageExamples": [
+      "import { ComboBox } from '@zephyr/ui-react';\n<ComboBox\n  options={[{value:'react',label:'React'},{value:'vue',label:'Vue'}]}\n  value={framework}\n  onChange={setFramework}\n  placeholder='Select framework'\n/>"
+    ]
+  },
+  {
+    "id": "number-input",
+    "name": "NumberInput",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Numeric input with ± stepper buttons, min/max clamping, and optional locale formatting.",
+    "propsSchema": {
+      "value": {
+        "type": "number",
+        "description": "Controlled value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "min": {
+        "type": "number",
+        "description": "Minimum allowed value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "max": {
+        "type": "number",
+        "description": "Maximum allowed value.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "step": {
+        "type": "number",
+        "description": "Increment/decrement step.",
+        "required": false,
+        "default": 1,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(value: number) => void",
+        "description": "Called on value change.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Decrease/increase buttons have aria-label. Arrow key shortcuts work on the input."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for quantity fields, page sizes, and numeric config inputs."
+    ],
+    "usageExamples": [
+      "import { NumberInput } from '@zephyr/ui-react';\n<NumberInput value={qty} min={1} max={99} onChange={setQty} />"
+    ]
+  },
+  {
+    "id": "tag-input",
+    "name": "TagInput",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Multi-value chip input. Enter or comma adds a tag; Backspace removes the last. Supports controlled mode and custom validation.",
+    "propsSchema": {
+      "value": {
+        "type": "string[]",
+        "description": "Controlled tags array.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(tags: string[]) => void",
+        "description": "Called when tags change.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "maxTags": {
+        "type": "number",
+        "description": "Maximum number of tags allowed.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "validate": {
+        "type": "(tag: string) => boolean",
+        "description": "Return false to reject a tag.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Each tag has an aria-label remove button.",
+      "Focus moves into the input area naturally with keyboard."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for email recipients, label/category assignment, and filter chip inputs."
+    ],
+    "usageExamples": [
+      "import { TagInput } from '@zephyr/ui-react';\n<TagInput value={tags} onChange={setTags} placeholder='Add label…' maxTags={10} />"
+    ]
+  },
+  {
+    "id": "sheet",
+    "name": "Sheet",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Slide-in drawer from left, right, or bottom. Portal-rendered with overlay, ESC close, and body scroll lock.",
+    "propsSchema": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the sheet is visible.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "onClose": {
+        "type": "() => void",
+        "description": "Called when the sheet should close.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "side": {
+        "type": "enum",
+        "values": [
+          "left",
+          "right",
+          "bottom"
+        ],
+        "description": "Edge the sheet slides in from.",
+        "required": false,
+        "default": "right",
+        "deprecated": false
+      },
+      "title": {
+        "type": "string",
+        "description": "Optional header title.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "size": {
+        "type": "string | number",
+        "description": "Width (left/right) or height (bottom) of the panel.",
+        "required": false,
+        "default": "380px",
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=dialog aria-modal=true. ESC key closes.",
+      "Body scroll is locked while the sheet is open."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for detail panels, cart sidebars, notification trays, and mobile nav drawers."
+    ],
+    "usageExamples": [
+      "import { Sheet } from '@zephyr/ui-react';\n<Sheet open={open} onClose={() => setOpen(false)} title='Details' side='right'>\n  <p>Sheet content</p>\n</Sheet>"
+    ]
+  },
+  {
+    "id": "alert-dialog",
+    "name": "AlertDialog",
+    "category": "organism",
+    "tier": "pro",
+    "description": "Confirm/cancel modal with primary or danger action tone. Focus-managed with ESC close and body scroll lock.",
+    "propsSchema": {
+      "open": {
+        "type": "boolean",
+        "description": "Visibility state.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "onClose": {
+        "type": "() => void",
+        "description": "Called on cancel or outside click.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "title": {
+        "type": "string",
+        "description": "Dialog title.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "description": {
+        "type": "ReactNode",
+        "description": "Descriptive body content.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "confirmLabel": {
+        "type": "string",
+        "description": "Primary action button label.",
+        "required": false,
+        "default": "Confirm",
+        "deprecated": false
+      },
+      "confirmTone": {
+        "type": "enum",
+        "values": [
+          "primary",
+          "danger"
+        ],
+        "description": "Action tone.",
+        "required": false,
+        "default": "primary",
+        "deprecated": false
+      },
+      "onConfirm": {
+        "type": "() => void",
+        "description": "Called when confirm is clicked.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Uses role=alertdialog aria-modal=true.",
+      "aria-labelledby and aria-describedby are wired to title and description."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "Studio",
+      "Editorial",
+      "NeoBrutal",
+      "SoftTech",
+      "Enterprise",
+      "Clarity"
+    ],
+    "aiHints": [
+      "Use for destructive actions like delete, revoke, or archive.",
+      "Set confirmTone='danger' for irreversible actions."
+    ],
+    "usageExamples": [
+      "import { AlertDialog } from '@zephyr/ui-react';\n<AlertDialog\n  open={showConfirm}\n  onClose={() => setShowConfirm(false)}\n  title='Delete project?'\n  description='This cannot be undone.'\n  confirmLabel='Delete'\n  confirmTone='danger'\n  onConfirm={handleDelete}\n/>"
+    ]
+  }
+]

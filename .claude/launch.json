@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs-playground",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["pnpm", "--filter", "@zephyr/docs-playground", "dev", "--host", "127.0.0.1", "--port", "4172"],
+      "port": 4172
+    },
+    {
+      "name": "cloud-api",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["pnpm", "--filter", "@zephyr/cloud-api", "dev"],
+      "port": 8787
+    },
+    {
+      "name": "storybook",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["pnpm", "run", "storybook"],
+      "port": 6006
+    }
+  ]
+}

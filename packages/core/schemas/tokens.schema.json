@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zephyr.design/schemas/tokens.schema.json",
+  "title": "Zephyr Design Tokens",
+  "type": "object",
+  "required": [
+    "color",
+    "type",
+    "space",
+    "radius",
+    "shadow",
+    "motion",
+    "breakpoints"
+  ],
+  "properties": {
+    "color": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "type": {
+      "type": "object",
+      "required": ["family", "size", "weight", "lineHeight", "letterSpacing"],
+      "properties": {
+        "family": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "size": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "weight": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "lineHeight": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "letterSpacing": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "space": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "radius": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "shadow": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "motion": {
+      "type": "object",
+      "required": ["duration", "easing"],
+      "properties": {
+        "duration": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "easing": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "breakpoints": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

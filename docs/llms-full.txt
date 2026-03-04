@@ -1,0 +1,70 @@
+# Zephyr AI Playbook
+
+Zephyr is an AI-native design system platform composed of:
+
+1. Styling core (`@zephyr/core`) with design tokens and style pack resolution.
+2. React component package (`@zephyr/ui-react`) from atoms to organisms.
+3. AI registry (`@zephyr/ai-registry`) with machine-readable component metadata.
+4. MCP server (`@zephyr/mcp-server`) exposing tool calls for discovery/integration.
+5. Cloud APIs for logos, avatars, snippet generation, and compliance workflows.
+
+## Integration Steps
+
+1. Install packages:
+
+```bash
+pnpm add @zephyr/core @zephyr/ui-react
+```
+
+2. Create or load `zephyr.config.ts`:
+
+```ts
+import { defineConfig } from "@zephyr/core";
+
+export default defineConfig({
+  stylePack: "Studio",
+  prefix: "z"
+});
+```
+
+3. Include Zephyr CSS variable output from `generateCssVariables` / runtime config helpers in `@zephyr/core`.
+
+4. Use registry metadata to pick components by semantics, not by visual assumptions.
+
+## MCP Tooling Contract
+
+Use the following tools from `@zephyr/mcp-server`:
+
+- `search_components({ query })`
+- `get_component_spec({ id })`
+- `get_install_steps({ id })`
+- `get_usage_examples({ id })`
+- `get_theme_variants({ id })`
+
+## Cloud API Contract
+
+Most `/v1/*` endpoints require bearer auth:
+
+`Authorization: Bearer <api_key>`
+
+Public endpoint (no bearer required):
+- `POST /v1/licenses/validate`
+
+For local development with Zephyr Cloud API app, default key is:
+
+`dev_local_key`
+
+Primary cloud endpoints:
+- `GET /v1/components`
+- `GET /v1/themes`
+- `GET /v1/icons` (query: `q`, `limit`, `style`)
+- `GET /v1/avatars/styles` (query: `q`, `limit`)
+- `GET /v1/logos` (query: `q`, `limit`)
+- `GET /v1/logos/:domain`
+- `POST /v1/avatars`
+- `POST /v1/snippets`
+- `POST /v1/compliance/takedown`
+
+## UX Consistency Rule
+
+Maintain component API compatibility across all style packs. Variation should come from token/style pack changes, not ad hoc component prop divergence.

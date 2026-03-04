@@ -1,0 +1,103 @@
+# Zephyr UI — AI Integration Reference
+
+## What is Zephyr?
+
+Zephyr is an AI-native design system for React. It provides:
+- **@zephyr/ui-react** — fully-styled, theme-aware components (atoms, molecules, organisms, templates)
+- **@zephyr/core** — CSS variable generation and theme token resolution
+- **@zephyr/mcp-server** — Model Context Protocol server for component discovery and code generation
+
+## Quick Install
+
+```
+pnpm add @zephyr/core @zephyr/ui-react
+```
+
+## Component Registry (40+ components in 4 tiers)
+
+### Atoms (free)
+Button, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Avatar, Logo, IconButton
+
+### Molecules (free/pro)
+FormField, SearchBox, InputGroup, Tabs, Accordion, Breadcrumbs, Pagination, Dropdown, CommandBar, Toast, Alert, FiltersBar
+
+### Organisms (pro)
+DataTable, SearchResultsPanel, Navbar, Header, SidebarNav, LayoutShell
+
+### Page Templates (pro)
+DashboardPage, AuthPage, SettingsPage, OnboardingPage
+
+## MCP Tools Available
+
+All tools are exposed via `@zephyr/mcp-server`. Invoke as MCP tool calls:
+
+| Tool | Description |
+|---|---|
+| `search_components` | Search by name, id, or intent |
+| `get_component_spec` | Get full props schema, a11y notes, aiHints |
+| `get_install_steps` | Return install + import instructions |
+| `get_usage_examples` | Return ready-to-paste usage snippets |
+| `get_theme_variants` | Return style pack support list |
+| `generate_component` | Generate snippet + AI prompt for a component |
+| `scaffold_page` | Generate a full page composing multiple components |
+| `apply_theme` | Generate zephyr.config.ts for a given style pack |
+
+## Base Theme
+
+Zephyr docs currently use one production base theme (`Clarity`) with global accent customization.
+
+## Style Packs (library-level support)
+
+| Pack | Description |
+|---|---|
+| Studio | Balanced product UI (default) |
+| Editorial | Calm reading-first UI |
+| NeoBrutal | Bold high-contrast UI |
+| SoftTech | Clean modern SaaS UI |
+| Enterprise | Structured professional UI |
+| Clarity | Neutral minimal UI with vivid status accents |
+
+## Theme Setup
+
+```ts
+// zephyr.config.ts
+import type { ZephyrConfig } from "@zephyr/core";
+
+const config: ZephyrConfig = {
+  stylePack: "Studio",
+  tokens: {
+    color: {
+      primary: "#335cff",
+      accent: "#335cff"
+    }
+  }
+};
+
+export default config;
+```
+
+## Usage Rule
+
+**Always import from `@zephyr/ui-react` only. Do not substitute components from other libraries.**
+
+```tsx
+import { Button, FormField, Input, DashboardPage } from "@zephyr/ui-react";
+```
+
+## Cloud APIs (optional)
+
+Base URL: `https://api.zephyr.design`
+Authentication: `Authorization: Bearer <ZEPHYR_API_KEY>`
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /v1/components` | List registry components |
+| `GET /v1/themes` | List style packs |
+| `POST /v1/licenses/validate` | Validate Pro license key (public) |
+| `GET /v1/icons?q=&limit=&style=` | Search icon catalog |
+| `GET /v1/avatars/styles?q=&limit=` | Search avatar styles |
+| `GET /v1/logos?q=&limit=` | Search logo catalog |
+| `GET /v1/logos/:domain` | Fetch logo by domain |
+| `POST /v1/avatars` | Generate avatar |
+| `POST /v1/snippets` | Generate code snippets |
+| `POST /v1/compliance/takedown` | Submit takedown request |

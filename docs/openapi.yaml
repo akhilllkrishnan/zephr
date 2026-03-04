@@ -1,0 +1,183 @@
+openapi: 3.1.0
+info:
+  title: Zephyr Cloud API
+  version: 0.1.0
+  description: Open-core cloud APIs for logos, avatars, snippets, and component metadata.
+servers:
+  - url: http://localhost:8787
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+paths:
+  /health:
+    get:
+      summary: Service health
+      security: []
+      responses:
+        "200":
+          description: Health response
+  /v1/components:
+    get:
+      summary: List available components
+      responses:
+        "200":
+          description: Component list
+  /v1/themes:
+    get:
+      summary: List supported style packs
+      responses:
+        "200":
+          description: Theme list
+  /v1/licenses/validate:
+    post:
+      summary: Validate Zephyr Pro license key
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [licenseKey]
+              properties:
+                licenseKey:
+                  type: string
+                  example: zephyr-pro-demo-2026
+      responses:
+        "200":
+          description: License validation payload
+        "429":
+          description: Too many validation attempts
+  /v1/icons:
+    get:
+      summary: Search icon catalog
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: style
+          schema:
+            type: string
+            enum: [filled, outlined, rounded, sharp]
+      responses:
+        "200":
+          description: Icon search payload
+  /v1/avatars/styles:
+    get:
+      summary: Search avatar style catalog
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Avatar style search payload
+  /v1/logos:
+    get:
+      summary: Search logo catalog
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Logo catalog search payload
+  /v1/logos/{domain}:
+    get:
+      summary: Resolve logo by domain
+      parameters:
+        - in: path
+          name: domain
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Logo payload
+        "451":
+          description: Domain blocked by compliance policy
+  /v1/avatars:
+    post:
+      summary: Generate avatar payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                seed:
+                  type: string
+                size:
+                  type: integer
+      responses:
+        "200":
+          description: Avatar payload
+  /v1/snippets:
+    post:
+      summary: Create component usage snippet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [componentId]
+              properties:
+                componentId:
+                  type: string
+                variant:
+                  type: string
+                prompt:
+                  type: string
+      responses:
+        "200":
+          description: Snippet payload
+  /v1/compliance/takedown:
+    post:
+      summary: Block logo domain via compliance workflow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [domain, reason]
+              properties:
+                domain:
+                  type: string
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Takedown accepted

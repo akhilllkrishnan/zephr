@@ -1,0 +1,37 @@
+{
+  "theme": "Clarity",
+  "source": {
+    "fileKey": "D9yUlJobUapUkvwvPpPIf5",
+    "nodeId": "166254:22166"
+  },
+  "referenceVariables": {
+    "text/strong-950": "#171717",
+    "text/sub-600": "#5c5c5c",
+    "bg/white-0": "#ffffff",
+    "bg/weak-50": "#f7f7f7",
+    "state/information/base": "#335cff",
+    "state/verified/base": "#47c2ff",
+    "state/feature/base": "#7d52f4",
+    "state/away/base": "#f6b51e",
+    "state/warning/base": "#fa7319",
+    "state/success/base": "#1fc16b",
+    "green/800": "#1a7544",
+    "stroke/white-0": "#ffffff"
+  },
+  "zephyrTokenMapping": {
+    "color.background": "#f7f7f7",
+    "color.surface": "#ffffff",
+    "color.text": "#171717",
+    "color.muted": "#5c5c5c",
+    "color.primary": "#335cff",
+    "color.accent": "#fa7319",
+    "color.success": "#1fc16b",
+    "color.verified": "#47c2ff",
+    "color.feature": "#7d52f4",
+    "color.away": "#f6b51e",
+    "radius.sm": "0.375rem",
+    "radius.md": "0.75rem",
+    "radius.lg": "1.25rem",
+    "radius.xl": "2rem"
+  }
+}

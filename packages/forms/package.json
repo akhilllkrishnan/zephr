@@ -1,0 +1,37 @@
+{
+    "name": "@zephyr/forms",
+    "version": "0.1.0",
+    "description": "Form validation helpers for Zephyr — integrates react-hook-form and zod with FormField",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "test": "vitest run",
+        "lint": "tsc -p tsconfig.json --noEmit"
+    },
+    "dependencies": {
+        "@hookform/resolvers": "^3.9.0",
+        "@zephyr/ui-react": "workspace:*",
+        "react-hook-form": "^7.51.0",
+        "zod": "^3.23.0"
+    },
+    "peerDependencies": {
+        "react": "^18.2.0 || ^19.0.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.0",
+        "typescript": "^5.4.0",
+        "vitest": "^2.1.9"
+    }
+}

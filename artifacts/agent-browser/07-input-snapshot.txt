@@ -1,0 +1,122 @@
+- document:
+  - banner:
+    - img "Zephyr"
+    - textbox "Search docs and components" [ref=e1]:
+      - /placeholder: Search docs and components...
+    - text: ⌘K
+    - button "Unlock Pro" [ref=e2]
+    - button "Get help" [ref=e3]
+    - button "Copy page" [ref=e4]
+    - button "Dev portal" [ref=e5]
+    - button "Switch to dark mode" [ref=e6]: ☾
+    - navigation "Top tabs" [ref=e7]:
+      - button "Setup" [ref=e8]
+      - button "Components" [ref=e9]
+      - button "Pages" [ref=e10]
+      - button "Change Log" [ref=e11]
+  - complementary:
+    - paragraph: Components
+    - tablist "Component documentation mode":
+      - tab "Guides" [ref=e12] [selected]
+      - tab "API Reference" [ref=e13]
+    - button "Atoms ›" [ref=e14] [expanded]
+    - button "Button" [ref=e15]
+    - button "Input" [ref=e16]
+    - button "IconButton" [ref=e17]
+    - button "Textarea" [ref=e18]
+    - button "Select" [ref=e19]
+    - button "Checkbox" [ref=e20]
+    - button "Radio" [ref=e21]
+    - button "Switch" [ref=e22]
+    - button "Badge" [ref=e23]
+    - button "Avatar" [ref=e24]
+    - button "Logo" [ref=e25]
+    - button "Molecules ›" [ref=e26] [expanded]
+    - button "FormField" [ref=e27]
+    - button "SearchBox PRO" [ref=e28]
+    - button "Tabs" [ref=e29]
+    - button "Accordion PRO" [ref=e30]
+    - button "Alert" [ref=e31]
+    - button "Toast" [ref=e32]
+    - button "Breadcrumbs PRO" [ref=e33]
+    - button "Pagination PRO" [ref=e34]
+    - button "CommandBar PRO" [ref=e35]
+    - button "InputGroup PRO" [ref=e36]
+    - button "Dropdown" [ref=e37]
+    - button "Organisms ›" [ref=e38] [expanded]
+    - button "Navbar PRO" [ref=e39]
+    - button "Header PRO" [ref=e40]
+    - button "DataTable PRO" [ref=e41]
+    - button "ModalDialog PRO" [ref=e42]
+    - button "SidebarNav PRO" [ref=e43]
+    - button "FiltersBar PRO" [ref=e44]
+    - button "SearchResultsPanel PRO" [ref=e45]
+    - button "LayoutShell PRO" [ref=e46]
+    - button "IconLibrary PRO" [ref=e47]
+    - button "AvatarLibrary PRO" [ref=e48]
+    - button "LogoLibrary PRO" [ref=e49]
+  - main:
+    - paragraph: Getting Started / Components
+    - paragraph: atom • input
+    - heading "Input" [ref=e50] [level=1]
+    - paragraph: Text input field for forms and filters.
+    - button "Copy AI Prompt" [ref=e51]
+    - button "Copy Install" [ref=e52]
+    - heading "Live preview" [ref=e53] [level=2]
+    - paragraph: Interactive browser-style canvas with selectable states. What you set here carries across pages.
+    - text: "Base: Clarity #121212 Accent color"
+    - radiogroup "Accent presets":
+      - 'radio "Set accent #121212" [checked]'
+      - 'radio "Set accent #47c2ff"'
+      - 'radio "Set accent #7d52f4"'
+      - 'radio "Set accent #f6b51e"'
+      - 'radio "Set accent #fa7319"'
+      - 'radio "Set accent #1fc16b"'
+      - 'radio "Set accent #111827"'
+    - textbox "Accent color picker" [ref=e54]: "#121212"
+    - textbox "Accent color hex" [ref=e55]:
+      - /placeholder: "#121212"
+      - text: "#121212"
+    - text: Input state
+    - combobox "Input state" [ref=e56]:
+      - option "Default" [ref=e57] [selected]
+      - option "Filled" [ref=e58]
+      - option "Error" [ref=e59]
+      - option "Disabled" [ref=e60]
+    - text: zephyr.local/components/input
+    - paragraph: Form input block
+    - text: Work email *
+    - textbox "Work email *" [ref=e61]:
+      - /placeholder: Type your email
+    - text: We only use this for product updates.
+    - heading "AI Block Reference" [ref=e62] [level=2]
+    - paragraph: Paste this prompt into your vibe coding platform — the component inserts with your current accent and token settings.
+    - text: Intent
+    - textbox "Intent" [ref=e63]: Build a clean production-ready UI block with responsive behavior and clear hierarchy. Wrap in FormField when label/hint/error text is needed.
+    - text: Insertion prompt
+    - textbox "Insertion prompt" [ref=e64]: "Use Zephyr UI framework only. Do not replace components with external UI libraries. Theme: Clarity Accent color: #121212 Component block: Input (input) Install command: pnpm add @zephyr/core @zephyr/ui-react Zephyr config: export default { stylePack: \"Clarity\", tokens: { color: { primary: \"#121212\", accent: \"#121212\", primaryContrast: \"#ffffff\" } } }; Reference snippet: import { Input } from '@zephyr/ui-react'; <Input placeholder='Email address' /> Block intent: Build a clean production-ready UI block with responsive behavior and clear hierarchy. Wrap in FormField when label/hint/error text is needed. Key props: - type: string (optional), default=text - placeholder: string (optional) - value: string (optional) - onChange: (event) => void (optional) A11y notes: - Use with `<label>` or `aria-label`. - Describe validation states with helper or error text. AI hints: - Wrap in FormField when label/hint/error text is needed. Keep accessibility notes and ship final React code that can be pasted directly. If assets are needed, use Authorization: Bearer <ZEPHYR_API_KEY>."
+    - button "Copy AI Prompt" [ref=e65] [nth=1]
+    - button "Copy API Key Placeholder" [ref=e66]
+    - heading "Install and use" [ref=e67] [level=2]
+    - paragraph: Plug-and-play snippets for fast integration in any AI coding workflow.
+    - text: Install Private Beta
+    - button "Copy" [ref=e68]
+    - text: pnpm add @zephyr/core @zephyr/ui-react
+    - paragraph: Zephyr is in private beta — not yet published to npm.
+    - text: Import
+    - button "Copy" [ref=e69] [nth=1]
+    - text: "import { Input } from \"@zephyr/ui-react\"; Usage"
+    - button "Copy" [ref=e70] [nth=2]
+    - text: "import { Input } from '@zephyr/ui-react'; <Input placeholder='Email address' /> zephyr.config.ts"
+    - button "Copy" [ref=e71] [nth=3]
+    - text: "export default { stylePack: \"Clarity\", tokens: { color: { primary: \"#121212\", accent: \"#121212\", primaryContrast: \"#ffffff\" } } };"
+  - complementary:
+    - text: On this page
+    - link "Overview" [ref=e72]:
+      - /url: "#overview"
+    - link "Live preview" [ref=e73]:
+      - /url: "#preview"
+    - link "AI reference" [ref=e74]:
+      - /url: "#ai-reference"
+    - link "Install and use" [ref=e75]:
+      - /url: "#integration"

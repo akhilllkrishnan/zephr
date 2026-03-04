@@ -1,0 +1,17 @@
+{
+  "name": "@zephyr/logos",
+  "version": "0.1.0",
+  "description": "Zephyr logo provider abstraction and fallback helpers",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

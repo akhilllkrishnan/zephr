@@ -1,0 +1,20 @@
+{
+  "id": "search-box",
+  "name": "SearchBox",
+  "category": "molecule",
+  "propsSchema": {
+    "value": "string",
+    "onValueChange": "(value: string) => void",
+    "onSearch": "(query: string) => void"
+  },
+  "a11yNotes": [
+    "Use form semantics so Enter triggers search.",
+    "Ensure the input has a visible label or aria-label."
+  ],
+  "dependencies": ["@zephyr/ui-react"],
+  "stylePackSupport": ["Studio", "Editorial", "NeoBrutal", "SoftTech", "Enterprise", "Clarity"],
+  "aiHints": [
+    "Place above results lists and data tables.",
+    "Pair with FiltersBar for faceted search."
+  ]
+}
