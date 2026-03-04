@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "corepack enable && corepack pnpm install --frozen-lockfile",
-  "buildCommand": "corepack pnpm --filter @zephyr/docs-playground build && rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/",
+  "buildCommand": "corepack pnpm --filter @zephyr/docs-playground build && if [ -d apps/docs-playground/dist ]; then rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/; fi",
   "outputDirectory": "dist",
   "rewrites": [
     {
