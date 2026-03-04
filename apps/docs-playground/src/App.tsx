@@ -53,7 +53,6 @@ import {
   type RegistryEntry
 } from "@zephyr/ai-registry";
 import registryData from "@zephyr/ai-registry/registry/components.json";
-import { LiveCodeEditor } from "./LiveCodeEditor";
 import { ZephyrCloudClient } from "@zephyr/cloud-sdk";
 import type { UrlAuditReport, UrlAuditSeverity } from "@zephyr/cloud-sdk";
 import type { AvatarStyleDefinition } from "@zephyr/avatars";
@@ -66,6 +65,15 @@ import zephyrLogoLight from "../../../logo/zephyr-light.png";
 const THEME_STYLE_ID = "zephyr-docs-playground-theme";
 const registry = registryData as unknown as RegistryEntry[];
 const DEFAULT_STYLE_PACK: StylePackName = "Clarity";
+
+const ZEPHYR_APPS = [
+  { id: "ui",    name: "UI",    icon: "widgets",       tagline: "Component library",  status: "active" as const, url: null },
+  { id: "audit", name: "Audit", icon: "manage_search", tagline: "UX scanner",         status: "alpha"  as const, url: "http://localhost:4175" },
+  { id: "proto", name: "Proto", icon: "bolt",          tagline: "AI page builder",    status: "soon"   as const, url: null },
+  { id: "copy",  name: "Copy",  icon: "edit_note",     tagline: "Microcopy AI",       status: "soon"   as const, url: null },
+  { id: "brand", name: "Brand", icon: "palette",       tagline: "Brand token gen",    status: "soon"   as const, url: null },
+  { id: "flow",  name: "Flow",  icon: "account_tree",  tagline: "Journey mapper",     status: "soon"   as const, url: null },
+] as const;
 
 const STYLE_PACK_META: Record<StylePackName, { label: string; description: string; free: boolean }> = {
   Studio: { label: "Studio", description: "Neutral gray base with warm orange accents. The reliable all-rounder.", free: true },
@@ -83,10 +91,11 @@ type WorkspaceView =
   "mission" |
   "team" |
   "audit" |
+  "component-gallery" |
   "components" |
   "api-reference" |
   "templates";
-type TopTab = "setup" | "audit" | "components" | "pages" | "changelog";
+type TopTab = "setup" | "components" | "pages" | "changelog";
 
 interface SearchResultItem {
   id: string;
@@ -375,15 +384,16 @@ function fromSearchParams(): {
   );
   const viewParam = params.get("view");
   const view: WorkspaceView =
-    viewParam === "components" ? "components" :
-      viewParam === "api-reference" ? "api-reference" :
-        viewParam === "getting-started" ? "getting-started" :
-          viewParam === "foundations" ? "foundations" :
-            viewParam === "mission" ? "mission" :
-              viewParam === "team" ? "team" :
-                viewParam === "audit" ? "audit" :
-                viewParam === "templates" ? "templates" :
-                  "introduction";
+    viewParam === "component-gallery" ? "component-gallery" :
+      viewParam === "components" ? "components" :
+        viewParam === "api-reference" ? "api-reference" :
+          viewParam === "getting-started" ? "getting-started" :
+            viewParam === "foundations" ? "foundations" :
+              viewParam === "mission" ? "mission" :
+                viewParam === "team" ? "team" :
+                  viewParam === "audit" ? "audit" :
+                  viewParam === "templates" ? "templates" :
+                    "component-gallery";
 
   return {
     stylePack,
@@ -418,9 +428,9 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
-  if (view === "audit") return "audit";
+  if (view === "audit") return "setup";
   if (view === "templates") return "pages";
-  if (view === "components" || view === "api-reference") return "components";
+  if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
 }
 
@@ -1406,6 +1416,78 @@ function LicenseKeyModal({
   );
 }
 
+/* ---------- App Switcher ---------- */
+type ZephyrApp = typeof ZEPHYR_APPS[number];
+
+function AppSwitcher({ currentAppId = "ui" }: { currentAppId?: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  return (
+    <div className="app-switcher" ref={ref}>
+      <button
+        type="button"
+        className={`app-switcher-trigger ${open ? "is-open" : ""}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Switch Zephyr app"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+      >
+        <span className="app-switcher-dots" aria-hidden="true">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <span key={i} className="app-switcher-dot" />
+          ))}
+        </span>
+      </button>
+
+      {open && (
+        <>
+          <div className="app-switcher-backdrop" onClick={() => setOpen(false)} />
+          <div className="app-switcher-panel" role="dialog" aria-label="Zephyr apps">
+            <p className="app-switcher-heading">Zephyr Suite</p>
+            <div className="app-switcher-grid">
+              {ZEPHYR_APPS.map((app: ZephyrApp, i) => {
+                const isActive = app.id === currentAppId;
+                const isSoon = app.status === "soon";
+                return (
+                  <button
+                    key={app.id}
+                    type="button"
+                    className={`app-card ${isActive ? "is-active" : ""} ${isSoon ? "is-soon" : ""}`}
+                    style={{ "--card-delay": `${i * 40}ms` } as React.CSSProperties}
+                    disabled={isSoon}
+                    title={isSoon ? "Coming soon" : app.name}
+                    onClick={() => {
+                      if (app.url) window.location.href = app.url;
+                      setOpen(false);
+                    }}
+                  >
+                    <span className="app-card-icon ms">{app.icon}</span>
+                    <span className="app-card-name">{app.name}</span>
+                    <span className="app-card-tagline">{app.tagline}</span>
+                    {isActive && <span className="app-card-badge is-active-badge">Active</span>}
+                    {app.status === "alpha" && !isActive && <span className="app-card-badge is-alpha-badge">Alpha</span>}
+                    {isSoon && <span className="app-card-badge is-soon-badge">Soon</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Style Pack Card ---------- */
 function StylePackCard({
   packName,
@@ -2171,12 +2253,8 @@ export default function App() {
       setView("introduction");
       return;
     }
-    if (tab === "audit") {
-      setView("audit");
-      return;
-    }
     if (tab === "components") {
-      setView("components");
+      setView("component-gallery");
       return;
     }
     if (tab === "pages") {
@@ -2364,6 +2442,8 @@ export default function App() {
           >
             <span className="ms">{mobileNavOpen ? "close" : "menu"}</span>
           </button>
+          <AppSwitcher currentAppId="ui" />
+
           <div className="brand-wrap">
             <img src={brandLogoSrc} alt="Zephyr" className="brand-logo" />
           </div>
@@ -2427,7 +2507,7 @@ export default function App() {
           <div className="top-actions">
             <Button
               size="sm"
-              variant={userTier === "pro" ? "secondary" : "primary"}
+              variant={userTier === "pro" ? "secondary" : "ghost"}
               onClick={() => setShowUpgradeModal(true)}
             >
               {userTier === "pro" ? "✓ Pro" : "Unlock Pro"}
@@ -2450,8 +2530,21 @@ export default function App() {
                 Feature Request
               </Button>
             </span>
-            {/* Theme + Accent: always-visible preview controls */}
-            <div className="header-preview-controls btn-hide-mobile">
+            <button
+              type="button"
+              className="top-icon-action"
+              onClick={() => setDarkMode((d) => !d)}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              <span className="ms">{darkMode ? "light_mode" : "dark_mode"}</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="top-config-strip">
+          <div className="top-config-inner">
+            <div className="header-preview-controls">
               <select
                 className="header-theme-select"
                 value={stylePack}
@@ -2508,24 +2601,14 @@ export default function App() {
                 )}
               </div>
             </div>
-            <button
-              type="button"
-              className="top-icon-action"
-              onClick={() => setDarkMode((d) => !d)}
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              <span className="ms">{darkMode ? "light_mode" : "dark_mode"}</span>
-            </button>
           </div>
         </div>
 
         <nav className="top-tabs" aria-label="Top tabs">
           <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
-          <button type="button" className={`tab ${topTab === "audit" ? "active" : ""}`} onClick={() => activateTopTab("audit")}>Audit</button>
           <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
           <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
-          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Change Log</button>
+          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Changelog</button>
         </nav>
       </header>
 
@@ -2590,23 +2673,6 @@ export default function App() {
                 }}
               >
                 Team
-              </button>
-            </div>
-          )}
-
-          {topTab === "audit" && (
-            <div className="nav-group">
-              <p className="group-title">Audit</p>
-              <button
-                type="button"
-                className={`sidebar-link ${view === "audit" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("audit");
-                  setView("audit");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Audit Lite
               </button>
             </div>
           )}
@@ -3064,7 +3130,7 @@ export default function App() {
                     setTopTab("setup");
                     setView("getting-started");
                   }}>Get started</Button>
-                  <Button variant="secondary" onClick={() => selectComponent("button")}>Browse components</Button>
+                  <Button variant="secondary" onClick={() => { setTopTab("components"); setView("component-gallery"); setMobileNavOpen(false); }}>Browse components</Button>
                 </div>
               </div>
 
@@ -4042,28 +4108,10 @@ export default function App() {
 
               <section id="api-examples" className="doc-section">
                 <div className="section-heading">
-                  <h2>Usage snippets</h2>
-                  <p>Copy-paste snippets for direct use in IDEs and AI assistants.</p>
+                  <h2>Registry schema</h2>
+                  <p>Raw <code>propsSchema</code> from the component registry — the canonical contract for AI tools.</p>
                 </div>
                 <div className="snippet-stack">
-                  <SnippetItem
-                    beta
-                    label="Install"
-                    code={installCommand}
-                    onCopy={() => copyAndFlash("Install command", installCommand)}
-                  />
-                  <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
-                  <SnippetItem label="Import" code={importSnippet} onCopy={() => copyAndFlash("Import snippet", importSnippet)} />
-                  <SnippetItem label="Usage" code={usageSnippet} onCopy={() => copyAndFlash("Usage snippet", usageSnippet)} />
-                  <div style={{ marginTop: "var(--z-space-4, 1rem)" }}>
-                    <p className="snippet-item-label" style={{ marginBottom: "var(--z-space-2, 0.5rem)", fontSize: 13, fontWeight: 600, color: "var(--z-color-muted, #737373)" }}>Live editor</p>
-                    <LiveCodeEditor
-                      key={selectedEntry.id}
-                      code={usageSnippet}
-                      scope={{ selectedEntry }}
-                      previewHeight={160}
-                    />
-                  </div>
                   <SnippetItem
                     label="propsSchema JSON"
                     code={JSON.stringify(selectedEntry.propsSchema, null, 2)}
@@ -4105,12 +4153,38 @@ export default function App() {
                 <p className="lead">
                   Drop-in page templates built entirely from Zephyr components. Each template is a React component you can copy, customise, and ship.
                 </p>
-                {userTier !== "pro" && (
-                  <div style={{ marginTop: "1rem" }}>
-                    <Button onClick={() => setShowUpgradeModal(true)}>Unlock Pro to use templates</Button>
-                  </div>
-                )}
               </section>
+
+              {userTier !== "pro" && (
+                <section className="doc-section">
+                  <div className="section-heading">
+                    <h2>Templates</h2>
+                    <p>Unlock Pro to access all 5 page templates — production-ready layouts you can copy and ship.</p>
+                  </div>
+                  <div className="template-teaser-grid">
+                    {[
+                      { name: "Dashboard", desc: "Stats, table, activity sidebar" },
+                      { name: "Auth", desc: "Sign-in / sign-up with OAuth slots" },
+                      { name: "Settings", desc: "Profile, billing, team management" },
+                      { name: "Onboarding", desc: "Multi-step setup wizard" },
+                      { name: "Marketing", desc: "Hero, pricing, testimonials" }
+                    ].map((t) => (
+                      <div key={t.name} className="template-teaser-card">
+                        <div className="template-teaser-preview">
+                          <span className="ms template-teaser-lock">lock</span>
+                        </div>
+                        <div className="template-teaser-info">
+                          <span className="template-teaser-name">{t.name}</span>
+                          <span className="template-teaser-desc">{t.desc}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <Button onClick={() => setShowUpgradeModal(true)}>Unlock Pro — access all templates</Button>
+                  </div>
+                </section>
+              )}
 
               <section id="template-dashboard" className="doc-section">
                 <div className="section-heading">
@@ -4240,6 +4314,50 @@ export default function App() {
                 </div>
               </section>
             </>
+          ) : view === "component-gallery" ? (
+            <>
+              <section id="gallery-overview" className="doc-section hero">
+                <p className="breadcrumbs">Components</p>
+                <h1>Component Library</h1>
+                <p className="lead">
+                  {registry.filter(e => e.tier === "free").length} free components and {registry.filter(e => e.tier === "pro").length} Pro components across atoms, molecules, and organisms.
+                </p>
+              </section>
+              {(["atom", "molecule", "organism"] as const).map((cat) => {
+                const entries = registry.filter((e) => e.category === cat);
+                if (!entries.length) return null;
+                const catLabel = cat === "atom" ? "Atoms" : cat === "molecule" ? "Molecules" : "Organisms";
+                return (
+                  <section key={cat} className="doc-section">
+                    <div className="section-heading">
+                      <h2>{catLabel}</h2>
+                      <p>{cat === "atom" ? "Foundation-level primitives — buttons, inputs, badges, and more." : cat === "molecule" ? "Composed patterns built from atoms." : "Full sections and complex UI patterns."}</p>
+                    </div>
+                    <div className="gallery-grid">
+                      {entries.map((entry) => (
+                        <button
+                          key={entry.id}
+                          type="button"
+                          className={`gallery-card ${entry.tier === "pro" && userTier === "free" ? "is-locked" : ""}`}
+                          onClick={() => selectComponent(entry.id)}
+                        >
+                          <div className="gallery-card-preview">
+                            <span className="ms gallery-card-icon">widgets</span>
+                          </div>
+                          <div className="gallery-card-info">
+                            <span className="gallery-card-name">{entry.name}</span>
+                            {entry.tier === "pro" && (
+                              <span className={`pill-badge ${userTier === "pro" ? "" : "is-locked"}`}>PRO</span>
+                            )}
+                          </div>
+                          <p className="gallery-card-desc">{entry.description}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </>
           ) : (
             <>
               <div className="component-page-tabs">
@@ -4247,8 +4365,7 @@ export default function App() {
                 <button type="button" className="component-page-tab" onClick={() => setView("api-reference")}>API Reference</button>
               </div>
               <section id="overview" className="doc-section hero">
-                <p className="breadcrumbs">Getting Started / Components</p>
-                <p className="eyebrow">{selectedEntry.category} • {selectedEntry.id}</p>
+                <p className="breadcrumbs">Components / {selectedEntry.category.charAt(0).toUpperCase() + selectedEntry.category.slice(1)} / {selectedEntry.name}</p>
                 <h1>{selectedEntry.name}</h1>
                 <p className="lead">{selectedEntry.description}</p>
                 <div className="hero-actions">
@@ -4418,7 +4535,7 @@ export default function App() {
                 </div>
 
                 <label className="field">
-                  <span>Intent</span>
+                  <span>Your goal</span>
                   <Textarea
                     value={intentText}
                     onChange={(event) => setIntentText(event.target.value)}
@@ -4427,7 +4544,7 @@ export default function App() {
                 </label>
 
                 <label className="field">
-                  <span>Insertion prompt</span>
+                  <span>Prompt to paste into Claude / Cursor</span>
                   <Textarea value={blockPrompt} readOnly rows={12} />
                 </label>
 
@@ -4440,7 +4557,7 @@ export default function App() {
                     variant="secondary"
                     onClick={() => copyAndFlash("API key placeholder", "ZEPHYR_API_KEY=replace_me")}
                   >
-                    Copy API Key Placeholder
+                    Copy key token
                   </Button>
                 </div>
               </section>
@@ -4453,12 +4570,10 @@ export default function App() {
 
                 <div className="snippet-stack">
                   <SnippetItem
-                    beta
                     label="Install"
                     code={installCommand}
                     onCopy={() => copyAndFlash("Install command", installCommand)}
                   />
-                  <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
                   <SnippetItem
                     label="Import"
                     code={importSnippet}
@@ -4469,21 +4584,13 @@ export default function App() {
                     code={usageSnippet}
                     onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
                   />
-                  <div style={{ marginTop: "var(--z-space-4, 1rem)" }}>
-                    <p className="snippet-item-label" style={{ marginBottom: "var(--z-space-2, 0.5rem)", fontSize: 13, fontWeight: 600, color: "var(--z-color-muted, #737373)" }}>Live editor</p>
-                    <LiveCodeEditor
-                      key={selectedEntry.id}
-                      code={usageSnippet}
-                      scope={{ selectedEntry }}
-                      previewHeight={160}
-                    />
-                  </div>
                   <SnippetItem
                     label="zephyr.config.ts"
                     code={configSnippet}
                     onCopy={() => copyAndFlash("Config snippet", configSnippet)}
                   />
                 </div>
+                <p className="beta-notice" style={{ marginTop: "0.75rem" }}>Zephyr is in private beta — not yet published to npm.</p>
               </section>
             </>
           )}
@@ -4557,6 +4664,11 @@ export default function App() {
               <a className="toc-link" href="#template-marketing">Marketing</a>
             </>
           )}
+          {topTab !== "changelog" && view === "component-gallery" && (
+            <>
+              <a className="toc-link" href="#gallery-overview">Overview</a>
+            </>
+          )}
           {topTab !== "changelog" && view === "components" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
@@ -4570,7 +4682,7 @@ export default function App() {
             <>
               <a className="toc-link" href="#api-overview">Overview</a>
               <a className="toc-link" href="#api-props">Props</a>
-              <a className="toc-link" href="#api-examples">Examples</a>
+              <a className="toc-link" href="#api-examples">Registry schema</a>
               <a className="toc-link" href="#api-contract">Contract notes</a>
             </>
           )}
