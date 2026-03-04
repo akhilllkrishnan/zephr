@@ -87,6 +87,7 @@ const STYLE_PACK_META: Record<StylePackName, { label: string; description: strin
 type WorkspaceView =
   "introduction" |
   "getting-started" |
+  "speed-insights" |
   "foundations" |
   "mission" |
   "team" |
@@ -389,6 +390,7 @@ function fromSearchParams(): {
         viewParam === "api-reference" ? "api-reference" :
           viewParam === "getting-started" ? "getting-started" :
             viewParam === "foundations" ? "foundations" :
+            viewParam === "speed-insights" ? "speed-insights" :
               viewParam === "mission" ? "mission" :
                 viewParam === "team" ? "team" :
                   viewParam === "audit" ? "audit" :
@@ -1627,6 +1629,8 @@ export default function App() {
   const [setupTab, setSetupTab] = useState<"npm" | "pnpm" | "cli" | "ai">("npm");
   const [aiTool, setAiTool] = useState<AiToolKey>("codex");
   const [aiProject, setAiProject] = useState<AiProjectPreset>("vite-react");
+  const [framework, setFramework] = useState<"nextjs" | "nextjs-app" | "react" | "remix" | "sveltekit" | "vue" | "nuxt" | "astro" | "html" | "other">("nextjs");
+  const [packageManager, setPackageManager] = useState<"npm" | "pnpm" | "yarn" | "bun">("pnpm");
   const [aiPackageManager, setAiPackageManager] = useState<AiPackageManager>("npm");
 
   const [cloudApiKey, setCloudApiKey] = useState<string>(() =>
@@ -2064,6 +2068,15 @@ export default function App() {
         detail: "Setup",
         tab: "setup",
         view: "getting-started",
+        anchor: "overview"
+      },
+      {
+        id: "doc-setup-speed-insights",
+        kind: "doc",
+        label: "Speed Insights",
+        detail: "Setup",
+        tab: "setup",
+        view: "speed-insights",
         anchor: "overview"
       },
       {
@@ -2646,6 +2659,17 @@ export default function App() {
                 }}
               >
                 Get Started
+              </button>
+              <button
+                type="button"
+                className={`sidebar-link ${view === "speed-insights" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("setup");
+                  setView("speed-insights");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Speed Insights
               </button>
               <button
                 type="button"
@@ -3383,6 +3407,382 @@ export default function App() {
                 <div className="start-cta">
                   <Button onClick={() => selectComponent("button")}>Browse components</Button>
                 </div>
+          ) : view === "speed-insights" ? (
+            <>
+              <section id="overview" className="doc-section hero">
+                <p className="breadcrumbs">Get Started</p>
+                <h1>Speed Insights</h1>
+                <p className="lead">
+                  This guide will help you get started with using Vercel Speed Insights on your project, showing you how to enable it, add the package to your project, deploy your app to Vercel, and view your data in the dashboard.
+                </p>
+              </section>
+
+              <section id="prerequisites" className="doc-section">
+                <div className="section-heading">
+                  <h2>Prerequisites</h2>
+                </div>
+                <ul className="doc-list">
+                  <li>A Vercel account. If you don't have one, you can <a href="https://vercel.com/signup" target="_blank" rel="noopener noreferrer">sign up for free</a>.</li>
+                  <li>A Vercel project. If you don't have one, you can <a href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">create a new project</a>.</li>
+                  <li>The Vercel CLI installed.</li>
+                </ul>
+              </section>
+
+              <section id="install-cli" className="doc-section">
+                <div className="section-heading">
+                  <h3>Install the Vercel CLI</h3>
+                  <p>Choose your package manager:</p>
+                </div>
+                <div className="setup-inner-tabs" role="tablist">
+                  {(["pnpm", "yarn", "npm", "bun"] as const).map((pm) => (
+                    <button
+                      key={pm}
+                      type="button"
+                      role="tab"
+                      aria-selected={packageManager === pm}
+                      className={`setup-inner-tab ${packageManager === pm ? "is-active" : ""}`}
+                      onClick={() => setPackageManager(pm)}
+                    >
+                      {pm}
+                    </button>
+                  ))}
+                </div>
+                <div className="snippet-stack">
+                  {packageManager === "pnpm" && (
+                    <SnippetItem label="Install CLI" code="pnpm i vercel" onCopy={() => copyAndFlash("Install CLI", "pnpm i vercel")} />
+                  )}
+                  {packageManager === "yarn" && (
+                    <SnippetItem label="Install CLI" code="yarn add vercel" onCopy={() => copyAndFlash("Install CLI", "yarn add vercel")} />
+                  )}
+                  {packageManager === "npm" && (
+                    <SnippetItem label="Install CLI" code="npm i vercel" onCopy={() => copyAndFlash("Install CLI", "npm i vercel")} />
+                  )}
+                  {packageManager === "bun" && (
+                    <SnippetItem label="Install CLI" code="bun add vercel" onCopy={() => copyAndFlash("Install CLI", "bun add vercel")} />
+                  )}
+                </div>
+              </section>
+
+              <section id="enable-insights" className="doc-section">
+                <div className="section-heading">
+                  <h2>Enable Speed Insights in Vercel</h2>
+                  <p>On the Vercel dashboard, select your Project followed by the <strong>Speed Insights</strong> tab. Then, select <strong>Enable</strong> from the dialog.</p>
+                </div>
+                <Alert tone="info">
+                  <strong>Note:</strong> Enabling Speed Insights will add new routes (scoped at <code>/_vercel/speed-insights/*</code>) after your next deployment.
+                </Alert>
+              </section>
+
+              <section id="add-package" className="doc-section">
+                <div className="section-heading">
+                  <h2>Add @vercel/speed-insights to your project</h2>
+                  <p>Using the package manager of your choice, add the @vercel/speed-insights package to your project:</p>
+                </div>
+                <div className="setup-inner-tabs" role="tablist">
+                  {(["pnpm", "yarn", "npm", "bun"] as const).map((pm) => (
+                    <button
+                      key={pm}
+                      type="button"
+                      role="tab"
+                      aria-selected={packageManager === pm}
+                      className={`setup-inner-tab ${packageManager === pm ? "is-active" : ""}`}
+                      onClick={() => setPackageManager(pm)}
+                    >
+                      {pm}
+                    </button>
+                  ))}
+                </div>
+                <div className="snippet-stack">
+                  {packageManager === "pnpm" && (
+                    <SnippetItem label="Install" code="pnpm i @vercel/speed-insights" onCopy={() => copyAndFlash("Install", "pnpm i @vercel/speed-insights")} />
+                  )}
+                  {packageManager === "yarn" && (
+                    <SnippetItem label="Install" code="yarn add @vercel/speed-insights" onCopy={() => copyAndFlash("Install", "yarn add @vercel/speed-insights")} />
+                  )}
+                  {packageManager === "npm" && (
+                    <SnippetItem label="Install" code="npm i @vercel/speed-insights" onCopy={() => copyAndFlash("Install", "npm i @vercel/speed-insights")} />
+                  )}
+                  {packageManager === "bun" && (
+                    <SnippetItem label="Install" code="bun add @vercel/speed-insights" onCopy={() => copyAndFlash("Install", "bun add @vercel/speed-insights")} />
+                  )}
+                </div>
+                <Alert tone="info">
+                  <strong>HTML Implementation Note:</strong> When using the HTML implementation, there is no need to install the @vercel/speed-insights package.
+                </Alert>
+              </section>
+
+              <section id="add-component" className="doc-section">
+                <div className="section-heading">
+                  <h2>Add the SpeedInsights component</h2>
+                  <p>Choose your framework to see specific implementation instructions:</p>
+                </div>
+                <div className="setup-inner-tabs" role="tablist">
+                  {(["nextjs", "nextjs-app", "react", "remix", "sveltekit", "vue", "nuxt", "astro", "html", "other"] as const).map((fw) => (
+                    <button
+                      key={fw}
+                      type="button"
+                      role="tab"
+                      aria-selected={framework === fw}
+                      className={`setup-inner-tab ${framework === fw ? "is-active" : ""}`}
+                      onClick={() => setFramework(fw)}
+                    >
+                      {fw === "nextjs" ? "Next.js Pages" : 
+                       fw === "nextjs-app" ? "Next.js App" : 
+                       fw === "react" ? "React" :
+                       fw === "other" ? "Other" :
+                       fw.charAt(0).toUpperCase() + fw.slice(1)}
+                    </button>
+                  ))}
+                </div>
+
+                {framework === "nextjs" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering more seamless integration with Next.js.</p>
+                    <p>Add the following component to your main app file:</p>
+                    <SnippetItem 
+                      label="pages/_app.tsx" 
+                      code={`import type { AppProps } from 'next/app';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <SpeedInsights />
+    </>
+  );
+}
+
+export default MyApp;`}
+                      onCopy={() => copyAndFlash("Next.js Pages", "Next.js Pages integration code")} 
+                    />
+                    <Alert tone="info">
+                      <strong>For Next.js versions older than 13.5:</strong> Import the SpeedInsights component from <code>@vercel/speed-insights/react</code> and pass it the pathname of the route.
+                    </Alert>
+                  </div>
+                )}
+
+                {framework === "nextjs-app" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering more seamless integration with Next.js.</p>
+                    <p>Add the following component to the root layout:</p>
+                    <SnippetItem 
+                      label="app/layout.tsx" 
+                      code={`import { SpeedInsights } from "@vercel/speed-insights/next";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <title>Next.js</title>
+      </head>
+      <body>
+        {children}
+        <SpeedInsights />
+      </body>
+    </html>
+  );
+}`}
+                      onCopy={() => copyAndFlash("Next.js App", "Next.js App Router integration code")} 
+                    />
+                    <Alert tone="info">
+                      <strong>For Next.js versions older than 13.5:</strong> Import from <code>@vercel/speed-insights/react</code> and create a dedicated component to avoid opting out from SSR on the layout.
+                    </Alert>
+                  </div>
+                )}
+
+                {framework === "react" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering more seamless integration with React.</p>
+                    <p>Add the following component to the main app file:</p>
+                    <SnippetItem 
+                      label="App.tsx" 
+                      code={`import { SpeedInsights } from '@vercel/speed-insights/react';
+
+export default function App() {
+  return (
+    <div>
+      {/* Your app content */}
+      <SpeedInsights />
+    </div>
+  );
+}`}
+                      onCopy={() => copyAndFlash("React", "React integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "remix" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering a seamless integration with Remix.</p>
+                    <p>Add the following component to your root file:</p>
+                    <SnippetItem 
+                      label="app/root.tsx" 
+                      code={`import { SpeedInsights } from '@vercel/speed-insights/remix';
+
+export default function App() {
+  return (
+    <html lang="en">
+      <body>
+        {/* Your app content */}
+        <SpeedInsights />
+      </body>
+    </html>
+  );
+}`}
+                      onCopy={() => copyAndFlash("Remix", "Remix integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "sveltekit" && (
+                  <div className="snippet-stack">
+                    <p>Add the following to your root file:</p>
+                    <SnippetItem 
+                      label="src/routes/+layout.ts" 
+                      code={`import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
+
+injectSpeedInsights();`}
+                      onCopy={() => copyAndFlash("SvelteKit", "SvelteKit integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "vue" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering more seamless integration with Vue.</p>
+                    <p>Add the following component to the main app template:</p>
+                    <SnippetItem 
+                      label="src/App.vue" 
+                      code={`<script setup lang="ts">
+import { SpeedInsights } from '@vercel/speed-insights/vue';
+</script>
+
+<template>
+  <SpeedInsights />
+</template>`}
+                      onCopy={() => copyAndFlash("Vue", "Vue integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "nuxt" && (
+                  <div className="snippet-stack">
+                    <p>The SpeedInsights component is a wrapper around the tracking script, offering more seamless integration with Nuxt.</p>
+                    <p>Add the following component to the default layout:</p>
+                    <SnippetItem 
+                      label="layouts/default.vue" 
+                      code={`<script setup lang="ts">
+import { SpeedInsights } from '@vercel/speed-insights/vue';
+</script>
+
+<template>
+  <SpeedInsights />
+</template>`}
+                      onCopy={() => copyAndFlash("Nuxt", "Nuxt integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "astro" && (
+                  <div className="snippet-stack">
+                    <p>Speed Insights is available for both static and SSR Astro apps.</p>
+                    <p>Declare the SpeedInsights component near the bottom of one of your layout components:</p>
+                    <SnippetItem 
+                      label="BaseHead.astro" 
+                      code={`---
+import SpeedInsights from '@vercel/speed-insights/astro';
+const { title, description } = Astro.props;
+---
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<SpeedInsights />`}
+                      onCopy={() => copyAndFlash("Astro", "Astro integration code")} 
+                    />
+                    <Alert tone="info">
+                      <strong>Optional:</strong> You can remove sensitive information from the URL by adding a <code>speedInsightsBeforeSend</code> function to the global window object.
+                    </Alert>
+                  </div>
+                )}
+
+                {framework === "html" && (
+                  <div className="snippet-stack">
+                    <p>Add the following scripts before the closing tag of the body:</p>
+                    <SnippetItem 
+                      label="index.html" 
+                      code={`<script>
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>`}
+                      onCopy={() => copyAndFlash("HTML", "HTML integration code")} 
+                    />
+                  </div>
+                )}
+
+                {framework === "other" && (
+                  <div className="snippet-stack">
+                    <p>Import the injectSpeedInsights function from the package, which will add the tracking script to your app. This should only be called once in your app, and must run in the client.</p>
+                    <SnippetItem 
+                      label="main.ts" 
+                      code={`import { injectSpeedInsights } from "@vercel/speed-insights";
+
+injectSpeedInsights();`}
+                      onCopy={() => copyAndFlash("Other", "Generic integration code")} 
+                    />
+                  </div>
+                )}
+              </section>
+
+              <section id="deploy" className="doc-section">
+                <div className="section-heading">
+                  <h2>Deploy your app to Vercel</h2>
+                  <p>You can deploy your app to Vercel's global CDN by running the following command from your terminal:</p>
+                </div>
+                <div className="snippet-stack">
+                  <SnippetItem 
+                    label="Deploy" 
+                    code="vercel deploy" 
+                    onCopy={() => copyAndFlash("Deploy", "vercel deploy")} 
+                  />
+                  <p>Alternatively, you can connect your project's git repository, which will enable Vercel to deploy your latest pushes and merges to main.</p>
+                  <Alert tone="info">
+                    <strong>Note:</strong> If everything is set up correctly, you should be able to find the <code>/_vercel/speed-insights/script.js</code> script inside the body tag of your page.
+                  </Alert>
+                </div>
+              </section>
+
+              <section id="view-data" className="doc-section">
+                <div className="section-heading">
+                  <h2>View your data in the dashboard</h2>
+                  <p>Once your app is deployed, and users have visited your site, you can view the data in the dashboard.</p>
+                </div>
+                <p>To do so, go to your dashboard, select your project, and click the <strong>Speed Insights</strong> tab.</p>
+                <p>After a few days of visitors, you'll be able to start exploring your metrics.</p>
+              </section>
+
+              <section id="next-steps" className="doc-section">
+                <div className="section-heading">
+                  <h2>Next steps</h2>
+                  <p>Now that you have Vercel Speed Insights set up, you can explore the following topics to learn more:</p>
+                </div>
+                <ul className="doc-list">
+                  <li>Learn how to use the <code>@vercel/speed-insights</code> package</li>
+                  <li>Learn about metrics</li>
+                  <li>Read about privacy and compliance</li>
+                  <li>Explore pricing</li>
+                  <li>Troubleshooting</li>
+                </ul>
+                <div className="start-cta">
+                  <Button onClick={() => selectComponent("button")}>Browse components</Button>
+                </div>
+              </section>
+            </>
               </section>
             </>
           ) : view === "foundations" ? (
@@ -4643,6 +5043,18 @@ export default function App() {
               <a className="toc-link" href="#overview">Overview</a>
               <a className="toc-link" href="#accent-selection">Accent color</a>
               <a className="toc-link" href="#setup">Install</a>
+            </>
+          )}
+          {topTab !== "changelog" && view === "speed-insights" && (
+            <>
+              <a className="toc-link" href="#overview">Overview</a>
+              <a className="toc-link" href="#prerequisites">Prerequisites</a>
+              <a className="toc-link" href="#enable-insights">Enable Speed Insights</a>
+              <a className="toc-link" href="#add-package">Add Package</a>
+              <a className="toc-link" href="#add-component">Add Component</a>
+              <a className="toc-link" href="#deploy">Deploy</a>
+              <a className="toc-link" href="#view-data">View Data</a>
+              <a className="toc-link" href="#next-steps">Next Steps</a>
             </>
           )}
           {topTab !== "changelog" && view === "foundations" && (
