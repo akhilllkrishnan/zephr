@@ -73,8 +73,11 @@ pnpm docs:dev
 
 Optional checkout wiring for the Pro modal:
 
-- create `apps/docs-playground/.env`
-- set `VITE_ZEPHYR_PRO_CHECKOUT_URL=https://your-checkout-url`
+- copy `apps/docs-playground/.env.example` to `apps/docs-playground/.env`
+- set one or more:
+  - `VITE_ZEPHYR_CHECKOUT_INDIVIDUAL=https://your-individual-checkout`
+  - `VITE_ZEPHYR_CHECKOUT_STARTUP=https://your-startup-checkout`
+  - `VITE_ZEPHYR_CHECKOUT_ENTERPRISE=https://your-enterprise-checkout`
 
 ## Deploy + Custom Domain (Vercel)
 

@@ -42,6 +42,15 @@ export interface CloudLogoCatalogEntry {
   tags: string[];
 }
 
+export interface CloudBillingPlan {
+  id: "individual" | "startup" | "enterprise";
+  label: string;
+  description: string;
+  recommended?: boolean;
+  checkoutUrl?: string;
+  available: boolean;
+}
+
 export interface LogoResponse {
   domain: string;
   url: string;
@@ -86,10 +95,13 @@ export interface LicenseValidationRequest {
 export interface LicenseValidationResponse {
   valid: boolean;
   tier: "free" | "pro";
-  plan: "pro" | "team" | null;
-  status: "active" | "invalid" | "revoked" | "expired";
+  plan: "individual" | "startup" | "enterprise" | "pro" | "team" | null;
+  status: "active" | "invalid" | "revoked" | "expired" | "disabled" | "inactive";
   message: string;
   expiresAt?: string;
+  source?: "lemonsqueezy" | "local";
+  activationsLeft?: number;
+  entitlements?: string[];
 }
 
 export interface LicenseActivateRequest {
@@ -100,6 +112,10 @@ export interface LicenseActivateRequest {
 export interface LicenseActivateResponse {
   activated: boolean;
   error?: string;
+  plan?: "individual" | "startup" | "enterprise" | "pro" | "team" | null;
+  tier?: "free" | "pro";
+  entitlements?: string[];
+  activeInstances?: number;
 }
 
 export interface LicenseDeactivateRequest {
@@ -110,6 +126,10 @@ export interface LicenseDeactivateRequest {
 export interface LicenseDeactivateResponse {
   deactivated: boolean;
   error?: string;
+  plan?: "individual" | "startup" | "enterprise" | "pro" | "team" | null;
+  tier?: "free" | "pro";
+  entitlements?: string[];
+  activeInstances?: number;
 }
 
 export type UrlAuditSeverity = "high" | "medium" | "low";

@@ -11,3 +11,5 @@ coverage
 !apps/cloud-api/.env.example
 figma/variables.generated.json
 .vercel
+apps/cloud-api/data/license-store.json
+apps/cloud-api/apps/

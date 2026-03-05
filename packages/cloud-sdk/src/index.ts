@@ -2,6 +2,7 @@ import {
   AvatarRequest,
   AvatarResponse,
   CloudAvatarStyle,
+  CloudBillingPlan,
   CloudClientOptions,
   CloudComponent,
   CloudIcon,
@@ -119,6 +120,11 @@ export class ZephyrCloudClient {
 
   getThemes(): Promise<string[]> {
     return this.request<string[]>("/v1/themes");
+  }
+
+  getLicensePlans(): Promise<CloudBillingPlan[]> {
+    return this.request<{ plans: CloudBillingPlan[] }>("/v1/licenses/plans")
+      .then((response) => response.plans);
   }
 
   searchIcons(params: {

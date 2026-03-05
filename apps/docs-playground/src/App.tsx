@@ -62,7 +62,7 @@ import {
   type RegistryEntry
 } from "@zephyr/ai-registry";
 import registryData from "@zephyr/ai-registry/registry/components.json";
-import { ZephyrCloudClient } from "@zephyr/cloud-sdk";
+import { ZephyrCloudClient, type CloudBillingPlan } from "@zephyr/cloud-sdk";
 import type { AvatarStyleDefinition } from "@zephyr/avatars";
 import type { MaterialIconDefinition, MaterialIconStyle } from "@zephyr/icons-material";
 import type { LogoCatalogEntry } from "@zephyr/logos";
@@ -168,6 +168,16 @@ type BadgeColorOption =
   | "pink"
   | "teal";
 type SurfaceStyleOption = "shadow" | "flat";
+type CheckoutPlanId = "individual" | "startup" | "enterprise";
+
+interface CheckoutPlanOption {
+  id: CheckoutPlanId;
+  label: string;
+  description: string;
+  recommended?: boolean;
+  checkoutUrl?: string;
+  available: boolean;
+}
 
 interface CloudAssetState {
   source: CloudAssetSource;
@@ -208,6 +218,37 @@ const STYLE_PACK_META: Record<StylePackName, { label: string; description: strin
     tier: "pro"
   }
 };
+
+const CHECKOUT_PLAN_META: Record<CheckoutPlanId, { label: string; description: string; recommended?: boolean }> = {
+  individual: {
+    label: "Individual",
+    description: "For solo builders and personal projects."
+  },
+  startup: {
+    label: "Startup",
+    description: "For small teams shipping products quickly.",
+    recommended: true
+  },
+  enterprise: {
+    label: "Enterprise",
+    description: "For larger teams with advanced support needs."
+  }
+};
+
+function normalizeCheckoutPlans(plans: CloudBillingPlan[]): CheckoutPlanOption[] {
+  return plans
+    .filter((plan): plan is CloudBillingPlan & { id: CheckoutPlanId } =>
+      plan.id === "individual" || plan.id === "startup" || plan.id === "enterprise"
+    )
+    .map((plan) => ({
+      id: plan.id,
+      label: plan.label || CHECKOUT_PLAN_META[plan.id].label,
+      description: plan.description || CHECKOUT_PLAN_META[plan.id].description,
+      recommended: plan.recommended ?? CHECKOUT_PLAN_META[plan.id].recommended,
+      checkoutUrl: plan.checkoutUrl,
+      available: Boolean(plan.available && plan.checkoutUrl)
+    }));
+}
 
 const tableRows: TeamMember[] = [
   { id: "1", name: "Akhil Krishnan", role: "Product Designer", squad: "Core" },
@@ -804,7 +845,8 @@ function fromSearchParams(): {
   );
   const viewParam = params.get("view");
   const view: WorkspaceView =
-    viewParam === "component-gallery" ? "component-gallery" :
+    viewParam === "introduction" ? "introduction" :
+      viewParam === "component-gallery" ? "component-gallery" :
       viewParam === "components" ? "components" :
         viewParam === "api-reference" ? "api-reference" :
           viewParam === "getting-started" ? "getting-started" :
@@ -813,7 +855,7 @@ function fromSearchParams(): {
                 viewParam === "mission" ? "mission" :
                   viewParam === "team" ? "team" :
                     viewParam === "templates" ? "templates" :
-                      "component-gallery";
+                      "introduction";
 
   return {
     stylePack,
@@ -2650,14 +2692,16 @@ function InstallTabBlock({
 
 function LicenseKeyModal({
   licenseKey,
+  plans,
   onSubmit,
   onGetKey,
   onRemove,
   onClose
 }: {
   licenseKey: string;
+  plans: CheckoutPlanOption[];
   onSubmit: (key: string) => Promise<void> | void;
-  onGetKey: () => void;
+  onGetKey: (planId: CheckoutPlanId) => void;
   onRemove: () => void;
   onClose: () => void;
 }) {
@@ -2716,6 +2760,25 @@ function LicenseKeyModal({
           ) : (
             <form className="upgrade-modal-form" onSubmit={handleSubmit}>
               <p className="upgrade-modal-note">Enter your license key to unlock Pro molecules, organisms, and page templates.</p>
+              {plans.length > 0 && (
+                <div className="upgrade-modal-plan-grid">
+                  {plans.map((plan) => (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      className="upgrade-modal-plan"
+                      disabled={!plan.available || isSubmitting}
+                      onClick={() => onGetKey(plan.id)}
+                    >
+                      <span className="upgrade-modal-plan-title">
+                        {plan.label}
+                        {plan.recommended ? <Badge tone="neutral">Popular</Badge> : null}
+                      </span>
+                      <span className="upgrade-modal-plan-copy">{plan.description}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
               <input
                 className="upgrade-modal-input"
                 type="text"
@@ -2731,9 +2794,6 @@ function LicenseKeyModal({
               <div className="upgrade-modal-actions">
                 <Button type="submit" size="sm" loading={isSubmitting} disabled={isSubmitting}>
                   Unlock Pro
-                </Button>
-                <Button type="button" size="sm" variant="secondary" onClick={onGetKey} disabled={isSubmitting}>
-                  Get a key
                 </Button>
               </div>
             </form>
@@ -3812,7 +3872,19 @@ export default function App() {
     ].join("\n");
   }, [accentColor, stylePack]);
   const cloudBaseUrl = (import.meta.env.VITE_ZEPHYR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
-  const proCheckoutUrl = (import.meta.env.VITE_ZEPHYR_PRO_CHECKOUT_URL as string | undefined)?.trim() || "";
+  const checkoutEnvUrls: Record<CheckoutPlanId, string> = {
+    individual: (import.meta.env.VITE_ZEPHYR_CHECKOUT_INDIVIDUAL as string | undefined)?.trim() || "",
+    startup: (import.meta.env.VITE_ZEPHYR_CHECKOUT_STARTUP as string | undefined)?.trim() || "",
+    enterprise: (import.meta.env.VITE_ZEPHYR_CHECKOUT_ENTERPRISE as string | undefined)?.trim() || ""
+  };
+  const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlanOption[]>(() =>
+    (Object.keys(CHECKOUT_PLAN_META) as CheckoutPlanId[]).map((id) => ({
+      id,
+      ...CHECKOUT_PLAN_META[id],
+      checkoutUrl: checkoutEnvUrls[id] || undefined,
+      available: Boolean(checkoutEnvUrls[id])
+    }))
+  );
   const cloudClient = useMemo(() => {
     const key = cloudApiKey.trim();
     if (!key) {
@@ -3823,6 +3895,42 @@ export default function App() {
       apiKey: key
     });
   }, [cloudApiKey, cloudBaseUrl]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const client = new ZephyrCloudClient({ baseUrl: cloudBaseUrl });
+    client
+      .getLicensePlans()
+      .then((plans) => {
+        if (cancelled) return;
+        const normalized = normalizeCheckoutPlans(plans);
+        if (normalized.length > 0) {
+          setCheckoutPlans(
+            normalized.map((plan) => ({
+              ...plan,
+              checkoutUrl: plan.checkoutUrl || checkoutEnvUrls[plan.id] || undefined,
+              available: Boolean(plan.checkoutUrl || checkoutEnvUrls[plan.id])
+            }))
+          );
+          return;
+        }
+        throw new Error("No billing plans returned.");
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCheckoutPlans(
+          (Object.keys(CHECKOUT_PLAN_META) as CheckoutPlanId[]).map((id) => ({
+            id,
+            ...CHECKOUT_PLAN_META[id],
+            checkoutUrl: checkoutEnvUrls[id] || undefined,
+            available: Boolean(checkoutEnvUrls[id])
+          }))
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cloudBaseUrl, checkoutEnvUrls.enterprise, checkoutEnvUrls.individual, checkoutEnvUrls.startup]);
 
   const aiProjectInitCommand = useMemo(
     () => managerProjectInitCommand(aiProject, aiPackageManager),
@@ -5473,6 +5581,8 @@ export default function App() {
                 <div className="start-cta">
                   <Button onClick={() => selectComponent("button")}>Browse components</Button>
                 </div>
+              </section>
+            </>
                 ) : view === "speed-insights" ? (
                 <>
                   <section id="overview" className="doc-section hero">
@@ -5837,8 +5947,6 @@ injectSpeedInsights();`}
                     </div>
                   </section>
                 </>
-              </section>
-            </>
           ) : view === "foundations" ? (
             <>
               <section id="foundations-overview" className="doc-section hero">
@@ -8000,6 +8108,7 @@ injectSpeedInsights();`}
         showUpgradeModal && (
           <LicenseKeyModal
             licenseKey={licenseKey}
+            plans={checkoutPlans}
             onSubmit={async (key) => {
               const validationClient = new ZephyrCloudClient({
                 baseUrl: cloudBaseUrl
@@ -8025,14 +8134,17 @@ injectSpeedInsights();`}
               setShowUpgradeModal(false);
               showToast(result.message || "Pro access enabled");
             }}
-            onGetKey={() => {
-              if (!proCheckoutUrl) {
-                showToast("Set VITE_ZEPHYR_PRO_CHECKOUT_URL to your Lemon Squeezy checkout URL.");
+            onGetKey={(planId) => {
+              const plan = checkoutPlans.find((entry) => entry.id === planId);
+              if (!plan?.checkoutUrl) {
+                showToast(
+                  "Set VITE_ZEPHYR_CHECKOUT_INDIVIDUAL / STARTUP / ENTERPRISE or configure cloud plan checkout links."
+                );
                 return;
               }
 
-              window.open(proCheckoutUrl, "_blank", "noopener,noreferrer");
-              showToast("Opening checkout...");
+              window.open(plan.checkoutUrl, "_blank", "noopener,noreferrer");
+              showToast(`Opening ${plan.label} checkout...`);
             }}
             onRemove={() => {
               setLicenseKey("");

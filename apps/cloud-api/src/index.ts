@@ -15,6 +15,7 @@ import { requirePrincipal, hasScope } from "./auth";
 import { runUrlAudit, type UrlAuditRequest } from "./audit";
 import { HttpError, readJsonBody, sendJson } from "./http";
 import { validateLicenseKey } from "./license";
+import { entitlementsForPlan, getBillingPlans, resolvePlan, type LicensePlan } from "./billing";
 import {
   activateLsLicenseKey,
   deactivateLsLicenseKey,
@@ -24,6 +25,7 @@ import {
   type LsOrderAttributes,
   type LsWebhookEvent
 } from "./lemonsqueezy";
+import { buildWebhookEventId, licenseStore } from "./licenseStore";
 import { ensureCloudEnvLoaded } from "./env";
 import { createRateLimiter } from "./rateLimit";
 
@@ -46,6 +48,8 @@ interface TakedownRequest {
 
 const rateLimiter = createRateLimiter(120, 60_000);
 const publicLicenseLimiter = createRateLimiter(30, 60_000);
+const publicLicenseKeyLimiter = createRateLimiter(12, 60_000);
+const publicActivationLimiter = createRateLimiter(20, 60_000);
 
 // ---------------------------------------------------------------------------
 // Audit logger
@@ -128,11 +132,139 @@ function parseIconStyle(raw: string | null): MaterialIconStyle | undefined {
   return undefined;
 }
 
+function parseBooleanEnv(raw: string | undefined): boolean | null {
+  if (!raw) {
+    return null;
+  }
+  const normalized = raw.trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  return null;
+}
+
+function shouldRequireWebhookSignature(): boolean {
+  const explicit = parseBooleanEnv(process.env.ZEPHYR_REQUIRE_WEBHOOK_SIGNATURE);
+  if (explicit !== null) {
+    return explicit;
+  }
+  return process.env.NODE_ENV === "production";
+}
+
+function normalizeLicenseStatus(raw: string | undefined): "active" | "invalid" | "revoked" | "expired" | "disabled" | "inactive" {
+  const status = (raw ?? "").toLowerCase();
+  if (status === "active") return "active";
+  if (status === "expired") return "expired";
+  if (status === "disabled") return "disabled";
+  if (status === "inactive") return "inactive";
+  if (status === "revoked") return "revoked";
+  return "invalid";
+}
+
+function resolvePlanFromOrder(attrs: LsOrderAttributes): LicensePlan {
+  return resolvePlan({
+    variantId: attrs.first_order_item?.variant_id,
+    variantName: attrs.first_order_item?.variant_name,
+    productName: attrs.first_order_item?.product_name
+  });
+}
+
+function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): LicensePlan {
+  const plan = resolvePlanFromOrder(attrs);
+  const orderIds = new Set<number>();
+  if (Number.isFinite(attrs.order_number)) {
+    orderIds.add(attrs.order_number);
+  }
+  const parsedResourceId = Number.parseInt(resourceId ?? "", 10);
+  if (Number.isFinite(parsedResourceId)) {
+    orderIds.add(parsedResourceId);
+  }
+
+  for (const orderId of orderIds) {
+    licenseStore.upsertOrder({
+      id: orderId,
+      customerEmail: attrs.user_email,
+      customerName: attrs.user_name,
+      status: attrs.status,
+      productId: attrs.first_order_item?.product_id,
+      productName: attrs.first_order_item?.product_name,
+      variantId: attrs.first_order_item?.variant_id,
+      variantName: attrs.first_order_item?.variant_name,
+      plan
+    });
+  }
+
+  if (attrs.user_email) {
+    licenseStore.upsertCustomer({
+      email: attrs.user_email,
+      name: attrs.user_name,
+      lastOrderId: attrs.order_number
+    });
+  }
+
+  return plan;
+}
+
+function persistLicenseFromWebhook(attrs: LsLicenseKeyAttributes): LicensePlan {
+  const linkedOrder = attrs.order_id ? licenseStore.getOrder(attrs.order_id) : null;
+  const plan = linkedOrder?.plan ?? resolvePlan({
+    variantName: linkedOrder?.variantName,
+    productName: linkedOrder?.productName
+  });
+  const normalizedStatus = normalizeLicenseStatus(attrs.status);
+  const tier = normalizedStatus === "active" ? "pro" : "free";
+  const message = normalizedStatus === "active"
+    ? `License valid (${plan} plan).`
+    : `License ${normalizedStatus}.`;
+
+  const expiresAt = attrs.expires_at || undefined;
+  const activationLimit = attrs.activation_limit;
+  const activationUsage = attrs.activations_count;
+
+  licenseStore.upsertLicense(attrs.key, {
+    tier,
+    plan: tier === "pro" ? plan : null,
+    status: normalizedStatus,
+    message,
+    source: "lemonsqueezy",
+    expiresAt,
+    activationLimit,
+    activationUsage,
+    customerEmail: attrs.user_email,
+    lemonSqueezy: {
+      orderId: attrs.order_id,
+      productId: attrs.product_id,
+      storeId: attrs.store_id
+    }
+  });
+
+  if (attrs.user_email) {
+    licenseStore.upsertCustomer({
+      email: attrs.user_email,
+      lastOrderId: attrs.order_id
+    });
+  }
+
+  return plan;
+}
+
 // ---------------------------------------------------------------------------
 // Auth-protected route handler
 // ---------------------------------------------------------------------------
 
 async function handleV1(request: IncomingMessage, response: ServerResponse, url: URL): Promise<void> {
+  // --- Public endpoint: billing plans + checkout links ---
+  if (request.method === "GET" && url.pathname === "/v1/licenses/plans") {
+    const plans = getBillingPlans().map((plan) => ({
+      ...plan,
+      available: Boolean(plan.checkoutUrl)
+    }));
+    sendJson(response, 200, { plans });
+    auditLog("public:license:plans", request, 200, {
+      availablePlans: plans.filter((plan) => plan.available).length
+    });
+    return;
+  }
+
   // --- Public endpoint: Lemon Squeezy webhook (no Bearer, verified by HMAC) ---
   if (request.method === "POST" && url.pathname === "/v1/webhooks/lemonsqueezy") {
     const rawChunks: Uint8Array[] = [];
@@ -143,6 +275,16 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     const signature = String(request.headers["x-signature"] ?? "");
 
     const secret = getWebhookSecret();
+    const signatureRequired = shouldRequireWebhookSignature();
+
+    if (signatureRequired && !secret) {
+      sendJson(response, 503, {
+        error: "Webhook signature verification is required but webhook secret is not configured."
+      });
+      auditLog("webhook:lemonsqueezy", request, 503);
+      return;
+    }
+
     if (secret && !verifyWebhookSignature(rawBody, signature)) {
       sendJson(response, 401, { error: "Invalid webhook signature." });
       auditLog("webhook:lemonsqueezy", request, 401);
@@ -158,23 +300,47 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     }
 
     const eventName = event.meta?.event_name ?? "";
-    console.log(`[webhook:lemonsqueezy] event=${eventName} id=${event.data?.id}`);
+    const dataId = event.data?.id;
+    const eventId = buildWebhookEventId(eventName, dataId, event.meta?.webhook_id);
+    const isNewEvent = licenseStore.recordWebhookEvent(eventId, eventName, dataId);
+    if (!isNewEvent) {
+      sendJson(response, 200, { received: true, duplicate: true, event: eventName });
+      auditLog("webhook:lemonsqueezy", request, 200, { event: eventName, duplicate: true });
+      return;
+    }
+
+    console.log(`[webhook:lemonsqueezy] event=${eventName} id=${dataId}`);
 
     if (eventName === "order_created") {
       const attrs = event.data.attributes as LsOrderAttributes;
+      const resolvedPlan = persistOrderCreated(attrs, dataId);
       console.log(
         `[webhook:lemonsqueezy] order #${attrs.order_number} by ${attrs.user_email}` +
-        ` status=${attrs.status} ${attrs.total} ${attrs.currency}`
+        ` status=${attrs.status} ${attrs.total} ${attrs.currency} plan=${resolvedPlan}`
       );
     }
 
-    if (eventName === "license_key_created") {
+    if (eventName === "license_key_created" || eventName === "license_key_updated") {
       const attrs = event.data.attributes as LsLicenseKeyAttributes;
+      const resolvedPlan = persistLicenseFromWebhook(attrs);
       console.log(
-        `[webhook:lemonsqueezy] license_key_created status=${attrs.status}` +
-        ` limit=${attrs.activation_limit} product=${attrs.product_id}`
+        `[webhook:lemonsqueezy] ${eventName} status=${attrs.status}` +
+        ` limit=${attrs.activation_limit} product=${attrs.product_id} plan=${resolvedPlan}`
       );
-      // TODO: persist to DB and send custom confirmation email when ready
+    }
+
+    if (eventName === "subscription_cancelled" || eventName === "subscription_expired") {
+      const attrs = event.data.attributes as Partial<LsLicenseKeyAttributes> & { key?: string; user_email?: string };
+      if (attrs.key) {
+        licenseStore.upsertLicense(attrs.key, {
+          tier: "free",
+          plan: null,
+          status: "revoked",
+          message: "Subscription cancelled.",
+          source: "lemonsqueezy",
+          customerEmail: attrs.user_email
+        });
+      }
     }
 
     sendJson(response, 200, { received: true, event: eventName });
@@ -184,6 +350,26 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 
   // --- Public endpoint: license activate (no Bearer required) ---
   if (request.method === "POST" && url.pathname === "/v1/licenses/activate") {
+    const ipKey = request.socket.remoteAddress ?? "license-activate-public";
+    if (publicActivationLimiter.isLimited(ipKey)) {
+      const state = publicActivationLimiter.consume(ipKey);
+      sendJson(
+        response,
+        429,
+        {
+          error: "Too many activation attempts. Please retry in a minute.",
+          resetAt: state.resetAt
+        },
+        {
+          "X-RateLimit-Remaining": String(state.remaining),
+          "X-RateLimit-Reset": state.resetAt
+        }
+      );
+      auditLog("public:license:activate", request, 429);
+      return;
+    }
+    publicActivationLimiter.consume(ipKey);
+
     const body = await readJsonBody<{ licenseKey?: string; instanceName?: string }>(request, {
       requireObject: true,
       requireContentType: true
@@ -194,7 +380,51 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     }
     try {
       const result = await activateLsLicenseKey(body.licenseKey, body.instanceName);
-      sendJson(response, result.activated ? 200 : 422, result);
+
+      const existing = licenseStore.getLicense(body.licenseKey);
+      const plan = resolvePlan({
+        variantId: result.meta?.variant_id,
+        variantName: result.meta?.variant_name,
+        productName: result.meta?.product_name
+      });
+
+      licenseStore.upsertLicense(body.licenseKey, {
+        tier: result.activated ? "pro" : existing?.tier ?? "free",
+        plan: result.activated ? plan : existing?.plan ?? null,
+        status: result.activated ? "active" : existing?.status ?? "invalid",
+        message: result.activated
+          ? `License activated (${plan} plan).`
+          : result.error ?? existing?.message ?? "License activation failed.",
+        source: "lemonsqueezy",
+        activationLimit: result.license_key?.activation_limit,
+        activationUsage: result.license_key?.activation_usage,
+        customerEmail: existing?.customerEmail,
+        lemonSqueezy: {
+          licenseId: result.license_key?.id,
+          orderId: result.meta?.order_id,
+          productId: result.meta?.product_id,
+          variantId: result.meta?.variant_id,
+          variantName: result.meta?.variant_name,
+          productName: result.meta?.product_name,
+          storeId: result.meta?.store_id
+        }
+      });
+
+      if (result.activated && result.instance) {
+        licenseStore.upsertActivation({
+          id: result.instance.id,
+          licenseKey: body.licenseKey,
+          instanceName: result.instance.name || body.instanceName
+        });
+      }
+
+      sendJson(response, result.activated ? 200 : 422, {
+        ...result,
+        plan: result.activated ? plan : existing?.plan ?? null,
+        tier: result.activated ? "pro" : existing?.tier ?? "free",
+        entitlements: entitlementsForPlan(result.activated ? plan : existing?.plan ?? null),
+        activeInstances: licenseStore.listActiveActivations(body.licenseKey).length
+      });
       auditLog("public:license:activate", request, result.activated ? 200 : 422);
     } catch (err) {
       console.error("[license/activate]", err);
@@ -205,6 +435,26 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 
   // --- Public endpoint: license deactivate (no Bearer required) ---
   if (request.method === "POST" && url.pathname === "/v1/licenses/deactivate") {
+    const ipKey = request.socket.remoteAddress ?? "license-deactivate-public";
+    if (publicActivationLimiter.isLimited(ipKey)) {
+      const state = publicActivationLimiter.consume(ipKey);
+      sendJson(
+        response,
+        429,
+        {
+          error: "Too many deactivation attempts. Please retry in a minute.",
+          resetAt: state.resetAt
+        },
+        {
+          "X-RateLimit-Remaining": String(state.remaining),
+          "X-RateLimit-Reset": state.resetAt
+        }
+      );
+      auditLog("public:license:deactivate", request, 429);
+      return;
+    }
+    publicActivationLimiter.consume(ipKey);
+
     const body = await readJsonBody<{ licenseKey?: string; instanceId?: string }>(request, {
       requireObject: true,
       requireContentType: true
@@ -215,7 +465,18 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     }
     try {
       const result = await deactivateLsLicenseKey(body.licenseKey, body.instanceId);
-      sendJson(response, result.deactivated ? 200 : 422, result);
+      const existing = licenseStore.getLicense(body.licenseKey);
+      if (result.deactivated) {
+        licenseStore.deactivateActivation(body.instanceId, body.licenseKey);
+      }
+
+      sendJson(response, result.deactivated ? 200 : 422, {
+        ...result,
+        plan: existing?.plan ?? null,
+        tier: existing?.tier ?? "free",
+        entitlements: entitlementsForPlan(existing?.plan ?? null),
+        activeInstances: licenseStore.listActiveActivations(body.licenseKey).length
+      });
       auditLog("public:license:deactivate", request, result.deactivated ? 200 : 422);
     } catch (err) {
       console.error("[license/deactivate]", err);
@@ -226,41 +487,46 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 
   // --- Public endpoint: license validation (no Bearer required) ---
   if (request.method === "POST" && url.pathname === "/v1/licenses/validate") {
-    const clientKey = request.socket.remoteAddress ?? "license-public";
+    const body = await readJsonBody<{ licenseKey?: string }>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
+    if (!body.licenseKey) {
+      sendJson(response, 400, { error: "Missing required field: licenseKey" });
+      auditLog("public:license", request, 400);
+      return;
+    }
 
-    if (publicLicenseLimiter.isLimited(clientKey)) {
-      const state = publicLicenseLimiter.consume(clientKey);
+    const ipKey = request.socket.remoteAddress ?? "license-public";
+    const licenseScopeKey = `license:${body.licenseKey.trim().toLowerCase()}`;
+
+    if (publicLicenseLimiter.isLimited(ipKey) || publicLicenseKeyLimiter.isLimited(licenseScopeKey)) {
+      const ipState = publicLicenseLimiter.consume(ipKey);
+      const keyState = publicLicenseKeyLimiter.consume(licenseScopeKey);
+      const remaining = Math.min(ipState.remaining, keyState.remaining);
+      const resetAt = ipState.resetAt > keyState.resetAt ? ipState.resetAt : keyState.resetAt;
       sendJson(
         response,
         429,
         {
           error: "Too many validation attempts. Please wait before retrying.",
-          resetAt: state.resetAt
+          resetAt
         },
         {
-          "X-RateLimit-Remaining": String(state.remaining),
-          "X-RateLimit-Reset": state.resetAt
+          "X-RateLimit-Remaining": String(remaining),
+          "X-RateLimit-Reset": resetAt
         }
       );
       auditLog("public:license", request, 429);
       return;
     }
 
-    const state = publicLicenseLimiter.consume(clientKey);
+    const ipState = publicLicenseLimiter.consume(ipKey);
+    const keyState = publicLicenseKeyLimiter.consume(licenseScopeKey);
     const rateHeaders = {
-      "X-RateLimit-Remaining": String(state.remaining),
-      "X-RateLimit-Reset": state.resetAt
+      "X-RateLimit-Remaining": String(Math.min(ipState.remaining, keyState.remaining)),
+      "X-RateLimit-Reset": ipState.resetAt > keyState.resetAt ? ipState.resetAt : keyState.resetAt
     };
-
-    const body = await readJsonBody<{ licenseKey?: string }>(request, {
-      requireObject: true,
-      requireContentType: true
-    });
-    if (!body.licenseKey) {
-      sendJson(response, 400, { error: "Missing required field: licenseKey" }, rateHeaders);
-      auditLog("public:license", request, 400);
-      return;
-    }
 
     const validation = await validateLicenseKey(body.licenseKey);
     sendJson(response, 200, validation, rateHeaders);
@@ -609,7 +875,17 @@ const server = createServer(async (request, response) => {
         integrations: {
           lemonSqueezy: {
             apiKeyConfigured: Boolean(process.env.LEMON_SQUEEZY_API_KEY?.trim()),
-            webhookSecretConfigured: Boolean(process.env.LEMON_SQUEEZY_WEBHOOK_SECRET?.trim())
+            webhookSecretConfigured: Boolean(process.env.LEMON_SQUEEZY_WEBHOOK_SECRET?.trim()),
+            checkoutLinksConfigured: getBillingPlans().reduce<Record<string, boolean>>((acc, plan) => {
+              acc[plan.id] = Boolean(plan.checkoutUrl);
+              return acc;
+            }, {})
+          },
+          licensing: {
+            storePath: licenseStore.getFilePath(),
+            localFallbackEnabled:
+              parseBooleanEnv(process.env.ZEPHYR_ALLOW_LOCAL_LICENSE_FALLBACK) ??
+              (process.env.NODE_ENV !== "production")
           }
         }
       });

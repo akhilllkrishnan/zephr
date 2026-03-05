@@ -11,6 +11,20 @@ The server auto-loads env files from:
 
 Use `apps/cloud-api/.env.example` as the template.
 
+Recommended production settings:
+
+- `ZEPHYR_REQUIRE_WEBHOOK_SIGNATURE=true`
+- `ZEPHYR_ALLOW_LOCAL_LICENSE_FALLBACK=false`
+- map your Lemon Squeezy variant IDs:
+  - `ZEPHYR_LS_VARIANT_INDIVIDUAL`
+  - `ZEPHYR_LS_VARIANT_STARTUP`
+  - `ZEPHYR_LS_VARIANT_ENTERPRISE`
+- set plan checkout URLs:
+  - `ZEPHYR_LS_CHECKOUT_INDIVIDUAL`
+  - `ZEPHYR_LS_CHECKOUT_STARTUP`
+  - `ZEPHYR_LS_CHECKOUT_ENTERPRISE`
+- set `ZEPHYR_LICENSE_STORE_PATH` to persistent storage path
+
 ## Run
 
 ```bash
@@ -31,6 +45,7 @@ Authorization: Bearer dev_local_key
 - `GET /health`
 - `GET /v1/components`
 - `GET /v1/themes`
+- `GET /v1/licenses/plans` (public endpoint, returns checkout URLs for individual/startup/enterprise)
 - `POST /v1/licenses/validate` (public endpoint, no bearer token required)
 - `POST /v1/licenses/activate` (public endpoint, no bearer token required)
 - `POST /v1/licenses/deactivate` (public endpoint, no bearer token required)
@@ -49,6 +64,55 @@ Authorization: Bearer dev_local_key
 ```json
 {
   "licenseKey": "zephyr-pro-demo-2026"
+}
+```
+
+## Plan discovery payload
+
+`GET /v1/licenses/plans`
+
+Sample response fields:
+
+```json
+{
+  "plans": [
+    {
+      "id": "individual",
+      "label": "Individual",
+      "description": "For solo builders and personal projects.",
+      "checkoutUrl": "https://...",
+      "available": true
+    },
+    {
+      "id": "startup",
+      "label": "Startup",
+      "description": "For small teams shipping products quickly.",
+      "recommended": true,
+      "checkoutUrl": "https://...",
+      "available": true
+    },
+    {
+      "id": "enterprise",
+      "label": "Enterprise",
+      "description": "For larger teams with advanced support needs.",
+      "checkoutUrl": "https://...",
+      "available": true
+    }
+  ]
+}
+```
+
+Sample response fields:
+
+```json
+{
+  "valid": true,
+  "tier": "pro",
+  "plan": "startup",
+  "status": "active",
+  "message": "License valid (startup plan).",
+  "source": "lemonsqueezy",
+  "entitlements": ["ui.components", "ui.page-templates", "cloud.assets", "cloud.audit", "mcp.actions"]
 }
 ```
 
