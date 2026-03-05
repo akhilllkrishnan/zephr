@@ -237,7 +237,7 @@ export async function validateLicenseKey(
     };
   }
 
-  const stored = licenseStore.getLicense(key);
+  const stored = await licenseStore.getLicense(key);
   if (stored) {
     return mapStoredToValidation(stored);
   }
@@ -249,7 +249,7 @@ export async function validateLicenseKey(
   if (hasLsApiKey && looksLikeUuid) {
     try {
       const validated = await validateViaCls(key);
-      licenseStore.upsertLicense(key, {
+      await licenseStore.upsertLicense(key, {
         tier: validated.tier,
         plan: validated.plan,
         status: validated.status,
@@ -267,7 +267,7 @@ export async function validateLicenseKey(
   if (allowLocalFallback()) {
     const local = validateLocal(key);
     if (local.valid) {
-      licenseStore.upsertLicense(key, {
+      await licenseStore.upsertLicense(key, {
         tier: "pro",
         plan: local.plan,
         status: "active",

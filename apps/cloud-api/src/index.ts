@@ -168,7 +168,7 @@ function resolvePlanFromOrder(attrs: LsOrderAttributes): LicensePlan {
   });
 }
 
-function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): LicensePlan {
+async function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): Promise<LicensePlan> {
   const plan = resolvePlanFromOrder(attrs);
   const orderIds = new Set<number>();
   if (Number.isFinite(attrs.order_number)) {
@@ -180,7 +180,7 @@ function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): Lic
   }
 
   for (const orderId of orderIds) {
-    licenseStore.upsertOrder({
+    await licenseStore.upsertOrder({
       id: orderId,
       customerEmail: attrs.user_email,
       customerName: attrs.user_name,
@@ -194,7 +194,7 @@ function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): Lic
   }
 
   if (attrs.user_email) {
-    licenseStore.upsertCustomer({
+    await licenseStore.upsertCustomer({
       email: attrs.user_email,
       name: attrs.user_name,
       lastOrderId: attrs.order_number
@@ -204,8 +204,8 @@ function persistOrderCreated(attrs: LsOrderAttributes, resourceId?: string): Lic
   return plan;
 }
 
-function persistLicenseFromWebhook(attrs: LsLicenseKeyAttributes): LicensePlan {
-  const linkedOrder = attrs.order_id ? licenseStore.getOrder(attrs.order_id) : null;
+async function persistLicenseFromWebhook(attrs: LsLicenseKeyAttributes): Promise<LicensePlan> {
+  const linkedOrder = attrs.order_id ? await licenseStore.getOrder(attrs.order_id) : null;
   const plan = linkedOrder?.plan ?? resolvePlan({
     variantName: linkedOrder?.variantName,
     productName: linkedOrder?.productName
@@ -220,7 +220,7 @@ function persistLicenseFromWebhook(attrs: LsLicenseKeyAttributes): LicensePlan {
   const activationLimit = attrs.activation_limit;
   const activationUsage = attrs.activations_count;
 
-  licenseStore.upsertLicense(attrs.key, {
+  await licenseStore.upsertLicense(attrs.key, {
     tier,
     plan: tier === "pro" ? plan : null,
     status: normalizedStatus,
@@ -238,7 +238,7 @@ function persistLicenseFromWebhook(attrs: LsLicenseKeyAttributes): LicensePlan {
   });
 
   if (attrs.user_email) {
-    licenseStore.upsertCustomer({
+    await licenseStore.upsertCustomer({
       email: attrs.user_email,
       lastOrderId: attrs.order_id
     });
@@ -302,7 +302,7 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     const eventName = event.meta?.event_name ?? "";
     const dataId = event.data?.id;
     const eventId = buildWebhookEventId(eventName, dataId, event.meta?.webhook_id);
-    const isNewEvent = licenseStore.recordWebhookEvent(eventId, eventName, dataId);
+    const isNewEvent = await licenseStore.recordWebhookEvent(eventId, eventName, dataId);
     if (!isNewEvent) {
       sendJson(response, 200, { received: true, duplicate: true, event: eventName });
       auditLog("webhook:lemonsqueezy", request, 200, { event: eventName, duplicate: true });
@@ -313,7 +313,7 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 
     if (eventName === "order_created") {
       const attrs = event.data.attributes as LsOrderAttributes;
-      const resolvedPlan = persistOrderCreated(attrs, dataId);
+      const resolvedPlan = await persistOrderCreated(attrs, dataId);
       console.log(
         `[webhook:lemonsqueezy] order #${attrs.order_number} by ${attrs.user_email}` +
         ` status=${attrs.status} ${attrs.total} ${attrs.currency} plan=${resolvedPlan}`
@@ -322,7 +322,7 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 
     if (eventName === "license_key_created" || eventName === "license_key_updated") {
       const attrs = event.data.attributes as LsLicenseKeyAttributes;
-      const resolvedPlan = persistLicenseFromWebhook(attrs);
+      const resolvedPlan = await persistLicenseFromWebhook(attrs);
       console.log(
         `[webhook:lemonsqueezy] ${eventName} status=${attrs.status}` +
         ` limit=${attrs.activation_limit} product=${attrs.product_id} plan=${resolvedPlan}`
@@ -332,7 +332,7 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     if (eventName === "subscription_cancelled" || eventName === "subscription_expired") {
       const attrs = event.data.attributes as Partial<LsLicenseKeyAttributes> & { key?: string; user_email?: string };
       if (attrs.key) {
-        licenseStore.upsertLicense(attrs.key, {
+        await licenseStore.upsertLicense(attrs.key, {
           tier: "free",
           plan: null,
           status: "revoked",
@@ -381,14 +381,14 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     try {
       const result = await activateLsLicenseKey(body.licenseKey, body.instanceName);
 
-      const existing = licenseStore.getLicense(body.licenseKey);
+      const existing = await licenseStore.getLicense(body.licenseKey);
       const plan = resolvePlan({
         variantId: result.meta?.variant_id,
         variantName: result.meta?.variant_name,
         productName: result.meta?.product_name
       });
 
-      licenseStore.upsertLicense(body.licenseKey, {
+      await licenseStore.upsertLicense(body.licenseKey, {
         tier: result.activated ? "pro" : existing?.tier ?? "free",
         plan: result.activated ? plan : existing?.plan ?? null,
         status: result.activated ? "active" : existing?.status ?? "invalid",
@@ -411,19 +411,20 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       });
 
       if (result.activated && result.instance) {
-        licenseStore.upsertActivation({
+        await licenseStore.upsertActivation({
           id: result.instance.id,
           licenseKey: body.licenseKey,
           instanceName: result.instance.name || body.instanceName
         });
       }
+      const activeInstances = (await licenseStore.listActiveActivations(body.licenseKey)).length;
 
       sendJson(response, result.activated ? 200 : 422, {
         ...result,
         plan: result.activated ? plan : existing?.plan ?? null,
         tier: result.activated ? "pro" : existing?.tier ?? "free",
         entitlements: entitlementsForPlan(result.activated ? plan : existing?.plan ?? null),
-        activeInstances: licenseStore.listActiveActivations(body.licenseKey).length
+        activeInstances
       });
       auditLog("public:license:activate", request, result.activated ? 200 : 422);
     } catch (err) {
@@ -465,17 +466,18 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     }
     try {
       const result = await deactivateLsLicenseKey(body.licenseKey, body.instanceId);
-      const existing = licenseStore.getLicense(body.licenseKey);
+      const existing = await licenseStore.getLicense(body.licenseKey);
       if (result.deactivated) {
-        licenseStore.deactivateActivation(body.instanceId, body.licenseKey);
+        await licenseStore.deactivateActivation(body.instanceId, body.licenseKey);
       }
+      const activeInstances = (await licenseStore.listActiveActivations(body.licenseKey)).length;
 
       sendJson(response, result.deactivated ? 200 : 422, {
         ...result,
         plan: existing?.plan ?? null,
         tier: existing?.tier ?? "free",
         entitlements: entitlementsForPlan(existing?.plan ?? null),
-        activeInstances: licenseStore.listActiveActivations(body.licenseKey).length
+        activeInstances
       });
       auditLog("public:license:deactivate", request, result.deactivated ? 200 : 422);
     } catch (err) {
@@ -882,7 +884,9 @@ const server = createServer(async (request, response) => {
             }, {})
           },
           licensing: {
+            backend: licenseStore.getBackend(),
             storePath: licenseStore.getFilePath(),
+            supabaseUrl: licenseStore.getSupabaseUrl(),
             localFallbackEnabled:
               parseBooleanEnv(process.env.ZEPHYR_ALLOW_LOCAL_LICENSE_FALLBACK) ??
               (process.env.NODE_ENV !== "production")

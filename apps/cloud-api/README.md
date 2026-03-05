@@ -15,6 +15,10 @@ Recommended production settings:
 
 - `ZEPHYR_REQUIRE_WEBHOOK_SIGNATURE=true`
 - `ZEPHYR_ALLOW_LOCAL_LICENSE_FALLBACK=false`
+- configure Supabase persistence:
+  - `SUPABASE_URL`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+  - apply schema at `apps/cloud-api/supabase/schema.sql`
 - map your Lemon Squeezy variant IDs:
   - `ZEPHYR_LS_VARIANT_INDIVIDUAL`
   - `ZEPHYR_LS_VARIANT_STARTUP`
@@ -31,6 +35,12 @@ Recommended production settings:
 pnpm --filter @zephyr/cloud-api build
 node apps/cloud-api/dist/index.js
 ```
+
+## Storage backends
+
+- Default fallback: file-backed JSON store (`ZEPHYR_LICENSE_STORE_PATH`).
+- Production recommended: Supabase/Postgres via REST (`SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`).
+- When Supabase is configured, the API uses Supabase first and falls back to file store if Supabase is temporarily unavailable.
 
 Default local API key: `dev_local_key`
 
