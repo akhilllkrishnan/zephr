@@ -9,6 +9,9 @@
  */
 
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { ensureCloudEnvLoaded } from "./env";
+
+ensureCloudEnvLoaded();
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 

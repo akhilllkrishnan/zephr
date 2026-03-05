@@ -141,6 +141,62 @@ describe("@zephyr/cloud-sdk", () => {
     expect(init.body).toBe(JSON.stringify({ licenseKey: "zephyr-pro-demo-2026" }));
   });
 
+  it("posts license activation and deactivation payloads", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          activated: true
+        })
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          deactivated: true
+        })
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ZephyrCloudClient({
+      baseUrl: "http://localhost:8787"
+    });
+
+    const activation = await client.activateLicense({
+      licenseKey: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      instanceName: "my-workspace"
+    });
+    expect(activation.activated).toBe(true);
+
+    const deactivation = await client.deactivateLicense({
+      licenseKey: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      instanceId: "instance_123"
+    });
+    expect(deactivation.deactivated).toBe(true);
+
+    const activationCall = fetchMock.mock.calls[0];
+    expect(activationCall[0]).toBe("http://localhost:8787/v1/licenses/activate");
+    const activationInit = activationCall[1] as RequestInit;
+    expect(activationInit.method).toBe("POST");
+    expect(activationInit.body).toBe(
+      JSON.stringify({
+        licenseKey: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        instanceName: "my-workspace"
+      })
+    );
+
+    const deactivationCall = fetchMock.mock.calls[1];
+    expect(deactivationCall[0]).toBe("http://localhost:8787/v1/licenses/deactivate");
+    const deactivationInit = deactivationCall[1] as RequestInit;
+    expect(deactivationInit.method).toBe("POST");
+    expect(deactivationInit.body).toBe(
+      JSON.stringify({
+        licenseKey: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        instanceId: "instance_123"
+      })
+    );
+  });
+
   it("posts URL audit payload and returns report data", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

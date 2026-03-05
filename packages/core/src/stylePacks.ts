@@ -93,6 +93,7 @@ interface PackColors {
     "600": string;
     "400": string;
     "200": string;
+    "100": string;
     "0": string;
   };
   text: {
@@ -143,6 +144,7 @@ function composeColorTokens(colors: PackColors): DesignTokens["color"] {
     background600: colors.background["600"],
     background400: colors.background["400"],
     background200: colors.background["200"],
+    background100: colors.background["100"],
     background0: colors.background["0"],
 
     text950: colors.text["950"],
@@ -178,7 +180,7 @@ function composeColorTokens(colors: PackColors): DesignTokens["color"] {
     surface: colors.static.white,
     text: colors.text["950"],
     muted: colors.text["500"],
-    border: colors.stroke["200"],
+    border: colors.stroke["100"],
     weak: colors.background["200"],
     sub: colors.background["400"],
     primary: colors.accent["700"],
@@ -241,6 +243,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#666666",
         "400": "#a3a3a3",
         "200": "#e5e5e5",
+        "100": "#f5f5f5",
         "0": "#ffffff"
       },
       text: {
@@ -288,6 +291,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#9ca3af",
         "400": "#6b7280",
         "200": "#334155",
+        "100": "#1f2937",
         "0": "#0f1115"
       },
       text: {
@@ -352,6 +356,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#475569",
         "400": "#94a3b8",
         "200": "#e2e8f0",
+        "100": "#f1f5f9",
         "0": "#ffffff"
       },
       text: {
@@ -399,6 +404,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#94a3b8",
         "400": "#64748b",
         "200": "#334155",
+        "100": "#1e293b",
         "0": "#0b1120"
       },
       text: {
@@ -463,6 +469,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#30384a",
         "400": "#6b7280",
         "200": "#d1d5db",
+        "100": "#f3f4f6",
         "0": "#ffffff"
       },
       text: {
@@ -510,6 +517,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#64748b",
         "400": "#475569",
         "200": "#1f2937",
+        "100": "#111827",
         "0": "#0b0d12"
       },
       text: {
@@ -575,6 +583,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#334155",
         "400": "#94a3b8",
         "200": "#e2e8f0",
+        "100": "#f1f5f9",
         "0": "#ffffff"
       },
       text: {
@@ -622,6 +631,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#94a3b8",
         "400": "#64748b",
         "200": "#334155",
+        "100": "#1e293b",
         "0": "#111827"
       },
       text: {

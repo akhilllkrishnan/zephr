@@ -92,6 +92,26 @@ export interface LicenseValidationResponse {
   expiresAt?: string;
 }
 
+export interface LicenseActivateRequest {
+  licenseKey: string;
+  instanceName: string;
+}
+
+export interface LicenseActivateResponse {
+  activated: boolean;
+  error?: string;
+}
+
+export interface LicenseDeactivateRequest {
+  licenseKey: string;
+  instanceId: string;
+}
+
+export interface LicenseDeactivateResponse {
+  deactivated: boolean;
+  error?: string;
+}
+
 export type UrlAuditSeverity = "high" | "medium" | "low";
 
 export interface UrlAuditIssue {

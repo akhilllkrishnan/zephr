@@ -249,6 +249,7 @@ const colorTokenGroups: Array<{
         "background600",
         "background400",
         "background200",
+        "background100",
         "background0"
       ]
     },
@@ -580,7 +581,7 @@ function buildExpandedColorPalettes(stylePack: StylePackName, accentColor: strin
   const darkBlack = ensureHex(darkBase.background, "#111111");
   const darkWhite = ensureHex(darkBase.text ?? lightBase.text, "#f5f5f5");
 
-  const bgStops = [0, 0.2, 0.4, 0.6, 0.8, 1];
+  const bgStops = [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1];
   const textStops = [0, 0.28, 0.55, 0.82];
   const strokeStops = [0, 0.3, 0.6, 0.88];
 
@@ -624,7 +625,8 @@ function buildExpandedColorPalettes(stylePack: StylePackName, accentColor: strin
     background600: backgroundLight[2],
     background400: backgroundLight[3],
     background200: backgroundLight[4],
-    background0: backgroundLight[5],
+    background100: backgroundLight[5],
+    background0: backgroundLight[6],
     text950: textLight[0],
     text700: textLight[1],
     text500: textLight[2],
@@ -660,7 +662,8 @@ function buildExpandedColorPalettes(stylePack: StylePackName, accentColor: strin
     background600: backgroundDark[2],
     background400: backgroundDark[3],
     background200: backgroundDark[4],
-    background0: backgroundDark[5],
+    background100: backgroundDark[5],
+    background0: backgroundDark[6],
     text950: textDark[0],
     text700: textDark[1],
     text500: textDark[2],
@@ -1449,7 +1452,7 @@ function PreviewSurface({
   }
 
   if (entry.id === "divider") {
-    const dividerColor = "var(--z-color-stroke300, var(--z-color-border, #d0d5dd))";
+    const dividerColor = "var(--z-color-stroke100, var(--z-color-border, #eaecf0))";
     const insetPadding = dividerInset === "none" ? 0 : dividerInset === "sm" ? 24 : 48;
     const labelNode =
       dividerLabel === "text" ? (
@@ -1507,7 +1510,7 @@ function PreviewSurface({
                 columnGap: "0.75rem",
                 alignItems: "stretch",
                 minHeight: "136px",
-                border: "1px solid var(--z-color-stroke200, var(--z-color-border, #ebebeb))",
+                border: "1px solid var(--z-color-stroke100, var(--z-color-border, #eaecf0))",
                 borderRadius: "10px",
                 background: "var(--z-color-background0, #ffffff)",
                 padding: "0.75rem",
@@ -2523,13 +2526,21 @@ function SnippetItem({ label, code, onCopy, beta }: { label: string; code: strin
       <div className="snippet-item-head">
         <span className="snippet-item-label">{label}</span>
         <div className="snippet-item-actions">
-          {beta && <span className="snippet-beta-badge">Private Beta</span>}
+          {beta ? (
+            <Badge size="md" variant="stroke" color="yellow">
+              Private Beta
+            </Badge>
+          ) : null}
           <button type="button" className="snippet-item-copy" onClick={onCopy}>Copy</button>
         </div>
       </div>
       <pre>{code}</pre>
     </div>
   );
+}
+
+function Tag({ tone = "neutral", children }: { tone?: "neutral" | "info"; children: ReactNode }) {
+  return <Badge tone={tone} size="sm">{children}</Badge>;
 }
 
 /* ── Preview / Code tab block ─── */
@@ -2602,7 +2613,7 @@ function InstallTabBlock({
   const verb = PKG_INSTALL[pm];
   const cmd = `${verb} ${packageName}`;
   return (
-    <div className="itb-root">
+    <div className="itb-block">
       <div className="itb-tabrow">
         {(["npm", "pnpm", "yarn"] as PkgManager[]).map((p) => (
           <button key={p} type="button" className={`itb-tab${pm === p ? " active" : ""}`} onClick={() => setPm(p)}>
@@ -2610,27 +2621,29 @@ function InstallTabBlock({
           </button>
         ))}
       </div>
-      <div className="itb-file-row">
-        <span className="itb-file-label">terminal</span>
-        <button type="button" className="itb-copy-icon" onClick={() => onCopy(cmd)} aria-label="Copy command">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-          </svg>
-        </button>
-      </div>
-      <pre className="itb-code">
-        <span className={pm === "npm" ? "itb-cmd-npm" : pm === "pnpm" ? "itb-cmd-pnpm" : "itb-cmd-yarn"}>{pm}</span>
-        {" "}
-        <span className="itb-cmd-verb">{pm === "npm" ? "install" : pm === "pnpm" ? "add" : "add"}</span>
-        {" "}
-        <span className="itb-cmd-pkg">{packageName}</span>
-      </pre>
-      {beta && (
-        <div className="itb-beta-note">
-          <span className="snippet-beta-badge" style={{ marginRight: "0.5rem" }}>Private Beta</span>
-          @zephyr/ui-react is not yet published to npm — install command coming soon.
+      <div className="itb-root">
+        <div className="itb-file-row">
+          <span className="itb-file-label">terminal</span>
+          <button type="button" className="snippet-item-copy" onClick={() => onCopy(cmd)} aria-label="Copy command">
+            Copy
+          </button>
         </div>
-      )}
+        <pre className="itb-code">
+          <span className={pm === "npm" ? "itb-cmd-npm" : pm === "pnpm" ? "itb-cmd-pnpm" : "itb-cmd-yarn"}>{pm}</span>
+          {" "}
+          <span className="itb-cmd-verb">{pm === "npm" ? "install" : pm === "pnpm" ? "add" : "add"}</span>
+          {" "}
+          <span className="itb-cmd-pkg">{packageName}</span>
+        </pre>
+        {beta && (
+          <div className="itb-beta-note">
+            <Badge size="md" variant="stroke" color="yellow" style={{ marginRight: "0.5rem" }}>
+              Private Beta
+            </Badge>
+            @zephyr/ui-react is not yet published to npm — install command coming soon.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -3799,6 +3812,7 @@ export default function App() {
     ].join("\n");
   }, [accentColor, stylePack]);
   const cloudBaseUrl = (import.meta.env.VITE_ZEPHYR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
+  const proCheckoutUrl = (import.meta.env.VITE_ZEPHYR_PRO_CHECKOUT_URL as string | undefined)?.trim() || "";
   const cloudClient = useMemo(() => {
     const key = cloudApiKey.trim();
     if (!key) {
@@ -4485,11 +4499,23 @@ export default function App() {
             <span className="ms">{mobileNavOpen ? "close" : "menu"}</span>
           </button>
           <div className="brand-wrap">
-            <img src={brandLogoSrc} alt="Zephyr" className="brand-logo" />
+            <button
+              type="button"
+              className="brand-home"
+              onClick={() => {
+                setTopTab("setup");
+                setView("introduction");
+                setMobileNavOpen(false);
+              }}
+              aria-label="Go to introduction"
+            >
+              <img src={brandLogoSrc} alt="Zephyr" className="brand-logo" />
+            </button>
           </div>
 
           <div className="top-search-wrap">
             <div className="top-search-inner" ref={searchPanelRef}>
+              <span className="ms top-search-icon" aria-hidden>search</span>
               <input
                 ref={searchInputRef}
                 className="top-search"
@@ -4547,7 +4573,7 @@ export default function App() {
           <div className="top-actions">
             <Button
               size="sm"
-              variant={userTier === "pro" ? "secondary" : "ghost"}
+              variant={userTier === "pro" ? "secondary" : "primary"}
               onClick={() => setShowUpgradeModal(true)}
             >
               {userTier === "pro" ? "✓ Pro" : "Unlock Pro"}
@@ -4599,19 +4625,6 @@ export default function App() {
           <div className="sidebar-theme-section">
             <p className="sidebar-theme-label">Style &amp; Accent</p>
             <div className="sidebar-theme-controls">
-              <select
-                className="sidebar-theme-select"
-                value={stylePack}
-                onChange={(e) => handleStylePackChange(e.target.value as StylePackName)}
-                aria-label="Select style pack"
-              >
-                {(Object.keys(STYLE_PACK_META) as StylePackName[]).map((pack) => (
-                  <option key={pack} value={pack}>
-                    {STYLE_PACK_META[pack].label}
-                    {STYLE_PACK_META[pack].tier === "pro" ? " (Pro)" : ""}
-                  </option>
-                ))}
-              </select>
               <select
                 className="sidebar-theme-select"
                 value={surfaceStyle}
@@ -4942,17 +4955,20 @@ export default function App() {
               <a className="sidebar-link" href="#changelog-overview" onClick={() => setMobileNavOpen(false)}>
                 Overview
               </a>
-              <a className="sidebar-link" href="#release-0-4-0" onClick={() => setMobileNavOpen(false)}>
-                v0.4.0 <span className="nav-badge latest">Latest</span>
+              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-4-0" onClick={() => setMobileNavOpen(false)}>
+                <span className="changelog-version-tags">
+                  <Tag tone="neutral">v0.4.0</Tag>
+                  <Tag tone="info">Latest</Tag>
+                </span>
               </a>
-              <a className="sidebar-link" href="#release-0-3-0" onClick={() => setMobileNavOpen(false)}>
-                v0.3.0
+              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-3-0" onClick={() => setMobileNavOpen(false)}>
+                <Tag tone="neutral">v0.3.0</Tag>
               </a>
-              <a className="sidebar-link" href="#release-0-2-0" onClick={() => setMobileNavOpen(false)}>
-                v0.2.0
+              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-2-0" onClick={() => setMobileNavOpen(false)}>
+                <Tag tone="neutral">v0.2.0</Tag>
               </a>
-              <a className="sidebar-link" href="#release-0-1-0" onClick={() => setMobileNavOpen(false)}>
-                v0.1.0
+              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-1-0" onClick={() => setMobileNavOpen(false)}>
+                <Tag tone="neutral">v0.1.0</Tag>
               </a>
               <a className="sidebar-link" href="#migrations-overview" onClick={() => setMobileNavOpen(false)}>
                 Migrations
@@ -4980,10 +4996,12 @@ export default function App() {
 
               <section id="release-0-4-0" className="doc-section">
                 <div className="release-header">
-                  <div className="release-version-badge">v0.4.0</div>
+                  <div className="release-version-tags">
+                    <Tag tone="neutral">v0.4.0</Tag>
+                    <Tag tone="info">Latest</Tag>
+                  </div>
                   <div className="release-meta">
                     <span className="release-date">March 4, 2026</span>
-                    <span className="release-tag latest">Latest</span>
                   </div>
                 </div>
                 <p className="release-summary">Style pack differentiation, PRO gating, premium page templates, and docs narrative pages.</p>
@@ -5012,7 +5030,9 @@ export default function App() {
 
               <section id="release-0-3-0" className="doc-section">
                 <div className="release-header">
-                  <div className="release-version-badge">v0.3.0</div>
+                  <div className="release-version-tags">
+                    <Tag tone="neutral">v0.3.0</Tag>
+                  </div>
                   <div className="release-meta">
                     <span className="release-date">March 3, 2026</span>
                   </div>
@@ -5040,7 +5060,9 @@ export default function App() {
 
               <section id="release-0-2-0" className="doc-section">
                 <div className="release-header">
-                  <div className="release-version-badge">v0.2.0</div>
+                  <div className="release-version-tags">
+                    <Tag tone="neutral">v0.2.0</Tag>
+                  </div>
                   <div className="release-meta">
                     <span className="release-date">March 2, 2026</span>
                   </div>
@@ -5067,7 +5089,9 @@ export default function App() {
 
               <section id="release-0-1-0" className="doc-section">
                 <div className="release-header">
-                  <div className="release-version-badge">v0.1.0</div>
+                  <div className="release-version-tags">
+                    <Tag tone="neutral">v0.1.0</Tag>
+                  </div>
                   <div className="release-meta">
                     <span className="release-date">March 1, 2026</span>
                   </div>
@@ -5104,7 +5128,7 @@ export default function App() {
                   <h2>Migration: v0.1.0 → v0.2.0</h2>
                   <p>Action list for existing links, docs wrappers, and agent scripts.</p>
                 </div>
-                <div className="snippet-stack">
+                <div className="snippet-stack changelog-snippet-stack">
                   <SnippetItem
                     label="What changed"
                     code={`1. Top-level navigation remains: Setup, Components, Pages, Change Log
@@ -6744,7 +6768,7 @@ injectSpeedInsights();`}
                       <p>Interactive canvas with selectable states. Switch to Code for a copy-ready snippet.</p>
                     </div>
                     {/* Preview / Code tab toggle */}
-                    <div className="pcb-toolbar" style={{ border: "1px solid var(--line)", borderRadius: 8, padding: "3px", background: "var(--panel-soft)", gap: 2 }}>
+                    <div className="pcb-toolbar" style={{ border: "1px solid var(--line)", borderRadius: 8, padding: "3px", background: "var(--z-color-background100)", gap: 2 }}>
                       <button
                         type="button"
                         className={`pcb-tab${componentDetailTab === "preview" ? " active" : ""}`}
@@ -7877,10 +7901,15 @@ injectSpeedInsights();`}
           {topTab === "changelog" && (
             <>
               <a className="toc-link" href="#changelog-overview">Overview</a>
-              <a className="toc-link" href="#release-0-4-0">v0.4.0</a>
-              <a className="toc-link" href="#release-0-3-0">v0.3.0</a>
-              <a className="toc-link" href="#release-0-2-0">v0.2.0</a>
-              <a className="toc-link" href="#release-0-1-0">v0.1.0</a>
+              <a className="toc-link" href="#release-0-4-0">
+                <span className="changelog-version-tags">
+                  <Tag tone="neutral">v0.4.0</Tag>
+                  <Tag tone="info">Latest</Tag>
+                </span>
+              </a>
+              <a className="toc-link" href="#release-0-3-0"><Tag tone="neutral">v0.3.0</Tag></a>
+              <a className="toc-link" href="#release-0-2-0"><Tag tone="neutral">v0.2.0</Tag></a>
+              <a className="toc-link" href="#release-0-1-0"><Tag tone="neutral">v0.1.0</Tag></a>
               <a className="toc-link" href="#migrations-overview">Migrations</a>
               <a className="toc-link" href="#release-upcoming">Roadmap</a>
             </>
@@ -7996,7 +8025,15 @@ injectSpeedInsights();`}
               setShowUpgradeModal(false);
               showToast(result.message || "Pro access enabled");
             }}
-            onGetKey={() => showToast("License key portal coming soon")}
+            onGetKey={() => {
+              if (!proCheckoutUrl) {
+                showToast("Set VITE_ZEPHYR_PRO_CHECKOUT_URL to your Lemon Squeezy checkout URL.");
+                return;
+              }
+
+              window.open(proCheckoutUrl, "_blank", "noopener,noreferrer");
+              showToast("Opening checkout...");
+            }}
             onRemove={() => {
               setLicenseKey("");
               setUserTier("free");

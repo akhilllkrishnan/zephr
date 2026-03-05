@@ -12,6 +12,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.3.1",
     "@zephyr/ai-registry": "workspace:*",
     "@zephyr/avatars": "workspace:*",
     "@zephyr/cloud-sdk": "workspace:*",

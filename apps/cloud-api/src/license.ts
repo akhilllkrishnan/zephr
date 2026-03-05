@@ -6,6 +6,9 @@
  */
 
 import { validateLsLicenseKey } from "./lemonsqueezy";
+import { ensureCloudEnvLoaded } from "./env";
+
+ensureCloudEnvLoaded();
 
 export type LicenseTier = "free" | "pro";
 export type LicensePlan = "pro" | "team";

@@ -1,4 +1,7 @@
 import { IncomingMessage } from "node:http";
+import { ensureCloudEnvLoaded } from "./env";
+
+ensureCloudEnvLoaded();
 
 export interface ApiPrincipal {
   key: string;

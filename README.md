@@ -60,11 +60,21 @@ pnpm --filter @zephyr/cloud-api build
 node apps/cloud-api/dist/index.js
 ```
 
+For Lemon Squeezy local integration, copy `apps/cloud-api/.env.example` to `apps/cloud-api/.env` and set:
+
+- `LEMON_SQUEEZY_API_KEY`
+- `LEMON_SQUEEZY_WEBHOOK_SECRET`
+
 Run docs playground:
 
 ```bash
 pnpm docs:dev
 ```
+
+Optional checkout wiring for the Pro modal:
+
+- create `apps/docs-playground/.env`
+- set `VITE_ZEPHYR_PRO_CHECKOUT_URL=https://your-checkout-url`
 
 ## Deploy + Custom Domain (Vercel)
 

@@ -7,6 +7,10 @@ import {
   CloudIcon,
   CloudLogoCatalogEntry,
   CloudSearchResponse,
+  LicenseActivateRequest,
+  LicenseActivateResponse,
+  LicenseDeactivateRequest,
+  LicenseDeactivateResponse,
   LicenseValidationRequest,
   LicenseValidationResponse,
   LogoResponse,
@@ -182,6 +186,20 @@ export class ZephyrCloudClient {
 
   validateLicense(payload: LicenseValidationRequest): Promise<LicenseValidationResponse> {
     return this.request<LicenseValidationResponse>("/v1/licenses/validate", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  activateLicense(payload: LicenseActivateRequest): Promise<LicenseActivateResponse> {
+    return this.request<LicenseActivateResponse>("/v1/licenses/activate", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  deactivateLicense(payload: LicenseDeactivateRequest): Promise<LicenseDeactivateResponse> {
+    return this.request<LicenseDeactivateResponse>("/v1/licenses/deactivate", {
       method: "POST",
       body: JSON.stringify(payload)
     });

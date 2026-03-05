@@ -106,13 +106,13 @@ function getVariantStyles(
 
   return {
     background:
-      "linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%), var(--z-color-primary, #121212)",
+      "linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%), var(--z-color-background950, #121212)",
     borderColor: "rgba(255, 255, 255, 0.12)",
     boxShadow: focused
       ? "0 0 0 2px var(--z-color-surface, #ffffff), 0 0 0 4px rgba(153, 160, 174, 0.22)"
       : hovered
-        ? "0 3px 10px rgba(14, 18, 27, 0.18), inset 0 0 0 1px var(--z-color-primary, #121212)"
-        : "inset 0 0 0 1px var(--z-color-primary, #121212)",
+        ? "0 3px 10px rgba(14, 18, 27, 0.18), inset 0 0 0 1px var(--z-color-background950, #121212)"
+        : "inset 0 0 0 1px var(--z-color-background950, #121212)",
     color: "var(--z-color-primaryContrast, #ffffff)"
   };
 }

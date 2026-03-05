@@ -17,12 +17,14 @@ import { HttpError, readJsonBody, sendJson } from "./http";
 import { validateLicenseKey } from "./license";
 import {
   activateLsLicenseKey,
+  deactivateLsLicenseKey,
   getWebhookSecret,
   verifyWebhookSignature,
   type LsLicenseKeyAttributes,
   type LsOrderAttributes,
   type LsWebhookEvent
 } from "./lemonsqueezy";
+import { ensureCloudEnvLoaded } from "./env";
 import { createRateLimiter } from "./rateLimit";
 
 interface SnippetRequest {
@@ -30,6 +32,8 @@ interface SnippetRequest {
   variant?: string;
   prompt?: string;
 }
+
+ensureCloudEnvLoaded();
 
 interface TakedownRequest {
   domain: string;
@@ -195,6 +199,27 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
     } catch (err) {
       console.error("[license/activate]", err);
       sendJson(response, 503, { error: "License activation service unavailable." });
+    }
+    return;
+  }
+
+  // --- Public endpoint: license deactivate (no Bearer required) ---
+  if (request.method === "POST" && url.pathname === "/v1/licenses/deactivate") {
+    const body = await readJsonBody<{ licenseKey?: string; instanceId?: string }>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
+    if (!body.licenseKey || !body.instanceId) {
+      sendJson(response, 400, { error: "Missing required fields: licenseKey, instanceId" });
+      return;
+    }
+    try {
+      const result = await deactivateLsLicenseKey(body.licenseKey, body.instanceId);
+      sendJson(response, result.deactivated ? 200 : 422, result);
+      auditLog("public:license:deactivate", request, result.deactivated ? 200 : 422);
+    } catch (err) {
+      console.error("[license/deactivate]", err);
+      sendJson(response, 503, { error: "License deactivation service unavailable." });
     }
     return;
   }
@@ -580,7 +605,13 @@ const server = createServer(async (request, response) => {
       sendJson(response, 200, {
         status: "ok",
         service: "zephyr-cloud-api",
-        now: new Date().toISOString()
+        now: new Date().toISOString(),
+        integrations: {
+          lemonSqueezy: {
+            apiKeyConfigured: Boolean(process.env.LEMON_SQUEEZY_API_KEY?.trim()),
+            webhookSecretConfigured: Boolean(process.env.LEMON_SQUEEZY_WEBHOOK_SECRET?.trim())
+          }
+        }
       });
       return;
     }

@@ -83,6 +83,7 @@ describe("@zephyr/core", () => {
       "background600",
       "background400",
       "background200",
+      "background100",
       "background0",
       "text950",
       "text700",
