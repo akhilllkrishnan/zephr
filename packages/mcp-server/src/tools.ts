@@ -23,6 +23,16 @@ export type McpToolName =
   | "apply_theme"
   | "install_plan";
 
+const STYLE_PACKS = ["notion", "stripe", "linear", "framer"] as const;
+const LEGACY_STYLE_PACK_MAP: Record<string, (typeof STYLE_PACKS)[number]> = {
+  Studio: "notion",
+  Editorial: "stripe",
+  NeoBrutal: "framer",
+  SoftTech: "stripe",
+  Enterprise: "linear",
+  Clarity: "notion"
+};
+
 export interface McpToolCall {
   name: McpToolName;
   arguments?: Record<string, unknown>;
@@ -102,7 +112,7 @@ export function listTools() {
           id: { type: "string", description: "Component id, e.g. 'button', 'modal-dialog'" },
           stylePack: {
             type: "string",
-            description: "Style pack name. One of: Studio, Editorial, NeoBrutal, SoftTech, Enterprise, Clarity. Defaults to Studio."
+            description: "Style pack name. One of: notion, stripe, linear, framer. Defaults to notion."
           },
           accentColor: {
             type: "string",
@@ -134,7 +144,7 @@ export function listTools() {
           },
           stylePack: {
             type: "string",
-            description: "Style pack name. Defaults to Studio."
+            description: "Style pack name. Defaults to notion."
           },
           accentColor: {
             type: "string",
@@ -165,7 +175,7 @@ export function listTools() {
         properties: {
           stylePack: {
             type: "string",
-            description: "Style pack name. One of: Studio, Editorial, NeoBrutal, SoftTech, Enterprise, Clarity."
+            description: "Style pack name. One of: notion, stripe, linear, framer."
           },
           accentColor: {
             type: "string",
@@ -216,7 +226,7 @@ function str(val: unknown, fallback = ""): string {
 
 function handleGenerateComponent(args: Record<string, unknown>): unknown {
   const id = str(args.id);
-  const stylePack = str(args.stylePack, "Studio");
+  const stylePack = normalizeStylePack(str(args.stylePack), "notion");
   const accentColor = str(args.accentColor, "#121212");
   const assistant = str(args.assistant, "Codex") as AssistantTool;
   const packageManager = str(args.packageManager, "pnpm") as PackageManager;
@@ -253,7 +263,7 @@ function handleScaffoldPage(args: Record<string, unknown>): unknown {
     return { error: "At least one component id is required." };
   }
 
-  const stylePack = str(args.stylePack, "Studio");
+  const stylePack = normalizeStylePack(str(args.stylePack), "notion");
   const accentColor = str(args.accentColor, "#121212");
   const pageTitle = str(args.pageTitle, "Page");
   const assistant = str(args.assistant, "Codex") as AssistantTool;
@@ -344,26 +354,30 @@ function handleScaffoldPage(args: Record<string, unknown>): unknown {
 }
 
 function handleApplyTheme(args: Record<string, unknown>): unknown {
-  const stylePack = str(args.stylePack);
+  const requestedPack = str(args.stylePack);
   const accentColor = str(args.accentColor, "#121212");
   const packageManager = str(args.packageManager, "pnpm") as PackageManager;
 
-  const validPacks = ["Studio", "Editorial", "NeoBrutal", "SoftTech", "Enterprise", "Clarity"];
-  if (!validPacks.includes(stylePack)) {
+  const stylePack = normalizeStylePack(requestedPack, "notion");
+  if (!STYLE_PACKS.includes(stylePack as (typeof STYLE_PACKS)[number])) {
     return {
-      error: `Unknown style pack '${stylePack}'. Valid values: ${validPacks.join(", ")}.`
+      error: `Unknown style pack '${requestedPack}'. Valid values: ${STYLE_PACKS.join(", ")}.`
     };
   }
 
   const configSource = buildConfigSource(stylePack, accentColor);
   const installCommand = buildInstallCommand(["@zephyr/core", "@zephyr/ui-react"], packageManager);
+  const warnings = requestedPack in LEGACY_STYLE_PACK_MAP
+    ? [`Style pack "${requestedPack}" is deprecated. Using "${stylePack}".`]
+    : [];
 
   return {
     configSource,
     fileName: "zephyr.config.ts",
     installCommand,
+    warnings,
     cssNote:
-      "Import the generated CSS variables in your app entry point: import { generateCssVariables } from '@zephyr/core'; then inject the output into a <style> tag or your global CSS."
+      `Import static theme CSS once in your app entry point: import "@zephyr/ui-react/themes/${stylePack}.css";`
   };
 }
 
@@ -397,6 +411,22 @@ function buildConfigSource(stylePack: string, accentColor: string): string {
     ``,
     `export default config;`
   ].join("\n");
+}
+
+function normalizeStylePack(input: string, fallback: (typeof STYLE_PACKS)[number]): string {
+  if (!input) {
+    return fallback;
+  }
+
+  if (STYLE_PACKS.includes(input as (typeof STYLE_PACKS)[number])) {
+    return input;
+  }
+
+  if (input in LEGACY_STYLE_PACK_MAP) {
+    return LEGACY_STYLE_PACK_MAP[input];
+  }
+
+  return input;
 }
 
 // ---------------------------------------------------------------------------
@@ -474,7 +504,7 @@ function handleInstallPlan(args: Record<string, unknown>): unknown {
         "install", packageManager === "npm" ? "install -g" :
         packageManager === "yarn" ? "global add" :
           packageManager === "bun" ? "add -g" : "add -g"
-      ) + ` && zephyr init --style-pack Studio`
+      ) + ` && zephyr init --style-pack notion`
     },
     {
       step: 3,

@@ -2,14 +2,22 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { compileUtilities, loadZephyrConfig, resolveConfig, resolveTokens } from "../src";
+import {
+  generateCssVariables,
+  loadZephyrConfig,
+  resolveConfig,
+  resolveStylePackName,
+  resolveTokens,
+  stylePackNames,
+  stylePacks
+} from "../src";
 
 describe("@zephyr/core", () => {
   it("resolves defaults for style pack and prefix", () => {
     const resolved = resolveConfig({});
-    expect(resolved.stylePack).toBe("Studio");
+    expect(resolved.stylePack).toBe("notion");
     expect(resolved.prefix).toBe("z");
-    expect(resolved.tokens.color.primary).toBe("#121212");
+    expect(resolved.tokens.color.primary).toBe(stylePacks.notion.color.primary);
   });
 
   it("applies semantic token aliases", () => {
@@ -24,28 +32,20 @@ describe("@zephyr/core", () => {
     expect(tokens.color.page).toBe(tokens.color.background);
   });
 
-  it("resolves clarity style pack tokens", () => {
-    const resolved = resolveConfig({ stylePack: "Clarity" });
-    expect(resolved.tokens.color.primary).toBe("#121212");
-    expect(resolved.tokens.type.family.sans).toContain("Inter");
-    expect(resolved.tokens.radius.lg).toBe("1.25rem");
+  it("maps legacy style packs to the new public packs", () => {
+    expect(resolveStylePackName("Studio")).toBe("notion");
+    expect(resolveStylePackName("Clarity")).toBe("notion");
+    expect(resolveStylePackName("Enterprise")).toBe("linear");
   });
 
-  it("compiles CSS variables, utilities, and responsive classes", () => {
-    const resolved = resolveConfig({ stylePack: "Enterprise", prefix: "zp" });
-    const css = compileUtilities(resolved.tokens, {
-      prefix: resolved.prefix,
-      includeResponsive: true
-    });
+  it("compiles CSS variable output for light and dark tokens", () => {
+    const resolved = resolveConfig({ stylePack: "linear", prefix: "zp" });
+    const css = generateCssVariables(resolved.tokens, resolved.prefix);
 
     expect(css).toContain("--zp-color-primary");
-    expect(css).toContain(".zp-bg-primary");
-    expect(css).toContain("@media (min-width: 768px)");
-    expect(css).toContain(".md\\:zp-text-primary");
-    expect(css).toContain(".zp-border{border:1px solid var(--zp-color-border);}");
-    expect(css).toContain(".zp-ml-4");
-    expect(css).toContain(".zp-fixed{position:fixed;}");
-    expect(css).toContain(".zp-h-full{height:100%;}");
+    expect(css).toContain("--zp-type-family-sans");
+    expect(css).toContain("--zp-breakpoint-md");
+    expect(css).toContain("[data-theme=\"dark\"]");
   });
 
   it("loads style pack values from zephyr.config.ts", () => {
@@ -53,7 +53,7 @@ describe("@zephyr/core", () => {
     writeFileSync(
       join(tempDir, "zephyr.config.ts"),
       `export default {
-  stylePack: "Clarity",
+  stylePack: "notion",
   tokens: {
     color: {
       primary: "#102a43",
@@ -67,10 +67,61 @@ describe("@zephyr/core", () => {
 
     try {
       const resolved = loadZephyrConfig(tempDir);
-      expect(resolved.stylePack).toBe("Clarity");
+      expect(resolved.stylePack).toBe("notion");
       expect(resolved.tokens.color.primary).toBe("#102a43");
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it("enforces required color groups and light/dark key parity", () => {
+    const requiredColorKeys = [
+      "staticBlack",
+      "staticWhite",
+      "background950",
+      "background800",
+      "background600",
+      "background400",
+      "background200",
+      "background0",
+      "text950",
+      "text700",
+      "text500",
+      "text300",
+      "stroke400",
+      "stroke300",
+      "stroke200",
+      "stroke100",
+      "accent900",
+      "accent700",
+      "accent500",
+      "accent300",
+      "semanticRed900",
+      "semanticRed700",
+      "semanticRed500",
+      "semanticRed300",
+      "semanticYellow900",
+      "semanticYellow700",
+      "semanticYellow500",
+      "semanticYellow300",
+      "semanticGreen900",
+      "semanticGreen700",
+      "semanticGreen500",
+      "semanticGreen300"
+    ];
+    const hexPattern = /^#[0-9a-fA-F]{6}$/;
+
+    for (const packName of stylePackNames) {
+      const tokens = stylePacks[packName];
+      const lightKeys = Object.keys(tokens.color);
+      const darkKeys = Object.keys(tokens.colorDark ?? {});
+
+      for (const key of requiredColorKeys) {
+        expect(lightKeys).toContain(key);
+        expect(darkKeys).toContain(key);
+        expect(tokens.color[key]).toMatch(hexPattern);
+        expect(tokens.colorDark?.[key]).toMatch(hexPattern);
+      }
     }
   });
 });

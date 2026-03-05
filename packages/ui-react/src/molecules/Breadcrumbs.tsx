@@ -55,7 +55,7 @@ export function Breadcrumbs({ items, separator = "/", className, style }: Breadc
                     aria-current={isLast ? "page" : undefined}
                     onMouseEnter={() => setHoveredId(item.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    onFocus={() => setFocusedId(item.id)}
+                    onFocus={(event) => setFocusedId(event.currentTarget.matches(":focus-visible") ? item.id : null)}
                     onBlur={() => setFocusedId(null)}
                     style={{
                       color: isHovered
@@ -78,7 +78,7 @@ export function Breadcrumbs({ items, separator = "/", className, style }: Breadc
                     onClick={item.onClick}
                     onMouseEnter={() => setHoveredId(item.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    onFocus={() => setFocusedId(item.id)}
+                    onFocus={(event) => setFocusedId(event.currentTarget.matches(":focus-visible") ? item.id : null)}
                     onBlur={() => setFocusedId(null)}
                     style={{
                       border: "none",

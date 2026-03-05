@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
   - `corepack pnpm release:check`
 
 ### Changed
-- Docs playground now uses one base theme (Clarity) and global persistent accent control.
+- Docs playground now supports global style-pack switching (`notion`, `stripe`, `linear`, `framer`) with persistent accent control.
 - Component preview area now uses browser-window style interactive canvas with explicit state selector for key components.
 - Zephyr Pro modal now validates keys through cloud API with async loading/error handling.
 - Docs playground AI Tools setup now uses generator controls (assistant, project preset, package manager) and emits dynamic install/context/prompt snippets.

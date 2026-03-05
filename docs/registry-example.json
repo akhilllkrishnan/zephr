@@ -12,9 +12,17 @@
     "Ensure the input has a visible label or aria-label."
   ],
   "dependencies": ["@zephyr/ui-react"],
-  "stylePackSupport": ["Studio", "Editorial", "NeoBrutal", "SoftTech", "Enterprise", "Clarity"],
-  "aiHints": [
-    "Place above results lists and data tables.",
-    "Pair with FiltersBar for faceted search."
-  ]
+  "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+  "aiHints": {
+    "positive": [
+      "Place above results lists and data tables.",
+      "Pair with FiltersBar for faceted search."
+    ],
+    "negative": [
+      "Avoid raw HTML controls when a Zephyr component exists."
+    ],
+    "preferredImports": [
+      "import { SearchBox } from \"@zephyr/ui-react\";"
+    ]
+  }
 }

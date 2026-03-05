@@ -16,7 +16,7 @@ import { generateCssVariables } from "@zephyr/core/browser";
 import { Button, FormField, Input } from "@zephyr/ui-react";
 
 // 1. Inject CSS variables once at app entry
-const css = generateCssVariables({ stylePack: "Studio" });
+const css = generateCssVariables({ stylePack: "notion" });
 const style = document.createElement("style");
 style.textContent = css;
 document.head.appendChild(style);

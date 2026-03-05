@@ -5,6 +5,7 @@
   "type": "object",
   "required": [
     "color",
+    "colorDark",
     "type",
     "space",
     "radius",
@@ -14,6 +15,10 @@
   ],
   "properties": {
     "color": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "colorDark": {
       "type": "object",
       "additionalProperties": { "type": "string" }
     },

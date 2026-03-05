@@ -28,7 +28,7 @@ const spec = getComponentSpec("button");
 // Generate a formatted prompt for your AI assistant
 const prompt = generateComponentPrompt("button", {
   assistant: "Cursor",
-  stylePack: "Studio",
+  stylePack: "notion",
   accentColor: "#335cff"
 });
 

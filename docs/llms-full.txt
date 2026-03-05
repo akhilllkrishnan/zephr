@@ -22,7 +22,7 @@ pnpm add @zephyr/core @zephyr/ui-react
 import { defineConfig } from "@zephyr/core";
 
 export default defineConfig({
-  stylePack: "Studio",
+  stylePack: "notion",
   prefix: "z"
 });
 ```

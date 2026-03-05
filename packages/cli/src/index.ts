@@ -10,9 +10,11 @@ import {
   searchComponents
 } from "@zephyr/ai-registry";
 import {
+  LEGACY_STYLE_PACK_MAP,
   generateCssVariables,
   loadZephyrConfig,
   resolveConfig,
+  resolveStylePackName,
   stylePackNames,
   type ResolvedZephyrConfig,
   type StylePackName
@@ -42,6 +44,7 @@ const CONFIG_CANDIDATES = [
 
 const MANAGED_START = "// zephyr-managed:start";
 const MANAGED_END = "// zephyr-managed:end";
+const DEFAULT_STYLE_PACK: StylePackName = "notion";
 
 function parseInput(args: string[]): ParsedInput {
   const positionals: string[] = [];
@@ -74,6 +77,25 @@ function readFlag(input: ParsedInput, name: string): string | undefined {
 
 function hasFlag(input: ParsedInput, name: string): boolean {
   return input.flags[name] === true;
+}
+
+function resolveRequestedStylePack(
+  requested: string | undefined,
+  fallback: StylePackName
+): StylePackName | null {
+  if (!requested) {
+    return fallback;
+  }
+
+  if (stylePackNames.includes(requested as StylePackName)) {
+    return requested as StylePackName;
+  }
+
+  if (requested in LEGACY_STYLE_PACK_MAP) {
+    return resolveStylePackName(requested);
+  }
+
+  return null;
 }
 
 function writeFile(filePath: string, content: string): void {
@@ -164,6 +186,87 @@ ${managedThemeBlock(stylePack, accent)},
   }
 };
 `;
+}
+
+function buildClaudeContext(stylePack: StylePackName, accent: string): string {
+  return [
+    "# Zephyr Workspace Context",
+    "",
+    "- Always prefer Zephyr components from `@zephyr/ui-react` over raw HTML controls.",
+    `- Default style pack: \`${stylePack}\`.`,
+    `- Accent color: \`${accent}\`.`,
+    "- Use `zephyr.config.ts` as the source of truth for theme and token overrides.",
+    "- Keep output accessible (labels, aria attributes, keyboard flow) and production-ready.",
+    "- Avoid inline hex colors when a Zephyr token exists."
+  ].join("\n") + "\n";
+}
+
+function buildAgentsContext(stylePack: StylePackName, accent: string): string {
+  return [
+    "# AGENTS",
+    "",
+    "## Zephyr usage policy",
+    "- Import components from `@zephyr/ui-react` first.",
+    "- Do not generate raw `<button>`, `<input>`, or `<select>` if an equivalent Zephyr component exists.",
+    `- Current style pack: \`${stylePack}\`.`,
+    `- Current accent: \`${accent}\`.`,
+    "- Keep styles token-driven via `--z-*` CSS variables.",
+    "",
+    "## Preferred imports",
+    "- `import { Button, Input, Select } from \"@zephyr/ui-react\"`",
+    "- `import { resolveConfig, generateCssVariables } from \"@zephyr/core\"`"
+  ].join("\n") + "\n";
+}
+
+function buildLlmsContext(stylePack: StylePackName, accent: string): string {
+  return [
+    "# Zephyr UI",
+    "",
+    "Zephyr is a token-native UI framework for AI-assisted product development.",
+    "",
+    "## Defaults",
+    `- stylePack: ${stylePack}`,
+    `- accent: ${accent}`,
+    "",
+    "## Rules",
+    "- Use Zephyr components before raw HTML controls.",
+    "- Keep color/radius/spacing values token-based via `--z-*`.",
+    "- Prefer composable molecules and organisms for larger blocks.",
+    "",
+    "## Install",
+    "- `pnpm add @zephyr/core @zephyr/ui-react`",
+    "- `zephyr init`"
+  ].join("\n") + "\n";
+}
+
+function writeAiContextFiles(
+  cwd: string,
+  stylePack: StylePackName,
+  accent: string,
+  force = false
+): void {
+  const files: Array<{ path: string; content: string }> = [
+    {
+      path: path.join(cwd, "CLAUDE.md"),
+      content: buildClaudeContext(stylePack, accent)
+    },
+    {
+      path: path.join(cwd, "AGENTS.md"),
+      content: buildAgentsContext(stylePack, accent)
+    },
+    {
+      path: path.join(cwd, "llms.txt"),
+      content: buildLlmsContext(stylePack, accent)
+    }
+  ];
+
+  for (const file of files) {
+    if (fs.existsSync(file.path) && !force) {
+      continue;
+    }
+    writeFile(file.path, file.content);
+    console.log(`Created ${path.relative(cwd, file.path)}`);
+  }
 }
 
 function buildCss(config: ResolvedZephyrConfig): string {
@@ -319,9 +422,9 @@ async function commandInit(input: ParsedInput): Promise<void> {
   const cwd = process.cwd();
   const requestedPack = readFlag(input, "style-pack");
   const force = hasFlag(input, "force");
-  const pack = (requestedPack ?? "Studio") as StylePackName;
-  if (!stylePackNames.includes(pack)) {
-    console.error(`Invalid style pack '${pack}'. Use one of: ${stylePackNames.join(", ")}`);
+  const pack = resolveRequestedStylePack(requestedPack, DEFAULT_STYLE_PACK);
+  if (!pack) {
+    console.error(`Invalid style pack '${requestedPack}'. Use one of: ${stylePackNames.join(", ")}`);
     process.exitCode = 1;
     return;
   }
@@ -358,6 +461,7 @@ async function commandInit(input: ParsedInput): Promise<void> {
   const resolved = currentConfigOrFallback(cwd, pack, accent);
   const cssPath = writeCssFile(cwd, resolved);
   console.log(`Generated ${path.relative(cwd, cssPath)}`);
+  writeAiContextFiles(cwd, resolved.stylePack, resolved.tokens.color.primary, force);
 }
 
 async function commandAdd(input: ParsedInput): Promise<void> {
@@ -432,7 +536,7 @@ async function commandTheme(input: ParsedInput): Promise<void> {
     return;
   }
 
-  let nextPack = input.positionals[0] as StylePackName | undefined;
+  let nextPackRaw = input.positionals[0];
   let nextAccent = normalizeHexColor(readFlag(input, "accent"));
   if (readFlag(input, "accent") && !nextAccent) {
     console.error("Accent color must be a hex value like #335cff.");
@@ -442,7 +546,7 @@ async function commandTheme(input: ParsedInput): Promise<void> {
 
   const current = loadZephyrConfig(cwd);
 
-  if (!nextPack) {
+  if (!nextPackRaw) {
     if (!process.stdin.isTTY || hasFlag(input, "yes")) {
       console.error(`Usage: zephyr theme <stylePack> [--accent <hex>] or run interactively in a terminal.`);
       process.exitCode = 1;
@@ -450,7 +554,7 @@ async function commandTheme(input: ParsedInput): Promise<void> {
     }
 
     try {
-      nextPack = await promptStylePack(current.stylePack);
+      nextPackRaw = await promptStylePack(current.stylePack);
       if (!nextAccent) {
         nextAccent = await promptAccent(current.tokens.color.primary);
       }
@@ -461,8 +565,9 @@ async function commandTheme(input: ParsedInput): Promise<void> {
     }
   }
 
-  if (!stylePackNames.includes(nextPack)) {
-    console.error(`Invalid style pack '${nextPack}'. Use one of: ${stylePackNames.join(", ")}`);
+  const nextPack = resolveRequestedStylePack(nextPackRaw, current.stylePack);
+  if (!nextPack) {
+    console.error(`Invalid style pack '${nextPackRaw}'. Use one of: ${stylePackNames.join(", ")}`);
     process.exitCode = 1;
     return;
   }
@@ -691,7 +796,7 @@ function commandUpgrade(input: ParsedInput): void {
 
   console.log("✓ Zephyr Pro activated.");
   console.log(`  License key saved to ${CREDENTIALS_PATH}`);
-  console.log("  You now have access to all Pro components and style packs.");
+  console.log("  You now have access to all Pro components and premium style packs.");
 }
 
 function commandWhoami(): void {
@@ -721,9 +826,9 @@ Usage:
   zephyr whoami
 
 Examples:
-  zephyr init --style-pack Clarity --accent #335cff
+  zephyr init --style-pack notion --accent #335cff
   zephyr add button --tool Codex
-  zephyr theme Editorial --accent #1d4ed8
+  zephyr theme stripe --accent #1d4ed8
   zephyr doctor
   zephyr upgrade --key ZEPHYR-PRO-XXXX-XXXX
   zephyr whoami

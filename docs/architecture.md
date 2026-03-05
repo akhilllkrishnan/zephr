@@ -31,7 +31,6 @@
 
 6. Developer Experience
 - `apps/docs-playground`: live prop playground with style-pack switching
-- Storybook (`.storybook` + `stories/*`): component docs with a global style-pack toolbar
 
 ## Security and Compliance
 

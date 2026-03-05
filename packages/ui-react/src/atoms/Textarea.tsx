@@ -104,7 +104,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       style={dynamicStyles}
       disabled={disabled}
       onFocus={(event: FocusEvent<HTMLTextAreaElement>) => {
-        setFocused(true);
+        setFocused(event.currentTarget.matches(":focus-visible"));
         onFocus?.(event);
       }}
       onBlur={(event: FocusEvent<HTMLTextAreaElement>) => {

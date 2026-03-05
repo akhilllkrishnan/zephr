@@ -13,8 +13,16 @@ import { LogoClient } from "@zephyr/logos";
 import { listLogoCatalog, searchLogoCatalog } from "@zephyr/logos";
 import { requirePrincipal, hasScope } from "./auth";
 import { runUrlAudit, type UrlAuditRequest } from "./audit";
-import { readJsonBody, sendJson } from "./http";
+import { HttpError, readJsonBody, sendJson } from "./http";
 import { validateLicenseKey } from "./license";
+import {
+  activateLsLicenseKey,
+  getWebhookSecret,
+  verifyWebhookSignature,
+  type LsLicenseKeyAttributes,
+  type LsOrderAttributes,
+  type LsWebhookEvent
+} from "./lemonsqueezy";
 import { createRateLimiter } from "./rateLimit";
 
 interface SnippetRequest {
@@ -121,6 +129,76 @@ function parseIconStyle(raw: string | null): MaterialIconStyle | undefined {
 // ---------------------------------------------------------------------------
 
 async function handleV1(request: IncomingMessage, response: ServerResponse, url: URL): Promise<void> {
+  // --- Public endpoint: Lemon Squeezy webhook (no Bearer, verified by HMAC) ---
+  if (request.method === "POST" && url.pathname === "/v1/webhooks/lemonsqueezy") {
+    const rawChunks: Uint8Array[] = [];
+    for await (const chunk of request) {
+      rawChunks.push(typeof chunk === "string" ? Buffer.from(chunk, "utf8") : chunk);
+    }
+    const rawBody = Buffer.concat(rawChunks).toString("utf8");
+    const signature = String(request.headers["x-signature"] ?? "");
+
+    const secret = getWebhookSecret();
+    if (secret && !verifyWebhookSignature(rawBody, signature)) {
+      sendJson(response, 401, { error: "Invalid webhook signature." });
+      auditLog("webhook:lemonsqueezy", request, 401);
+      return;
+    }
+
+    let event: LsWebhookEvent;
+    try {
+      event = JSON.parse(rawBody) as LsWebhookEvent;
+    } catch {
+      sendJson(response, 400, { error: "Malformed webhook payload." });
+      return;
+    }
+
+    const eventName = event.meta?.event_name ?? "";
+    console.log(`[webhook:lemonsqueezy] event=${eventName} id=${event.data?.id}`);
+
+    if (eventName === "order_created") {
+      const attrs = event.data.attributes as LsOrderAttributes;
+      console.log(
+        `[webhook:lemonsqueezy] order #${attrs.order_number} by ${attrs.user_email}` +
+        ` status=${attrs.status} ${attrs.total} ${attrs.currency}`
+      );
+    }
+
+    if (eventName === "license_key_created") {
+      const attrs = event.data.attributes as LsLicenseKeyAttributes;
+      console.log(
+        `[webhook:lemonsqueezy] license_key_created status=${attrs.status}` +
+        ` limit=${attrs.activation_limit} product=${attrs.product_id}`
+      );
+      // TODO: persist to DB and send custom confirmation email when ready
+    }
+
+    sendJson(response, 200, { received: true, event: eventName });
+    auditLog("webhook:lemonsqueezy", request, 200, { event: eventName });
+    return;
+  }
+
+  // --- Public endpoint: license activate (no Bearer required) ---
+  if (request.method === "POST" && url.pathname === "/v1/licenses/activate") {
+    const body = await readJsonBody<{ licenseKey?: string; instanceName?: string }>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
+    if (!body.licenseKey || !body.instanceName) {
+      sendJson(response, 400, { error: "Missing required fields: licenseKey, instanceName" });
+      return;
+    }
+    try {
+      const result = await activateLsLicenseKey(body.licenseKey, body.instanceName);
+      sendJson(response, result.activated ? 200 : 422, result);
+      auditLog("public:license:activate", request, result.activated ? 200 : 422);
+    } catch (err) {
+      console.error("[license/activate]", err);
+      sendJson(response, 503, { error: "License activation service unavailable." });
+    }
+    return;
+  }
+
   // --- Public endpoint: license validation (no Bearer required) ---
   if (request.method === "POST" && url.pathname === "/v1/licenses/validate") {
     const clientKey = request.socket.remoteAddress ?? "license-public";
@@ -149,19 +227,23 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       "X-RateLimit-Reset": state.resetAt
     };
 
-    const body = await readJsonBody<{ licenseKey?: string }>(request);
+    const body = await readJsonBody<{ licenseKey?: string }>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
     if (!body.licenseKey) {
       sendJson(response, 400, { error: "Missing required field: licenseKey" }, rateHeaders);
       auditLog("public:license", request, 400);
       return;
     }
 
-    const validation = validateLicenseKey(body.licenseKey);
+    const validation = await validateLicenseKey(body.licenseKey);
     sendJson(response, 200, validation, rateHeaders);
     auditLog("public:license", request, 200, {
       valid: validation.valid,
       tier: validation.tier,
-      status: validation.status
+      status: validation.status,
+      source: validation.source
     });
     return;
   }
@@ -226,7 +308,10 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       return;
     }
 
-    const body = await readJsonBody<UrlAuditRequest>(request);
+    const body = await readJsonBody<UrlAuditRequest>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
     if (!body.url) {
       sendJson(response, 400, { error: "Missing required field: url" }, rateHeaders);
       auditLog(principal.key, request, 400);
@@ -377,7 +462,10 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       return;
     }
 
-    const body = await readJsonBody<{ name?: string; seed?: string; size?: number }>(request);
+    const body = await readJsonBody<{ name?: string; seed?: string; size?: number }>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
     if (!body.name) {
       sendJson(response, 400, { error: "Missing required field: name" }, rateHeaders);
       auditLog(principal.key, request, 400);
@@ -403,7 +491,10 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       return;
     }
 
-    const body = await readJsonBody<SnippetRequest>(request);
+    const body = await readJsonBody<SnippetRequest>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
 
     if (!body.componentId) {
       sendJson(response, 400, { error: "Missing required field: componentId" }, rateHeaders);
@@ -444,7 +535,10 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
       return;
     }
 
-    const body = await readJsonBody<TakedownRequest>(request);
+    const body = await readJsonBody<TakedownRequest>(request, {
+      requireObject: true,
+      requireContentType: true
+    });
     if (!body.domain || !body.reason) {
       sendJson(response, 400, { error: "Fields 'domain' and 'reason' are required." }, rateHeaders);
       auditLog(principal.key, request, 400);
@@ -474,28 +568,46 @@ async function handleV1(request: IncomingMessage, response: ServerResponse, url:
 // ---------------------------------------------------------------------------
 
 const server = createServer(async (request, response) => {
-  const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
+  try {
+    const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
 
-  if (request.method === "OPTIONS") {
-    sendJson(response, 200, { ok: true });
-    return;
+    if (request.method === "OPTIONS") {
+      sendJson(response, 200, { ok: true });
+      return;
+    }
+
+    if (request.method === "GET" && url.pathname === "/health") {
+      sendJson(response, 200, {
+        status: "ok",
+        service: "zephyr-cloud-api",
+        now: new Date().toISOString()
+      });
+      return;
+    }
+
+    if (url.pathname.startsWith("/v1")) {
+      await handleV1(request, response, url);
+      return;
+    }
+
+    sendJson(response, 404, { error: "Not found" });
+  } catch (error) {
+    if (error instanceof HttpError) {
+      sendJson(
+        response,
+        error.statusCode,
+        {
+          error: error.message,
+          code: error.code,
+          details: error.details
+        }
+      );
+      return;
+    }
+
+    console.error("[cloud-api] unhandled error", error);
+    sendJson(response, 500, { error: "Internal server error." });
   }
-
-  if (request.method === "GET" && url.pathname === "/health") {
-    sendJson(response, 200, {
-      status: "ok",
-      service: "zephyr-cloud-api",
-      now: new Date().toISOString()
-    });
-    return;
-  }
-
-  if (url.pathname.startsWith("/v1")) {
-    await handleV1(request, response, url);
-    return;
-  }
-
-  sendJson(response, 404, { error: "Not found" });
 });
 
 const port = Number(process.env.PORT ?? 8787);

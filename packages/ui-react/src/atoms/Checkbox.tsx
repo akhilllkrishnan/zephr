@@ -95,7 +95,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           onChange?.(event);
         }}
         onFocus={(event: FocusEvent<HTMLInputElement>) => {
-          setFocused(true);
+          setFocused(event.currentTarget.matches(":focus-visible"));
           onFocus?.(event);
         }}
         onBlur={(event: FocusEvent<HTMLInputElement>) => {

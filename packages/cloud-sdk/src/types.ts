@@ -1,6 +1,7 @@
 export interface CloudClientOptions {
   baseUrl: string;
   apiKey?: string;
+  timeoutMs?: number;
 }
 
 export interface CloudComponent {
@@ -8,7 +9,7 @@ export interface CloudComponent {
   name: string;
   category: string;
   description: string;
-  stylePackSupport: string[];
+  stylePackSupport: Array<"notion" | "stripe" | "linear" | "framer">;
 }
 
 export interface CloudSearchResponse<T> {

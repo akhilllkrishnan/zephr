@@ -19,13 +19,41 @@ import {
 
 export * from "./types";
 
+const DEFAULT_TIMEOUT_MS = 10_000;
+
+export class ZephyrCloudError extends Error {
+  readonly status: number;
+  readonly body: string;
+
+  constructor(status: number, body: string) {
+    super(`Zephyr cloud error ${status}: ${body}`);
+    this.name = "ZephyrCloudError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
 export class ZephyrCloudClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
+  private readonly timeoutMs: number;
 
   constructor(options: CloudClientOptions) {
+    let parsed: URL;
+    try {
+      parsed = new URL(options.baseUrl);
+    } catch {
+      throw new Error(`Invalid Zephyr cloud baseUrl: "${options.baseUrl}"`);
+    }
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      throw new Error(`Invalid Zephyr cloud baseUrl protocol: "${parsed.protocol}"`);
+    }
+
     this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.apiKey = options.apiKey;
+    this.timeoutMs = Number.isFinite(options.timeoutMs) && (options.timeoutMs ?? 0) > 0
+      ? Math.floor(options.timeoutMs as number)
+      : DEFAULT_TIMEOUT_MS;
   }
 
   private async request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -36,17 +64,37 @@ export class ZephyrCloudClient {
       headers.set("Authorization", `Bearer ${this.apiKey}`);
     }
 
-    const response = await fetch(`${this.baseUrl}${path}`, {
-      ...init,
-      headers
-    });
+    const controller = new AbortController();
+    const timeoutHandle = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}${path}`, {
+        ...init,
+        headers,
+        signal: init?.signal ?? controller.signal
+      });
+    } catch (error) {
+      if ((error as { name?: string }).name === "AbortError") {
+        throw new Error(`Zephyr cloud request timed out after ${this.timeoutMs}ms`);
+      }
+      throw new Error(
+        `Zephyr cloud request failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+    } finally {
+      clearTimeout(timeoutHandle);
+    }
 
     if (!response.ok) {
       const body = await response.text();
-      throw new Error(`Zephyr cloud error ${response.status}: ${body}`);
+      throw new ZephyrCloudError(response.status, body);
     }
 
-    return (await response.json()) as T;
+    try {
+      return (await response.json()) as T;
+    } catch {
+      throw new Error("Zephyr cloud returned invalid JSON.");
+    }
   }
 
   private buildQuery(params: Record<string, string | number | undefined>): string {

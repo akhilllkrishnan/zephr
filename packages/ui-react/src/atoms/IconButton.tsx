@@ -180,7 +180,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         onPointerCancel={handlePointerCancel}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
-        onFocus={() => !disabled && setFocused(true)}
+        onFocus={(event) => !disabled && setFocused(event.currentTarget.matches(":focus-visible"))}
         onBlur={handleBlur}
         {...props}
       >

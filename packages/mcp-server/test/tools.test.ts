@@ -11,6 +11,8 @@ describe("@zephyr/mcp-server tools", () => {
         "get_install_steps",
         "get_usage_examples",
         "get_theme_variants",
+        "scaffold_page",
+        "apply_theme",
         "install_plan"
       ])
     );
@@ -48,4 +50,3 @@ describe("@zephyr/mcp-server tools", () => {
     expect(result.steps[0].step).toBe(1);
   });
 });
-

@@ -152,7 +152,7 @@ export function Avatar({
         onPointerLeave={(e: PointerEvent<HTMLButtonElement>) => { setHovered(false); setPressed(false); }}
         onPointerDown={(e: PointerEvent<HTMLButtonElement>) => { if (e.button === 0) setPressed(true); }}
         onPointerUp={(e: PointerEvent<HTMLButtonElement>) => setPressed(false)}
-        onFocus={(e: FocusEvent<HTMLButtonElement>) => setFocused(true)}
+        onFocus={(e: FocusEvent<HTMLButtonElement>) => setFocused(e.currentTarget.matches(":focus-visible"))}
         onBlur={(e: FocusEvent<HTMLButtonElement>) => { setFocused(false); setPressed(false); }}
         onKeyDown={(e: KeyboardEvent<HTMLButtonElement>) => {
           if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPressed(true); }

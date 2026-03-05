@@ -8,8 +8,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "src/**/*.stories.tsx",
-    "src/**/*.stories.ts",
     "dist",
     "node_modules"
   ]

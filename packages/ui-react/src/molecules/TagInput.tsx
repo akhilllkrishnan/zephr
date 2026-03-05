@@ -140,7 +140,7 @@ export function TagInput({
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKey}
                 onBlur={(e) => { setFocused(false); addTag(e.target.value); }}
-                onFocus={() => setFocused(true)}
+                onFocus={(event) => setFocused(event.currentTarget.matches(":focus-visible"))}
                 style={{
                     flex: "1 1 80px",
                     minWidth: 80,

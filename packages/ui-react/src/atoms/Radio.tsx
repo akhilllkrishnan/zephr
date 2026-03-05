@@ -98,7 +98,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
           onChange?.(event);
         }}
         onFocus={(event: FocusEvent<HTMLInputElement>) => {
-          setFocused(true);
+          setFocused(event.currentTarget.matches(":focus-visible"));
           onFocus?.(event);
         }}
         onBlur={(event: FocusEvent<HTMLInputElement>) => {

@@ -44,18 +44,16 @@ All tools are exposed via `@zephyr/mcp-server`. Invoke as MCP tool calls:
 
 ## Base Theme
 
-Zephyr docs currently use one production base theme (`Clarity`) with global accent customization.
+Zephyr docs use token-native style packs with global accent customization.
 
 ## Style Packs (library-level support)
 
 | Pack | Description |
 |---|---|
-| Studio | Balanced product UI (default) |
-| Editorial | Calm reading-first UI |
-| NeoBrutal | Bold high-contrast UI |
-| SoftTech | Clean modern SaaS UI |
-| Enterprise | Structured professional UI |
-| Clarity | Neutral minimal UI with vivid status accents |
+| notion | Warm white surfaces, flat-first (default/free) |
+| stripe | White dashboard base with subtle elevation |
+| linear | Dense product UI for data-heavy workflows |
+| framer | Expressive contrast with larger type rhythm |
 
 ## Theme Setup
 
@@ -64,7 +62,7 @@ Zephyr docs currently use one production base theme (`Clarity`) with global acce
 import type { ZephyrConfig } from "@zephyr/core";
 
 const config: ZephyrConfig = {
-  stylePack: "Studio",
+  stylePack: "notion",
   tokens: {
     color: {
       primary: "#335cff",

@@ -1,11 +1,35 @@
 import { stylePacks } from "./stylePacks";
 import {
   DesignTokens,
+  LegacyStylePackName,
   PartialDeep,
   ResolvedZephyrConfig,
   StylePackName,
   ZephyrConfig
 } from "./types";
+
+export const LEGACY_STYLE_PACK_MAP: Record<LegacyStylePackName, StylePackName> = {
+  Studio: "notion",
+  Editorial: "stripe",
+  NeoBrutal: "framer",
+  SoftTech: "stripe",
+  Enterprise: "linear",
+  Clarity: "notion"
+};
+
+const deprecationNotices = new Set<string>();
+
+function warnLegacyStylePack(requested: string, mapped: StylePackName): void {
+  const key = `${requested}:${mapped}`;
+  if (deprecationNotices.has(key)) {
+    return;
+  }
+  deprecationNotices.add(key);
+  console.warn(
+    `[zephyr] stylePack "${requested}" is deprecated and mapped to "${mapped}". ` +
+      `Use one of: notion, stripe, linear, framer.`
+  );
+}
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -79,7 +103,14 @@ export function resolveStylePackName(value?: string): StylePackName {
   if (value && value in stylePacks) {
     return value as StylePackName;
   }
-  return "Studio";
+
+  if (value && value in LEGACY_STYLE_PACK_MAP) {
+    const mapped = LEGACY_STYLE_PACK_MAP[value as LegacyStylePackName];
+    warnLegacyStylePack(value, mapped);
+    return mapped;
+  }
+
+  return "notion";
 }
 
 export function resolveTokens(config?: ZephyrConfig): DesignTokens {

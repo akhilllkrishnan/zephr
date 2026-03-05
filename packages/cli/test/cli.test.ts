@@ -60,11 +60,14 @@ describe("@zephyr/cli", () => {
       expect(existsSync(join(tempDir, "zephyr.config.ts"))).toBe(true);
       expect(existsSync(join(tempDir, ".env.example"))).toBe(true);
       expect(existsSync(join(tempDir, "src", "styles", "zephyr.css"))).toBe(true);
+      expect(existsSync(join(tempDir, "CLAUDE.md"))).toBe(true);
+      expect(existsSync(join(tempDir, "AGENTS.md"))).toBe(true);
+      expect(existsSync(join(tempDir, "llms.txt"))).toBe(true);
       expect(existsSync(join(tempDir, "zephyr-snippets", "button.tsx"))).toBe(true);
       expect(existsSync(join(tempDir, "zephyr-snippets", "button.prompt.md"))).toBe(true);
 
       const config = readFileSync(join(tempDir, "zephyr.config.ts"), "utf8");
-      expect(config).toContain(`stylePack: "Clarity"`);
+      expect(config).toContain(`stylePack: "notion"`);
       expect(config).toContain(`primary: "#335cff"`);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
@@ -76,15 +79,15 @@ describe("@zephyr/cli", () => {
     writeMinimalPackageJson(tempDir);
 
     const initResult = runCli(["init"], tempDir);
-    const themeResult = runCli(["theme", "Editorial", "--accent", "#1d4ed8"], tempDir);
+    const themeResult = runCli(["theme", "stripe", "--accent", "#1d4ed8"], tempDir);
 
     try {
       expect(initResult.status).toBe(0);
       expect(themeResult.status).toBe(0);
-      expect(themeResult.stdout).toContain("Theme updated: Editorial");
+      expect(themeResult.stdout).toContain("Theme updated: stripe");
 
       const config = readFileSync(join(tempDir, "zephyr.config.ts"), "utf8");
-      expect(config).toContain(`stylePack: "Editorial"`);
+      expect(config).toContain(`stylePack: "stripe"`);
       expect(config).toContain(`primary: "#1d4ed8"`);
       expect(existsSync(join(tempDir, "src", "styles", "zephyr.css"))).toBe(true);
     } finally {
@@ -101,4 +104,3 @@ describe("@zephyr/cli", () => {
     expect(result.stdout.toLowerCase()).toContain("input");
   });
 });
-

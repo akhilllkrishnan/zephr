@@ -15,6 +15,9 @@ export interface AccordionProps {
   allowMultiple?: boolean;
   defaultOpenIds?: string[];
   iconPosition?: "left" | "right";
+  leadingIcon?: ReactNode;
+  /** Force one row to render with hover visuals (docs preview helper). */
+  forceHoveredId?: string | null;
   /** Custom content when items array is empty */
   emptyState?: ReactNode;
   className?: string;
@@ -31,6 +34,8 @@ export function Accordion({
   allowMultiple = false,
   defaultOpenIds,
   iconPosition = "right",
+  leadingIcon,
+  forceHoveredId,
   emptyState,
   className,
   style,
@@ -91,7 +96,7 @@ export function Accordion({
     <div className={className} style={{ display: "flex", flexDirection: "column", gap: "var(--z-space-2, 0.5rem)", ...style }}>
       {items.map((item) => {
         const isOpen = isOpenItem(item.id, openIds);
-        const isHovered = hoveredItemId === item.id;
+        const isHovered = forceHoveredId !== undefined ? forceHoveredId === item.id : hoveredItemId === item.id;
         const isFocused = focusedItemId === item.id;
         const panelId = `accordion-panel-${item.id}`;
         const buttonId = `accordion-trigger-${item.id}`;
@@ -122,7 +127,7 @@ export function Accordion({
               }}
               onMouseEnter={() => setHoveredItemId(item.id)}
               onMouseLeave={() => setHoveredItemId((current) => (current === item.id ? null : current))}
-              onFocus={() => !item.disabled && setFocusedItemId(item.id)}
+              onFocus={(event) => !item.disabled && setFocusedItemId(event.currentTarget.matches(":focus-visible") ? item.id : null)}
               onBlur={() => setFocusedItemId(null)}
               disabled={item.disabled}
               style={{
@@ -153,6 +158,14 @@ export function Accordion({
                   style={{ width: "24px", textAlign: "center", fontSize: "16px", lineHeight: "20px" }}
                 >
                   {isOpen ? "−" : "+"}
+                </span>
+              ) : null}
+              {leadingIcon ? (
+                <span
+                  aria-hidden
+                  style={{ width: "24px", minWidth: "24px", textAlign: "center", fontSize: "14px", lineHeight: "20px" }}
+                >
+                  {leadingIcon}
                 </span>
               ) : null}
               <span style={{ flex: 1 }}>

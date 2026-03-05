@@ -136,7 +136,7 @@ export function Dropdown({ label, items, align = "start", className, style, trig
                   }}
                   onMouseEnter={() => setHoveredId(item.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onFocus={() => setFocusedId(item.id)}
+                  onFocus={(event) => setFocusedId(event.currentTarget.matches(":focus-visible") ? item.id : null)}
                   onBlur={() => setFocusedId(null)}
                 >
                   {item.icon && (

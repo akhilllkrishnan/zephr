@@ -1,4 +1,10 @@
 export type StylePackName =
+  | "notion"
+  | "stripe"
+  | "linear"
+  | "framer";
+
+export type LegacyStylePackName =
   | "Studio"
   | "Editorial"
   | "NeoBrutal"
@@ -60,4 +66,3 @@ export interface ResolvedZephyrConfig {
   plugins: string[];
   cloud: ZephyrCloudConfig;
 }
-

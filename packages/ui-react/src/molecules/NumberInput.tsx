@@ -121,7 +121,7 @@ export function NumberInput({
                 step={step}
                 disabled={disabled}
                 placeholder={placeholder}
-                onFocus={() => setFocused(true)}
+                onFocus={(event) => setFocused(event.currentTarget.matches(":focus-visible"))}
                 onBlur={() => setFocused(false)}
                 onChange={handleChange}
                 onKeyDown={handleKey}

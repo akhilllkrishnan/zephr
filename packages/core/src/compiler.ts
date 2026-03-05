@@ -26,17 +26,26 @@ export function generateCssVariables(tokens: DesignTokens, prefix = "z"): string
   for (const [key, value] of Object.entries(tokens.type.size)) {
     lines.push(`${variableName(prefix, "type-size", key)}:${value};`);
   }
+  for (const [key, value] of Object.entries(tokens.type.family)) {
+    lines.push(`${variableName(prefix, "type-family", key)}:${value};`);
+  }
   for (const [key, value] of Object.entries(tokens.type.weight)) {
     lines.push(`${variableName(prefix, "type-weight", key)}:${value};`);
   }
   for (const [key, value] of Object.entries(tokens.type.lineHeight)) {
     lines.push(`${variableName(prefix, "type-line", key)}:${value};`);
   }
+  for (const [key, value] of Object.entries(tokens.type.letterSpacing)) {
+    lines.push(`${variableName(prefix, "type-track", key)}:${value};`);
+  }
   for (const [key, value] of Object.entries(tokens.motion.duration)) {
     lines.push(`${variableName(prefix, "motion-duration", key)}:${value};`);
   }
   for (const [key, value] of Object.entries(tokens.motion.easing)) {
     lines.push(`${variableName(prefix, "motion-easing", key)}:${value};`);
+  }
+  for (const [key, value] of Object.entries(tokens.breakpoints)) {
+    lines.push(`${variableName(prefix, "breakpoint", key)}:${value};`);
   }
 
   lines.push("}");

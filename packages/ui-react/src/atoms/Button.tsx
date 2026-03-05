@@ -42,6 +42,17 @@ const spinnerStyle: CSSProperties = {
   animation: "z-spin 0.7s linear infinite"
 };
 
+const loadingSpinnerWrapStyle: CSSProperties = {
+  position: "absolute",
+  left: "50%",
+  top: "50%",
+  transform: "translate(-50%, -50%)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  pointerEvents: "none"
+};
+
 function getVariantStyles(
   variant: NonNullable<ButtonProps["variant"]>,
   disabled: boolean,
@@ -199,6 +210,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     letterSpacing: "-0.006em",
     lineHeight: "20px",
     outline: "none",
+    position: "relative",
     transition:
       "background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 90ms ease",
     ...style,
@@ -224,13 +236,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         onPointerCancel={handlePointerCancel}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
-        onFocus={() => !isDisabled && setFocused(true)}
+        onFocus={(event) => !isDisabled && setFocused(event.currentTarget.matches(":focus-visible"))}
         onBlur={handleBlur}
         {...props}
       >
-        {loading ? <span aria-hidden style={spinnerStyle} /> : startIcon ? <span aria-hidden>{startIcon}</span> : null}
-        <span>{children}</span>
-        {endIcon ? <span aria-hidden>{endIcon}</span> : null}
+        {loading ? (
+          <span aria-hidden style={loadingSpinnerWrapStyle}>
+            <span style={spinnerStyle} />
+          </span>
+        ) : startIcon ? <span aria-hidden>{startIcon}</span> : null}
+        <span style={loading ? { visibility: "hidden" } : undefined}>{children}</span>
+        {!loading && endIcon ? <span aria-hidden>{endIcon}</span> : null}
       </button>
     </>
   );

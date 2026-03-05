@@ -4,6 +4,7 @@ export type ComponentCategory = "foundation" | "atom" | "molecule" | "organism" 
 export type ComponentTier = "free" | "pro";
 export type AssistantTool = "Codex" | "Claude" | "Cursor";
 export type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
+export type RegistryStylePackName = "notion" | "stripe" | "linear" | "framer";
 
 export interface StructuredPropSchema {
   type: string | string[];
@@ -26,6 +27,12 @@ export interface RegistryPropRow {
   deprecated: boolean;
 }
 
+export interface RegistryAiHints {
+  positive: string[];
+  negative: string[];
+  preferredImports: string[];
+}
+
 export interface RegistryEntry {
   id: string;
   name: string;
@@ -35,8 +42,8 @@ export interface RegistryEntry {
   propsSchema: Record<string, RegistryPropDefinition>;
   a11yNotes: string[];
   dependencies: string[];
-  stylePackSupport: string[];
-  aiHints: string[];
+  stylePackSupport: RegistryStylePackName[];
+  aiHints: RegistryAiHints;
   usageExamples?: string[];
 }
 
@@ -76,11 +83,44 @@ export interface ComponentScaffold {
   template: ComponentTemplate;
 }
 
-type RawRegistryEntry = Omit<RegistryEntry, "tier"> & { tier?: ComponentTier };
+type RawRegistryAiHints =
+  | string[]
+  | {
+    positive?: string[];
+    negative?: string[];
+    preferredImports?: string[];
+  };
+
+type RawRegistryEntry = Omit<RegistryEntry, "tier" | "aiHints"> & {
+  tier?: ComponentTier;
+  aiHints: RawRegistryAiHints;
+};
+
+function normalizeAiHints(componentName: string, hints: RawRegistryAiHints): RegistryAiHints {
+  const defaultImport = `import { ${componentName} } from "@zephyr/ui-react";`;
+  if (Array.isArray(hints)) {
+    return {
+      positive: hints,
+      negative: [
+        "Do not fall back to raw HTML controls when the Zephyr component exists."
+      ],
+      preferredImports: [defaultImport]
+    };
+  }
+
+  return {
+    positive: hints.positive ?? [],
+    negative: hints.negative ?? [
+      "Do not fall back to raw HTML controls when the Zephyr component exists."
+    ],
+    preferredImports: hints.preferredImports?.length ? hints.preferredImports : [defaultImport]
+  };
+}
 
 const registry: RegistryEntry[] = (components as unknown as RawRegistryEntry[]).map((entry) => ({
   ...entry,
-  tier: entry.tier ?? "free"
+  tier: entry.tier ?? "free",
+  aiHints: normalizeAiHints(entry.name, entry.aiHints)
 }));
 
 function normalizedManager(value?: PackageManager): PackageManager {
@@ -228,8 +268,8 @@ function categoryIntent(category: ComponentCategory): string {
 }
 
 function defaultIntent(entry: RegistryEntry): string {
-  if (entry.aiHints.length > 0) {
-    return `${categoryIntent(entry.category)} ${entry.aiHints[0]}`;
+  if (entry.aiHints.positive.length > 0) {
+    return `${categoryIntent(entry.category)} ${entry.aiHints.positive[0]}`;
   }
   return categoryIntent(entry.category);
 }
@@ -249,7 +289,8 @@ export function searchComponents(query: string): RegistryEntry[] {
       entry.id.toLowerCase().includes(normalized) ||
       entry.name.toLowerCase().includes(normalized) ||
       entry.description.toLowerCase().includes(normalized) ||
-      entry.aiHints.some((hint) => hint.toLowerCase().includes(normalized))
+      entry.aiHints.positive.some((hint) => hint.toLowerCase().includes(normalized)) ||
+      entry.aiHints.negative.some((hint) => hint.toLowerCase().includes(normalized))
     );
   });
 }
@@ -336,10 +377,12 @@ export function generateComponentPrompt(
     return null;
   }
 
-  const stylePack = options.stylePack ?? "Studio";
+  const stylePack = options.stylePack ?? "notion";
   const accentColor = options.accentColor ?? "#121212";
   const intent = options.intent?.trim() ? options.intent : template.defaultIntent;
-  const includeCloudHint = options.includeCloudHint ?? true;
+  // Only include cloud hint for asset-library components
+  const isAssetComponent = ["icon-library", "avatar-library", "logo-library"].includes(template.component.id);
+  const includeCloudHint = options.includeCloudHint ?? isAssetComponent;
 
   const lines: string[] = [
     "Use Zephyr UI framework only. Do not replace components with external UI libraries.",
@@ -354,7 +397,7 @@ export function generateComponentPrompt(
     `Theme: ${stylePack}`,
     `Accent color: ${accentColor}`,
     `Component block: ${template.component.name} (${template.component.id})`,
-    `Install command: ${template.installCommand}`
+    `Install command: ${template.installCommand}  # Note: @zephyr/ui-react is in private beta — not yet on npm`
   );
 
   if (options.configSnippet) {
@@ -370,7 +413,11 @@ export function generateComponentPrompt(
       "Key props:",
       ...keyProps.map((prop) => {
         const optional = prop.required ? "required" : "optional";
-        const base = `- ${prop.name}: ${prop.type} (${optional})`;
+        // Use accepted values for enum props so AI knows the exact allowed values
+        const typeDisplay = prop.acceptedValues && prop.acceptedValues !== "Any valid value"
+          ? prop.acceptedValues.split(", ").join(" | ")
+          : prop.type;
+        const base = `- ${prop.name}: ${typeDisplay} (${optional})`;
         return prop.defaultValue !== "—" ? `${base}, default=${prop.defaultValue}` : base;
       })
     );
@@ -380,8 +427,28 @@ export function generateComponentPrompt(
     lines.push("", "A11y notes:", ...template.component.a11yNotes.map((note) => `- ${note}`));
   }
 
-  if (template.component.aiHints.length) {
-    lines.push("", "AI hints:", ...template.component.aiHints.map((hint) => `- ${hint}`));
+  if (template.component.aiHints.preferredImports.length) {
+    lines.push(
+      "",
+      "Preferred imports:",
+      ...template.component.aiHints.preferredImports.map((hint) => `- ${hint}`)
+    );
+  }
+
+  if (template.component.aiHints.positive.length) {
+    lines.push(
+      "",
+      "AI hints (do):",
+      ...template.component.aiHints.positive.map((hint) => `- ${hint}`)
+    );
+  }
+
+  if (template.component.aiHints.negative.length) {
+    lines.push(
+      "",
+      "AI hints (avoid):",
+      ...template.component.aiHints.negative.map((hint) => `- ${hint}`)
+    );
   }
 
   lines.push("", "Keep accessibility notes and ship final React code that can be pasted directly.");
@@ -408,6 +475,7 @@ export function generateComponentScaffold(
   }
 
   const includeHeader = options.snippetHeaderComment ?? true;
+  validateZephyrSnippet(template.usageSnippet);
   const snippetContent = includeHeader
     ? [
       `// ${template.component.name}`,
@@ -425,4 +493,14 @@ export function generateComponentScaffold(
     promptContent: `${prompt}\n`,
     template
   };
+}
+
+function validateZephyrSnippet(snippet: string): void {
+  const forbiddenRawControls = /<(button|input|select|textarea)\b/i;
+  const containsZephyrComponent = /<([A-Z][A-Za-z0-9]*)\b/.test(snippet);
+  if (forbiddenRawControls.test(snippet) && !containsZephyrComponent) {
+    throw new Error(
+      "Registry snippet validation failed: raw HTML control found where a Zephyr component should be used."
+    );
+  }
 }

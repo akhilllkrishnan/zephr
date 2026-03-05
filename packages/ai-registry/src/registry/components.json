@@ -48,17 +48,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for primary and secondary actions.",
-      "Prefer `variant=secondary` for non-destructive secondary actions."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for primary and secondary actions.",
+        "Prefer `variant=secondary` for non-destructive secondary actions."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Button } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Button } from '@zephyr/ui-react';\n<Button variant='primary'>Save</Button>"
     ]
@@ -107,16 +113,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Wrap in FormField when label/hint/error text is needed."
-    ],
+    "aiHints": {
+      "positive": [
+        "Wrap in FormField when label/hint/error text is needed."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Input } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Input } from '@zephyr/ui-react';\n<Input placeholder='Email address' />"
     ]
@@ -164,16 +176,22 @@
       "@zephyr/icons-material"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in dense nav bars, command rows, and table action columns."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in dense nav bars, command rows, and table action columns."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { IconButton } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { IconButton } from '@zephyr/ui-react';\nimport { MaterialIcon } from '@zephyr/icons-material';\n<IconButton icon={<MaterialIcon name='search' />} label='Search' />"
     ]
@@ -222,16 +240,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for feedback forms, release notes, and message composers."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for feedback forms, release notes, and message composers."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Textarea } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Textarea } from '@zephyr/ui-react';\n<Textarea rows={5} placeholder='Add details' />"
     ]
@@ -273,18 +297,24 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in filters, settings, and configuration forms."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in filters, settings, and configuration forms."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Select } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
-      "import { Select } from '@zephyr/ui-react';\n<Select><option>Studio</option><option>Editorial</option></Select>"
+      "import { Select } from '@zephyr/ui-react';\n<Select><option>notion</option><option>stripe</option></Select>"
     ]
   },
   {
@@ -324,16 +354,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for settings toggles that can be independently selected."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for settings toggles that can be independently selected."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Checkbox } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Checkbox } from '@zephyr/ui-react';\n<label><Checkbox /> Enable notifications</label>"
     ]
@@ -375,18 +411,24 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for plan/theme choices where only one option is allowed."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for plan/theme choices where only one option is allowed."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Radio } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
-      "import { Radio } from '@zephyr/ui-react';\n<label><Radio name='theme' /> Studio</label>"
+      "import { Radio } from '@zephyr/ui-react';\n<label><Radio name='theme' /> notion</label>"
     ]
   },
   {
@@ -426,16 +468,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for feature flags and preference toggles."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for feature flags and preference toggles."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Switch } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Switch } from '@zephyr/ui-react';\n<Switch checked={enabled} onChange={setEnabled} label='Enable beta' />"
     ]
@@ -445,19 +493,90 @@
     "name": "Badge",
     "category": "atom",
     "tier": "free",
-    "description": "Small status label for metadata, state, and tags.",
+    "description": "Status badge with color, style, icon/dot type, and compact size variants.",
     "propsSchema": {
+      "type": {
+        "type": "enum",
+        "values": [
+          "basic",
+          "dot",
+          "left-icon",
+          "right-icon"
+        ],
+        "description": "Badge composition pattern.",
+        "required": false,
+        "default": "basic",
+        "deprecated": false
+      },
+      "variant": {
+        "type": "enum",
+        "values": [
+          "filled",
+          "lighter",
+          "stroke",
+          "white"
+        ],
+        "description": "Visual style of the badge container.",
+        "required": false,
+        "default": "filled",
+        "deprecated": false
+      },
+      "color": {
+        "type": "enum",
+        "values": [
+          "gray",
+          "blue",
+          "orange",
+          "red",
+          "green",
+          "yellow",
+          "purple",
+          "sky",
+          "pink",
+          "teal"
+        ],
+        "description": "Color family applied to the selected variant.",
+        "required": false,
+        "default": "gray",
+        "deprecated": false
+      },
       "tone": {
         "type": "enum",
         "values": [
           "neutral",
           "info",
           "success",
-          "danger"
+          "danger",
+          "subtle"
         ],
-        "description": "Available options for tone.",
+        "description": "Legacy shorthand mapped to color + variant.",
         "required": false,
         "default": "neutral",
+        "deprecated": true
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "md"
+        ],
+        "description": "Compact size scale.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "number": {
+        "type": "boolean | number | string",
+        "description": "Renders numeric badge mode when set.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Applies disabled visual treatment.",
+        "required": false,
+        "default": false,
         "deprecated": false
       },
       "children": {
@@ -476,18 +595,25 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for item status, release labels, and category chips."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for item status, release labels, and category chips.",
+        "Prefer `type='dot'` for passive status and `number` for counters."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Badge } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
-      "import { Badge } from '@zephyr/ui-react';\n<Badge tone='success'>Synced</Badge>"
+      "import { Badge } from '@zephyr/ui-react';\n<Badge type='dot' variant='lighter' color='green'>Live</Badge>"
     ]
   },
   {
@@ -528,16 +654,22 @@
       "@zephyr/avatars"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in nav headers, comments, tables, and collaboration views."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in nav headers, comments, tables, and collaboration views."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Avatar } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Avatar } from '@zephyr/ui-react';\n<Avatar name='Akhil Krishnan' />"
     ]
@@ -580,16 +712,22 @@
       "@zephyr/logos"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in ecosystem cards, integration lists, and partner sections."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in ecosystem cards, integration lists, and partner sections."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Logo } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Logo } from '@zephyr/ui-react';\n<Logo name='OpenAI' src={logoDataUri} />"
     ]
@@ -638,16 +776,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for every labeled form input block in onboarding and settings."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for every labeled form input block in onboarding and settings."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { FormField } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { FormField, Input } from '@zephyr/ui-react';\n<FormField label='Email' htmlFor='email'><Input id='email' /></FormField>"
     ]
@@ -688,16 +832,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use near table/list headers to drive filtering."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use near table/list headers to drive filtering."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { SearchBox } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { SearchBox } from '@zephyr/ui-react';\n<SearchBox value={query} onValueChange={setQuery} onSearch={runSearch} />"
     ]
@@ -731,18 +881,115 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for compact section switching in settings and dashboards."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for compact section switching in settings and dashboards."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Tabs } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Tabs } from '@zephyr/ui-react';\n<Tabs items={[{ id: 'overview', label: 'Overview', content: <div /> }]} />"
+    ]
+  },
+  {
+    "id": "button-group",
+    "name": "ButtonGroup",
+    "category": "molecule",
+    "tier": "free",
+    "description": "Segmented button row with 2–6 items across small, x-small, and 2x-small sizes.",
+    "propsSchema": {
+      "quantity": {
+        "type": "enum",
+        "values": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "description": "How many items to render in the group.",
+        "required": false,
+        "default": 6,
+        "deprecated": false
+      },
+      "size": {
+        "type": "enum",
+        "values": [
+          "sm",
+          "xs",
+          "2xs"
+        ],
+        "description": "Height and typography density of each segment.",
+        "required": false,
+        "default": "sm",
+        "deprecated": false
+      },
+      "labels": {
+        "type": "string[]",
+        "description": "Custom labels for each segment.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "value": {
+        "type": "number",
+        "description": "Controlled selected segment index.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onValueChange": {
+        "type": "(nextIndex: number) => void",
+        "description": "Callback fired when a segment is selected.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Disables interaction across all segments.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Each segment is a button and exposes `aria-pressed` for selected state.",
+      "Provide a descriptive `ariaLabel` when context is ambiguous."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
+    ],
+    "aiHints": {
+      "positive": [
+        "Use for compact category toggles and segmented filtering controls.",
+        "Keep labels short to avoid overflow in smaller sizes."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { ButtonGroup } from \"@zephyr/ui-react\";"
+      ]
+    },
+    "usageExamples": [
+      "import { ButtonGroup } from '@zephyr/ui-react';\n<ButtonGroup quantity={4} size='xs' value={1} onValueChange={setIndex} />"
     ]
   },
   {
@@ -800,19 +1047,192 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for FAQ sections and progressive reveal flows.",
-      "Prefer concise titles and short supporting descriptions."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for FAQ sections and progressive reveal flows.",
+        "Prefer concise titles and short supporting descriptions."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Accordion } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Accordion } from '@zephyr/ui-react';\n<Accordion items={[{ id: 'q1', title: 'What is Zephyr?', description: 'A plug-and-play UI framework.' }]} />"
+    ]
+  },
+  {
+    "id": "date-picker",
+    "name": "DatePicker",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Single and range date selection with optional time filters and footer actions.",
+    "propsSchema": {
+      "mode": {
+        "type": "enum",
+        "values": [
+          "single",
+          "range"
+        ],
+        "description": "Switches between single-date and date-range selection layouts.",
+        "required": false,
+        "default": "single",
+        "deprecated": false
+      },
+      "showTimeFilters": {
+        "type": "boolean",
+        "description": "Shows quick time chips like morning and evening.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "showFooter": {
+        "type": "boolean",
+        "description": "Shows cancel/apply action row at the bottom.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(value: DatePickerValue) => void",
+        "description": "Called whenever day selection changes.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onApply": {
+        "type": "(value: DatePickerValue) => void",
+        "description": "Called when the apply action is pressed.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Calendar days render as buttons with `aria-pressed` state.",
+      "Month navigation controls include descriptive labels."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
+    ],
+    "aiHints": {
+      "positive": [
+        "Use single mode for schedule pickers and filters with one date.",
+        "Use range mode for analytics, reporting, and dashboard range filters."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { DatePicker } from \"@zephyr/ui-react\";"
+      ]
+    },
+    "usageExamples": [
+      "import { DatePicker } from '@zephyr/ui-react';\n<DatePicker mode='range' showTimeFilters showFooter />"
+    ]
+  },
+  {
+    "id": "color-picker",
+    "name": "ColorPicker",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Interactive color input with spectrum, hue/opacity sliders, and recommended swatches.",
+    "propsSchema": {
+      "value": {
+        "type": "string",
+        "description": "Starting color value (hex preferred).",
+        "required": false,
+        "default": "#335cff",
+        "deprecated": false
+      },
+      "format": {
+        "type": "enum",
+        "values": [
+          "hex",
+          "rgb",
+          "hsl"
+        ],
+        "description": "Input display format for the value field.",
+        "required": false,
+        "default": "hex",
+        "deprecated": false
+      },
+      "opacity": {
+        "type": "number",
+        "description": "Opacity percentage shown in the value row.",
+        "required": false,
+        "default": 100,
+        "deprecated": false
+      },
+      "showRecommendedColors": {
+        "type": "boolean",
+        "description": "Shows the quick recommended color swatches section.",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "recommendedColors": {
+        "type": "string[]",
+        "description": "Custom palette for the recommended swatch row.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Disables all picker interactions while preserving layout.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "onChange": {
+        "type": "(value: ColorPickerChange) => void",
+        "description": "Called when color, format, or opacity changes.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Sliders expose aria labels for hue and opacity controls.",
+      "Recommended colors render as buttons with explicit color labels."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
+    ],
+    "aiHints": {
+      "positive": [
+        "Use for theme personalization, chart series controls, and branding settings.",
+        "Persist selected values in app state so users keep their choices across sessions."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { ColorPicker } from \"@zephyr/ui-react\";"
+      ]
+    },
+    "usageExamples": [
+      "import { ColorPicker } from '@zephyr/ui-react';\n<ColorPicker format='hex' showRecommendedColors />"
     ]
   },
   {
@@ -897,17 +1317,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for system feedback and policy notices.",
-      "Use stroke style in dense layouts to reduce visual weight."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for system feedback and policy notices.",
+        "Use stroke style in dense layouts to reduce visual weight."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Alert } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Alert } from '@zephyr/ui-react';\n<Alert status='error' variant='filled' title='Something went wrong' actionLabel='Retry' />"
     ]
@@ -977,16 +1403,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for async completion, copy confirmations, and background sync notices."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for async completion, copy confirmations, and background sync notices."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Toast } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Toast } from '@zephyr/ui-react';\n<Toast open status='success' title='Prompt copied' onClose={() => {}} />"
     ]
@@ -1020,16 +1452,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use on docs and admin pages above the main title."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use on docs and admin pages above the main title."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Breadcrumbs } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Breadcrumbs } from '@zephyr/ui-react';\n<Breadcrumbs items={[{ id: 'home', label: 'Home', href: '/' }]} />"
     ]
@@ -1039,56 +1477,132 @@
     "name": "Pagination",
     "category": "molecule",
     "tier": "pro",
-    "description": "Previous/next navigation with page count context.",
+    "description": "Configurable page navigation with Basic, Group, and Full Radius layouts.",
     "propsSchema": {
       "page": {
         "type": "number",
-        "description": "Numeric value for page.",
-        "required": false,
-        "default": null,
+        "description": "Current active page (1-based).",
+        "required": true,
+        "default": 1,
         "deprecated": false
       },
       "totalPages": {
         "type": "number",
-        "description": "Numeric value for total pages.",
-        "required": false,
-        "default": null,
+        "description": "Total page count in the dataset.",
+        "required": true,
+        "default": 16,
         "deprecated": false
       },
       "onPageChange": {
         "type": "(nextPage: number) => void",
-        "description": "Callback fired for on page change events.",
+        "description": "Callback fired when a page control is selected.",
+        "required": true,
+        "default": null,
+        "deprecated": false
+      },
+      "type": {
+        "type": "enum",
+        "values": [
+          "basic",
+          "group",
+          "full-radius"
+        ],
+        "description": "Visual pagination style.",
+        "required": false,
+        "default": "basic",
+        "deprecated": false
+      },
+      "showFirstLast": {
+        "type": "boolean",
+        "description": "Shows jump-to-first and jump-to-last controls.",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "showPrevNext": {
+        "type": "boolean",
+        "description": "Shows previous and next controls.",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "showMeta": {
+        "type": "boolean",
+        "description": "Shows left metadata text (Page X of Y).",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "showPageSizeSelect": {
+        "type": "boolean",
+        "description": "Shows right-side page-size selector.",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "pageSize": {
+        "type": "number",
+        "description": "Selected rows-per-page value displayed in the selector.",
+        "required": false,
+        "default": 7,
+        "deprecated": false
+      },
+      "pageSizeOptions": {
+        "type": "number[]",
+        "description": "Available rows-per-page options.",
         "required": false,
         "default": null,
         "deprecated": false
       },
-      "loading": {
-        "type": "boolean",
-        "description": "Toggles loading behavior.",
+      "onPageSizeChange": {
+        "type": "(nextPageSize: number) => void",
+        "description": "Callback fired when page-size option changes.",
         "required": false,
         "default": null,
+        "deprecated": false
+      },
+      "maxVisiblePages": {
+        "type": "number",
+        "description": "Maximum number of page cells to render before collapsing with ellipsis.",
+        "required": false,
+        "default": 7,
+        "deprecated": false
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Disables all controls and dims the component while loading.",
+        "required": false,
+        "default": false,
         "deprecated": false
       }
     },
     "a11yNotes": [
-      "Buttons expose disabled state for first/last boundaries."
+      "Wraps controls in a `nav` landmark with an accessible label.",
+      "Active page uses `aria-current='page'` and disabled boundaries are explicit."
     ],
     "dependencies": [
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use below tables and result lists."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use Basic for dense tables and Group for compact toolbars.",
+        "Enable metadata and page-size controls for enterprise data views."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Pagination } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
-      "import { Pagination } from '@zephyr/ui-react';\n<Pagination page={page} totalPages={10} onPageChange={setPage} />"
+      "import { Pagination } from '@zephyr/ui-react';\n<Pagination page={2} totalPages={16} type='group' onPageChange={setPage} showMeta showPageSizeSelect pageSize={7} />"
     ]
   },
   {
@@ -1127,18 +1641,109 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in command palettes and quick actions headers."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in command palettes and quick actions headers."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { CommandBar } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { CommandBar } from '@zephyr/ui-react';\n<CommandBar query={query} onQueryChange={setQuery} actions={actions} />"
+    ]
+  },
+  {
+    "id": "rich-editor",
+    "name": "RichEditor",
+    "category": "molecule",
+    "tier": "pro",
+    "description": "Compact rich-text toolbar with dropdown controls, inline formatting actions, and optional overflow actions.",
+    "propsSchema": {
+      "variant": {
+        "type": "enum",
+        "values": [
+          "01",
+          "02",
+          "03",
+          "04"
+        ],
+        "description": "Toolbar layout variant.",
+        "required": false,
+        "default": "01",
+        "deprecated": false
+      },
+      "showMore": {
+        "type": "boolean",
+        "description": "Shows optional overflow action at the end of the toolbar.",
+        "required": false,
+        "default": true,
+        "deprecated": false
+      },
+      "headerLabel": {
+        "type": "string",
+        "description": "Header dropdown text label.",
+        "required": false,
+        "default": "Header",
+        "deprecated": false
+      },
+      "fontSizeLabel": {
+        "type": "string",
+        "description": "Font size dropdown text label.",
+        "required": false,
+        "default": "14px",
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Disables all toolbar controls.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "onAction": {
+        "type": "(action: RichEditorAction) => void",
+        "description": "Called when a toolbar item is clicked.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Buttons expose clear interactive affordance and can be grouped by visual dividers.",
+      "Provide descriptive labels in surrounding editor context for screen-reader clarity."
+    ],
+    "dependencies": [
+      "@zephyr/ui-react"
+    ],
+    "stylePackSupport": [
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
+    ],
+    "aiHints": {
+      "positive": [
+        "Use variant 01 for full text formatting controls.",
+        "Use variant 02/03/04 when vertical space is constrained."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { RichEditor } from \"@zephyr/ui-react\";"
+      ]
+    },
+    "usageExamples": [
+      "import { RichEditor } from '@zephyr/ui-react';\n<RichEditor variant='01' showMore onAction={(action) => console.log(action)} />"
     ]
   },
   {
@@ -1177,16 +1782,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for currency, search, and prefixed text fields."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for currency, search, and prefixed text fields."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { InputGroup } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { InputGroup } from '@zephyr/ui-react';\n<InputGroup startAdornment='$' placeholder='Budget' />"
     ]
@@ -1231,16 +1842,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for overflow actions and contextual menus."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for overflow actions and contextual menus."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Dropdown } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Dropdown } from '@zephyr/ui-react';\n<Dropdown label='Actions' items={[{ id: 'edit', label: 'Edit', onSelect: () => {} }]} />"
     ]
@@ -1281,16 +1898,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use as top-level layout shell in admin and SaaS products."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use as top-level layout shell in admin and SaaS products."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Navbar } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Navbar } from '@zephyr/ui-react';\n<Navbar brand={<strong>Zephyr</strong>} links={[{ id: 'home', label: 'Home', href: '/' }]} />"
     ]
@@ -1332,16 +1955,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use above card/table sections to establish context and actions."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use above card/table sections to establish context and actions."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Header } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Header, Button } from '@zephyr/ui-react';\n<Header title='Workspace' subtitle='Manage your project' actions={<Button>New</Button>} />"
     ]
@@ -1396,16 +2025,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Pair with SearchBox and FiltersBar for interactive data screens."
-    ],
+    "aiHints": {
+      "positive": [
+        "Pair with SearchBox and FiltersBar for interactive data screens."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { DataTable } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { DataTable } from '@zephyr/ui-react';\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
     ]
@@ -1468,16 +2103,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for destructive confirmations and short multi-step flows."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for destructive confirmations and short multi-step flows."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { ModalDialog } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { ModalDialog } from '@zephyr/ui-react';\n<ModalDialog open={open} title='Delete item' onCancel={close} onConfirm={remove} />"
     ]
@@ -1518,16 +2159,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for persistent left navigation in documentation and apps."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for persistent left navigation in documentation and apps."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { SidebarNav } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { SidebarNav } from '@zephyr/ui-react';\n<SidebarNav sections={sections} />"
     ]
@@ -1568,16 +2215,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Pair with DataTable and SearchBox on data screens."
-    ],
+    "aiHints": {
+      "positive": [
+        "Pair with DataTable and SearchBox on data screens."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { FiltersBar } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { FiltersBar } from '@zephyr/ui-react';\n<FiltersBar items={filters} onReset={resetFilters} />"
     ]
@@ -1611,16 +2264,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in command/search experiences and discovery pages."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in command/search experiences and discovery pages."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { SearchResultsPanel } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { SearchResultsPanel } from '@zephyr/ui-react';\n<SearchResultsPanel query={query} results={results} />"
     ]
@@ -1675,16 +2334,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use as a starting point for docs portals and admin dashboards."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use as a starting point for docs portals and admin dashboards."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { LayoutShell } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { LayoutShell, Navbar } from '@zephyr/ui-react';\n<LayoutShell topNav={<Navbar brand='Zephyr' links={[]} />}>...</LayoutShell>"
     ]
@@ -1740,17 +2405,23 @@
       "@zephyr/icons-material"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for icon pickers, command palettes, and design handoff tooling.",
-      "Support semantic search terms (e.g., settings, billing, support)."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for icon pickers, command palettes, and design handoff tooling.",
+        "Support semantic search terms (e.g., settings, billing, support)."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { IconLibrary } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { IconLibrary } from '@zephyr/ui-react';\n<IconLibrary initialQuery='settings' onCopy={(name) => console.log(name)} />"
     ]
@@ -1793,17 +2464,23 @@
       "@zephyr/avatars"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for profile setup flows and collaborative presence pickers.",
-      "Expose style + seed controls for deterministic generation."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for profile setup flows and collaborative presence pickers.",
+        "Expose style + seed controls for deterministic generation."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { AvatarLibrary } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { AvatarLibrary } from '@zephyr/ui-react';\n<AvatarLibrary initialQuery='retro' onCopy={(style) => console.log(style)} />"
     ]
@@ -1839,17 +2516,23 @@
       "@zephyr/logos"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use in integration galleries, partner lists, and asset pickers.",
-      "Allow searching by brand name, domain, and category tags."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use in integration galleries, partner lists, and asset pickers.",
+        "Allow searching by brand name, domain, and category tags."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { LogoLibrary } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { LogoLibrary } from '@zephyr/ui-react';\n<LogoLibrary initialQuery='developer' onCopy={(domain) => console.log(domain)} />"
     ]
@@ -1922,17 +2605,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for arranging groups of elements with consistent spacing.",
-      "Prefer Stack over manual flexbox styles."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for arranging groups of elements with consistent spacing.",
+        "Prefer Stack over manual flexbox styles."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Stack } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Stack, Button } from '@zephyr/ui-react';\n<Stack direction='row' gap={3}><Button>Cancel</Button><Button variant='primary'>Save</Button></Stack>"
     ]
@@ -2001,17 +2690,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for card grids, feature sections, and dashboard stat rows.",
-      "Prefer Grid over manual CSS grid styles."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for card grids, feature sections, and dashboard stat rows.",
+        "Prefer Grid over manual CSS grid styles."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Grid } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Grid, Box } from '@zephyr/ui-react';\n<Grid columns={3} gap={4}><Box>Card 1</Box><Box>Card 2</Box><Box>Card 3</Box></Grid>"
     ]
@@ -2095,17 +2790,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use as a card container, section wrapper, or styled panel.",
-      "Prefer Box over manual div + inline style."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use as a card container, section wrapper, or styled panel.",
+        "Prefer Box over manual div + inline style."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Box } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Box } from '@zephyr/ui-react';\n<Box padding={4} radius='md' border>Content here</Box>"
     ]
@@ -2143,17 +2844,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use between sections when Stack gap is insufficient.",
-      "Prefer Stack with gap over multiple Spacer elements."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use between sections when Stack gap is insufficient.",
+        "Prefer Stack with gap over multiple Spacer elements."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Spacer } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Spacer } from '@zephyr/ui-react';\n<Spacer size={6} />"
     ]
@@ -2224,17 +2931,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use as a starting point for admin dashboards and project overview pages.",
-      "Compose with DataTable, Badge, Avatar, Grid, Stack, and Box."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use as a starting point for admin dashboards and project overview pages.",
+        "Compose with DataTable, Badge, Avatar, Grid, Stack, and Box."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { DashboardPage } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { DashboardPage } from '@zephyr/ui-react';\n<DashboardPage title='Analytics' onNewItem={() => {}} />"
     ]
@@ -2316,17 +3029,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for login and registration flows.",
-      "Compose with FormField, Input, Button, and Stack."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for login and registration flows.",
+        "Compose with FormField, Input, Button, and Stack."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { AuthPage } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { AuthPage } from '@zephyr/ui-react';\n<AuthPage brand='Zephyr' mode='sign-in' onSubmit={handleAuth} onModeSwitch={toggleMode} />"
     ]
@@ -2376,17 +3095,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for account, profile, and application configuration pages.",
-      "Compose with FormField, Input, Switch, Select, and Button."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for account, profile, and application configuration pages.",
+        "Compose with FormField, Input, Switch, Select, and Button."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { SettingsPage } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { SettingsPage } from '@zephyr/ui-react';\n<SettingsPage title='Account Settings' onSave={saveSettings} />"
     ]
@@ -2429,17 +3154,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for product setup, profile completion, and guided tours.",
-      "Compose with FormField, Input, Button, Stack, and Badge."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for product setup, profile completion, and guided tours.",
+        "Compose with FormField, Input, Button, Stack, and Badge."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { OnboardingPage } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { OnboardingPage } from '@zephyr/ui-react';\n<OnboardingPage steps={steps} onComplete={handleComplete} />"
     ]
@@ -2517,17 +3248,23 @@
       "@zephyr/core"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for product landing pages, marketing sites, and launch pages.",
-      "Compose with Button, Grid, Stack, Box, Badge, and Logo."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for product landing pages, marketing sites, and launch pages.",
+        "Compose with Button, Grid, Stack, Box, Badge, and Logo."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { MarketingPage } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { MarketingPage } from '@zephyr/ui-react';\n<MarketingPage heroTitle='Build faster' heroSubtitle='Ship beautiful products' ctaLabel='Get Started' onCtaClick={() => {}} />"
     ]
@@ -2592,17 +3329,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use as the primary surface container for dashboard panels, list items, and settings sections.",
-      "Compose with CardHeader and CardFooter for structured content areas."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use as the primary surface container for dashboard panels, list items, and settings sections.",
+        "Compose with CardHeader and CardFooter for structured content areas."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Card } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Card, CardHeader, CardFooter } from '@zephyr/ui-react';\n<Card shadow='md' padding='md'>\n  <CardHeader><h3>Card title</h3></CardHeader>\n  Content here\n  <CardFooter><Button>Save</Button></CardFooter>\n</Card>"
     ]
@@ -2640,16 +3383,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use between sections, list groups, and sidebar menu items."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use between sections, list groups, and sidebar menu items."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Divider } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Divider } from '@zephyr/ui-react';\n<Divider />\n<Divider label='or' />\n<Divider orientation='vertical' />"
     ]
@@ -2659,13 +3408,25 @@
     "name": "Progress",
     "category": "atom",
     "tier": "free",
-    "description": "Determinate or indeterminate progress bar with accessible role=progressbar semantics.",
+    "description": "Linear and circular progress indicators with optional labels, description, and action link.",
     "propsSchema": {
       "value": {
         "type": "number",
-        "description": "0–100. Omit for indeterminate animation.",
+        "description": "0–100 progress value. Omit for indeterminate in line variant.",
         "required": false,
         "default": null,
+        "deprecated": false
+      },
+      "variant": {
+        "type": "enum",
+        "values": [
+          "line",
+          "line-label",
+          "circle"
+        ],
+        "description": "Selects line-only, labeled line, or circular progress styles.",
+        "required": false,
+        "default": "line",
         "deprecated": false
       },
       "tone": {
@@ -2674,9 +3435,10 @@
           "primary",
           "success",
           "danger",
-          "warning"
+          "warning",
+          "neutral"
         ],
-        "description": "Bar fill color.",
+        "description": "Progress fill color.",
         "required": false,
         "default": "primary",
         "deprecated": false
@@ -2693,35 +3455,87 @@
         "default": "md",
         "deprecated": false
       },
+      "circleSize": {
+        "type": "enum",
+        "values": [
+          48,
+          56,
+          64,
+          72,
+          80
+        ],
+        "description": "Circular diameter in px for circle variant.",
+        "required": false,
+        "default": 64,
+        "deprecated": false
+      },
       "showValue": {
         "type": "boolean",
-        "description": "Show percentage text label.",
+        "description": "Show percentage text inside circle or near line.",
         "required": false,
         "default": false,
+        "deprecated": false
+      },
+      "title": {
+        "type": "string",
+        "description": "Top label for line-label variant.",
+        "required": false,
+        "default": "Data Storage",
+        "deprecated": false
+      },
+      "description": {
+        "type": "string",
+        "description": "Supporting helper text for line-label variant.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "actionLabel": {
+        "type": "string",
+        "description": "Optional action link text shown before description.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "labelPlacement": {
+        "type": "enum",
+        "values": [
+          "top",
+          "right"
+        ],
+        "description": "In line-label, places title/value above bar or value to the right.",
+        "required": false,
+        "default": "top",
         "deprecated": false
       }
     },
     "a11yNotes": [
-      "Uses aria-valuenow/aria-valuemin/aria-valuemax when determinate.",
-      "Indeterminate state uses aria-label without value attributes."
+      "Uses role=progressbar for line and circular variants.",
+      "Sets aria-valuenow/min/max for determinate values; omits value attributes for indeterminate line states."
     ],
     "dependencies": [
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for file uploads, step completion, and onboarding flows.",
-      "Pair with label text above the bar for context."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use circular variant for compact KPI progress and score rings.",
+        "Use line-label variant for plan usage blocks with title + helper text."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Progress } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
-      "import { Progress } from '@zephyr/ui-react';\n<Progress value={65} tone='primary' showValue />\n<Progress label='Uploading' />"
+      "import { Progress } from '@zephyr/ui-react';\n<Progress variant='line-label' value={80} title='Data Storage' showValue description='to unlock unlimited data storage.' actionLabel='Upgrade' />\n<Progress variant='circle' value={75} circleSize={64} showValue />"
     ]
   },
   {
@@ -2774,17 +3588,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use inside Card or list items as loading placeholders.",
-      "Use lines={3} for paragraph text placeholders."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use inside Card or list items as loading placeholders.",
+        "Use lines={3} for paragraph text placeholders."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Skeleton } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Skeleton } from '@zephyr/ui-react';\n<Skeleton height={20} width='60%' />\n<Skeleton lines={3} />\n<Skeleton width={48} height={48} radius='full' />"
     ]
@@ -2847,16 +3667,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for volume, opacity, price range, and settings controls."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for volume, opacity, price range, and settings controls."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Slider } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Slider } from '@zephyr/ui-react';\n<Slider value={volume} min={0} max={100} onChange={setVolume} showValue />"
     ]
@@ -2904,17 +3730,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Wrap any interactive element to add a descriptive label.",
-      "Prefer short text (< 10 words) in tooltip content."
-    ],
+    "aiHints": {
+      "positive": [
+        "Wrap any interactive element to add a descriptive label.",
+        "Prefer short text (< 10 words) in tooltip content."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Tooltip } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Tooltip } from '@zephyr/ui-react';\n<Tooltip content='Save your changes' side='top'>\n  <Button variant='ghost'>Save</Button>\n</Tooltip>"
     ]
@@ -2980,16 +3812,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for date pickers, color pickers, filter panels, and inline form flows."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for date pickers, color pickers, filter panels, and inline form flows."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Popover } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Popover, Button } from '@zephyr/ui-react';\n<Popover trigger={<Button variant='ghost'>Options</Button>}>\n  <p>Popover content here</p>\n</Popover>"
     ]
@@ -3045,17 +3883,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use instead of Select when the options list is long or searchable.",
-      "For async search, update options and set loading=true while fetching."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use instead of Select when the options list is long or searchable.",
+        "For async search, update options and set loading=true while fetching."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { ComboBox } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { ComboBox } from '@zephyr/ui-react';\n<ComboBox\n  options={[{value:'react',label:'React'},{value:'vue',label:'Vue'}]}\n  value={framework}\n  onChange={setFramework}\n  placeholder='Select framework'\n/>"
     ]
@@ -3110,16 +3954,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for quantity fields, page sizes, and numeric config inputs."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for quantity fields, page sizes, and numeric config inputs."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { NumberInput } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { NumberInput } from '@zephyr/ui-react';\n<NumberInput value={qty} min={1} max={99} onChange={setQty} />"
     ]
@@ -3168,16 +4018,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for email recipients, label/category assignment, and filter chip inputs."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for email recipients, label/category assignment, and filter chip inputs."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { TagInput } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { TagInput } from '@zephyr/ui-react';\n<TagInput value={tags} onChange={setTags} placeholder='Add label…' maxTags={10} />"
     ]
@@ -3238,16 +4094,22 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for detail panels, cart sidebars, notification trays, and mobile nav drawers."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for detail panels, cart sidebars, notification trays, and mobile nav drawers."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { Sheet } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { Sheet } from '@zephyr/ui-react';\n<Sheet open={open} onClose={() => setOpen(false)} title='Details' side='right'>\n  <p>Sheet content</p>\n</Sheet>"
     ]
@@ -3321,17 +4183,23 @@
       "@zephyr/ui-react"
     ],
     "stylePackSupport": [
-      "Studio",
-      "Editorial",
-      "NeoBrutal",
-      "SoftTech",
-      "Enterprise",
-      "Clarity"
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
     ],
-    "aiHints": [
-      "Use for destructive actions like delete, revoke, or archive.",
-      "Set confirmTone='danger' for irreversible actions."
-    ],
+    "aiHints": {
+      "positive": [
+        "Use for destructive actions like delete, revoke, or archive.",
+        "Set confirmTone='danger' for irreversible actions."
+      ],
+      "negative": [
+        "Avoid raw HTML controls when a Zephyr component exists."
+      ],
+      "preferredImports": [
+        "import { AlertDialog } from \"@zephyr/ui-react\";"
+      ]
+    },
     "usageExamples": [
       "import { AlertDialog } from '@zephyr/ui-react';\n<AlertDialog\n  open={showConfirm}\n  onClose={() => setShowConfirm(false)}\n  title='Delete project?'\n  description='This cannot be undone.'\n  confirmLabel='Delete'\n  confirmTone='danger'\n  onConfirm={handleDelete}\n/>"
     ]

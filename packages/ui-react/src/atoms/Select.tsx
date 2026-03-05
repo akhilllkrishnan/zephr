@@ -104,7 +104,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       style={dynamicStyles}
       disabled={disabled}
       onFocus={(event: FocusEvent<HTMLSelectElement>) => {
-        setFocused(true);
+        setFocused(event.currentTarget.matches(":focus-visible"));
         onFocus?.(event);
       }}
       onBlur={(event: FocusEvent<HTMLSelectElement>) => {

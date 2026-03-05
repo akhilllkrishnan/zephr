@@ -85,7 +85,7 @@ export function Tabs({ items, initialTabId, className, style }: TabsProps) {
               onClick={() => !item.disabled && setActiveId(item.id)}
               onMouseEnter={() => !item.disabled && setHoveredId(item.id)}
               onMouseLeave={() => setHoveredId(null)}
-              onFocus={() => !item.disabled && setFocusedId(item.id)}
+              onFocus={(event) => !item.disabled && setFocusedId(event.currentTarget.matches(":focus-visible") ? item.id : null)}
               onBlur={() => setFocusedId(null)}
             >
               {item.label}

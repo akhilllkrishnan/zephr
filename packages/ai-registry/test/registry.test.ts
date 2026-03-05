@@ -25,7 +25,7 @@ describe("@zephyr/ai-registry", () => {
 
   it("returns install steps and theme variants", () => {
     expect(getInstallSteps("button").length).toBeGreaterThan(0);
-    expect(getThemeVariants("button")).toContain("Studio");
+    expect(getThemeVariants("button")).toContain("notion");
   });
 
   it("builds template and prompt from shared generator", () => {
@@ -36,24 +36,32 @@ describe("@zephyr/ai-registry", () => {
 
     const prompt = generateComponentPrompt("input", {
       assistant: "Codex",
-      stylePack: "Clarity",
+      stylePack: "notion",
       accentColor: "#335cff",
-      configSnippet: "export default { stylePack: 'Clarity' };"
+      configSnippet: "export default { stylePack: 'notion' };"
     });
-    expect(prompt).toContain("Theme: Clarity");
+    expect(prompt).toContain("Theme: notion");
     expect(prompt).toContain("Component block: Input (input)");
   });
 
   it("builds scaffold content for CLI/docs consumers", () => {
     const scaffold = generateComponentScaffold("button", {
       assistant: "Cursor",
-      stylePack: "Editorial",
+      stylePack: "stripe",
       accentColor: "#1d4ed8"
     });
     expect(scaffold).not.toBeNull();
     expect(scaffold?.snippetFileName).toBe("button.tsx");
     expect(scaffold?.promptFileName).toBe("button.prompt.md");
     expect(scaffold?.promptContent).toContain("Assistant: Cursor");
+  });
+
+  it("exposes structured ai hints with positive and negative guidance", () => {
+    const spec = getComponentSpec("button");
+    expect(spec).not.toBeNull();
+    expect(spec?.aiHints.positive.length).toBeGreaterThan(0);
+    expect(spec?.aiHints.negative.length).toBeGreaterThan(0);
+    expect(spec?.aiHints.preferredImports.length).toBeGreaterThan(0);
   });
 
   it("returns category-backed default intent", () => {

@@ -63,7 +63,7 @@ async function testHandler(req: IncomingMessage, res: ServerResponse): Promise<v
             sendJson(res, 400, { error: "Missing required field: licenseKey" });
             return;
         }
-        sendJson(res, 200, validateLicenseKey(body.licenseKey));
+        sendJson(res, 200, await validateLicenseKey(body.licenseKey));
         return;
     }
 
@@ -254,7 +254,7 @@ describe("Cloud API — HTTP integration", () => {
         expect(res.status).toBe(200);
         const json = await res.json() as unknown[];
         expect(Array.isArray(json)).toBe(true);
-        expect(json).toContain("Studio");
+        expect(json).toContain("notion");
     });
 
     it("POST /v1/audit/url → returns structured report", async () => {

@@ -104,7 +104,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       style={dynamicStyles}
       disabled={disabled}
       onFocus={(event: FocusEvent<HTMLInputElement>) => {
-        setFocused(true);
+        setFocused(event.currentTarget.matches(":focus-visible"));
         onFocus?.(event);
       }}
       onBlur={(event: FocusEvent<HTMLInputElement>) => {

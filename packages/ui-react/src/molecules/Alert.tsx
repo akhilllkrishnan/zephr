@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode } from "react";
 
-export type AlertStatus = "error" | "warning" | "success" | "info" | "feature";
+export type AlertStatus = "error" | "warning" | "success" | "info" | "feature" | "neutral";
 export type AlertVariant = "filled" | "light" | "lighter" | "stroke";
 export type AlertSize = "xs" | "sm" | "lg";
 
@@ -41,10 +41,10 @@ function paletteForStatus(status: AlertStatus): AlertPalette {
 
   if (status === "warning") {
     return {
-      base: "var(--z-color-warning, var(--z-color-accent, #fa7319))",
-      light: "#ffe6d1",
-      lighter: "#fff5eb",
-      onBase: "#ffffff",
+      base: "var(--z-color-warning, var(--z-color-semanticYellow500, #f6b51e))",
+      light: "var(--z-color-warning-light, #fff1c2)",
+      lighter: "var(--z-color-warning-lighter, #fff8e1)",
+      onBase: "#1f2937",
       onLight: "var(--z-color-text, #171717)",
       icon: "!"
     };
@@ -72,10 +72,21 @@ function paletteForStatus(status: AlertStatus): AlertPalette {
     };
   }
 
+  if (status === "neutral") {
+    return {
+      base: "var(--z-color-muted, #7b7b7b)",
+      light: "#ebebeb",
+      lighter: "#f5f5f5",
+      onBase: "#ffffff",
+      onLight: "var(--z-color-text, #171717)",
+      icon: "✦"
+    };
+  }
+
   return {
-    base: "var(--z-color-verified, var(--z-color-primary, #47c2ff))",
-    light: "#d9f3ff",
-    lighter: "#f0f9ff",
+    base: "var(--z-color-info, var(--z-color-verified, #3b82f6))",
+    light: "var(--z-color-info-light, #dbeafe)",
+    lighter: "var(--z-color-info-lighter, #eff6ff)",
     onBase: "#ffffff",
     onLight: "var(--z-color-text, #171717)",
     icon: "i"

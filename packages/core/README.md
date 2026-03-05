@@ -15,7 +15,7 @@ import { generateCssVariables } from "@zephyr/core/browser";
 import type { ZephyrConfig } from "@zephyr/core";
 
 const config: ZephyrConfig = {
-  stylePack: "Studio",
+  stylePack: "notion",
   tokens: {
     color: {
       primary: "#335cff",
@@ -33,7 +33,7 @@ document.head.appendChild(style);
 
 ## Style Packs
 
-`Studio` · `Editorial` · `NeoBrutal` · `SoftTech` · `Enterprise` · `Clarity`
+`notion` · `stripe` · `linear` · `framer`
 
 ## License
 

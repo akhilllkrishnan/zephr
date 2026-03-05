@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ZephyrCloudClient } from "../src";
+import { ZephyrCloudClient, ZephyrCloudError } from "../src";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -10,7 +10,7 @@ describe("@zephyr/cloud-sdk", () => {
   it("sends authorization header when apiKey is configured", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ["Studio"]
+      json: async () => ["notion"]
     });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -20,7 +20,7 @@ describe("@zephyr/cloud-sdk", () => {
     });
 
     const themes = await client.getThemes();
-    expect(themes).toContain("Studio");
+    expect(themes).toContain("notion");
 
     const call = fetchMock.mock.calls[0];
     expect(call[0]).toBe("http://localhost:8787/v1/themes");
@@ -41,7 +41,51 @@ describe("@zephyr/cloud-sdk", () => {
     );
 
     const client = new ZephyrCloudClient({ baseUrl: "http://localhost:8787" });
-    await expect(client.getComponents()).rejects.toThrow("Zephyr cloud error 401: Unauthorized");
+    try {
+      await client.getComponents();
+      throw new Error("Expected getComponents to throw.");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ZephyrCloudError);
+      expect((error as Error).message).toContain("Zephyr cloud error 401: Unauthorized");
+    }
+  });
+
+  it("validates baseUrl in constructor", () => {
+    expect(() => new ZephyrCloudClient({ baseUrl: "localhost:8787" })).toThrow(
+      'Invalid Zephyr cloud baseUrl protocol: "localhost:"'
+    );
+    expect(() => new ZephyrCloudClient({ baseUrl: "ftp://localhost:8787" })).toThrow(
+      'Invalid Zephyr cloud baseUrl protocol: "ftp:"'
+    );
+  });
+
+  it("throws timeout error when request aborts", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockRejectedValue({ name: "AbortError" })
+    );
+
+    const client = new ZephyrCloudClient({
+      baseUrl: "http://localhost:8787",
+      timeoutMs: 1000
+    });
+
+    await expect(client.getThemes()).rejects.toThrow("Zephyr cloud request timed out after 1000ms");
+  });
+
+  it("throws when success response is not valid JSON", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => {
+          throw new Error("Unexpected token < in JSON");
+        }
+      })
+    );
+
+    const client = new ZephyrCloudClient({ baseUrl: "http://localhost:8787" });
+    await expect(client.getThemes()).rejects.toThrow("Zephyr cloud returned invalid JSON.");
   });
 
   it("builds query-string endpoints for asset search routes", async () => {

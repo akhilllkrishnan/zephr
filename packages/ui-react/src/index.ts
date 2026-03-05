@@ -22,11 +22,15 @@ export * from "./molecules/InputGroup";
 export * from "./molecules/Dropdown";
 export * from "./molecules/Tabs";
 export * from "./molecules/Accordion";
+export * from "./molecules/DatePicker";
+export * from "./molecules/ColorPicker";
 export * from "./molecules/Alert";
 export * from "./molecules/Toast";
 export * from "./molecules/Breadcrumbs";
 export * from "./molecules/Pagination";
 export * from "./molecules/CommandBar";
+export * from "./molecules/ButtonGroup";
+export * from "./molecules/RichEditor";
 // Sprint 1 molecules
 export * from "./molecules/Tooltip";
 export * from "./molecules/Popover";

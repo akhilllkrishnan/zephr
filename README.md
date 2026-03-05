@@ -41,13 +41,13 @@ Zephyr CLI workflows:
 
 ```bash
 # Initialize with theme + accent
-node packages/cli/dist/index.js init --style-pack Clarity --accent #335cff
+node packages/cli/dist/index.js init --style-pack notion --accent #335cff
 
 # Scaffold a component snippet + AI prompt
 node packages/cli/dist/index.js add button --tool Codex
 
 # Switch theme quickly
-node packages/cli/dist/index.js theme Editorial --accent #1d4ed8
+node packages/cli/dist/index.js theme stripe --accent #1d4ed8
 
 # Health checks (config/css/deps/api-key)
 node packages/cli/dist/index.js doctor
@@ -64,12 +64,6 @@ Run docs playground:
 
 ```bash
 pnpm docs:dev
-```
-
-Run Storybook:
-
-```bash
-pnpm storybook
 ```
 
 ## Deploy + Custom Domain (Vercel)
@@ -92,7 +86,7 @@ This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20Syste
 
 ## Style Packs
 
-`Studio`, `Editorial`, `NeoBrutal`, `SoftTech`, `Enterprise`, `Clarity`
+`notion`, `stripe`, `linear`, `framer`
 
 ## Browser Automation Smoke Test
 
