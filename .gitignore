@@ -2,6 +2,13 @@ node_modules
 .pnpm-store
 .turbo
 dist
+# Allow compiled dist for workspace packages (needed for Vercel deployment)
+!packages/core/dist/
+!packages/ai-registry/dist/
+!packages/avatars/dist/
+!packages/logos/dist/
+!packages/icons-material/dist/
+!packages/cloud-sdk/dist/
 coverage
 *.log
 .DS_Store
