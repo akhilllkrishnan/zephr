@@ -2351,8 +2351,8 @@ h1 {
   position: absolute;
   top: 0;
   right: 0;
-  width: 360px;
-  height: 340px;
+  width: 240px;
+  height: 226px;
   pointer-events: none;
   z-index: 0;
 }

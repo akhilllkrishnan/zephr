@@ -5325,50 +5325,7 @@ export default function App() {
             <>
               <div id="setup-introduction" className="intro-hero">
                 <div className="hero-mesh-decoration" aria-hidden="true">
-                  <svg viewBox="0 0 480 380" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-mesh-svg">
-                    <defs>
-                      <radialGradient id="hm-g1" cx="58%" cy="36%" r="54%" fx="74%" fy="24%">
-                        <stop offset="0%" stopColor="#c4b5fd" />
-                        <stop offset="38%" stopColor="#818cf8" />
-                        <stop offset="72%" stopColor="#38bdf8" />
-                        <stop offset="100%" stopColor="#67e8f9" />
-                      </radialGradient>
-                      <radialGradient id="hm-g2" cx="52%" cy="48%" r="60%" fx="65%" fy="30%">
-                        <stop offset="0%" stopColor="#f9a8d4" />
-                        <stop offset="45%" stopColor="#fb923c" />
-                        <stop offset="100%" stopColor="#fde68a" />
-                      </radialGradient>
-                      <radialGradient id="hm-g3" cx="46%" cy="44%" r="56%">
-                        <stop offset="0%" stopColor="#5eead4" />
-                        <stop offset="55%" stopColor="#6ee7b7" />
-                        <stop offset="100%" stopColor="#bef264" />
-                      </radialGradient>
-                      <filter id="hm-blur">
-                        <feGaussianBlur stdDeviation="2.5" />
-                      </filter>
-                    </defs>
-                    {/* Large amoeba — violet → indigo → sky */}
-                    <path
-                      d="M 420 18 C 488 2 548 44 540 118 C 532 192 476 240 402 256 C 328 272 248 242 230 182 C 212 122 258 62 328 44 C 364 34 394 26 420 18 Z"
-                      fill="url(#hm-g1)"
-                      opacity="0.72"
-                      filter="url(#hm-blur)"
-                    />
-                    {/* Medium petal blob — rose → amber */}
-                    <path
-                      d="M 310 230 C 346 202 384 214 382 252 C 380 290 352 314 318 308 C 284 302 264 272 270 244 C 276 216 282 252 310 230 Z"
-                      fill="url(#hm-g2)"
-                      opacity="0.68"
-                      filter="url(#hm-blur)"
-                    />
-                    {/* Small squircle accent — teal → lime */}
-                    <path
-                      d="M 510 10 C 538 10 552 24 552 50 C 552 76 538 88 512 88 C 486 88 474 76 474 50 C 474 24 486 10 510 10 Z"
-                      fill="url(#hm-g3)"
-                      opacity="0.62"
-                      filter="url(#hm-blur)"
-                    />
-                  </svg>
+                  <img src="/hero.svg" alt="" className="hero-mesh-svg" />
                 </div>
                 <div>
                   <p className="eyebrow">Design System</p>
