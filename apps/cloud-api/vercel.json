@@ -11,8 +11,8 @@
       "destination": "/api/health"
     },
     {
-      "source": "/v1/(.*)",
-      "destination": "/api/v1/$1"
+      "source": "/v1/:path*",
+      "destination": "/api/v1/:path*"
     }
   ]
 }
