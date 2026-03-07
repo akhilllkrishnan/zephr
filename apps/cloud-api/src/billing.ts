@@ -33,9 +33,9 @@ function getEnvVariantMapping(): {
   enterprise?: number;
 } {
   return {
-    individual: parseOptionalInt(process.env.ZEPHYR_LS_VARIANT_INDIVIDUAL),
-    startup: parseOptionalInt(process.env.ZEPHYR_LS_VARIANT_STARTUP),
-    enterprise: parseOptionalInt(process.env.ZEPHYR_LS_VARIANT_ENTERPRISE)
+    individual: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_INDIVIDUAL),
+    startup: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_STARTUP),
+    enterprise: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_ENTERPRISE)
   };
 }
 
@@ -131,20 +131,20 @@ export function getBillingPlans(): BillingPlanDefinition[] {
       id: "individual",
       label: "Individual",
       description: "For solo builders and personal projects.",
-      checkoutUrl: envCheckout("ZEPHYR_LS_CHECKOUT_INDIVIDUAL")
+      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_INDIVIDUAL")
     },
     {
       id: "startup",
       label: "Startup",
       description: "For small teams shipping products quickly.",
       recommended: true,
-      checkoutUrl: envCheckout("ZEPHYR_LS_CHECKOUT_STARTUP")
+      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_STARTUP")
     },
     {
       id: "enterprise",
       label: "Enterprise",
       description: "For larger teams with advanced support needs.",
-      checkoutUrl: envCheckout("ZEPHYR_LS_CHECKOUT_ENTERPRISE")
+      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_ENTERPRISE")
     }
   ];
 }

@@ -9,12 +9,12 @@
     "noEmit": true,
     "allowJs": false,
     "paths": {
-      "@zephyr/core": ["../../packages/core/src/index.ts"],
-      "@zephyr/core/*": ["../../packages/core/src/*"],
-      "@zephyr/ui-react": ["../../packages/ui-react/src/index.ts"],
-      "@zephyr/ui-react/*": ["../../packages/ui-react/src/*"],
-      "@zephyr/cloud-sdk": ["../../packages/cloud-sdk/src/index.ts"],
-      "@zephyr/cloud-sdk/*": ["../../packages/cloud-sdk/src/*"]
+      "@zephrui/core": ["../../packages/core/src/index.ts"],
+      "@zephrui/core/*": ["../../packages/core/src/*"],
+      "@zephrui/ui-react": ["../../packages/ui-react/src/index.ts"],
+      "@zephrui/ui-react/*": ["../../packages/ui-react/src/*"],
+      "@zephrui/cloud-sdk": ["../../packages/cloud-sdk/src/index.ts"],
+      "@zephrui/cloud-sdk/*": ["../../packages/cloud-sdk/src/*"]
     }
   },
   "include": ["src/**/*"]

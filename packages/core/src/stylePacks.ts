@@ -175,7 +175,7 @@ function composeColorTokens(colors: PackColors): DesignTokens["color"] {
     semanticGreen500: colors.semanticGreen["500"],
     semanticGreen300: colors.semanticGreen["300"],
 
-    // Runtime aliases used by current Zephyr components
+    // Runtime aliases used by current Zephr components
     background: colors.background["0"],
     surface: colors.static.white,
     text: colors.text["950"],

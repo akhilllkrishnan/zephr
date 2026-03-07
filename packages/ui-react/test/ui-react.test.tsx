@@ -11,7 +11,7 @@ import {
   Navbar
 } from "../src";
 
-describe("@zephyr/ui-react", () => {
+describe("@zephrui/ui-react", () => {
   it("renders button classes and content", () => {
     const html = renderToStaticMarkup(<Button variant="primary">Save</Button>);
     expect(html).toContain("Save");
@@ -22,13 +22,13 @@ describe("@zephyr/ui-react", () => {
   it("renders navbar links", () => {
     const html = renderToStaticMarkup(
       <Navbar
-        brand={<strong>Zephyr</strong>}
+        brand={<strong>Zephr</strong>}
         links={[{ id: "home", label: "Home", href: "/" }]}
       />
     );
 
     expect(html).toContain("<nav");
-    expect(html).toContain("Zephyr");
+    expect(html).toContain("Zephr");
     expect(html).toContain("Home");
   });
 
@@ -55,7 +55,7 @@ describe("@zephyr/ui-react", () => {
     const accordionHtml = renderToStaticMarkup(
       <Accordion
         items={[
-          { id: "q1", title: "What is Zephyr?", description: "A plug-and-play UI framework." }
+          { id: "q1", title: "What is Zephr?", description: "A plug-and-play UI framework." }
         ]}
       />
     );
@@ -63,7 +63,7 @@ describe("@zephyr/ui-react", () => {
       <Alert status="success" variant="light" title="Theme synced." />
     );
 
-    expect(accordionHtml).toContain("What is Zephyr?");
+    expect(accordionHtml).toContain("What is Zephr?");
     expect(accordionHtml).toContain("aria-expanded");
     expect(alertHtml).toContain("Theme synced.");
     expect(alertHtml).toContain("role=\"status\"");

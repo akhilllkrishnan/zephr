@@ -1,23 +1,23 @@
 {
-  "name": "@zephyr/cloud-api",
+  "name": "@zephrui/cloud-api",
   "version": "0.1.0",
-  "description": "Zephyr cloud API server",
+  "description": "Zephr cloud API server",
   "license": "UNLICENSED",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.vercel.json --noEmit",
     "test": "vitest run",
-    "lint": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.vercel.json --noEmit",
     "dev": "node dist/index.js"
   },
   "dependencies": {
-    "@zephyr/ai-registry": "workspace:*",
-    "@zephyr/avatars": "workspace:*",
-    "@zephyr/core": "workspace:*",
-    "@zephyr/icons-material": "workspace:*",
-    "@zephyr/logos": "workspace:*"
+    "@zephrui/ai-registry": "workspace:*",
+    "@zephrui/avatars": "workspace:*",
+    "@zephrui/core": "workspace:*",
+    "@zephrui/icons-material": "workspace:*",
+    "@zephrui/logos": "workspace:*"
   }
 }

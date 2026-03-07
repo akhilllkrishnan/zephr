@@ -1,6 +1,6 @@
-# Zephyr MCP Server
+# Zephr MCP Server
 
-Exposes Zephyr component metadata tools for AI assistants over JSON-RPC on stdio.
+Exposes Zephr component metadata tools for AI assistants over JSON-RPC on stdio.
 
 ## Tools
 

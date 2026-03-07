@@ -88,7 +88,7 @@ function boot(): void {
   });
 
   process.stdout.write(
-    `${JSON.stringify({ jsonrpc: "2.0", method: "server/ready", params: { name: "zephyr-mcp" } })}\n`
+    `${JSON.stringify({ jsonrpc: "2.0", method: "server/ready", params: { name: "zephr-mcp" } })}\n`
   );
 }
 

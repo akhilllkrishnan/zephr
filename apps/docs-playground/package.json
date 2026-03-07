@@ -1,8 +1,8 @@
 {
-  "name": "@zephyr/docs-playground",
+  "name": "@zephrui/docs-playground",
   "version": "0.1.0",
   "private": true,
-  "description": "Zephyr docs playground with live prop and style-pack controls",
+  "description": "Zephr docs playground with live prop and style-pack controls",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "@vercel/speed-insights": "^1.3.1",
-    "@zephyr/ai-registry": "workspace:*",
-    "@zephyr/avatars": "workspace:*",
-    "@zephyr/cloud-sdk": "workspace:*",
-    "@zephyr/core": "workspace:*",
-    "@zephyr/icons-material": "workspace:*",
-    "@zephyr/logos": "workspace:*",
-    "@zephyr/ui-react": "workspace:*",
+    "@zephrui/ai-registry": "workspace:*",
+    "@zephrui/avatars": "workspace:*",
+    "@zephrui/cloud-sdk": "workspace:*",
+    "@zephrui/core": "workspace:*",
+    "@zephrui/icons-material": "workspace:*",
+    "@zephrui/logos": "workspace:*",
+    "@zephrui/ui-react": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LogoClient, type LogoProvider, getLogoByDomain, searchLogoCatalog } from "../src";
 
-describe("@zephyr/logos", () => {
+describe("@zephrui/logos", () => {
   it("searches catalog by brand and use-case", () => {
     const byBrand = searchLogoCatalog("openai");
     const byUseCase = searchLogoCatalog("payments billing");
@@ -23,7 +23,7 @@ describe("@zephyr/logos", () => {
     const result = await client.resolve("example.com");
 
     expect(result.fallback).toBe(true);
-    expect(result.source).toBe("zephyr-fallback");
+    expect(result.source).toBe("zephr-fallback");
     expect(result.url.startsWith("data:image/svg+xml,")).toBe(true);
   });
 
@@ -32,7 +32,7 @@ describe("@zephyr/logos", () => {
     const first = await client.resolve("openai.com");
     const second = await client.resolve("openai.com");
 
-    expect(first.source).toBe("zephyr-catalog");
+    expect(first.source).toBe("zephr-catalog");
     expect(first.fromCache).toBe(false);
     expect(second.fromCache).toBe(true);
   });

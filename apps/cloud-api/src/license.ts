@@ -2,7 +2,7 @@
  * License validation
  * ──────────────────
  * Primary: validates against Lemon Squeezy API (when LEMON_SQUEEZY_API_KEY is set).
- * Fallback: validates against local ZEPHYR_LICENSE_KEYS env list (dev / air-gapped).
+ * Fallback: validates against local ZEPHR_LICENSE_KEYS env list (dev / air-gapped).
  */
 
 import { validateLsLicenseKey } from "./lemonsqueezy";
@@ -40,15 +40,15 @@ interface LocalLicenseRecord {
 
 const DEV_KEYS: LocalLicenseRecord[] = [
   { key: "dev_local_key", plan: "pro" },
-  { key: "zephyr-pro-demo-2026", plan: "pro", expiresAt: "2027-12-31T23:59:59.000Z" },
-  { key: "zephyr-team-demo-2026", plan: "team", expiresAt: "2027-12-31T23:59:59.000Z" }
+  { key: "zephr-pro-demo-2026", plan: "pro", expiresAt: "2027-12-31T23:59:59.000Z" },
+  { key: "zephr-team-demo-2026", plan: "team", expiresAt: "2027-12-31T23:59:59.000Z" }
 ];
 
 function buildLocalTable(): Map<string, LocalLicenseRecord> {
   const table = new Map<string, LocalLicenseRecord>();
   for (const r of DEV_KEYS) table.set(r.key, r);
 
-  const envRaw = process.env.ZEPHYR_LICENSE_KEYS?.trim();
+  const envRaw = process.env.ZEPHR_LICENSE_KEYS?.trim();
   if (envRaw) {
     for (const token of envRaw.split(",").map(s => s.trim()).filter(Boolean)) {
       const [key = "", planRaw = "", expiresRaw = ""] = token.split(":").map(s => s.trim());
@@ -69,7 +69,7 @@ function buildLocalTable(): Map<string, LocalLicenseRecord> {
 
 function buildRevokedSet(): Set<string> {
   const set = new Set<string>();
-  const raw = process.env.ZEPHYR_REVOKED_LICENSE_KEYS?.trim();
+  const raw = process.env.ZEPHR_REVOKED_LICENSE_KEYS?.trim();
   if (raw) for (const k of raw.split(",").map(s => s.trim()).filter(Boolean)) set.add(k);
   return set;
 }
@@ -89,7 +89,7 @@ function parseBooleanEnv(raw: string | undefined): boolean | null {
 }
 
 function allowLocalFallback(): boolean {
-  const explicit = parseBooleanEnv(process.env.ZEPHYR_ALLOW_LOCAL_LICENSE_FALLBACK);
+  const explicit = parseBooleanEnv(process.env.ZEPHR_ALLOW_LOCAL_LICENSE_FALLBACK);
   if (explicit !== null) {
     return explicit;
   }
@@ -222,7 +222,7 @@ const LS_KEY_PATTERN = /^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9
  * Validate a license key.
  *
  * - If LEMON_SQUEEZY_API_KEY is set AND the key looks like a LS UUID → call LS API.
- * - Otherwise fall back to local table (dev keys + ZEPHYR_LICENSE_KEYS env).
+ * - Otherwise fall back to local table (dev keys + ZEPHR_LICENSE_KEYS env).
  */
 export async function validateLicenseKey(
   input: string

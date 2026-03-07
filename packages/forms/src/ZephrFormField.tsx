@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode } from "react";
 
-export interface ZephyrFormFieldProps {
+export interface ZephrFormFieldProps {
     label?: string;
     hint?: string;
     error?: string;
@@ -13,18 +13,18 @@ export interface ZephyrFormFieldProps {
 }
 
 /**
- * FormField wrapper that integrates cleanly with useZephyrForm errors.
+ * FormField wrapper that integrates cleanly with useZephrForm errors.
  *
  * @example
  * ```tsx
- * const { register, errors } = useZephyrForm(schema);
+ * const { register, errors } = useZephrForm(schema);
  *
- * <ZephyrFormField label="Email" error={errors.email} htmlFor="email">
+ * <ZephrFormField label="Email" error={errors.email} htmlFor="email">
  *   <input id="email" {...register('email')} />
- * </ZephyrFormField>
+ * </ZephrFormField>
  * ```
  */
-export function ZephyrFormField({
+export function ZephrFormField({
     label,
     hint,
     error,
@@ -33,7 +33,7 @@ export function ZephyrFormField({
     children,
     className,
     style
-}: ZephyrFormFieldProps) {
+}: ZephrFormFieldProps) {
     const hasError = Boolean(error);
 
     return (

@@ -16,7 +16,7 @@ export class HttpLogoProvider implements LogoProvider {
   constructor(options: HttpLogoProviderOptions = {}) {
     this.id = options.id ?? "http-provider";
     this.baseUrl = options.baseUrl ?? "https://assets.zephr.local/logos";
-    this.attribution = options.attribution ?? "Zephyr hosted logo asset";
+    this.attribution = options.attribution ?? "Zephr hosted logo asset";
   }
 
   async getLogo(domain: string): Promise<LogoFetchResult | null> {
@@ -46,7 +46,7 @@ export class HttpLogoProvider implements LogoProvider {
 }
 
 export class CatalogLogoProvider implements LogoProvider {
-  public readonly id = "zephyr-catalog";
+  public readonly id = "zephr-catalog";
 
   async getLogo(domain: string): Promise<LogoFetchResult | null> {
     const found = getLogoByDomain(domain);
@@ -56,7 +56,7 @@ export class CatalogLogoProvider implements LogoProvider {
 
     return {
       url: createCatalogLogoDataUri(found),
-      attribution: "Zephyr catalog mark"
+      attribution: "Zephr catalog mark"
     };
   }
 

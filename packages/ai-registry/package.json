@@ -1,5 +1,5 @@
 {
-  "name": "@zephyr/ai-registry",
+  "name": "@zephrui/ai-registry",
   "version": "0.1.0",
   "description": "Machine-readable component registry and schemas for AI tools",
   "license": "MIT",

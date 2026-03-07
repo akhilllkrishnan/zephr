@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ZephyrCloudClient, ZephyrCloudError } from "../src";
+import { ZephrCloudClient, ZephrCloudError } from "../src";
 
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
-describe("@zephyr/cloud-sdk", () => {
+describe("@zephrui/cloud-sdk", () => {
   it("sends authorization header when apiKey is configured", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -14,7 +14,7 @@ describe("@zephyr/cloud-sdk", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787",
       apiKey: "test_key"
     });
@@ -40,22 +40,22 @@ describe("@zephyr/cloud-sdk", () => {
       })
     );
 
-    const client = new ZephyrCloudClient({ baseUrl: "http://localhost:8787" });
+    const client = new ZephrCloudClient({ baseUrl: "http://localhost:8787" });
     try {
       await client.getComponents();
       throw new Error("Expected getComponents to throw.");
     } catch (error) {
-      expect(error).toBeInstanceOf(ZephyrCloudError);
-      expect((error as Error).message).toContain("Zephyr cloud error 401: Unauthorized");
+      expect(error).toBeInstanceOf(ZephrCloudError);
+      expect((error as Error).message).toContain("Zephr cloud error 401: Unauthorized");
     }
   });
 
   it("validates baseUrl in constructor", () => {
-    expect(() => new ZephyrCloudClient({ baseUrl: "localhost:8787" })).toThrow(
-      'Invalid Zephyr cloud baseUrl protocol: "localhost:"'
+    expect(() => new ZephrCloudClient({ baseUrl: "localhost:8787" })).toThrow(
+      'Invalid Zephr cloud baseUrl protocol: "localhost:"'
     );
-    expect(() => new ZephyrCloudClient({ baseUrl: "ftp://localhost:8787" })).toThrow(
-      'Invalid Zephyr cloud baseUrl protocol: "ftp:"'
+    expect(() => new ZephrCloudClient({ baseUrl: "ftp://localhost:8787" })).toThrow(
+      'Invalid Zephr cloud baseUrl protocol: "ftp:"'
     );
   });
 
@@ -65,12 +65,12 @@ describe("@zephyr/cloud-sdk", () => {
       vi.fn().mockRejectedValue({ name: "AbortError" })
     );
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787",
       timeoutMs: 1000
     });
 
-    await expect(client.getThemes()).rejects.toThrow("Zephyr cloud request timed out after 1000ms");
+    await expect(client.getThemes()).rejects.toThrow("Zephr cloud request timed out after 1000ms");
   });
 
   it("throws when success response is not valid JSON", async () => {
@@ -84,8 +84,8 @@ describe("@zephyr/cloud-sdk", () => {
       })
     );
 
-    const client = new ZephyrCloudClient({ baseUrl: "http://localhost:8787" });
-    await expect(client.getThemes()).rejects.toThrow("Zephyr cloud returned invalid JSON.");
+    const client = new ZephrCloudClient({ baseUrl: "http://localhost:8787" });
+    await expect(client.getThemes()).rejects.toThrow("Zephr cloud returned invalid JSON.");
   });
 
   it("builds query-string endpoints for asset search routes", async () => {
@@ -100,7 +100,7 @@ describe("@zephyr/cloud-sdk", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787",
       apiKey: "test_key"
     });
@@ -127,18 +127,18 @@ describe("@zephyr/cloud-sdk", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787"
     });
 
-    const result = await client.validateLicense({ licenseKey: "zephyr-pro-demo-2026" });
+    const result = await client.validateLicense({ licenseKey: "zephr-pro-demo-2026" });
     expect(result.valid).toBe(true);
 
     const call = fetchMock.mock.calls[0];
     expect(call[0]).toBe("http://localhost:8787/v1/licenses/validate");
     const init = call[1] as RequestInit;
     expect(init.method).toBe("POST");
-    expect(init.body).toBe(JSON.stringify({ licenseKey: "zephyr-pro-demo-2026" }));
+    expect(init.body).toBe(JSON.stringify({ licenseKey: "zephr-pro-demo-2026" }));
   });
 
   it("posts license activation and deactivation payloads", async () => {
@@ -158,7 +158,7 @@ describe("@zephyr/cloud-sdk", () => {
       });
     vi.stubGlobal("fetch", fetchMock);
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787"
     });
 
@@ -215,7 +215,7 @@ describe("@zephyr/cloud-sdk", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const client = new ZephyrCloudClient({
+    const client = new ZephrCloudClient({
       baseUrl: "http://localhost:8787"
     });
 

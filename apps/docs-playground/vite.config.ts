@@ -6,24 +6,24 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@zephyr/core": path.resolve(__dirname, "../../packages/core/src"),
-      "@zephyr/ui-react": path.resolve(__dirname, "../../packages/ui-react/src"),
-      "@zephyr/ai-registry": path.resolve(__dirname, "../../packages/ai-registry/src"),
-      "@zephyr/cloud-sdk": path.resolve(__dirname, "../../packages/cloud-sdk/src"),
-      "@zephyr/logos": path.resolve(__dirname, "../../packages/logos/src"),
-      "@zephyr/avatars": path.resolve(__dirname, "../../packages/avatars/src"),
-      "@zephyr/icons-material": path.resolve(__dirname, "../../packages/icons-material/src")
+      "@zephrui/core": path.resolve(__dirname, "../../packages/core/src"),
+      "@zephrui/ui-react": path.resolve(__dirname, "../../packages/ui-react/src"),
+      "@zephrui/ai-registry": path.resolve(__dirname, "../../packages/ai-registry/src"),
+      "@zephrui/cloud-sdk": path.resolve(__dirname, "../../packages/cloud-sdk/src"),
+      "@zephrui/logos": path.resolve(__dirname, "../../packages/logos/src"),
+      "@zephrui/avatars": path.resolve(__dirname, "../../packages/avatars/src"),
+      "@zephrui/icons-material": path.resolve(__dirname, "../../packages/icons-material/src")
     }
   },
   optimizeDeps: {
     exclude: [
-      "@zephyr/core",
-      "@zephyr/ui-react",
-      "@zephyr/ai-registry",
-      "@zephyr/cloud-sdk",
-      "@zephyr/logos",
-      "@zephyr/avatars",
-      "@zephyr/icons-material"
+      "@zephrui/core",
+      "@zephrui/ui-react",
+      "@zephrui/ai-registry",
+      "@zephrui/cloud-sdk",
+      "@zephrui/logos",
+      "@zephrui/avatars",
+      "@zephrui/icons-material"
     ]
   },
   server: {

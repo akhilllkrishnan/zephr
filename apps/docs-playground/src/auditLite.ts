@@ -1,4 +1,4 @@
-import type { UrlAuditIssue, UrlAuditReport } from "@zephyr/cloud-sdk";
+import type { UrlAuditIssue, UrlAuditReport } from "@zephrui/cloud-sdk";
 
 function issue(input: Omit<UrlAuditIssue, "id">): UrlAuditIssue {
   return {

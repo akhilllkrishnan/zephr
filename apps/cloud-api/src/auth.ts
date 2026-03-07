@@ -1,5 +1,6 @@
 import { IncomingMessage } from "node:http";
 import { ensureCloudEnvLoaded } from "./env";
+import { getHeader, type HeadersLike } from "./http";
 
 ensureCloudEnvLoaded();
 
@@ -16,7 +17,7 @@ function parseApiKeysFromEnv(): Map<string, ApiPrincipal> {
     scopes: ["components:read", "assets:read", "assets:write", "compliance:write"]
   });
 
-  const envValue = process.env.ZEPHYR_API_KEYS;
+  const envValue = process.env.ZEPHR_API_KEYS;
   if (!envValue) {
     return keys;
   }
@@ -34,7 +35,11 @@ function parseApiKeysFromEnv(): Map<string, ApiPrincipal> {
 const apiKeys = parseApiKeysFromEnv();
 
 export function requirePrincipal(request: IncomingMessage): ApiPrincipal | null {
-  const header = request.headers.authorization;
+  return requirePrincipalFromHeaders(request.headers);
+}
+
+export function requirePrincipalFromHeaders(headers: HeadersLike): ApiPrincipal | null {
+  const header = getHeader(headers, "authorization");
   if (!header || !header.startsWith("Bearer ")) {
     return null;
   }

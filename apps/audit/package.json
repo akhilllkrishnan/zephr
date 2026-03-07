@@ -1,8 +1,8 @@
 {
-  "name": "@zephyr/audit",
+  "name": "@zephrui/audit",
   "version": "0.1.0",
   "private": true,
-  "description": "Zephyr Audit — UX scanner standalone app",
+  "description": "Zephr Audit — UX scanner standalone app",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,9 +10,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@zephyr/cloud-sdk": "workspace:*",
-    "@zephyr/core": "workspace:*",
-    "@zephyr/ui-react": "workspace:*",
+    "@zephrui/cloud-sdk": "workspace:*",
+    "@zephrui/core": "workspace:*",
+    "@zephrui/ui-react": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

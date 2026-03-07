@@ -394,7 +394,7 @@ export function AuthPage({
   onModeSwitch,
   onForgotPassword,
   footerNote,
-  testimonialQuote = "Zephyr cut our UI build time by 80%. The component quality is unmatched — every detail is already done.",
+  testimonialQuote = "Zephr cut our UI build time by 80%. The component quality is unmatched — every detail is already done.",
   testimonialAuthor = "Sarah Chen",
   testimonialRole = "Staff Engineer, Vercel",
   className,
@@ -474,7 +474,7 @@ export function AuthPage({
                   <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span style={{ fontSize: "16px", fontWeight: 700, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.03em" }}>Zephyr</span>
+              <span style={{ fontSize: "16px", fontWeight: 700, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.03em" }}>Zephr</span>
             </div>
           )}
         </div>

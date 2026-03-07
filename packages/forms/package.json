@@ -1,7 +1,7 @@
 {
-    "name": "@zephyr/forms",
+    "name": "@zephrui/forms",
     "version": "0.1.0",
-    "description": "Form validation helpers for Zephyr — integrates react-hook-form and zod with FormField",
+    "description": "Form validation helpers for Zephr — integrates react-hook-form and zod with FormField",
     "license": "MIT",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^3.9.0",
-        "@zephyr/ui-react": "workspace:*",
+        "@zephrui/ui-react": "workspace:*",
         "react-hook-form": "^7.51.0",
         "zod": "^3.23.0"
     },

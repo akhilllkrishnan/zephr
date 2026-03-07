@@ -1,11 +1,11 @@
-# @zephyr/ai-registry
+# @zephrui/ai-registry
 
 Machine-readable component registry and JSON schema for AI tools, MCP servers, and developer tooling.
 
 ## Install
 
 ```sh
-pnpm add @zephyr/ai-registry
+pnpm add @zephrui/ai-registry
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ import {
   searchComponents,
   listComponents,
   getTemplateCatalog
-} from "@zephyr/ai-registry";
+} from "@zephrui/ai-registry";
 
 // Search by name or intent
 const results = searchComponents("dashboard");

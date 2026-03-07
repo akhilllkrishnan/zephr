@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://zephr.local/schemas/registry.schema.json",
-  "title": "Zephyr Component Registry",
+  "title": "Zephr Component Registry",
   "type": "array",
   "items": {
     "type": "object",

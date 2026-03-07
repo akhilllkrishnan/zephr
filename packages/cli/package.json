@@ -1,12 +1,12 @@
 {
-  "name": "@zephyr/cli",
+  "name": "@zephrui/cli",
   "version": "0.1.0",
-  "description": "CLI for Zephyr setup and component workflows",
+  "description": "CLI for Zephr setup and component workflows",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "zephyr": "dist/index.js"
+    "zephr": "dist/index.js"
   },
   "files": [
     "dist"
@@ -18,7 +18,7 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@zephyr/ai-registry": "workspace:*",
-    "@zephyr/core": "workspace:*"
+    "@zephrui/ai-registry": "workspace:*",
+    "@zephrui/core": "workspace:*"
   }
 }

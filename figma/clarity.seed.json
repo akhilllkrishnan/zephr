@@ -18,7 +18,7 @@
     "green/800": "#1a7544",
     "stroke/white-0": "#ffffff"
   },
-  "zephyrTokenMapping": {
+  "zephrTokenMapping": {
     "color.background": "#f7f7f7",
     "color.surface": "#ffffff",
     "color.text": "#171717",

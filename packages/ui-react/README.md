@@ -1,19 +1,19 @@
-# @zephyr/ui-react
+# @zephrui/ui-react
 
-React component library for the Zephyr design system.  
+React component library for the Zephr design system.  
 40+ production-ready components across atoms, molecules, organisms, and full page templates.
 
 ## Install
 
 ```sh
-pnpm add @zephyr/core @zephyr/ui-react
+pnpm add @zephrui/core @zephrui/ui-react
 ```
 
 ## Quick Start
 
 ```tsx
-import { generateCssVariables } from "@zephyr/core/browser";
-import { Button, FormField, Input } from "@zephyr/ui-react";
+import { generateCssVariables } from "@zephrui/core/browser";
+import { Button, FormField, Input } from "@zephrui/ui-react";
 
 // 1. Inject CSS variables once at app entry
 const css = generateCssVariables({ stylePack: "notion" });
@@ -50,14 +50,14 @@ export function LoginForm() {
 
 ## AI Integration
 
-Use `@zephyr/mcp-server` to give your AI coding assistant (Claude Code, Cursor, Codex) direct access to the component registry:
+Use `@zephrui/mcp-server` to give your AI coding assistant (Claude Code, Cursor, Codex) direct access to the component registry:
 
 ```json
 {
   "mcpServers": {
-    "zephyr": {
+    "zephr": {
       "command": "npx",
-      "args": ["-y", "@zephyr/mcp-server"]
+      "args": ["-y", "@zephrui/mcp-server"]
     }
   }
 }

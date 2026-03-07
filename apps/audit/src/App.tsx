@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ZephyrCloudClient } from "@zephyr/cloud-sdk";
+import { ZephrCloudClient } from "@zephrui/cloud-sdk";
 import { createLocalAuditReport } from "./auditLite";
-import type { UrlAuditReport, UrlAuditIssue } from "@zephyr/cloud-sdk";
+import type { UrlAuditReport, UrlAuditIssue } from "@zephrui/cloud-sdk";
 
 type ResultTab = "issues" | "heatmap" | "prompt";
 
@@ -61,10 +61,10 @@ export default function App() {
   const [auditScreenshotUrl, setAuditScreenshotUrl] = useState("");
   const [auditNotes, setAuditNotes] = useState("");
   const [cloudApiKeyDraft, setCloudApiKeyDraft] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephyr-cloud-api-key") ?? "" : ""
+    typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
   );
   const [cloudApiKey, setCloudApiKey] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephyr-cloud-api-key") ?? "" : ""
+    typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
   );
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -96,12 +96,12 @@ export default function App() {
 
   // ── Scan actions ───────────────────────────────────────────────────────────
   function saveCloudApiKey() {
-    sessionStorage.setItem("zephyr-cloud-api-key", cloudApiKeyDraft);
+    sessionStorage.setItem("zephr-cloud-api-key", cloudApiKeyDraft);
     setCloudApiKey(cloudApiKeyDraft);
     showToast("API key saved for this session");
   }
   function clearCloudApiKey() {
-    sessionStorage.removeItem("zephyr-cloud-api-key");
+    sessionStorage.removeItem("zephr-cloud-api-key");
     setCloudApiKey("");
     setCloudApiKeyDraft("");
     showToast("Cloud API key cleared — using local scanner");
@@ -149,7 +149,7 @@ export default function App() {
     try {
       let report: UrlAuditReport;
       if (cloudApiKey) {
-        const client = new ZephyrCloudClient({ baseUrl: "https://api.zephyrui.com", apiKey: cloudApiKey });
+        const client = new ZephrCloudClient({ baseUrl: "https://api.zephrui.com", apiKey: cloudApiKey });
         report = await client.runUrlAudit({ url, screenshotUrl: auditScreenshotUrl || undefined, notes: auditNotes || undefined });
       } else {
         // Simulate a small delay for the local scanner to feel responsive
@@ -185,7 +185,7 @@ export default function App() {
       <header className="audit-header">
         {/* Brand */}
         <div className="audit-brand">
-          <span className="audit-brand-name">Zephyr Audit</span>
+          <span className="audit-brand-name">Zephr Audit</span>
           <span className="audit-alpha-badge">Alpha</span>
         </div>
 

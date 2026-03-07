@@ -97,12 +97,12 @@ type RawRegistryEntry = Omit<RegistryEntry, "tier" | "aiHints"> & {
 };
 
 function normalizeAiHints(componentName: string, hints: RawRegistryAiHints): RegistryAiHints {
-  const defaultImport = `import { ${componentName} } from "@zephyr/ui-react";`;
+  const defaultImport = `import { ${componentName} } from "@zephrui/ui-react";`;
   if (Array.isArray(hints)) {
     return {
       positive: hints,
       negative: [
-        "Do not fall back to raw HTML controls when the Zephyr component exists."
+        "Do not fall back to raw HTML controls when the Zephr component exists."
       ],
       preferredImports: [defaultImport]
     };
@@ -111,7 +111,7 @@ function normalizeAiHints(componentName: string, hints: RawRegistryAiHints): Reg
   return {
     positive: hints.positive ?? [],
     negative: hints.negative ?? [
-      "Do not fall back to raw HTML controls when the Zephyr component exists."
+      "Do not fall back to raw HTML controls when the Zephr component exists."
     ],
     preferredImports: hints.preferredImports?.length ? hints.preferredImports : [defaultImport]
   };
@@ -261,7 +261,7 @@ function categoryIntent(category: ComponentCategory): string {
     case "organism":
       return "Create a full feature section with clear structure, responsive layout, and production-ready interactions.";
     case "template":
-      return "Use this Zephyr page template as a drop-in starting point. Wire props to real data, customize sections, and extend layout as needed.";
+      return "Use this Zephr page template as a drop-in starting point. Wire props to real data, customize sections, and extend layout as needed.";
     default:
       return "Create a production-ready UI block with strong accessibility and responsive behavior.";
   }
@@ -322,11 +322,11 @@ export function getComponentTemplate(
 
   const includeCoreDependency = options.includeCoreDependency ?? true;
   const dependencies = includeCoreDependency
-    ? dedupe(["@zephyr/core", ...component.dependencies])
+    ? dedupe(["@zephrui/core", ...component.dependencies])
     : dedupe(component.dependencies);
   const manager = normalizedManager(options.packageManager);
   const installCommand = buildInstallCommand(dependencies, manager);
-  const importSnippet = `import { ${component.name} } from "@zephyr/ui-react";`;
+  const importSnippet = `import { ${component.name} } from "@zephrui/ui-react";`;
   const usageSnippet = component.usageExamples?.[0] ?? importSnippet;
 
   return {
@@ -336,7 +336,7 @@ export function getComponentTemplate(
     installSteps: [
       installCommand,
       importSnippet,
-      "Ensure your app includes compiled Zephyr CSS variables from @zephyr/core."
+      "Ensure your app includes compiled Zephr CSS variables from @zephrui/core."
     ],
     importSnippet,
     usageSnippet,
@@ -385,7 +385,7 @@ export function generateComponentPrompt(
   const includeCloudHint = options.includeCloudHint ?? isAssetComponent;
 
   const lines: string[] = [
-    "Use Zephyr UI framework only. Do not replace components with external UI libraries.",
+    "Use Zephr UI framework only. Do not replace components with external UI libraries.",
     ""
   ];
 
@@ -397,11 +397,11 @@ export function generateComponentPrompt(
     `Theme: ${stylePack}`,
     `Accent color: ${accentColor}`,
     `Component block: ${template.component.name} (${template.component.id})`,
-    `Install command: ${template.installCommand}  # Note: @zephyr/ui-react is in private beta — not yet on npm`
+    `Install command: ${template.installCommand}  # Note: @zephrui/ui-react is in private beta — not yet on npm`
   );
 
   if (options.configSnippet) {
-    lines.push("", "Zephyr config:", options.configSnippet);
+    lines.push("", "Zephr config:", options.configSnippet);
   }
 
   lines.push("", "Reference snippet:", template.usageSnippet, "", "Block intent:", intent);
@@ -454,7 +454,7 @@ export function generateComponentPrompt(
   lines.push("", "Keep accessibility notes and ship final React code that can be pasted directly.");
 
   if (includeCloudHint) {
-    lines.push("If assets are needed, use Authorization: Bearer <ZEPHYR_API_KEY>.");
+    lines.push("If assets are needed, use Authorization: Bearer <ZEPHR_API_KEY>.");
   }
 
   return lines.join("\n");
@@ -475,7 +475,7 @@ export function generateComponentScaffold(
   }
 
   const includeHeader = options.snippetHeaderComment ?? true;
-  validateZephyrSnippet(template.usageSnippet);
+  validateZephrSnippet(template.usageSnippet);
   const snippetContent = includeHeader
     ? [
       `// ${template.component.name}`,
@@ -495,12 +495,12 @@ export function generateComponentScaffold(
   };
 }
 
-function validateZephyrSnippet(snippet: string): void {
+function validateZephrSnippet(snippet: string): void {
   const forbiddenRawControls = /<(button|input|select|textarea)\b/i;
-  const containsZephyrComponent = /<([A-Z][A-Za-z0-9]*)\b/.test(snippet);
-  if (forbiddenRawControls.test(snippet) && !containsZephyrComponent) {
+  const containsZephrComponent = /<([A-Z][A-Za-z0-9]*)\b/.test(snippet);
+  if (forbiddenRawControls.test(snippet) && !containsZephrComponent) {
     throw new Error(
-      "Registry snippet validation failed: raw HTML control found where a Zephyr component should be used."
+      "Registry snippet validation failed: raw HTML control found where a Zephr component should be used."
     );
   }
 }

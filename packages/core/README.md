@@ -1,20 +1,20 @@
-# @zephyr/core
+# @zephrui/core
 
-Core token system, configuration model, and CSS variable compiler for the Zephyr design system.
+Core token system, configuration model, and CSS variable compiler for the Zephr design system.
 
 ## Install
 
 ```sh
-pnpm add @zephyr/core
+pnpm add @zephrui/core
 ```
 
 ## Usage
 
 ```ts
-import { generateCssVariables } from "@zephyr/core/browser";
-import type { ZephyrConfig } from "@zephyr/core";
+import { generateCssVariables } from "@zephrui/core/browser";
+import type { ZephrConfig } from "@zephrui/core";
 
-const config: ZephyrConfig = {
+const config: ZephrConfig = {
   stylePack: "notion",
   tokens: {
     color: {

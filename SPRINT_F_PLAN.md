@@ -1,4 +1,4 @@
-# Zephyr — Sprint F: Foundation
+# Zephr — Sprint F: Foundation
 **Status:** Ready to execute
 **Author:** Owner + Claude synthesis (March 5, 2026)
 **For:** Any AI agent (Claude Code, Codex, Cursor, Gemini) picking up this work
@@ -7,7 +7,7 @@
 
 ## What This Project Is
 
-Zephyr is a CSS-custom-properties-native React UI component library — a zero-config replacement for Tailwind + shadcn targeting vibe coders (AI-assisted developers). It is a monorepo managed with pnpm workspaces + Turborepo.
+Zephr is a CSS-custom-properties-native React UI component library — a zero-config replacement for Tailwind + shadcn targeting vibe coders (AI-assisted developers). It is a monorepo managed with pnpm workspaces + Turborepo.
 
 **Key constraint:** No Tailwind. Ever. All styling is done through CSS custom properties with a `--z-*` namespace.
 
@@ -41,8 +41,8 @@ Zephyr is a CSS-custom-properties-native React UI component library — a zero-c
 
 **Dev server commands** (run from monorepo root):
 ```bash
-corepack pnpm --filter @zephyr/docs-playground dev --host 127.0.0.1 --port 4172
-corepack pnpm --filter @zephyr/audit dev --host 127.0.0.1 --port 4175
+corepack pnpm --filter @zephrui/docs-playground dev --host 127.0.0.1 --port 4172
+corepack pnpm --filter @zephrui/audit dev --host 127.0.0.1 --port 4175
 ```
 
 **Typecheck:**
@@ -66,7 +66,7 @@ node_modules/.bin/tsc -p apps/audit/tsconfig.json --noEmit
 
 ### Docs playground — BROKEN for the goal
 - `apps/docs-playground/src/styles.css` (~4234 lines) contains **raw hex values** for colours, spacing, radii throughout — it does NOT consume `--z-*` tokens
-- The playground injects theme CSS at runtime via `generateCssVariables()` into a `<style>` tag (id=`zephyr-docs-playground-theme`), which updates component previews BUT NOT the playground's own chrome (header, sidebar, nav, buttons)
+- The playground injects theme CSS at runtime via `generateCssVariables()` into a `<style>` tag (id=`zephr-docs-playground-theme`), which updates component previews BUT NOT the playground's own chrome (header, sidebar, nav, buttons)
 - `apps/docs-playground/src/App.tsx` line ~694: `themeCss()` function calls `generateCssVariables()` and returns a string that gets injected into the `<style>` tag — this is what needs to become a `<link>` swap
 - The current style switcher UI is in the left sidebar (`surfaceStyle` state: `"flat" | "shadow"`)
 
@@ -696,7 +696,7 @@ In `apps/docs-playground/src/App.tsx`, find the `useEffect` that sets `styleTag.
 
 ```typescript
 // Replace the existing theme useEffect with this:
-const THEME_LINK_ID = "zephyr-theme-pack";
+const THEME_LINK_ID = "zephr-theme-pack";
 
 useEffect(() => {
   // Remove old link if present
@@ -716,7 +716,7 @@ Keep `generateCssVariables()` and the accent colour injection separately — the
 
 ```typescript
 // Separate effect for accent colour (runtime override only):
-const ACCENT_STYLE_ID = "zephyr-accent-override";
+const ACCENT_STYLE_ID = "zephr-accent-override";
 
 useEffect(() => {
   const accentHex = accentColor;
@@ -746,7 +746,7 @@ The `surfaceStyle` ("flat" | "shadow") toggle can be a third small effect that o
 
 ```typescript
 // Effect for flat/shadow surface toggle:
-const SURFACE_STYLE_ID = "zephyr-surface-override";
+const SURFACE_STYLE_ID = "zephr-surface-override";
 
 useEffect(() => {
   let tag = document.getElementById(SURFACE_STYLE_ID) as HTMLStyleElement | null;
@@ -844,28 +844,28 @@ Search for hex patterns (`#[0-9a-fA-F]{3,6}`) in `styles.css` and replace with t
 
 ---
 
-## Task 5 — Generate `CLAUDE.md`, `AGENTS.md`, `llms.txt` from `zephyr init`
+## Task 5 — Generate `CLAUDE.md`, `AGENTS.md`, `llms.txt` from `zephr init`
 
 **Context:** `packages/cli/src/index.ts` contains the CLI commands. The `init` command exists but does not yet generate AI context files.
 
-**Goal:** After `npx zephyr init`, the user's project root contains three files that make any AI agent automatically use Zephyr components.
+**Goal:** After `npx zephr init`, the user's project root contains three files that make any AI agent automatically use Zephr components.
 
 ### Files to generate
 
 #### `CLAUDE.md` (read automatically by Claude Code)
 
 ```markdown
-# Zephyr UI — Claude Instructions
+# Zephr UI — Claude Instructions
 
-This project uses **@zephyr/ui-react** for all UI components.
+This project uses **@zephrui/ui-react** for all UI components.
 
 ## Rules
-- NEVER write raw `<button>`, `<input>`, `<a>`, `<div>` for UI elements — always use the Zephyr equivalent
-- NEVER write inline styles or CSS classes for visual styling — use Zephyr component props
-- ALWAYS import components from `@zephyr/ui-react` only
-- For full-page layouts, use page templates from `@zephyr/ui-react/templates`
+- NEVER write raw `<button>`, `<input>`, `<a>`, `<div>` for UI elements — always use the Zephr equivalent
+- NEVER write inline styles or CSS classes for visual styling — use Zephr component props
+- ALWAYS import components from `@zephrui/ui-react` only
+- For full-page layouts, use page templates from `@zephrui/ui-react/templates`
 
-## Available components (import from `@zephyr/ui-react`)
+## Available components (import from `@zephrui/ui-react`)
 
 ### Atoms
 Button, IconButton, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Avatar, Tooltip, Alert, Divider, Spinner, Progress, ColorPicker, DatePicker, RichEditor
@@ -887,7 +887,7 @@ DashboardPage, AuthPage, SettingsPage, OnboardingPage, MarketingPage
 
 ## Example usage
 ```tsx
-import { Button, Stack, Input } from '@zephyr/ui-react';
+import { Button, Stack, Input } from '@zephrui/ui-react';
 
 function MyForm() {
   return (
@@ -902,7 +902,7 @@ function MyForm() {
 ## Anti-patterns (never do these)
 - `<button className="btn btn-primary">` ❌ → `<Button variant="primary">` ✓
 - `<div style={{ display: 'flex', gap: 16 }}>` ❌ → `<Stack gap={4}>` ✓
-- `import { Button } from './components/Button'` ❌ → `import { Button } from '@zephyr/ui-react'` ✓
+- `import { Button } from './components/Button'` ❌ → `import { Button } from '@zephrui/ui-react'` ✓
 ```
 
 #### `AGENTS.md` (read by Codex and Gemini agents)
@@ -912,16 +912,16 @@ Same content as `CLAUDE.md` — these files serve the same purpose for different
 #### `llms.txt` (web AI discovery standard)
 
 ```
-# Zephyr UI
+# Zephr UI
 
 > A zero-config React component library for vibe coders. Install once, never think about UI again.
 
 ## Install
-npm install @zephyr/ui-react
+npm install @zephrui/ui-react
 
 ## Import
-All components from: @zephyr/ui-react
-Never write raw HTML/CSS — use Zephyr components.
+All components from: @zephrui/ui-react
+Never write raw HTML/CSS — use Zephr components.
 
 ## Component list
 Button, IconButton, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Avatar, Tooltip, Alert, Divider, Spinner, Progress, ColorPicker, DatePicker, RichEditor, Navbar, Sidebar, DataTable, Pagination, Accordion, Modal, Dropdown, CommandPalette, SearchBar, Card, Form, Tabs, Toast, EmptyState, SortableList, DashboardShell, AuthShell, SettingsShell, DataView, KanbanBoard, FileUploader, ActivityFeed, PricingTable, InvoiceBuilder, NotificationCenter, Stack, Grid, Box, Spacer, DashboardPage, AuthPage, SettingsPage, OnboardingPage, MarketingPage
@@ -930,7 +930,7 @@ Button, IconButton, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Ava
 notion (free), stripe (pro), linear (pro), framer (pro)
 
 ## Registry
-https://zephyrui.com/registry/components.json
+https://zephrui.com/registry/components.json
 ```
 
 ### Implementation in CLI
@@ -951,13 +951,13 @@ writeFileSync(join(cwd, "CLAUDE.md"), claudeMd);
 writeFileSync(join(cwd, "AGENTS.md"), agentsMd);
 writeFileSync(join(cwd, "llms.txt"), llmsTxt);
 
-console.log("✓ Generated CLAUDE.md — Claude Code will now use Zephyr automatically");
-console.log("✓ Generated AGENTS.md — Codex and Gemini will now use Zephyr automatically");
+console.log("✓ Generated CLAUDE.md — Claude Code will now use Zephr automatically");
+console.log("✓ Generated AGENTS.md — Codex and Gemini will now use Zephr automatically");
 console.log("✓ Generated llms.txt — web AI discovery enabled");
 ```
 
 **Done when:**
-- Running `zephyr init` in a test directory creates all three files
+- Running `zephr init` in a test directory creates all three files
 - `CLAUDE.md` lists all component names and has the anti-patterns section
 - Template variables `{{STYLE_PACK}}` and `{{ACCENT_COLOR}}` are replaced with the actual configured values
 
@@ -1004,7 +1004,7 @@ grep -c ":[[:space:]]*#[0-9a-fA-F]" apps/docs-playground/src/styles.css
 ## Architectural Principles (non-negotiable)
 
 1. **No Tailwind** — ever, anywhere in the stack
-2. **`--z-*` namespace** — all Zephyr tokens use this prefix; user-facing aliases (--bg, --panel) must resolve FROM `--z-*`, never define raw values
+2. **`--z-*` namespace** — all Zephr tokens use this prefix; user-facing aliases (--bg, --panel) must resolve FROM `--z-*`, never define raw values
 3. **Theme packs are CSS files** — not JS objects injected at runtime
 4. **Docs eats its own cooking** — playground uses the same tokens as any consumer would
 5. **AI context files are P1** — `CLAUDE.md`, `AGENTS.md`, `llms.txt` are not optional extras

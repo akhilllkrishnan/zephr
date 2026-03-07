@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { callTool, listTools } from "../src/tools";
 
-describe("@zephyr/mcp-server tools", () => {
+describe("@zephrui/mcp-server tools", () => {
   it("exposes expected tool names", () => {
     const names = listTools().map((tool) => tool.name);
     expect(names).toEqual(
@@ -37,7 +37,7 @@ describe("@zephyr/mcp-server tools", () => {
     expect(Array.isArray(result.steps)).toBe(true);
     expect(result.steps.length).toBeGreaterThan(0);
     expect(result.steps[0].step).toBe(1);
-    expect(result.steps[0].command).toContain("@zephyr/core");
+    expect(result.steps[0].command).toContain("@zephrui/core");
   });
 
   it("install_plan works for nextjs with pnpm", () => {

@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/avatars",
+  "name": "@zephrui/avatars",
   "version": "0.1.0",
-  "description": "Zephyr avatar generation and cloud helpers",
+  "description": "Zephr avatar generation and cloud helpers",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

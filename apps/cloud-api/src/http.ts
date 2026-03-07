@@ -22,25 +22,38 @@ interface ReadJsonBodyOptions {
   requireContentType?: boolean;
 }
 
+export type HeaderValue = string | string[] | undefined;
+export type HeadersLike = Record<string, HeaderValue>;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-export async function readJsonBody<T>(
-  request: IncomingMessage,
-  options: ReadJsonBodyOptions = {}
-): Promise<T> {
-  const maxBytes = options.maxBytes ?? DEFAULT_MAX_BODY_BYTES;
-  const contentType = request.headers?.["content-type"]?.toLowerCase() ?? "";
-  if (options.requireContentType && !contentType.includes("application/json")) {
-    throw new HttpError(
-      415,
-      "Content-Type must be application/json.",
-      "UNSUPPORTED_MEDIA_TYPE",
-      { contentType }
-    );
+export function getHeader(headers: HeadersLike | undefined, name: string): string {
+  if (!headers) {
+    return "";
   }
 
+  const direct = headers[name];
+  if (Array.isArray(direct)) {
+    return direct.join(", ");
+  }
+  if (typeof direct === "string") {
+    return direct;
+  }
+
+  const fallback = headers[name.toLowerCase()];
+  if (Array.isArray(fallback)) {
+    return fallback.join(", ");
+  }
+  return typeof fallback === "string" ? fallback : "";
+}
+
+export async function readRawBody(
+  request: AsyncIterable<Uint8Array | string>,
+  options: Pick<ReadJsonBodyOptions, "maxBytes"> = {}
+): Promise<string> {
+  const maxBytes = options.maxBytes ?? DEFAULT_MAX_BODY_BYTES;
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
@@ -60,7 +73,24 @@ export async function readJsonBody<T>(
     chunks.push(buffer);
   }
 
-  const raw = Buffer.concat(chunks).toString("utf8");
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+export function parseJsonBody<T>(
+  raw: string,
+  headers?: HeadersLike,
+  options: Omit<ReadJsonBodyOptions, "maxBytes"> = {}
+): T {
+  const contentType = getHeader(headers, "content-type").toLowerCase();
+  if (options.requireContentType && !contentType.includes("application/json")) {
+    throw new HttpError(
+      415,
+      "Content-Type must be application/json.",
+      "UNSUPPORTED_MEDIA_TYPE",
+      { contentType }
+    );
+  }
+
   if (!raw) {
     return {} as T;
   }
@@ -79,13 +109,24 @@ export async function readJsonBody<T>(
   return parsed as T;
 }
 
+export async function readJsonBody<T>(
+  request: IncomingMessage,
+  options: ReadJsonBodyOptions = {}
+): Promise<T> {
+  const raw = await readRawBody(request, { maxBytes: options.maxBytes });
+  return parseJsonBody<T>(raw, request.headers, {
+    requireObject: options.requireObject,
+    requireContentType: options.requireContentType
+  });
+}
+
 export function sendJson(
   response: ServerResponse,
   statusCode: number,
   payload: unknown,
   headers?: Record<string, string>
 ): void {
-  const corsOrigin = process.env.ZEPHYR_CORS_ORIGIN || "*";
+  const corsOrigin = process.env.ZEPHR_CORS_ORIGIN || "*";
   response.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": corsOrigin,

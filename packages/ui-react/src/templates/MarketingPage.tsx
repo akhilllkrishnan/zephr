@@ -40,13 +40,13 @@ function ProductMockup() {
       <circle cx="52" cy="19" r="5" fill="#28c840" />
       {/* Address bar */}
       <rect x="180" y="10" width="500" height="18" rx="5" fill="#1e2538" />
-      <text x="430" y="22.5" textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="10" fontFamily="-apple-system,sans-serif">zephyr.app/dashboard</text>
+      <text x="430" y="22.5" textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="10" fontFamily="-apple-system,sans-serif">zephr.app/dashboard</text>
 
       {/* App sidebar */}
       <rect x="0" y="38" width="190" height="422" fill="#111827" />
       {/* Sidebar brand */}
       <rect x="16" y="56" width="26" height="26" rx="7" fill="url(#mpGrad)" />
-      <text x="46" y="74" fill="rgba(255,255,255,0.9)" fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif" letterSpacing="-0.5">Zephyr</text>
+      <text x="46" y="74" fill="rgba(255,255,255,0.9)" fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif" letterSpacing="-0.5">Zephr</text>
       {/* Sidebar items */}
       {[
         { y: 104, label: "Dashboard", active: true },
@@ -354,7 +354,7 @@ const defaultLogos = ["Vercel", "Supabase", "Stripe", "Linear", "Notion", "Plane
 const defaultTestimonials: MarketingTestimonial[] = [
   {
     id: "t1",
-    quote: "Zephyr cut our component development time in half. The AI prompts are genuinely useful — not a gimmick.",
+    quote: "Zephr cut our component development time in half. The AI prompts are genuinely useful — not a gimmick.",
     name: "Sarah Chen",
     title: "Staff Engineer, Vercel",
     avatarColor: "#335cff",
@@ -448,7 +448,7 @@ export function MarketingPage({
                   <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" />
                 </svg>
               </div>
-              <span style={{ fontSize: "15px", fontWeight: 700, color: "rgba(255,255,255,0.95)", letterSpacing: "-0.03em" }}>Zephyr</span>
+              <span style={{ fontSize: "15px", fontWeight: 700, color: "rgba(255,255,255,0.95)", letterSpacing: "-0.03em" }}>Zephr</span>
             </div>
           )}
 
@@ -585,7 +585,7 @@ export function MarketingPage({
         <section style={{ padding: "clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)", maxWidth: "1120px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "52px" }}>
             <p style={{ margin: "0 0 10px", fontSize: "12px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#335cff" }}>
-              Why Zephyr
+              Why Zephr
             </p>
             <h2 style={{ margin: "0 0 14px", fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 800, color: "#0f172a", letterSpacing: "-0.04em", lineHeight: 1.15 }}>
               Everything you need to ship
@@ -627,7 +627,7 @@ export function MarketingPage({
                 Loved by builders
               </h2>
               <p style={{ margin: 0, color: "#64748b", fontSize: "16px" }}>
-                Join thousands of developers shipping faster with Zephyr.
+                Join thousands of developers shipping faster with Zephr.
               </p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
@@ -741,12 +741,12 @@ export function MarketingPage({
             Ready to start building?
           </h2>
           <p style={{ margin: "0 0 32px", fontSize: "16px", color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-            Install Zephyr and ship beautiful interfaces in minutes.
+            Install Zephr and ship beautiful interfaces in minutes.
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", alignItems: "center", flexWrap: "wrap", marginBottom: "24px" }}>
             <div className="mp-install-cmd">
               <span style={{ color: "rgba(255,255,255,0.35)" }}>$</span>
-              <span>npm install @zephyr/ui-react</span>
+              <span>npm install @zephrui/ui-react</span>
             </div>
           </div>
           <button className="mp-cta-primary" style={{ margin: "0 auto" }} onClick={onCtaClick}>

@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/core",
+  "name": "@zephrui/core",
   "version": "0.1.0",
-  "description": "Zephyr core token system, config model, and utility compiler",
+  "description": "Zephr core token system, config model, and utility compiler",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

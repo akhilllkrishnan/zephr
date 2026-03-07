@@ -44,25 +44,25 @@ export type PartialDeep<T> = {
     : T[K];
 };
 
-export interface ZephyrCloudConfig {
+export interface ZephrCloudConfig {
   baseUrl?: string;
   apiKey?: string;
 }
 
-export interface ZephyrConfig {
+export interface ZephrConfig {
   stylePack?: StylePackName;
   tokens?: PartialDeep<DesignTokens>;
   semanticAliases?: Record<string, string>;
   prefix?: string;
   plugins?: string[];
-  cloud?: ZephyrCloudConfig;
+  cloud?: ZephrCloudConfig;
 }
 
-export interface ResolvedZephyrConfig {
+export interface ResolvedZephrConfig {
   stylePack: StylePackName;
   tokens: DesignTokens;
   semanticAliases: Record<string, string>;
   prefix: string;
   plugins: string[];
-  cloud: ZephyrCloudConfig;
+  cloud: ZephrCloudConfig;
 }

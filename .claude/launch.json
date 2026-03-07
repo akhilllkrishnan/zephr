@@ -4,19 +4,19 @@
     {
       "name": "docs-playground",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "--filter", "@zephyr/docs-playground", "dev", "--host", "127.0.0.1", "--port", "4172"],
+      "runtimeArgs": ["pnpm", "--filter", "@zephrui/docs-playground", "dev", "--host", "127.0.0.1", "--port", "4172"],
       "port": 4172
     },
     {
       "name": "audit",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "--filter", "@zephyr/audit", "dev", "--host", "127.0.0.1", "--port", "4175"],
+      "runtimeArgs": ["pnpm", "--filter", "@zephrui/audit", "dev", "--host", "127.0.0.1", "--port", "4175"],
       "port": 4175
     },
     {
       "name": "cloud-api",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "--filter", "@zephyr/cloud-api", "dev"],
+      "runtimeArgs": ["pnpm", "--filter", "@zephrui/cloud-api", "dev"],
       "port": 8787
     },
     {

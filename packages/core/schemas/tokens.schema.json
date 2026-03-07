@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://zephr.local/schemas/tokens.schema.json",
-  "title": "Zephyr Design Tokens",
+  "title": "Zephr Design Tokens",
   "type": "object",
   "required": [
     "color",

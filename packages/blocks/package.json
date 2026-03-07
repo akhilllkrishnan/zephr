@@ -1,7 +1,7 @@
 {
-    "name": "@zephyr/blocks",
+    "name": "@zephrui/blocks",
     "version": "0.1.0",
-    "description": "Composable marketing and app layout blocks built on @zephyr/ui-react",
+    "description": "Composable marketing and app layout blocks built on @zephrui/ui-react",
     "license": "MIT",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -20,8 +20,8 @@
         "test": "vitest run --passWithNoTests"
     },
     "dependencies": {
-        "@zephyr/ui-react": "workspace:*",
-        "@zephyr/core": "workspace:*"
+        "@zephrui/ui-react": "workspace:*",
+        "@zephrui/core": "workspace:*"
     },
     "peerDependencies": {
         "react": "^18.2.0 || ^19.0.0"

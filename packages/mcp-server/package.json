@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/mcp-server",
+  "name": "@zephrui/mcp-server",
   "version": "0.1.0",
-  "description": "MCP server exposing Zephyr component discovery tools",
+  "description": "MCP server exposing Zephr component discovery tools",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,6 +16,6 @@
     "dev": "node dist/index.js"
   },
   "dependencies": {
-    "@zephyr/ai-registry": "workspace:*"
+    "@zephrui/ai-registry": "workspace:*"
   }
 }

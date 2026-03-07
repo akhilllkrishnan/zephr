@@ -1,6 +1,6 @@
 - document:
   - banner:
-    - img "Zephyr"
+    - img "Zephr"
     - textbox "Search docs and components" [ref=e1]:
       - /placeholder: Search docs and components...
     - text: ⌘K
@@ -83,7 +83,7 @@
       - option "Filled" [ref=e58]
       - option "Error" [ref=e59]
       - option "Disabled" [ref=e60]
-    - text: zephyr.local/components/input
+    - text: zephr.local/components/input
     - paragraph: Form input block
     - text: Work email *
     - textbox "Work email *" [ref=e61]:
@@ -94,20 +94,20 @@
     - text: Intent
     - textbox "Intent" [ref=e63]: Build a clean production-ready UI block with responsive behavior and clear hierarchy. Wrap in FormField when label/hint/error text is needed.
     - text: Insertion prompt
-    - textbox "Insertion prompt" [ref=e64]: "Use Zephyr UI framework only. Do not replace components with external UI libraries. Theme: Clarity Accent color: #121212 Component block: Input (input) Install command: pnpm add @zephyr/core @zephyr/ui-react Zephyr config: export default { stylePack: \"Clarity\", tokens: { color: { primary: \"#121212\", accent: \"#121212\", primaryContrast: \"#ffffff\" } } }; Reference snippet: import { Input } from '@zephyr/ui-react'; <Input placeholder='Email address' /> Block intent: Build a clean production-ready UI block with responsive behavior and clear hierarchy. Wrap in FormField when label/hint/error text is needed. Key props: - type: string (optional), default=text - placeholder: string (optional) - value: string (optional) - onChange: (event) => void (optional) A11y notes: - Use with `<label>` or `aria-label`. - Describe validation states with helper or error text. AI hints: - Wrap in FormField when label/hint/error text is needed. Keep accessibility notes and ship final React code that can be pasted directly. If assets are needed, use Authorization: Bearer <ZEPHYR_API_KEY>."
+    - textbox "Insertion prompt" [ref=e64]: "Use Zephr UI framework only. Do not replace components with external UI libraries. Theme: Clarity Accent color: #121212 Component block: Input (input) Install command: pnpm add @zephr/core @zephr/ui-react Zephr config: export default { stylePack: \"Clarity\", tokens: { color: { primary: \"#121212\", accent: \"#121212\", primaryContrast: \"#ffffff\" } } }; Reference snippet: import { Input } from '@zephr/ui-react'; <Input placeholder='Email address' /> Block intent: Build a clean production-ready UI block with responsive behavior and clear hierarchy. Wrap in FormField when label/hint/error text is needed. Key props: - type: string (optional), default=text - placeholder: string (optional) - value: string (optional) - onChange: (event) => void (optional) A11y notes: - Use with `<label>` or `aria-label`. - Describe validation states with helper or error text. AI hints: - Wrap in FormField when label/hint/error text is needed. Keep accessibility notes and ship final React code that can be pasted directly. If assets are needed, use Authorization: Bearer <ZEPHR_API_KEY>."
     - button "Copy AI Prompt" [ref=e65] [nth=1]
     - button "Copy API Key Placeholder" [ref=e66]
     - heading "Install and use" [ref=e67] [level=2]
     - paragraph: Plug-and-play snippets for fast integration in any AI coding workflow.
     - text: Install Private Beta
     - button "Copy" [ref=e68]
-    - text: pnpm add @zephyr/core @zephyr/ui-react
-    - paragraph: Zephyr is in private beta — not yet published to npm.
+    - text: pnpm add @zephr/core @zephr/ui-react
+    - paragraph: Zephr is in private beta — not yet published to npm.
     - text: Import
     - button "Copy" [ref=e69] [nth=1]
-    - text: "import { Input } from \"@zephyr/ui-react\"; Usage"
+    - text: "import { Input } from \"@zephr/ui-react\"; Usage"
     - button "Copy" [ref=e70] [nth=2]
-    - text: "import { Input } from '@zephyr/ui-react'; <Input placeholder='Email address' /> zephyr.config.ts"
+    - text: "import { Input } from '@zephr/ui-react'; <Input placeholder='Email address' /> zephr.config.ts"
     - button "Copy" [ref=e71] [nth=3]
     - text: "export default { stylePack: \"Clarity\", tokens: { color: { primary: \"#121212\", accent: \"#121212\", primaryContrast: \"#ffffff\" } } };"
   - complementary:

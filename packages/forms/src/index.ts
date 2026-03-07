@@ -1,11 +1,11 @@
 /**
- * @zephyr/forms
+ * @zephrui/forms
  *
- * React-hook-form + Zod integration for Zephyr components.
+ * React-hook-form + Zod integration for Zephr components.
  *
  * Usage:
  * ```tsx
- * import { useZephyrForm } from '@zephyr/forms';
+ * import { useZephrForm } from '@zephrui/forms';
  * import { z } from 'zod';
  *
  * const schema = z.object({
@@ -14,19 +14,19 @@
  * });
  *
  * function MyForm() {
- *   const { register, handleSubmit, errors } = useZephyrForm(schema);
+ *   const { register, handleSubmit, errors } = useZephrForm(schema);
  *   return (
  *     <form onSubmit={handleSubmit((data) => console.log(data))}>
- *       <ZephyrFormField label="Email" error={errors.email}>
+ *       <ZephrFormField label="Email" error={errors.email}>
  *         <input {...register('email')} />
- *       </ZephyrFormField>
+ *       </ZephrFormField>
  *     </form>
  *   );
  * }
  * ```
  */
 
-export * from "./useZephyrForm";
-export * from "./ZephyrFormField";
+export * from "./useZephrForm";
+export * from "./ZephrFormField";
 export * from "./validators";
-export type { ZephyrFormSchema, ZephyrFormErrors } from "./types";
+export type { ZephrFormSchema, ZephrFormErrors } from "./types";

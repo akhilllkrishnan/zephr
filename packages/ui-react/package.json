@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/ui-react",
+  "name": "@zephrui/ui-react",
   "version": "0.1.0",
-  "description": "React-first Zephyr component library",
+  "description": "React-first Zephr component library",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,10 +22,10 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@zephyr/core": "workspace:*",
-    "@zephyr/icons-material": "workspace:*",
-    "@zephyr/avatars": "workspace:*",
-    "@zephyr/logos": "workspace:*"
+    "@zephrui/core": "workspace:*",
+    "@zephrui/icons-material": "workspace:*",
+    "@zephrui/avatars": "workspace:*",
+    "@zephrui/logos": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0",

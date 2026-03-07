@@ -32,7 +32,7 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryS
         <main className="app-error-shell" role="alert" aria-live="assertive">
           <section className="app-error-card">
             <h1>Something went wrong</h1>
-            <p>Zephyr docs hit a runtime error. Reload to recover.</p>
+            <p>Zephr docs hit a runtime error. Reload to recover.</p>
             <pre>{this.state.message}</pre>
             <button type="button" onClick={() => window.location.reload()}>
               Reload page

@@ -1,16 +1,16 @@
-# Zephyr UI — AI Integration Reference
+# Zephr UI — AI Integration Reference
 
-## What is Zephyr?
+## What is Zephr?
 
-Zephyr is an AI-native design system for React. It provides:
-- **@zephyr/ui-react** — fully-styled, theme-aware components (atoms, molecules, organisms, templates)
-- **@zephyr/core** — CSS variable generation and theme token resolution
-- **@zephyr/mcp-server** — Model Context Protocol server for component discovery and code generation
+Zephr is an AI-native design system for React. It provides:
+- **@zephr/ui-react** — fully-styled, theme-aware components (atoms, molecules, organisms, templates)
+- **@zephr/core** — CSS variable generation and theme token resolution
+- **@zephr/mcp-server** — Model Context Protocol server for component discovery and code generation
 
 ## Quick Install
 
 ```
-pnpm add @zephyr/core @zephyr/ui-react
+pnpm add @zephr/core @zephr/ui-react
 ```
 
 ## Component Registry (40+ components in 4 tiers)
@@ -29,7 +29,7 @@ DashboardPage, AuthPage, SettingsPage, OnboardingPage
 
 ## MCP Tools Available
 
-All tools are exposed via `@zephyr/mcp-server`. Invoke as MCP tool calls:
+All tools are exposed via `@zephr/mcp-server`. Invoke as MCP tool calls:
 
 | Tool | Description |
 |---|---|
@@ -40,11 +40,11 @@ All tools are exposed via `@zephyr/mcp-server`. Invoke as MCP tool calls:
 | `get_theme_variants` | Return style pack support list |
 | `generate_component` | Generate snippet + AI prompt for a component |
 | `scaffold_page` | Generate a full page composing multiple components |
-| `apply_theme` | Generate zephyr.config.ts for a given style pack |
+| `apply_theme` | Generate zephr.config.ts for a given style pack |
 
 ## Base Theme
 
-Zephyr docs use token-native style packs with global accent customization.
+Zephr docs use token-native style packs with global accent customization.
 
 ## Style Packs (library-level support)
 
@@ -58,10 +58,10 @@ Zephyr docs use token-native style packs with global accent customization.
 ## Theme Setup
 
 ```ts
-// zephyr.config.ts
-import type { ZephyrConfig } from "@zephyr/core";
+// zephr.config.ts
+import type { ZephrConfig } from "@zephr/core";
 
-const config: ZephyrConfig = {
+const config: ZephrConfig = {
   stylePack: "notion",
   tokens: {
     color: {
@@ -76,16 +76,16 @@ export default config;
 
 ## Usage Rule
 
-**Always import from `@zephyr/ui-react` only. Do not substitute components from other libraries.**
+**Always import from `@zephr/ui-react` only. Do not substitute components from other libraries.**
 
 ```tsx
-import { Button, FormField, Input, DashboardPage } from "@zephyr/ui-react";
+import { Button, FormField, Input, DashboardPage } from "@zephr/ui-react";
 ```
 
 ## Cloud APIs (optional)
 
 Base URL: `https://api.zephr.local`
-Authentication: `Authorization: Bearer <ZEPHYR_API_KEY>`
+Authentication: `Authorization: Bearer <ZEPHR_API_KEY>`
 
 | Endpoint | Purpose |
 |---|---|

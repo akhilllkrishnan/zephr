@@ -1,12 +1,12 @@
 # Figma Sync Pipeline
 
-How to export Figma tokens and apply them to the Zephyr design system.
+How to export Figma tokens and apply them to the Zephr design system.
 
 ---
 
 ## Overview
 
-Zephyr uses a **token-first** approach: all component styles are driven by CSS variables that flow from style pack tokens. The Figma sync pipeline bridges the gap between Figma Variables (source of truth for the design team) and the `@zephyr/core` token definitions consumed by the component library.
+Zephr uses a **token-first** approach: all component styles are driven by CSS variables that flow from style pack tokens. The Figma sync pipeline bridges the gap between Figma Variables (source of truth for the design team) and the `@zephrui/core` token definitions consumed by the component library.
 
 ```
 Figma Variables
@@ -54,7 +54,7 @@ pnpm figma:export
 
 The script outputs two sections:
 
-- **`figmaTokens`** — tokens that were automatically mapped to Zephyr token paths.
+- **`figmaTokens`** — tokens that were automatically mapped to Zephr token paths.
 - **`unmappedFigmaTokens`** — tokens that couldn't be auto-mapped (e.g. custom component-level tokens). These need manual review.
 
 ---
@@ -88,7 +88,7 @@ code packages/core/src/packs/studio.ts packages/core/src/tokens/figma-export.ts
 ### 5. Build and verify
 
 ```bash
-corepack pnpm --filter @zephyr/core build
+corepack pnpm --filter @zephrui/core build
 corepack pnpm release:check
 ```
 
@@ -96,7 +96,7 @@ corepack pnpm release:check
 
 ## Token Naming Convention
 
-All Zephyr CSS variables follow the `--z-<category>-<name>` pattern:
+All Zephr CSS variables follow the `--z-<category>-<name>` pattern:
 
 | Category | Prefix | Example |
 |---|---|---|
@@ -107,11 +107,11 @@ All Zephyr CSS variables follow the `--z-<category>-<name>` pattern:
 | Typography | `--z-type-` | `--z-type-font-family-base` |
 | Motion | `--z-motion-` | `--z-motion-duration-fast` |
 
-### Figma → Zephyr key mapping
+### Figma → Zephr key mapping
 
 The export script applies the following automatic mappings:
 
-| Figma key pattern | Zephyr token path |
+| Figma key pattern | Zephr token path |
 |---|---|
 | `color.background` | `color.background` |
 | `color.primary` | `color.primary` |
@@ -133,4 +133,4 @@ Tokens that don't match any pattern appear in `unmappedFigmaTokens` and require 
 
 - **Typography tokens** — Figma's font weight values (e.g. `"Medium"`) may need to be converted to numeric values (`500`) before use in CSS.
 - **Composite shadow tokens** — Figma exports shadow as `{ color, blur, spread, x, y }`. The script currently passes the `$value` string directly; you may need to convert it to a CSS `box-shadow` shorthand.
-- **Semantic aliases** — The `semanticAliases` config in `zephyr.config.ts` lets you remap token paths (e.g. `"color.page": "color.background"`). Figma-sourced color names may need aliasing here.
+- **Semantic aliases** — The `semanticAliases` config in `zephr.config.ts` lets you remap token paths (e.g. `"color.page": "color.background"`). Figma-sourced color names may need aliasing here.

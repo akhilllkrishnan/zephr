@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MaterialIcon, getMaterialIcon, searchMaterialIcons } from "../src";
 
-describe("@zephyr/icons-material", () => {
+describe("@zephrui/icons-material", () => {
   it("renders icon markup with ligature text", () => {
     const html = renderToStaticMarkup(<MaterialIcon name="menu" size={24} />);
     expect(html).toContain("menu");

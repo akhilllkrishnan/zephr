@@ -3,9 +3,9 @@ import {
   DesignTokens,
   LegacyStylePackName,
   PartialDeep,
-  ResolvedZephyrConfig,
+  ResolvedZephrConfig,
   StylePackName,
-  ZephyrConfig
+  ZephrConfig
 } from "./types";
 
 export const LEGACY_STYLE_PACK_MAP: Record<LegacyStylePackName, StylePackName> = {
@@ -26,7 +26,7 @@ function warnLegacyStylePack(requested: string, mapped: StylePackName): void {
   }
   deprecationNotices.add(key);
   console.warn(
-    `[zephyr] stylePack "${requested}" is deprecated and mapped to "${mapped}". ` +
+    `[zephr] stylePack "${requested}" is deprecated and mapped to "${mapped}". ` +
       `Use one of: notion, stripe, linear, framer.`
   );
 }
@@ -113,7 +113,7 @@ export function resolveStylePackName(value?: string): StylePackName {
   return "notion";
 }
 
-export function resolveTokens(config?: ZephyrConfig): DesignTokens {
+export function resolveTokens(config?: ZephrConfig): DesignTokens {
   const stylePack = resolveStylePackName(config?.stylePack);
   const baseTokens = stylePacks[stylePack];
   const merged = deepMerge(baseTokens, config?.tokens);
@@ -121,7 +121,7 @@ export function resolveTokens(config?: ZephyrConfig): DesignTokens {
   return applySemanticAliases(merged, semanticAliases);
 }
 
-export function resolveConfig(config: ZephyrConfig = {}): ResolvedZephyrConfig {
+export function resolveConfig(config: ZephrConfig = {}): ResolvedZephrConfig {
   const stylePack = resolveStylePackName(config.stylePack);
   const prefix = config.prefix?.trim() || "z";
 

@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/logos",
+  "name": "@zephrui/logos",
   "version": "0.1.0",
-  "description": "Zephyr logo provider abstraction and fallback helpers",
+  "description": "Zephr logo provider abstraction and fallback helpers",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

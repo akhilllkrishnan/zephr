@@ -26,19 +26,19 @@ export * from "./types";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
-export class ZephyrCloudError extends Error {
+export class ZephrCloudError extends Error {
   readonly status: number;
   readonly body: string;
 
   constructor(status: number, body: string) {
-    super(`Zephyr cloud error ${status}: ${body}`);
-    this.name = "ZephyrCloudError";
+    super(`Zephr cloud error ${status}: ${body}`);
+    this.name = "ZephrCloudError";
     this.status = status;
     this.body = body;
   }
 }
 
-export class ZephyrCloudClient {
+export class ZephrCloudClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
   private readonly timeoutMs: number;
@@ -48,10 +48,10 @@ export class ZephyrCloudClient {
     try {
       parsed = new URL(options.baseUrl);
     } catch {
-      throw new Error(`Invalid Zephyr cloud baseUrl: "${options.baseUrl}"`);
+      throw new Error(`Invalid Zephr cloud baseUrl: "${options.baseUrl}"`);
     }
     if (!["http:", "https:"].includes(parsed.protocol)) {
-      throw new Error(`Invalid Zephyr cloud baseUrl protocol: "${parsed.protocol}"`);
+      throw new Error(`Invalid Zephr cloud baseUrl protocol: "${parsed.protocol}"`);
     }
 
     this.baseUrl = options.baseUrl.replace(/\/$/, "");
@@ -81,10 +81,10 @@ export class ZephyrCloudClient {
       });
     } catch (error) {
       if ((error as { name?: string }).name === "AbortError") {
-        throw new Error(`Zephyr cloud request timed out after ${this.timeoutMs}ms`);
+        throw new Error(`Zephr cloud request timed out after ${this.timeoutMs}ms`);
       }
       throw new Error(
-        `Zephyr cloud request failed: ${error instanceof Error ? error.message : String(error)}`
+        `Zephr cloud request failed: ${error instanceof Error ? error.message : String(error)}`
       );
     } finally {
       clearTimeout(timeoutHandle);
@@ -92,13 +92,13 @@ export class ZephyrCloudClient {
 
     if (!response.ok) {
       const body = await response.text();
-      throw new ZephyrCloudError(response.status, body);
+      throw new ZephrCloudError(response.status, body);
     }
 
     try {
       return (await response.json()) as T;
     } catch {
-      throw new Error("Zephyr cloud returned invalid JSON.");
+      throw new Error("Zephr cloud returned invalid JSON.");
     }
   }
 

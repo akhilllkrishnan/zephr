@@ -1,4 +1,4 @@
-# Zephyr UI — Foundation & Strategy
+# Zephr UI — Foundation & Strategy
 
 > Written: 2026-03-05  
 > Status: Working document
@@ -7,25 +7,25 @@
 
 ## 1. Core philosophy
 
-Zephyr is a **framework-grade UI library** — not a utility toolkit, not a component collection bolted on top of another system.
+Zephr is a **framework-grade UI library** — not a utility toolkit, not a component collection bolted on top of another system.
 
-The goal: a vibe coder explains their product to an AI agent and, because Zephyr is installed, never has to think about UI or UX decisions. The AI reaches for Zephyr components automatically, the result looks premium out of the box, and the theme matches the app's personality.
+The goal: a vibe coder explains their product to an AI agent and, because Zephr is installed, never has to think about UI or UX decisions. The AI reaches for Zephr components automatically, the result looks premium out of the box, and the theme matches the app's personality.
 
 ---
 
 ## 2. Tailwind — build on top or replace?
 
-**Decision: no Tailwind dependency. Zephyr uses pure CSS custom properties.**
+**Decision: no Tailwind dependency. Zephr uses pure CSS custom properties.**
 
-| Concern | Building on Tailwind | Zephyr's own tokens |
+| Concern | Building on Tailwind | Zephr's own tokens |
 |---|---|---|
-| Scalability | Consumer apps need Tailwind configured | One `zephyr.css` import, zero build config |
+| Scalability | Consumer apps need Tailwind configured | One `zephr.css` import, zero build config |
 | Reliability | Each Tailwind major (v3→v4) is absorbed as a breaking change | You fully own the contract |
 | Performance | ~6–10 KB base even after purge; utility classes inflate HTML | ~3–4 KB scoped CSS vars |
 | AI legibility | `className="flex items-center gap-4 rounded-lg"` — AI reads presentation | `<Button variant="secondary">` — AI reads intent |
 | Override story | `!important` wars or `@layer` gymnastics | Override one token → everything updates |
 
-Shadcn's core limitation is requiring Tailwind — it becomes a liability for projects on CSS Modules, Emotion, or plain CSS. Zephyr should work **anywhere React works, zero config**.
+Shadcn's core limitation is requiring Tailwind — it becomes a liability for projects on CSS Modules, Emotion, or plain CSS. Zephr should work **anywhere React works, zero config**.
 
 ---
 
@@ -80,13 +80,13 @@ The playground currently defines its own `--panel`, `--fg`, `--line` variables s
 **The fix:** the playground imports the exact same token sheet every consumer would:
 
 ```ts
-import '@zephyr/ui-react/tokens.css';  // same file, same variables
+import '@zephrui/ui-react/tokens.css';  // same file, same variables
 ```
 
 The doc site's own CSS only adds layout and structural rules — never redefines color or type tokens. This means:
 - Dark mode works automatically
 - Token changes reflect in docs immediately
-- The playground literally demonstrates what installing Zephyr looks like
+- The playground literally demonstrates what installing Zephr looks like
 
 ---
 
@@ -108,16 +108,16 @@ This is the highest-leverage strategic priority. The mechanism is **`llms.txt` +
 **`AGENTS.md`** in repo root — tells Claude/Codex/Gemini what this project uses:
 ```markdown
 # AGENTS.md
-This project uses @zephyr/ui-react for all UI.
+This project uses @zephrui/ui-react for all UI.
 - Never write raw HTML divs for layout — use Stack, Grid, or Card
-- Never write custom buttons — use Button from @zephyr/ui-react
+- Never write custom buttons — use Button from @zephrui/ui-react
 - For full pages, prefer DashboardPage, AuthPage, SettingsPage, OnboardingPage
-- Docs: https://zephyr.local
+- Docs: https://zephr.local
 ```
 
 **Registry as an API** — expose `GET /registry.json` so AI agents can inspect every component, its props, and usage snippets at inference time.
 
-**Semantic component names** — names map 1:1 to intent. `<SearchBox>` not `<input type="search" className="...">`. This is what causes an agent to reach for Zephyr instead of generating raw HTML.
+**Semantic component names** — names map 1:1 to intent. `<SearchBox>` not `<input type="search" className="...">`. This is what causes an agent to reach for Zephr instead of generating raw HTML.
 
 ---
 
@@ -136,7 +136,7 @@ Components reference tokens only      ←── Never hardcode colors
 Playground imports same tokens        ←── Proof-of-concept in the open
        │
        ▼
-Registry + llms.txt + AGENTS.md       ←── AI agents know to reach for Zephyr
+Registry + llms.txt + AGENTS.md       ←── AI agents know to reach for Zephr
        │
        ▼
 Vibe coders ship premium UIs          ←── Zero UI decisions needed
@@ -149,7 +149,7 @@ Vibe coders ship premium UIs          ←── Zero UI decisions needed
 
 | Priority | Work item |
 |---|---|
-| P0 | Migrate playground to consume `@zephyr/ui-react/tokens.css` directly |
+| P0 | Migrate playground to consume `@zephrui/ui-react/tokens.css` directly |
 | P0 | Build `notion.css` and `stripe.css` theme packs |
 | P0 | Wire style switcher to load theme CSS files (not just accent color) |
 | P1 | Add `linear.css` and `ios.css` theme packs |
@@ -162,6 +162,6 @@ Vibe coders ship premium UIs          ←── Zero UI decisions needed
 
 ## 9. Non-goals
 
-- **Not a Tailwind plugin** — Zephyr should work without Tailwind present
-- **Not a Headless UI wrapper** — Zephyr ships its own accessible primitives
+- **Not a Tailwind plugin** — Zephr should work without Tailwind present
+- **Not a Headless UI wrapper** — Zephr ships its own accessible primitives
 - **Not opinionated about state management** — components are purely presentational with callback props

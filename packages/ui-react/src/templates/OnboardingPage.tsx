@@ -145,17 +145,17 @@ export interface OnboardingPageProps {
    Step content
 ───────────────────────────────────────────── */
 
-const CODE_SNIPPET = `import { Button } from "@zephyr/ui-react";
+const CODE_SNIPPET = `import { Button } from "@zephrui/ui-react";
 
 export default function App() {
-  return <Button>Hello Zephyr ⚡</Button>;
+  return <Button>Hello Zephr ⚡</Button>;
 }`;
 
 function WelcomeContent() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
       <p style={{ margin: 0, fontSize: "14.5px", color: "#6b7280", lineHeight: 1.7, letterSpacing: "-0.01em" }}>
-        Zephyr gives you 200+ production-ready React components, unified design tokens, and AI-powered tooling — everything you need to ship premium UI fast.
+        Zephr gives you 200+ production-ready React components, unified design tokens, and AI-powered tooling — everything you need to ship premium UI fast.
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
         {[
@@ -181,9 +181,9 @@ function WelcomeContent() {
 function InstallContent() {
   const [pm, setPm] = useState<"pnpm" | "npm" | "yarn">("pnpm");
   const cmds = {
-    pnpm: "pnpm add @zephyr/ui-react",
-    npm:  "npm install @zephyr/ui-react",
-    yarn: "yarn add @zephyr/ui-react",
+    pnpm: "pnpm add @zephrui/ui-react",
+    npm:  "npm install @zephrui/ui-react",
+    yarn: "yarn add @zephrui/ui-react",
   };
 
   return (
@@ -215,7 +215,7 @@ function InstallContent() {
           <span style={{ color: "#60a5fa" }}>
             {pm === "npm" ? "install" : pm === "pnpm" ? "add" : "add"}
           </span>{" "}
-          <span style={{ color: "#e2e8f0" }}>@zephyr/ui-react</span>
+          <span style={{ color: "#e2e8f0" }}>@zephrui/ui-react</span>
         </code>
       </div>
 
@@ -281,7 +281,7 @@ const DEFAULT_STEPS: OnboardingStep[] = [
   {
     id: "welcome",
     emoji: "👋",
-    title: "Welcome to Zephyr",
+    title: "Welcome to Zephr",
     subtitle: "The AI-native UI system — production-ready, beautiful by default.",
     nextLabel: "Get started",
     content: <WelcomeContent />,
@@ -364,7 +364,7 @@ export function OnboardingPage({
                   <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" />
                 </svg>
               </div>
-              <span style={{ fontSize: "15px", fontWeight: 700, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.03em" }}>Zephyr</span>
+              <span style={{ fontSize: "15px", fontWeight: 700, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.03em" }}>Zephr</span>
             </div>
           )}
         </div>

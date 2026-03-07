@@ -10,10 +10,10 @@ import type { ZodSchema, z } from "zod";
  * @example
  * ```tsx
  * const schema = z.object({ email: z.string().email() });
- * const { register, handleSubmit, errors } = useZephyrForm(schema);
+ * const { register, handleSubmit, errors } = useZephrForm(schema);
  * ```
  */
-export function useZephyrForm<T extends ZodSchema>(schema: T) {
+export function useZephrForm<T extends ZodSchema>(schema: T) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<any>({
         resolver: zodResolver(schema),

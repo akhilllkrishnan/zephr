@@ -239,7 +239,7 @@ function SectionLabel({ children }: { children: ReactNode }) {
 
 function ProfileSection() {
   const [name, setName] = useState("Akhil Krishnan");
-  const [email, setEmail] = useState("akhil@zephyr.ai");
+  const [email, setEmail] = useState("akhil@zephr.ai");
   const [bio, setBio] = useState("");
   const [role, setRole] = useState("Full-stack engineer");
   const [pending, setPending] = useState(false);
@@ -351,7 +351,7 @@ function NotificationsSection() {
       title: "Marketing", icon: IC.send,
       items: [
         { key: "weekly", label: "Weekly digest", desc: "A summary of workspace activity every Monday morning." },
-        { key: "marketing", label: "Product updates", desc: "New features, changelogs, and tips from the Zephyr team." },
+        { key: "marketing", label: "Product updates", desc: "New features, changelogs, and tips from the Zephr team." },
       ],
     },
     {
@@ -389,10 +389,10 @@ function NotificationsSection() {
 
 function TeamSection() {
   const members = [
-    { name: "Akhil Krishnan", email: "akhil@zephyr.ai", role: "Owner",  color: "#335cff" },
-    { name: "Maya Carter",    email: "maya@zephyr.ai",  role: "Admin",   color: "#8b5cf6" },
-    { name: "Noah Kim",       email: "noah@zephyr.ai",  role: "Member",  color: "#06b6d4" },
-    { name: "Liam Torres",    email: "liam@zephyr.ai",  role: "Member",  color: "#10b981" },
+    { name: "Akhil Krishnan", email: "akhil@zephr.ai", role: "Owner",  color: "#335cff" },
+    { name: "Maya Carter",    email: "maya@zephr.ai",  role: "Admin",   color: "#8b5cf6" },
+    { name: "Noah Kim",       email: "noah@zephr.ai",  role: "Member",  color: "#06b6d4" },
+    { name: "Liam Torres",    email: "liam@zephr.ai",  role: "Member",  color: "#10b981" },
   ];
   const rolePill: Record<string, { bg: string; color: string }> = {
     Owner:  { bg: "#eff6ff", color: "#1d4ed8" },
@@ -589,7 +589,7 @@ export function SettingsPage({
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <span style={{ fontSize: "14.5px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.03em" }}>Zephyr</span>
+          <span style={{ fontSize: "14.5px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.03em" }}>Zephr</span>
         </div>
 
         {/* Breadcrumb */}

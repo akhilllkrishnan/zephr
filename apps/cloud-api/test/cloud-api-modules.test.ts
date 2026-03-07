@@ -6,7 +6,7 @@ import { HttpError, readJsonBody, sendJson } from "../src/http";
 import { validateLicenseKey } from "../src/license";
 import { InMemoryRateLimiter } from "../src/rateLimit";
 
-describe("@zephyr/cloud-api module tests", () => {
+describe("@zephrui/cloud-api module tests", () => {
   it("authorizes known bearer token", () => {
     const principal = requirePrincipal({
       headers: {
@@ -90,7 +90,7 @@ describe("@zephyr/cloud-api module tests", () => {
   });
 
   it("validates a known demo license key", async () => {
-    const result = await validateLicenseKey("zephyr-pro-demo-2026");
+    const result = await validateLicenseKey("zephr-pro-demo-2026");
 
     expect(result.valid).toBe(true);
     expect(result.tier).toBe("pro");

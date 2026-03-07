@@ -8,8 +8,8 @@ import {
   getUsageExamples,
   listComponents,
   searchComponents
-} from "@zephyr/ai-registry";
-import type { AssistantTool, PackageManager } from "@zephyr/ai-registry";
+} from "@zephrui/ai-registry";
+import type { AssistantTool, PackageManager } from "@zephrui/ai-registry";
 
 export type McpToolName =
   | "search_components"
@@ -47,7 +47,7 @@ export function listTools() {
     // --- Info / retrieval tools (existing) ---
     {
       name: "search_components",
-      description: "Search Zephyr components by name, id, or intent",
+      description: "Search Zephr components by name, id, or intent",
       inputSchema: {
         type: "object",
         properties: { query: { type: "string" } },
@@ -93,7 +93,7 @@ export function listTools() {
     {
       name: "list_templates",
       description:
-        "List all available Zephyr Pro page templates (DashboardPage, AuthPage, SettingsPage, OnboardingPage). Returns id, name, description, and usage snippet for each template.",
+        "List all available Zephr Pro page templates (DashboardPage, AuthPage, SettingsPage, OnboardingPage). Returns id, name, description, and usage snippet for each template.",
       inputSchema: {
         type: "object",
         properties: {},
@@ -105,7 +105,7 @@ export function listTools() {
     {
       name: "generate_component",
       description:
-        "Generate a ready-to-paste component snippet and AI prompt for a specific Zephyr component. Returns the source snippet, a formatted AI prompt, and suggested file names.",
+        "Generate a ready-to-paste component snippet and AI prompt for a specific Zephr component. Returns the source snippet, a formatted AI prompt, and suggested file names.",
       inputSchema: {
         type: "object",
         properties: {
@@ -133,7 +133,7 @@ export function listTools() {
     {
       name: "scaffold_page",
       description:
-        "Generate a complete, paste-ready React page that composes multiple Zephyr components with the selected style pack. Returns the full page source, a zephyr.config.ts snippet, and the combined install command.",
+        "Generate a complete, paste-ready React page that composes multiple Zephr components with the selected style pack. Returns the full page source, a zephr.config.ts snippet, and the combined install command.",
       inputSchema: {
         type: "object",
         properties: {
@@ -169,7 +169,7 @@ export function listTools() {
     {
       name: "apply_theme",
       description:
-        "Generate a zephyr.config.ts file content for a given style pack and accent color. Returns the config source string ready to be written to disk, plus the install command.",
+        "Generate a zephr.config.ts file content for a given style pack and accent color. Returns the config source string ready to be written to disk, plus the install command.",
       inputSchema: {
         type: "object",
         properties: {
@@ -192,7 +192,7 @@ export function listTools() {
     {
       name: "install_plan",
       description:
-        "Generate a step-by-step install plan for Zephyr components tailored to the user's framework and package manager. Returns numbered steps with exact shell commands, config snippets, and CSS import instructions.",
+        "Generate a step-by-step install plan for Zephr components tailored to the user's framework and package manager. Returns numbered steps with exact shell commands, config snippets, and CSS import instructions.",
       inputSchema: {
         type: "object",
         properties: {
@@ -207,7 +207,7 @@ export function listTools() {
           components: {
             type: "array",
             items: { type: "string" },
-            description: "List of Zephyr component IDs to include, e.g. ['button', 'input']. If empty, installs the base package only."
+            description: "List of Zephr component IDs to include, e.g. ['button', 'input']. If empty, installs the base package only."
           }
         },
         required: []
@@ -271,7 +271,7 @@ function handleScaffoldPage(args: Record<string, unknown>): unknown {
 
   // Resolve component entries and collect unique dependencies
   const resolvedComponents: Array<{ id: string; name: string; importSnippet: string }> = [];
-  const allDeps = new Set<string>(["@zephyr/core", "@zephyr/ui-react"]);
+  const allDeps = new Set<string>(["@zephrui/core", "@zephrui/ui-react"]);
   const missingIds: string[] = [];
 
   for (const id of componentIds) {
@@ -297,7 +297,7 @@ function handleScaffoldPage(args: Record<string, unknown>): unknown {
   // Build imports block (deduplicated by package)
   const importsByPackage = new Map<string, string[]>();
   for (const c of resolvedComponents) {
-    // e.g. import { Button } from "@zephyr/ui-react";
+    // e.g. import { Button } from "@zephrui/ui-react";
     const match = c.importSnippet.match(/import \{ (.+?) \} from "(.+?)"/);
     if (match) {
       const [, namedImport, pkg] = match;
@@ -322,7 +322,7 @@ function handleScaffoldPage(args: Record<string, unknown>): unknown {
 
   const pageSource = [
     `// ${pageTitle}`,
-    `// Generated by Zephyr MCP — style pack: ${stylePack}, accent: ${accentColor}`,
+    `// Generated by Zephr MCP — style pack: ${stylePack}, accent: ${accentColor}`,
     `// Assistant: ${assistant}`,
     "",
     ...importLines,
@@ -366,18 +366,18 @@ function handleApplyTheme(args: Record<string, unknown>): unknown {
   }
 
   const configSource = buildConfigSource(stylePack, accentColor);
-  const installCommand = buildInstallCommand(["@zephyr/core", "@zephyr/ui-react"], packageManager);
+  const installCommand = buildInstallCommand(["@zephrui/core", "@zephrui/ui-react"], packageManager);
   const warnings = requestedPack in LEGACY_STYLE_PACK_MAP
     ? [`Style pack "${requestedPack}" is deprecated. Using "${stylePack}".`]
     : [];
 
   return {
     configSource,
-    fileName: "zephyr.config.ts",
+    fileName: "zephr.config.ts",
     installCommand,
     warnings,
     cssNote:
-      `Import static theme CSS once in your app entry point: import "@zephyr/ui-react/themes/${stylePack}.css";`
+      `Import static theme CSS once in your app entry point: import "@zephrui/ui-react/themes/${stylePack}.css";`
   };
 }
 
@@ -397,9 +397,9 @@ function buildInstallCommand(deps: string[], packageManager: PackageManager): st
 
 function buildConfigSource(stylePack: string, accentColor: string): string {
   return [
-    `import type { ZephyrConfig } from "@zephyr/core";`,
+    `import type { ZephrConfig } from "@zephrui/core";`,
     ``,
-    `const config: ZephyrConfig = {`,
+    `const config: ZephrConfig = {`,
     `  stylePack: "${stylePack}",`,
     `  tokens: {`,
     `    color: {`,
@@ -449,11 +449,11 @@ function frameworkLabel(fw: Framework): string {
 function cssImportInstruction(fw: Framework): string {
   switch (fw) {
     case "nextjs":
-      return 'In your `app/layout.tsx` (App Router) or `pages/_app.tsx` (Pages Router), add:\n\n```ts\nimport \'../src/styles/zephyr.css\'\n```';
+      return 'In your `app/layout.tsx` (App Router) or `pages/_app.tsx` (Pages Router), add:\n\n```ts\nimport \'../src/styles/zephr.css\'\n```';
     case "remix":
-      return 'In `app/root.tsx`, add to the `links` export:\n\n```ts\nimport zephyrStyles from \'../src/styles/zephyr.css\'\nexport const links: LinksFunction = () => [\n  { rel: \'stylesheet\', href: zephyrStyles }\n];\n```';
+      return 'In `app/root.tsx`, add to the `links` export:\n\n```ts\nimport zephrStyles from \'../src/styles/zephr.css\'\nexport const links: LinksFunction = () => [\n  { rel: \'stylesheet\', href: zephrStyles }\n];\n```';
     default:
-      return 'In your app entry point (e.g. `src/main.tsx`), add:\n\n```ts\nimport \'./styles/zephyr.css\'\n```';
+      return 'In your app entry point (e.g. `src/main.tsx`), add:\n\n```ts\nimport \'./styles/zephr.css\'\n```';
   }
 }
 
@@ -480,7 +480,7 @@ function handleInstallPlan(args: Record<string, unknown>): unknown {
   }
 
   // Build install command
-  const deps = ["@zephyr/core", "@zephyr/ui-react"];
+  const deps = ["@zephrui/core", "@zephrui/ui-react"];
   const installCmd = buildInstallCommand(deps, packageManager);
 
   // Component-specific add commands
@@ -488,23 +488,23 @@ function handleInstallPlan(args: Record<string, unknown>): unknown {
     const tool = packageManager === "npm" ? "npx" :
       packageManager === "yarn" ? "yarn dlx" :
         packageManager === "bun" ? "bunx" : "pnpm dlx";
-    return `${tool} zephyr add ${id}`;
+    return `${tool} zephr add ${id}`;
   });
 
   const steps: Array<{ step: number; title: string; command?: string; note?: string }> = [
     {
       step: 1,
-      title: `Install Zephyr packages into your ${fwLabel} project`,
+      title: `Install Zephr packages into your ${fwLabel} project`,
       command: installCmd
     },
     {
       step: 2,
-      title: "Initialise Zephyr config (generates zephyr.config.ts + zephyr.css)",
-      command: buildInstallCommand(["@zephyr/cli"], packageManager).replace(
+      title: "Initialise Zephr config (generates zephr.config.ts + zephr.css)",
+      command: buildInstallCommand(["@zephrui/cli"], packageManager).replace(
         "install", packageManager === "npm" ? "install -g" :
         packageManager === "yarn" ? "global add" :
           packageManager === "bun" ? "add -g" : "add -g"
-      ) + ` && zephyr init --style-pack notion`
+      ) + ` && zephr init --style-pack notion`
     },
     {
       step: 3,
@@ -521,7 +521,7 @@ function handleInstallPlan(args: Record<string, unknown>): unknown {
     {
       step: addCommands.length > 0 ? 4 + addCommands.length : 4,
       title: "Verify your setup",
-      command: "zephyr doctor"
+      command: "zephr doctor"
     }
   ];
 
@@ -565,7 +565,7 @@ export function callTool(call: McpToolCall): unknown {
         id: t.id,
         name: t.name,
         description: t.description,
-        usageExample: t.usageExamples?.[0] ?? `import { ${t.name} } from '@zephyr/ui-react';\n<${t.name} />`
+        usageExample: t.usageExamples?.[0] ?? `import { ${t.name} } from '@zephrui/ui-react';\n<${t.name} />`
       }));
     case "scaffold_page":
       return handleScaffoldPage(args);

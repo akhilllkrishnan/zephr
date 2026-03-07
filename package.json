@@ -1,8 +1,8 @@
 {
-  "name": "zephyr-monorepo",
+  "name": "zephr-monorepo",
   "private": true,
   "version": "0.1.0",
-  "description": "Zephyr v1: AI-native design system + cloud assets platform",
+  "description": "Zephr v1: AI-native design system + cloud assets platform",
   "license": "MIT",
   "packageManager": "pnpm@10.30.3",
   "scripts": {
@@ -13,8 +13,8 @@
     "typecheck": "turbo run typecheck",
     "figma:export": "node scripts/export-figma-tokens.js",
     "test:unit": "vitest run",
-    "docs:dev": "pnpm --filter @zephyr/docs-playground dev",
-    "docs:build": "pnpm --filter @zephyr/docs-playground build",
+    "docs:dev": "pnpm --filter @zephrui/docs-playground dev",
+    "docs:build": "pnpm --filter @zephrui/docs-playground build",
     "release:check": "bash scripts/release-check.sh",
     "release:dry": "bash scripts/publish.sh",
     "release": "bash scripts/publish.sh --no-dry-run",

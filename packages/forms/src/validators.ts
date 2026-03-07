@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Common pre-built Zod validators for Zephyr forms.
+ * Common pre-built Zod validators for Zephr forms.
  */
 export const zv = {
     /** Non-empty string with optional min/max length */

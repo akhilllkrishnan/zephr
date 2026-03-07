@@ -1,11 +1,11 @@
-# Zephyr AI Playbook
+# Zephr AI Playbook
 
-Zephyr is an AI-native design system platform composed of:
+Zephr is an AI-native design system platform composed of:
 
-1. Styling core (`@zephyr/core`) with design tokens and style pack resolution.
-2. React component package (`@zephyr/ui-react`) from atoms to organisms.
-3. AI registry (`@zephyr/ai-registry`) with machine-readable component metadata.
-4. MCP server (`@zephyr/mcp-server`) exposing tool calls for discovery/integration.
+1. Styling core (`@zephr/core`) with design tokens and style pack resolution.
+2. React component package (`@zephr/ui-react`) from atoms to organisms.
+3. AI registry (`@zephr/ai-registry`) with machine-readable component metadata.
+4. MCP server (`@zephr/mcp-server`) exposing tool calls for discovery/integration.
 5. Cloud APIs for logos, avatars, snippet generation, and compliance workflows.
 
 ## Integration Steps
@@ -13,13 +13,13 @@ Zephyr is an AI-native design system platform composed of:
 1. Install packages:
 
 ```bash
-pnpm add @zephyr/core @zephyr/ui-react
+pnpm add @zephr/core @zephr/ui-react
 ```
 
-2. Create or load `zephyr.config.ts`:
+2. Create or load `zephr.config.ts`:
 
 ```ts
-import { defineConfig } from "@zephyr/core";
+import { defineConfig } from "@zephr/core";
 
 export default defineConfig({
   stylePack: "notion",
@@ -27,13 +27,13 @@ export default defineConfig({
 });
 ```
 
-3. Include Zephyr CSS variable output from `generateCssVariables` / runtime config helpers in `@zephyr/core`.
+3. Include Zephr CSS variable output from `generateCssVariables` / runtime config helpers in `@zephr/core`.
 
 4. Use registry metadata to pick components by semantics, not by visual assumptions.
 
 ## MCP Tooling Contract
 
-Use the following tools from `@zephyr/mcp-server`:
+Use the following tools from `@zephr/mcp-server`:
 
 - `search_components({ query })`
 - `get_component_spec({ id })`
@@ -50,7 +50,7 @@ Most `/v1/*` endpoints require bearer auth:
 Public endpoint (no bearer required):
 - `POST /v1/licenses/validate`
 
-For local development with Zephyr Cloud API app, default key is:
+For local development with Zephr Cloud API app, default key is:
 
 `dev_local_key`
 

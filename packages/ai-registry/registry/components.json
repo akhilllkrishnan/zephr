@@ -43,8 +43,8 @@
       "Avoid icon-only buttons unless aria-label is provided."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/core"
+      "@zephrui/ui-react",
+      "@zephrui/core"
     ],
     "stylePackSupport": [
       "notion",
@@ -58,14 +58,14 @@
         "Prefer `variant=secondary` for non-destructive secondary actions."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Button } from \"@zephyr/ui-react\";"
+        "import { Button } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Button } from '@zephyr/ui-react';\n<Button variant='primary'>Save</Button>"
+      "import { Button } from '@zephrui/ui-react';\n<Button variant='primary'>Save</Button>"
     ]
   },
   {
@@ -108,7 +108,7 @@
       "Describe validation states with helper or error text."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -121,14 +121,14 @@
         "Wrap in FormField when label/hint/error text is needed."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Input } from \"@zephyr/ui-react\";"
+        "import { Input } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Input } from '@zephyr/ui-react';\n<Input placeholder='Email address' />"
+      "import { Input } from '@zephrui/ui-react';\n<Input placeholder='Email address' />"
     ]
   },
   {
@@ -169,8 +169,8 @@
       "Use danger tone only for destructive actions."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/icons-material"
+      "@zephrui/ui-react",
+      "@zephrui/icons-material"
     ],
     "stylePackSupport": [
       "notion",
@@ -183,14 +183,14 @@
         "Use in dense nav bars, command rows, and table action columns."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { IconButton } from \"@zephyr/ui-react\";"
+        "import { IconButton } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { IconButton } from '@zephyr/ui-react';\nimport { MaterialIcon } from '@zephyr/icons-material';\n<IconButton icon={<MaterialIcon name='search' />} label='Search' />"
+      "import { IconButton } from '@zephrui/ui-react';\nimport { MaterialIcon } from '@zephrui/icons-material';\n<IconButton icon={<MaterialIcon name='search' />} label='Search' />"
     ]
   },
   {
@@ -233,7 +233,7 @@
       "Show helper text for character limits when applicable."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -246,21 +246,21 @@
         "Use for feedback forms, release notes, and message composers."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Textarea } from \"@zephyr/ui-react\";"
+        "import { Textarea } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Textarea } from '@zephyr/ui-react';\n<Textarea rows={5} placeholder='Add details' />"
+      "import { Textarea } from '@zephrui/ui-react';\n<Textarea rows={5} placeholder='Add details' />"
     ]
   },
   {
     "id": "select",
     "name": "Select",
     "category": "atom",
-    "description": "Native select control wrapped with Zephyr tokens and spacing.",
+    "description": "Native select control wrapped with Zephr tokens and spacing.",
     "propsSchema": {
       "value": {
         "type": "string",
@@ -289,7 +289,7 @@
       "Avoid using select for very long lists without search."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -302,14 +302,14 @@
         "Use in filters, settings, and configuration forms."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Select } from \"@zephyr/ui-react\";"
+        "import { Select } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Select } from '@zephyr/ui-react';\n<Select><option>notion</option><option>stripe</option></Select>"
+      "import { Select } from '@zephrui/ui-react';\n<Select><option>notion</option><option>stripe</option></Select>"
     ]
   },
   {
@@ -345,7 +345,7 @@
       "Group related checkboxes in a fieldset when possible."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -358,14 +358,14 @@
         "Use for settings toggles that can be independently selected."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Checkbox } from \"@zephyr/ui-react\";"
+        "import { Checkbox } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Checkbox } from '@zephyr/ui-react';\n<label><Checkbox /> Enable notifications</label>"
+      "import { Checkbox } from '@zephrui/ui-react';\n<label><Checkbox /> Enable notifications</label>"
     ]
   },
   {
@@ -401,7 +401,7 @@
       "Use fieldset and legend for grouped context."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -414,14 +414,14 @@
         "Use for plan/theme choices where only one option is allowed."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Radio } from \"@zephyr/ui-react\";"
+        "import { Radio } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Radio } from '@zephyr/ui-react';\n<label><Radio name='theme' /> notion</label>"
+      "import { Radio } from '@zephrui/ui-react';\n<label><Radio name='theme' /> notion</label>"
     ]
   },
   {
@@ -457,7 +457,7 @@
       "Use concise labels describing current behavior."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -470,14 +470,14 @@
         "Use for feature flags and preference toggles."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Switch } from \"@zephyr/ui-react\";"
+        "import { Switch } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Switch } from '@zephyr/ui-react';\n<Switch checked={enabled} onChange={setEnabled} label='Enable beta' />"
+      "import { Switch } from '@zephrui/ui-react';\n<Switch checked={enabled} onChange={setEnabled} label='Enable beta' />"
     ]
   },
   {
@@ -512,7 +512,7 @@
       "Include readable text in every badge."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -525,14 +525,14 @@
         "Use for item status, release labels, and category chips."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Badge } from \"@zephyr/ui-react\";"
+        "import { Badge } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Badge } from '@zephyr/ui-react';\n<Badge tone='success'>Synced</Badge>"
+      "import { Badge } from '@zephrui/ui-react';\n<Badge tone='success'>Synced</Badge>"
     ]
   },
   {
@@ -568,8 +568,8 @@
       "Keep avatar size large enough for recognition in dense UI."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/avatars"
+      "@zephrui/ui-react",
+      "@zephrui/avatars"
     ],
     "stylePackSupport": [
       "notion",
@@ -582,14 +582,14 @@
         "Use in nav headers, comments, tables, and collaboration views."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Avatar } from \"@zephyr/ui-react\";"
+        "import { Avatar } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Avatar } from '@zephyr/ui-react';\n<Avatar name='Akhil Krishnan' />"
+      "import { Avatar } from '@zephrui/ui-react';\n<Avatar name='Akhil Krishnan' />"
     ]
   },
   {
@@ -625,8 +625,8 @@
       "Use compliance-approved sources when rendering third-party logos."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/logos"
+      "@zephrui/ui-react",
+      "@zephrui/logos"
     ],
     "stylePackSupport": [
       "notion",
@@ -639,14 +639,14 @@
         "Use in ecosystem cards, integration lists, and partner sections."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Logo } from \"@zephyr/ui-react\";"
+        "import { Logo } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Logo } from '@zephyr/ui-react';\n<Logo name='OpenAI' src={logoDataUri} />"
+      "import { Logo } from '@zephrui/ui-react';\n<Logo name='OpenAI' src={logoDataUri} />"
     ]
   },
   {
@@ -689,7 +689,7 @@
       "Expose validation errors in readable text below the control."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -702,14 +702,14 @@
         "Use for every labeled form input block in onboarding and settings."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { FormField } from \"@zephyr/ui-react\";"
+        "import { FormField } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { FormField, Input } from '@zephyr/ui-react';\n<FormField label='Email' htmlFor='email'><Input id='email' /></FormField>"
+      "import { FormField, Input } from '@zephrui/ui-react';\n<FormField label='Email' htmlFor='email'><Input id='email' /></FormField>"
     ]
   },
   {
@@ -744,7 +744,7 @@
       "Includes form semantics for Enter-to-search keyboard flow."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -757,14 +757,14 @@
         "Use near table/list headers to drive filtering."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { SearchBox } from \"@zephyr/ui-react\";"
+        "import { SearchBox } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { SearchBox } from '@zephyr/ui-react';\n<SearchBox value={query} onValueChange={setQuery} onSearch={runSearch} />"
+      "import { SearchBox } from '@zephrui/ui-react';\n<SearchBox value={query} onValueChange={setQuery} onSearch={runSearch} />"
     ]
   },
   {
@@ -799,7 +799,7 @@
       "Use inside `<nav>` for semantic navigation landmarks."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -812,14 +812,14 @@
         "Use as top-level layout shell in admin and SaaS products."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Navbar } from \"@zephyr/ui-react\";"
+        "import { Navbar } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Navbar } from '@zephyr/ui-react';\n<Navbar brand={<strong>Zephyr</strong>} links={[{ id: 'home', label: 'Home', href: '/' }]} />"
+      "import { Navbar } from '@zephrui/ui-react';\n<Navbar brand={<strong>Zephr</strong>} links={[{ id: 'home', label: 'Home', href: '/' }]} />"
     ]
   },
   {
@@ -855,7 +855,7 @@
       "Keep action labels explicit when multiple controls are present."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -868,14 +868,14 @@
         "Use above card/table sections to establish context and actions."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Header } from \"@zephyr/ui-react\";"
+        "import { Header } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Header, Button } from '@zephyr/ui-react';\n<Header title='Workspace' subtitle='Manage your project' actions={<Button>New</Button>} />"
+      "import { Header, Button } from '@zephrui/ui-react';\n<Header title='Workspace' subtitle='Manage your project' actions={<Button>New</Button>} />"
     ]
   },
   {
@@ -910,7 +910,7 @@
       "Use `<th>` headers and keep row actions keyboard accessible."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -923,14 +923,14 @@
         "Pair with SearchBox and FiltersBar for interactive data screens."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { DataTable } from \"@zephyr/ui-react\";"
+        "import { DataTable } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { DataTable } from '@zephyr/ui-react';\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
+      "import { DataTable } from '@zephrui/ui-react';\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
     ]
   },
   {
@@ -973,7 +973,7 @@
       "Ensure focus management in host application if nested flows are used."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -986,14 +986,14 @@
         "Use for destructive confirmations and short multi-step flows."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { ModalDialog } from \"@zephyr/ui-react\";"
+        "import { ModalDialog } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { ModalDialog } from '@zephyr/ui-react';\n<ModalDialog open={open} title='Delete item' onCancel={close} onConfirm={remove} />"
+      "import { ModalDialog } from '@zephrui/ui-react';\n<ModalDialog open={open} title='Delete item' onCancel={close} onConfirm={remove} />"
     ]
   },
   {
@@ -1021,7 +1021,7 @@
       "Uses `tablist`, `tab`, and `tabpanel` semantics."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1034,14 +1034,14 @@
         "Use for compact section switching in settings and dashboards."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Tabs } from \"@zephyr/ui-react\";"
+        "import { Tabs } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Tabs } from '@zephyr/ui-react';\n<Tabs items={[{ id: 'overview', label: 'Overview', content: <div /> }]} />"
+      "import { Tabs } from '@zephrui/ui-react';\n<Tabs items={[{ id: 'overview', label: 'Overview', content: <div /> }]} />"
     ]
   },
   {
@@ -1088,7 +1088,7 @@
       "Each open panel is announced via a labeled region."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1102,14 +1102,14 @@
         "Prefer concise titles and short supporting descriptions."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Accordion } from \"@zephyr/ui-react\";"
+        "import { Accordion } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Accordion } from '@zephyr/ui-react';\n<Accordion items={[{ id: 'q1', title: 'What is Zephyr?', description: 'A plug-and-play UI framework.' }]} />"
+      "import { Accordion } from '@zephrui/ui-react';\n<Accordion items={[{ id: 'q1', title: 'What is Zephr?', description: 'A plug-and-play UI framework.' }]} />"
     ]
   },
   {
@@ -1190,7 +1190,7 @@
       "Do not rely only on color to communicate message meaning."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1204,14 +1204,14 @@
         "Use stroke style in dense layouts to reduce visual weight."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Alert } from \"@zephyr/ui-react\";"
+        "import { Alert } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Alert } from '@zephyr/ui-react';\n<Alert status='error' variant='filled' title='Something went wrong' actionLabel='Retry' />"
+      "import { Alert } from '@zephrui/ui-react';\n<Alert status='error' variant='filled' title='Something went wrong' actionLabel='Retry' />"
     ]
   },
   {
@@ -1275,7 +1275,7 @@
       "Use concise text so announcements are quickly understood."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1288,14 +1288,14 @@
         "Use for async completion, copy confirmations, and background sync notices."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Toast } from \"@zephyr/ui-react\";"
+        "import { Toast } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Toast } from '@zephyr/ui-react';\n<Toast open status='success' title='Prompt copied' onClose={() => {}} />"
+      "import { Toast } from '@zephrui/ui-react';\n<Toast open status='success' title='Prompt copied' onClose={() => {}} />"
     ]
   },
   {
@@ -1323,7 +1323,7 @@
       "Rendered inside a nav landmark with `aria-label='Breadcrumb'."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1336,14 +1336,14 @@
         "Use on docs and admin pages above the main title."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Breadcrumbs } from \"@zephyr/ui-react\";"
+        "import { Breadcrumbs } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Breadcrumbs } from '@zephyr/ui-react';\n<Breadcrumbs items={[{ id: 'home', label: 'Home', href: '/' }]} />"
+      "import { Breadcrumbs } from '@zephrui/ui-react';\n<Breadcrumbs items={[{ id: 'home', label: 'Home', href: '/' }]} />"
     ]
   },
   {
@@ -1378,7 +1378,7 @@
       "Buttons expose disabled state for first/last boundaries."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1391,14 +1391,14 @@
         "Use below tables and result lists."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Pagination } from \"@zephyr/ui-react\";"
+        "import { Pagination } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Pagination } from '@zephyr/ui-react';\n<Pagination page={page} totalPages={10} onPageChange={setPage} />"
+      "import { Pagination } from '@zephrui/ui-react';\n<Pagination page={page} totalPages={10} onPageChange={setPage} />"
     ]
   },
   {
@@ -1433,7 +1433,7 @@
       "Uses form semantics for Enter-to-run on primary action."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1446,14 +1446,14 @@
         "Use in command palettes and quick actions headers."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { CommandBar } from \"@zephyr/ui-react\";"
+        "import { CommandBar } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { CommandBar } from '@zephyr/ui-react';\n<CommandBar query={query} onQueryChange={setQuery} actions={actions} />"
+      "import { CommandBar } from '@zephrui/ui-react';\n<CommandBar query={query} onQueryChange={setQuery} actions={actions} />"
     ]
   },
   {
@@ -1488,7 +1488,7 @@
       "Pair with labels or aria-label for form accessibility."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1501,14 +1501,14 @@
         "Use for currency, search, and prefixed text fields."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { InputGroup } from \"@zephyr/ui-react\";"
+        "import { InputGroup } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { InputGroup } from '@zephyr/ui-react';\n<InputGroup startAdornment='$' placeholder='Budget' />"
+      "import { InputGroup } from '@zephrui/ui-react';\n<InputGroup startAdornment='$' placeholder='Budget' />"
     ]
   },
   {
@@ -1547,7 +1547,7 @@
       "Menu entries are focusable buttons for keyboard support."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1560,14 +1560,14 @@
         "Use for overflow actions and contextual menus."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { Dropdown } from \"@zephyr/ui-react\";"
+        "import { Dropdown } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Dropdown } from '@zephyr/ui-react';\n<Dropdown label='Actions' items={[{ id: 'edit', label: 'Edit', onSelect: () => {} }]} />"
+      "import { Dropdown } from '@zephrui/ui-react';\n<Dropdown label='Actions' items={[{ id: 'edit', label: 'Edit', onSelect: () => {} }]} />"
     ]
   },
   {
@@ -1588,7 +1588,7 @@
       "Use within an aside landmark and ensure clear active indication."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1601,14 +1601,14 @@
         "Use for persistent left navigation in documentation and apps."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { SidebarNav } from \"@zephyr/ui-react\";"
+        "import { SidebarNav } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { SidebarNav } from '@zephyr/ui-react';\n<SidebarNav sections={sections} />"
+      "import { SidebarNav } from '@zephrui/ui-react';\n<SidebarNav sections={sections} />"
     ]
   },
   {
@@ -1636,7 +1636,7 @@
       "Filter controls should expose labels and keyboard interaction."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1649,14 +1649,14 @@
         "Pair with DataTable and SearchBox on data screens."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { FiltersBar } from \"@zephyr/ui-react\";"
+        "import { FiltersBar } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { FiltersBar } from '@zephyr/ui-react';\n<FiltersBar items={filters} onReset={resetFilters} />"
+      "import { FiltersBar } from '@zephrui/ui-react';\n<FiltersBar items={filters} onReset={resetFilters} />"
     ]
   },
   {
@@ -1684,7 +1684,7 @@
       "Each result row is rendered as an interactive button."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1697,14 +1697,14 @@
         "Use in command/search experiences and discovery pages."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { SearchResultsPanel } from \"@zephyr/ui-react\";"
+        "import { SearchResultsPanel } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { SearchResultsPanel } from '@zephyr/ui-react';\n<SearchResultsPanel query={query} results={results} />"
+      "import { SearchResultsPanel } from '@zephrui/ui-react';\n<SearchResultsPanel query={query} results={results} />"
     ]
   },
   {
@@ -1753,7 +1753,7 @@
       "Use semantic landmarks (`nav`, `aside`, `main`) for better screen reader navigation."
     ],
     "dependencies": [
-      "@zephyr/ui-react"
+      "@zephrui/ui-react"
     ],
     "stylePackSupport": [
       "notion",
@@ -1766,14 +1766,14 @@
         "Use as a starting point for docs portals and admin dashboards."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { LayoutShell } from \"@zephyr/ui-react\";"
+        "import { LayoutShell } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { LayoutShell, Navbar } from '@zephyr/ui-react';\n<LayoutShell topNav={<Navbar brand='Zephyr' links={[]} />}>...</LayoutShell>"
+      "import { LayoutShell, Navbar } from '@zephrui/ui-react';\n<LayoutShell topNav={<Navbar brand='Zephr' links={[]} />}>...</LayoutShell>"
     ]
   },
   {
@@ -1822,8 +1822,8 @@
       "Use explicit labels for icon-only UI controls after insertion."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/icons-material"
+      "@zephrui/ui-react",
+      "@zephrui/icons-material"
     ],
     "stylePackSupport": [
       "notion",
@@ -1837,14 +1837,14 @@
         "Support semantic search terms (e.g., settings, billing, support)."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { IconLibrary } from \"@zephyr/ui-react\";"
+        "import { IconLibrary } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { IconLibrary } from '@zephyr/ui-react';\n<IconLibrary initialQuery='settings' onCopy={(name) => console.log(name)} />"
+      "import { IconLibrary } from '@zephrui/ui-react';\n<IconLibrary initialQuery='settings' onCopy={(name) => console.log(name)} />"
     ]
   },
   {
@@ -1880,8 +1880,8 @@
       "Ensure copied style ids are announced with toast or status text."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/avatars"
+      "@zephrui/ui-react",
+      "@zephrui/avatars"
     ],
     "stylePackSupport": [
       "notion",
@@ -1895,14 +1895,14 @@
         "Expose style + seed controls for deterministic generation."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { AvatarLibrary } from \"@zephyr/ui-react\";"
+        "import { AvatarLibrary } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { AvatarLibrary } from '@zephyr/ui-react';\n<AvatarLibrary initialQuery='retro' onCopy={(style) => console.log(style)} />"
+      "import { AvatarLibrary } from '@zephrui/ui-react';\n<AvatarLibrary initialQuery='retro' onCopy={(style) => console.log(style)} />"
     ]
   },
   {
@@ -1931,8 +1931,8 @@
       "Do not rely on color alone to distinguish brands."
     ],
     "dependencies": [
-      "@zephyr/ui-react",
-      "@zephyr/logos"
+      "@zephrui/ui-react",
+      "@zephrui/logos"
     ],
     "stylePackSupport": [
       "notion",
@@ -1946,14 +1946,14 @@
         "Allow searching by brand name, domain, and category tags."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephyr component exists."
+        "Avoid raw HTML controls when a Zephr component exists."
       ],
       "preferredImports": [
-        "import { LogoLibrary } from \"@zephyr/ui-react\";"
+        "import { LogoLibrary } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { LogoLibrary } from '@zephyr/ui-react';\n<LogoLibrary initialQuery='developer' onCopy={(domain) => console.log(domain)} />"
+      "import { LogoLibrary } from '@zephrui/ui-react';\n<LogoLibrary initialQuery='developer' onCopy={(domain) => console.log(domain)} />"
     ]
   }
 ]

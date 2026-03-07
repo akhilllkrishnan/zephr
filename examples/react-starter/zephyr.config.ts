@@ -1,4 +1,4 @@
-import { defineConfig } from "@zephyr/core";
+import { defineConfig } from "@zephrui/core";
 
 export default defineConfig({
   stylePack: "notion",

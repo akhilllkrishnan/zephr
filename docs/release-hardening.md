@@ -4,7 +4,7 @@ Last updated: March 3, 2026
 
 ## Scope
 
-This checklist is the minimum quality gate before cutting a Zephyr beta/release candidate.
+This checklist is the minimum quality gate before cutting a Zephr beta/release candidate.
 
 It covers:
 - Registry contract integrity
@@ -21,11 +21,11 @@ corepack pnpm release:check
 ```
 
 This executes:
-1. `@zephyr/ai-registry` build + tests
-2. `@zephyr/cloud-sdk` build + tests
-3. `@zephyr/cloud-api` typecheck + tests
-4. `@zephyr/ui-react` build
-5. `@zephyr/docs-playground` typecheck + build
+1. `@zephrui/ai-registry` build + tests
+2. `@zephrui/cloud-sdk` build + tests
+3. `@zephrui/cloud-api` typecheck + tests
+4. `@zephrui/ui-react` build
+5. `@zephrui/docs-playground` typecheck + build
 
 ## Manual validation (required)
 
@@ -33,13 +33,13 @@ Run these after `release:check` passes:
 
 1. Start cloud API:
 ```bash
-corepack pnpm --filter @zephyr/cloud-api build
+corepack pnpm --filter @zephrui/cloud-api build
 node apps/cloud-api/dist/index.js
 ```
 
 2. Start docs playground:
 ```bash
-corepack pnpm --filter @zephyr/docs-playground dev --host 127.0.0.1 --port 4174
+corepack pnpm --filter @zephrui/docs-playground dev --host 127.0.0.1 --port 4174
 ```
 
 3. Verify asset libraries in docs:

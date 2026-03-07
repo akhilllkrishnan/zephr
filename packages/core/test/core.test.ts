@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   generateCssVariables,
-  loadZephyrConfig,
+  loadZephrConfig,
   resolveConfig,
   resolveStylePackName,
   resolveTokens,
@@ -12,7 +12,7 @@ import {
   stylePacks
 } from "../src";
 
-describe("@zephyr/core", () => {
+describe("@zephrui/core", () => {
   it("resolves defaults for style pack and prefix", () => {
     const resolved = resolveConfig({});
     expect(resolved.stylePack).toBe("notion");
@@ -48,10 +48,10 @@ describe("@zephyr/core", () => {
     expect(css).toContain("[data-theme=\"dark\"]");
   });
 
-  it("loads style pack values from zephyr.config.ts", () => {
-    const tempDir = mkdtempSync(join(tmpdir(), "zephyr-core-config-"));
+  it("loads style pack values from zephr.config.ts", () => {
+    const tempDir = mkdtempSync(join(tmpdir(), "zephr-core-config-"));
     writeFileSync(
-      join(tempDir, "zephyr.config.ts"),
+      join(tempDir, "zephr.config.ts"),
       `export default {
   stylePack: "notion",
   tokens: {
@@ -66,7 +66,7 @@ describe("@zephyr/core", () => {
     );
 
     try {
-      const resolved = loadZephyrConfig(tempDir);
+      const resolved = loadZephrConfig(tempDir);
       expect(resolved.stylePack).toBe("notion");
       expect(resolved.tokens.color.primary).toBe("#102a43");
     } finally {

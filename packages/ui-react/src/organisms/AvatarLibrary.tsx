@@ -2,7 +2,7 @@
 import { CSSProperties, useMemo, useState } from "react";
 import { Avatar } from "../atoms/Avatar";
 import { Input } from "../atoms/Input";
-import * as AvatarAssets from "@zephyr/avatars";
+import * as AvatarAssets from "@zephrui/avatars";
 
 type AvatarStyle = AvatarAssets.AvatarStyle;
 
@@ -47,7 +47,7 @@ export function AvatarLibrary({
   style
 }: AvatarLibraryProps) {
   const [uncontrolledQuery, setUncontrolledQuery] = useState(initialQuery);
-  const [uncontrolledSeed, setUncontrolledSeed] = useState("zephyr");
+  const [uncontrolledSeed, setUncontrolledSeed] = useState("zephr");
   const query = controlledQuery ?? uncontrolledQuery;
   const seed = controlledSeed ?? uncontrolledSeed;
 

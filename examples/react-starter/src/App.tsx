@@ -4,7 +4,7 @@ import {
   Navbar,
   SearchBox,
   DataTable
-} from "@zephyr/ui-react";
+} from "@zephrui/ui-react";
 import { useMemo, useState } from "react";
 
 interface Row {
@@ -30,7 +30,7 @@ export default function App() {
   return (
     <main className="z-bg-background z-text-text z-p-4 z-flex z-gap-4" style={{ flexDirection: "column" }}>
       <Navbar
-        brand={<strong>Zephyr</strong>}
+        brand={<strong>Zephr</strong>}
         links={[{ id: "docs", label: "Docs", href: "#" }]}
         actions={<Button>New</Button>}
       />

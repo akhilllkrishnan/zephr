@@ -11,7 +11,7 @@ import {
   searchComponents
 } from "../src";
 
-describe("@zephyr/ai-registry", () => {
+describe("@zephrui/ai-registry", () => {
   it("lists components", () => {
     const items = listComponents();
     expect(items.length).toBeGreaterThan(0);

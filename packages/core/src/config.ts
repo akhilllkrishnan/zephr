@@ -4,14 +4,14 @@ import vm from "node:vm";
 import { createRequire } from "node:module";
 import ts from "typescript";
 import { resolveConfig } from "./tokens";
-import { ResolvedZephyrConfig, ZephyrConfig } from "./types";
+import { ResolvedZephrConfig, ZephrConfig } from "./types";
 
 const CANDIDATE_FILES = [
-  "zephyr.config.ts",
-  "zephyr.config.js",
-  "zephyr.config.cjs",
-  "zephyr.config.mjs",
-  "zephyr.config.json"
+  "zephr.config.ts",
+  "zephr.config.js",
+  "zephr.config.cjs",
+  "zephr.config.mjs",
+  "zephr.config.json"
 ];
 
 function executeModule(sourceCode: string, filename: string): unknown {
@@ -33,12 +33,12 @@ function executeModule(sourceCode: string, filename: string): unknown {
   return exported.default ?? fallback.default ?? exported;
 }
 
-function parseConfigFile(filePath: string): ZephyrConfig {
+function parseConfigFile(filePath: string): ZephrConfig {
   const ext = path.extname(filePath);
   const raw = fs.readFileSync(filePath, "utf8");
 
   if (ext === ".json") {
-    return JSON.parse(raw) as ZephyrConfig;
+    return JSON.parse(raw) as ZephrConfig;
   }
 
   const compiled = ts.transpileModule(raw, {
@@ -50,14 +50,14 @@ function parseConfigFile(filePath: string): ZephyrConfig {
     fileName: filePath
   });
 
-  return executeModule(compiled.outputText, filePath) as ZephyrConfig;
+  return executeModule(compiled.outputText, filePath) as ZephrConfig;
 }
 
-export function defineConfig(config: ZephyrConfig): ZephyrConfig {
+export function defineConfig(config: ZephrConfig): ZephrConfig {
   return config;
 }
 
-export function loadZephyrConfig(cwd = process.cwd()): ResolvedZephyrConfig {
+export function loadZephrConfig(cwd = process.cwd()): ResolvedZephrConfig {
   for (const candidate of CANDIDATE_FILES) {
     const fullPath = path.join(cwd, candidate);
     if (fs.existsSync(fullPath)) {

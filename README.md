@@ -1,6 +1,6 @@
-# Zephyr
+# Zephr
 
-Zephyr is an AI-native design system platform that combines:
+Zephr is an AI-native design system platform that combines:
 
 - A framework-agnostic styling core with token-driven theming
 - A React-first UI component library
@@ -17,8 +17,8 @@ Zephyr is an AI-native design system platform that combines:
 - `packages/avatars` - deterministic avatar generation and cloud client helper
 - `packages/ai-registry` - schemas and AI-facing component metadata
 - `packages/mcp-server` - MCP-compatible tool surface for AI assistants
-- `packages/cli` - `zephyr` CLI (`init`, `add`, `theme`, `doctor`)
-- `packages/cloud-sdk` - typed REST client for Zephyr cloud APIs
+- `packages/cli` - `zephr` CLI (`init`, `add`, `theme`, `doctor`)
+- `packages/cloud-sdk` - typed REST client for Zephr cloud APIs
 - `apps/cloud-api` - Node API implementing `/v1` endpoints
 - `apps/docs-playground` - live docs playground with accent controls + interactive preview states
 - `docs` - human + AI docs (`llms.txt`, `llms-full.txt`, OpenAPI)
@@ -33,11 +33,11 @@ pnpm build
 Generate a starter config:
 
 ```bash
-pnpm --filter @zephyr/cli build
+pnpm --filter @zephrui/cli build
 node packages/cli/dist/index.js init
 ```
 
-Zephyr CLI workflows:
+Zephr CLI workflows:
 
 ```bash
 # Initialize with theme + accent
@@ -56,7 +56,7 @@ node packages/cli/dist/index.js doctor
 Run cloud API locally:
 
 ```bash
-pnpm --filter @zephyr/cloud-api build
+pnpm --filter @zephrui/cloud-api build
 node apps/cloud-api/dist/index.js
 ```
 
@@ -75,19 +75,19 @@ Optional checkout wiring for the Pro modal:
 
 - copy `apps/docs-playground/.env.example` to `apps/docs-playground/.env`
 - set one or more:
-  - `VITE_ZEPHYR_CHECKOUT_INDIVIDUAL=https://your-individual-checkout`
-  - `VITE_ZEPHYR_CHECKOUT_STARTUP=https://your-startup-checkout`
-  - `VITE_ZEPHYR_CHECKOUT_ENTERPRISE=https://your-enterprise-checkout`
+  - `VITE_ZEPHR_CHECKOUT_INDIVIDUAL=https://your-individual-checkout`
+  - `VITE_ZEPHR_CHECKOUT_STARTUP=https://your-startup-checkout`
+  - `VITE_ZEPHR_CHECKOUT_ENTERPRISE=https://your-enterprise-checkout`
 
 ## Deploy + Custom Domain (Vercel)
 
-This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20System%20Library/vercel.json) for monorepo deployment of `@zephyr/docs-playground`.
+This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20System%20Library/vercel.json) for monorepo deployment of `@zephrui/docs-playground`.
 
-1. In Vercel, import GitHub repo: `akhilllkrishnan/zephyr`.
+1. In Vercel, import GitHub repo: `akhilllkrishnan/zephr`.
 2. Framework preset: `Other`.
 3. Vercel will use:
    - install: `corepack enable && corepack pnpm install --frozen-lockfile`
-   - build: `corepack pnpm --filter @zephyr/docs-playground build && rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/`
+   - build: `corepack pnpm --filter @zephrui/docs-playground build && rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/`
    - output: `dist`
 4. After first deploy, open Project Settings -> Domains and add your domain.
 5. Add DNS records in your domain provider exactly as Vercel shows.

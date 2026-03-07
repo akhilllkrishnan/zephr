@@ -114,8 +114,8 @@ Overhaul from ~155 lines to ~350 lines. Changes:
 ## Verification
 
 After each phase:
-- `corepack pnpm --filter @zephyr/ui-react tsc --noEmit`
-- `corepack pnpm --filter @zephyr/docs-playground build`
+- `corepack pnpm --filter @zephrui/ui-react tsc --noEmit`
+- `corepack pnpm --filter @zephrui/docs-playground build`
 - Visual verification in preview server
 
 Final:

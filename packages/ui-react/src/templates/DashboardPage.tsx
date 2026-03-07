@@ -473,7 +473,7 @@ export function DashboardPage({
           <div className="dp-sidebar-logo">
             <Icon d={Icons.zap} size={14} strokeWidth={2.2} />
           </div>
-          <span className="dp-sidebar-wordmark">Zephyr</span>
+          <span className="dp-sidebar-wordmark">Zephr</span>
           <span className="dp-sidebar-plan">Pro</span>
         </div>
 

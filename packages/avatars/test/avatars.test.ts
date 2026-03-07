@@ -6,7 +6,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("@zephyr/avatars", () => {
+describe("@zephrui/avatars", () => {
   it("generates deterministic local avatars", () => {
     const one = generateAvatar({ name: "Akhil Krishnan", seed: "seed-1", style: "ring" });
     const two = generateAvatar({ name: "Akhil Krishnan", seed: "seed-1", style: "ring" });
@@ -30,10 +30,10 @@ describe("@zephyr/avatars", () => {
       })
     );
 
-    const client = new AvatarClient({ apiBaseUrl: "https://api.zephyr.test", apiKey: "key" });
-    const result = await client.createAvatar({ name: "Zephyr User", style: "beam" });
+    const client = new AvatarClient({ apiBaseUrl: "https://api.zephr.test", apiKey: "key" });
+    const result = await client.createAvatar({ name: "Zephr User", style: "beam" });
 
-    expect(result.svg).toContain("Zephyr User");
+    expect(result.svg).toContain("Zephr User");
     expect(result.dataUri.startsWith("data:image/svg+xml,")).toBe(true);
   });
 });

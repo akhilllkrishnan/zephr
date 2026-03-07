@@ -8,17 +8,17 @@ import {
   getComponentSpec,
   listComponents,
   searchComponents
-} from "@zephyr/ai-registry";
+} from "@zephrui/ai-registry";
 import {
   LEGACY_STYLE_PACK_MAP,
   generateCssVariables,
-  loadZephyrConfig,
+  loadZephrConfig,
   resolveConfig,
   resolveStylePackName,
   stylePackNames,
-  type ResolvedZephyrConfig,
+  type ResolvedZephrConfig,
   type StylePackName
-} from "@zephyr/core";
+} from "@zephrui/core";
 
 type AssistantTool = "Codex" | "Claude" | "Cursor";
 type DoctorStatus = "PASS" | "WARN" | "FAIL";
@@ -35,15 +35,15 @@ interface DoctorCheck {
 }
 
 const CONFIG_CANDIDATES = [
-  "zephyr.config.ts",
-  "zephyr.config.js",
-  "zephyr.config.cjs",
-  "zephyr.config.mjs",
-  "zephyr.config.json"
+  "zephr.config.ts",
+  "zephr.config.js",
+  "zephr.config.cjs",
+  "zephr.config.mjs",
+  "zephr.config.json"
 ];
 
-const MANAGED_START = "// zephyr-managed:start";
-const MANAGED_END = "// zephyr-managed:end";
+const MANAGED_START = "// zephr-managed:start";
+const MANAGED_END = "// zephr-managed:end";
 const DEFAULT_STYLE_PACK: StylePackName = "notion";
 
 function parseInput(args: string[]): ParsedInput {
@@ -182,7 +182,7 @@ ${managedThemeBlock(stylePack, accent)},
   plugins: [],
   cloud: {
     baseUrl: "http://localhost:8787",
-    apiKey: process.env.ZEPHYR_API_KEY
+    apiKey: process.env.ZEPHR_API_KEY
   }
 };
 `;
@@ -190,14 +190,33 @@ ${managedThemeBlock(stylePack, accent)},
 
 function buildClaudeContext(stylePack: StylePackName, accent: string): string {
   return [
-    "# Zephyr Workspace Context",
+    "# Zephr Workspace Context",
     "",
-    "- Always prefer Zephyr components from `@zephyr/ui-react` over raw HTML controls.",
+    "## Rules",
+    "- Always prefer Zephr components from `@zephrui/ui-react` over raw HTML controls.",
     `- Default style pack: \`${stylePack}\`.`,
     `- Accent color: \`${accent}\`.`,
-    "- Use `zephyr.config.ts` as the source of truth for theme and token overrides.",
+    "- Use `zephr.config.ts` as the source of truth for theme and token overrides.",
     "- Keep output accessible (labels, aria attributes, keyboard flow) and production-ready.",
-    "- Avoid inline hex colors when a Zephyr token exists."
+    "- Avoid inline hex colors when a Zephr token exists.",
+    "",
+    "## MCP Server",
+    "Zephr ships a local MCP server. If the `zephr` MCP server is connected you can:",
+    "- Search components: `zephr_search` tool",
+    "- Get component spec: `zephr_spec` tool with a component ID",
+    "- List themes: `zephr_themes` tool",
+    "",
+    "To connect, add this to your Claude Desktop config",
+    "(`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):",
+    "```json",
+    "{",
+    '  "mcpServers": {',
+    '    "zephr": { "command": "npx", "args": ["@zephrui/mcp@latest"] }',
+    "  }",
+    "}",
+    "```",
+    "",
+    "For Cursor, add the same block to `.cursor/mcp.json` in your project root."
   ].join("\n") + "\n";
 }
 
@@ -205,37 +224,37 @@ function buildAgentsContext(stylePack: StylePackName, accent: string): string {
   return [
     "# AGENTS",
     "",
-    "## Zephyr usage policy",
-    "- Import components from `@zephyr/ui-react` first.",
-    "- Do not generate raw `<button>`, `<input>`, or `<select>` if an equivalent Zephyr component exists.",
+    "## Zephr usage policy",
+    "- Import components from `@zephrui/ui-react` first.",
+    "- Do not generate raw `<button>`, `<input>`, or `<select>` if an equivalent Zephr component exists.",
     `- Current style pack: \`${stylePack}\`.`,
     `- Current accent: \`${accent}\`.`,
     "- Keep styles token-driven via `--z-*` CSS variables.",
     "",
     "## Preferred imports",
-    "- `import { Button, Input, Select } from \"@zephyr/ui-react\"`",
-    "- `import { resolveConfig, generateCssVariables } from \"@zephyr/core\"`"
+    "- `import { Button, Input, Select } from \"@zephrui/ui-react\"`",
+    "- `import { resolveConfig, generateCssVariables } from \"@zephrui/core\"`"
   ].join("\n") + "\n";
 }
 
 function buildLlmsContext(stylePack: StylePackName, accent: string): string {
   return [
-    "# Zephyr UI",
+    "# Zephr UI",
     "",
-    "Zephyr is a token-native UI framework for AI-assisted product development.",
+    "Zephr is a token-native UI framework for AI-assisted product development.",
     "",
     "## Defaults",
     `- stylePack: ${stylePack}`,
     `- accent: ${accent}`,
     "",
     "## Rules",
-    "- Use Zephyr components before raw HTML controls.",
+    "- Use Zephr components before raw HTML controls.",
     "- Keep color/radius/spacing values token-based via `--z-*`.",
     "- Prefer composable molecules and organisms for larger blocks.",
     "",
     "## Install",
-    "- `pnpm add @zephyr/core @zephyr/ui-react`",
-    "- `zephyr init`"
+    "- `pnpm add @zephrui/core @zephrui/ui-react`",
+    "- `zephr init`"
   ].join("\n") + "\n";
 }
 
@@ -269,14 +288,14 @@ function writeAiContextFiles(
   }
 }
 
-function buildCss(config: ResolvedZephyrConfig): string {
+function buildCss(config: ResolvedZephrConfig): string {
   return generateCssVariables(config.tokens, config.prefix);
 }
 
-function writeCssFile(cwd: string, config: ResolvedZephyrConfig): string {
+function writeCssFile(cwd: string, config: ResolvedZephrConfig): string {
   const stylesDir = path.join(cwd, "src", "styles");
   ensureDir(stylesDir);
-  const cssPath = path.join(stylesDir, "zephyr.css");
+  const cssPath = path.join(stylesDir, "zephr.css");
   writeFile(cssPath, buildCss(config));
   return cssPath;
 }
@@ -294,9 +313,9 @@ function detectPackageManager(cwd: string): "pnpm" | "npm" | "yarn" | "bun" {
   return "npm";
 }
 
-function currentConfigOrFallback(cwd: string, stylePack: StylePackName, accent: string): ResolvedZephyrConfig {
+function currentConfigOrFallback(cwd: string, stylePack: StylePackName, accent: string): ResolvedZephrConfig {
   try {
-    return loadZephyrConfig(cwd);
+    return loadZephrConfig(cwd);
   } catch {
     return resolveConfig({
       stylePack,
@@ -437,9 +456,9 @@ async function commandInit(input: ParsedInput): Promise<void> {
     return;
   }
 
-  const configPath = path.join(cwd, "zephyr.config.ts");
+  const configPath = path.join(cwd, "zephr.config.ts");
   if (fs.existsSync(configPath) && !force) {
-    console.log("zephyr.config.ts already exists. Reusing current config (use --force to overwrite).");
+    console.log("zephr.config.ts already exists. Reusing current config (use --force to overwrite).");
   } else {
     writeFile(configPath, buildDefaultConfig(pack, accent));
     console.log(`Created ${path.relative(cwd, configPath)}`);
@@ -451,8 +470,8 @@ async function commandInit(input: ParsedInput): Promise<void> {
       envPath,
       [
         "# Optional for local package usage.",
-        "# Required for Zephyr cloud APIs.",
-        "ZEPHYR_API_KEY=replace_me"
+        "# Required for Zephr cloud APIs.",
+        "ZEPHR_API_KEY=replace_me"
       ].join("\n") + "\n"
     );
     console.log(`Created ${path.relative(cwd, envPath)}`);
@@ -467,7 +486,7 @@ async function commandInit(input: ParsedInput): Promise<void> {
 async function commandAdd(input: ParsedInput): Promise<void> {
   const componentId = input.positionals[0];
   if (!componentId) {
-    console.error("Usage: zephyr add <component> [--tool Codex|Claude|Cursor] [--out <dir>] [--force]");
+    console.error("Usage: zephr add <component> [--tool Codex|Claude|Cursor] [--out <dir>] [--force]");
     process.exitCode = 1;
     return;
   }
@@ -485,12 +504,12 @@ async function commandAdd(input: ParsedInput): Promise<void> {
 
   const toolValue = readFlag(input, "tool") ?? "Codex";
   const tool = toolValue === "Claude" || toolValue === "Cursor" ? toolValue : "Codex";
-  const outDir = readFlag(input, "out") ?? "zephyr-snippets";
+  const outDir = readFlag(input, "out") ?? "zephr-snippets";
   const force = hasFlag(input, "force");
   const snippetsDir = path.join(process.cwd(), outDir);
   ensureDir(snippetsDir);
 
-  const resolved = loadZephyrConfig(process.cwd());
+  const resolved = loadZephrConfig(process.cwd());
   const manager = detectPackageManager(process.cwd());
   const scaffold = generateComponentScaffold(component, {
     packageManager: manager,
@@ -525,7 +544,7 @@ async function commandTheme(input: ParsedInput): Promise<void> {
   const cwd = process.cwd();
   const configPath = findConfigPath(cwd);
   if (!configPath) {
-    console.error("No Zephyr config found. Run 'zephyr init' first.");
+    console.error("No Zephr config found. Run 'zephr init' first.");
     process.exitCode = 1;
     return;
   }
@@ -544,11 +563,11 @@ async function commandTheme(input: ParsedInput): Promise<void> {
     return;
   }
 
-  const current = loadZephyrConfig(cwd);
+  const current = loadZephrConfig(cwd);
 
   if (!nextPackRaw) {
     if (!process.stdin.isTTY || hasFlag(input, "yes")) {
-      console.error(`Usage: zephyr theme <stylePack> [--accent <hex>] or run interactively in a terminal.`);
+      console.error(`Usage: zephr theme <stylePack> [--accent <hex>] or run interactively in a terminal.`);
       process.exitCode = 1;
       return;
     }
@@ -583,9 +602,9 @@ async function commandTheme(input: ParsedInput): Promise<void> {
     );
   }
 
-  let resolved: ResolvedZephyrConfig;
+  let resolved: ResolvedZephrConfig;
   try {
-    resolved = loadZephyrConfig(cwd);
+    resolved = loadZephrConfig(cwd);
   } catch {
     resolved = resolveConfig({
       stylePack: nextPack,
@@ -629,22 +648,22 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
   const configPath = findConfigPath(cwd);
   if (!configPath) {
     checks.push({
-      label: "Zephyr config",
+      label: "Zephr config",
       status: "FAIL",
-      detail: "Missing zephyr.config.* (run 'zephyr init')"
+      detail: "Missing zephr.config.* (run 'zephr init')"
     });
   } else {
     checks.push({
-      label: "Zephyr config",
+      label: "Zephr config",
       status: "PASS",
       detail: path.relative(cwd, configPath)
     });
   }
 
-  let resolvedConfig: ResolvedZephyrConfig | null = null;
+  let resolvedConfig: ResolvedZephrConfig | null = null;
   if (configPath) {
     try {
-      resolvedConfig = loadZephyrConfig(cwd);
+      resolvedConfig = loadZephrConfig(cwd);
       checks.push({
         label: "Config parse",
         status: "PASS",
@@ -654,12 +673,12 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
       checks.push({
         label: "Config parse",
         status: "FAIL",
-        detail: error instanceof Error ? error.message : "Failed to parse Zephyr config."
+        detail: error instanceof Error ? error.message : "Failed to parse Zephr config."
       });
     }
   }
 
-  const cssPath = path.join(cwd, "src", "styles", "zephyr.css");
+  const cssPath = path.join(cwd, "src", "styles", "zephr.css");
   if (fs.existsSync(cssPath)) {
     checks.push({
       label: "Compiled CSS",
@@ -670,7 +689,7 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
     checks.push({
       label: "Compiled CSS",
       status: "FAIL",
-      detail: "Missing src/styles/zephyr.css (run 'zephyr init' or 'zephyr theme')."
+      detail: "Missing src/styles/zephr.css (run 'zephr init' or 'zephr theme')."
     });
   }
 
@@ -687,24 +706,24 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
       status: "PASS",
       detail: "Found package.json"
     });
-    const hasCore = hasDependency(packageJson, "@zephyr/core");
-    const hasUi = hasDependency(packageJson, "@zephyr/ui-react");
+    const hasCore = hasDependency(packageJson, "@zephrui/core");
+    const hasUi = hasDependency(packageJson, "@zephrui/ui-react");
     if (hasCore && hasUi) {
       checks.push({
-        label: "Zephyr deps",
+        label: "Zephr deps",
         status: "PASS",
-        detail: "@zephyr/core and @zephyr/ui-react are declared"
+        detail: "@zephrui/core and @zephrui/ui-react are declared"
       });
     } else {
       checks.push({
-        label: "Zephyr deps",
+        label: "Zephr deps",
         status: "WARN",
-        detail: "Declare @zephyr/core and @zephyr/ui-react in package.json"
+        detail: "Declare @zephrui/core and @zephrui/ui-react in package.json"
       });
     }
   }
 
-  const apiKey = process.env.ZEPHYR_API_KEY ?? resolvedConfig?.cloud.apiKey;
+  const apiKey = process.env.ZEPHR_API_KEY ?? resolvedConfig?.cloud.apiKey;
   if (apiKey) {
     checks.push({
       label: "Cloud API key",
@@ -715,7 +734,7 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
     checks.push({
       label: "Cloud API key",
       status: "WARN",
-      detail: "Missing ZEPHYR_API_KEY. Local usage is fine; cloud endpoints require it."
+      detail: "Missing ZEPHR_API_KEY. Local usage is fine; cloud endpoints require it."
     });
   }
 
@@ -730,7 +749,7 @@ async function commandDoctor(input: ParsedInput): Promise<void> {
     return;
   }
 
-  console.log("Zephyr doctor complete.");
+  console.log("Zephr doctor complete.");
 }
 
 function commandList(input: ParsedInput): void {
@@ -752,20 +771,20 @@ function commandList(input: ParsedInput): void {
 
 const CREDENTIALS_PATH = path.join(
   process.env.HOME ?? process.env.USERPROFILE ?? "~",
-  ".zephyr",
+  ".zephr",
   "credentials"
 );
 
-interface ZephyrCredentials {
+interface ZephrCredentials {
   licenseKey: string;
   tier: "pro";
   activatedAt: string;
 }
 
-function readCredentials(): ZephyrCredentials | null {
+function readCredentials(): ZephrCredentials | null {
   try {
     const raw = fs.readFileSync(CREDENTIALS_PATH, "utf8");
-    return JSON.parse(raw) as ZephyrCredentials;
+    return JSON.parse(raw) as ZephrCredentials;
   } catch {
     return null;
   }
@@ -776,7 +795,7 @@ function commandUpgrade(input: ParsedInput): void {
 
   if (!key) {
     console.error("Error: --key <license-key> is required.");
-    console.error("  Usage: zephyr upgrade --key <your-license-key>");
+    console.error("  Usage: zephr upgrade --key <your-license-key>");
     process.exitCode = 1;
     return;
   }
@@ -786,7 +805,7 @@ function commandUpgrade(input: ParsedInput): void {
     fs.mkdirSync(credentialsDir, { recursive: true });
   }
 
-  const credentials: ZephyrCredentials = {
+  const credentials: ZephrCredentials = {
     licenseKey: key,
     tier: "pro",
     activatedAt: new Date().toISOString()
@@ -794,7 +813,7 @@ function commandUpgrade(input: ParsedInput): void {
 
   fs.writeFileSync(CREDENTIALS_PATH, JSON.stringify(credentials, null, 2), "utf8");
 
-  console.log("✓ Zephyr Pro activated.");
+  console.log("✓ Zephr Pro activated.");
   console.log(`  License key saved to ${CREDENTIALS_PATH}`);
   console.log("  You now have access to all Pro components and premium style packs.");
 }
@@ -804,7 +823,7 @@ function commandWhoami(): void {
 
   if (!credentials) {
     console.log("Tier: free (no license key found)");
-    console.log("  Run `zephyr upgrade --key <key>` to activate Pro.");
+    console.log("  Run `zephr upgrade --key <key>` to activate Pro.");
     return;
   }
 
@@ -814,24 +833,24 @@ function commandWhoami(): void {
 }
 
 function printHelp(): void {
-  console.log(`Zephyr CLI
+  console.log(`Zephr CLI
 
 Usage:
-  zephyr init [--style-pack <name>] [--accent <hex>] [--force]
-  zephyr add <component> [--tool Codex|Claude|Cursor] [--out <dir>] [--force]
-  zephyr theme [<stylePack>] [--accent <hex>] [--list]
-  zephyr doctor [--strict]
-  zephyr list [--search <query>] [--category foundation|atom|molecule|organism]
-  zephyr upgrade --key <license-key>
-  zephyr whoami
+  zephr init [--style-pack <name>] [--accent <hex>] [--force]
+  zephr add <component> [--tool Codex|Claude|Cursor] [--out <dir>] [--force]
+  zephr theme [<stylePack>] [--accent <hex>] [--list]
+  zephr doctor [--strict]
+  zephr list [--search <query>] [--category foundation|atom|molecule|organism]
+  zephr upgrade --key <license-key>
+  zephr whoami
 
 Examples:
-  zephyr init --style-pack notion --accent #335cff
-  zephyr add button --tool Codex
-  zephyr theme stripe --accent #1d4ed8
-  zephyr doctor
-  zephyr upgrade --key ZEPHYR-PRO-XXXX-XXXX
-  zephyr whoami
+  zephr init --style-pack notion --accent #335cff
+  zephr add button --tool Codex
+  zephr theme stripe --accent #1d4ed8
+  zephr doctor
+  zephr upgrade --key ZEPHR-PRO-XXXX-XXXX
+  zephr whoami
 `);
 }
 

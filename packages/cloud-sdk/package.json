@@ -1,7 +1,7 @@
 {
-  "name": "@zephyr/cloud-sdk",
+  "name": "@zephrui/cloud-sdk",
   "version": "0.1.0",
-  "description": "Typed Zephyr cloud API client",
+  "description": "Typed Zephr cloud API client",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

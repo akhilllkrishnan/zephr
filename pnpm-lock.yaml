@@ -59,13 +59,13 @@ importers:
 
   apps/audit:
     dependencies:
-      '@zephyr/cloud-sdk':
+      '@zephrui/cloud-sdk':
         specifier: workspace:*
         version: link:../../packages/cloud-sdk
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@zephyr/ui-react':
+      '@zephrui/ui-react':
         specifier: workspace:*
         version: link:../../packages/ui-react
       react:
@@ -84,19 +84,19 @@ importers:
 
   apps/cloud-api:
     dependencies:
-      '@zephyr/ai-registry':
+      '@zephrui/ai-registry':
         specifier: workspace:*
         version: link:../../packages/ai-registry
-      '@zephyr/avatars':
+      '@zephrui/avatars':
         specifier: workspace:*
         version: link:../../packages/avatars
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@zephyr/icons-material':
+      '@zephrui/icons-material':
         specifier: workspace:*
         version: link:../../packages/icons-material
-      '@zephyr/logos':
+      '@zephrui/logos':
         specifier: workspace:*
         version: link:../../packages/logos
 
@@ -105,25 +105,25 @@ importers:
       '@vercel/speed-insights':
         specifier: ^1.3.1
         version: 1.3.1(react@19.2.4)
-      '@zephyr/ai-registry':
+      '@zephrui/ai-registry':
         specifier: workspace:*
         version: link:../../packages/ai-registry
-      '@zephyr/avatars':
+      '@zephrui/avatars':
         specifier: workspace:*
         version: link:../../packages/avatars
-      '@zephyr/cloud-sdk':
+      '@zephrui/cloud-sdk':
         specifier: workspace:*
         version: link:../../packages/cloud-sdk
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@zephyr/icons-material':
+      '@zephrui/icons-material':
         specifier: workspace:*
         version: link:../../packages/icons-material
-      '@zephyr/logos':
+      '@zephrui/logos':
         specifier: workspace:*
         version: link:../../packages/logos
-      '@zephyr/ui-react':
+      '@zephrui/ui-react':
         specifier: workspace:*
         version: link:../../packages/ui-react
       react:
@@ -146,10 +146,10 @@ importers:
 
   packages/blocks:
     dependencies:
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../core
-      '@zephyr/ui-react':
+      '@zephrui/ui-react':
         specifier: workspace:*
         version: link:../ui-react
       react:
@@ -168,10 +168,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@zephyr/ai-registry':
+      '@zephrui/ai-registry':
         specifier: workspace:*
         version: link:../ai-registry
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../core
 
@@ -188,7 +188,7 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.10.0(react-hook-form@7.71.2(react@19.2.4))
-      '@zephyr/ui-react':
+      '@zephrui/ui-react':
         specifier: workspace:*
         version: link:../ui-react
       react:
@@ -221,22 +221,22 @@ importers:
 
   packages/mcp-server:
     dependencies:
-      '@zephyr/ai-registry':
+      '@zephrui/ai-registry':
         specifier: workspace:*
         version: link:../ai-registry
 
   packages/ui-react:
     dependencies:
-      '@zephyr/avatars':
+      '@zephrui/avatars':
         specifier: workspace:*
         version: link:../avatars
-      '@zephyr/core':
+      '@zephrui/core':
         specifier: workspace:*
         version: link:../core
-      '@zephyr/icons-material':
+      '@zephrui/icons-material':
         specifier: workspace:*
         version: link:../icons-material
-      '@zephyr/logos':
+      '@zephrui/logos':
         specifier: workspace:*
         version: link:../logos
       react:

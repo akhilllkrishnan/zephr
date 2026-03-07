@@ -46,29 +46,29 @@ import {
   IconLibrary,
   AvatarLibrary,
   LogoLibrary
-} from "@zephyr/ui-react";
+} from "@zephrui/ui-react";
 import {
   generateCssVariables,
   resolveStylePackName,
   stylePacks,
   type DesignTokens,
   type StylePackName
-} from "@zephyr/core/browser";
+} from "@zephrui/core/browser";
 import {
   generateComponentPrompt,
   getComponentPropsTable,
   getComponentTemplate,
   getDefaultIntent,
   type RegistryEntry
-} from "@zephyr/ai-registry";
-import registryData from "@zephyr/ai-registry/registry/components.json";
-import { ZephyrCloudClient, type CloudBillingPlan } from "@zephyr/cloud-sdk";
-import type { AvatarStyleDefinition } from "@zephyr/avatars";
-import type { MaterialIconDefinition, MaterialIconStyle } from "@zephyr/icons-material";
-import type { LogoCatalogEntry } from "@zephyr/logos";
-import zephyrLogoDark from "../../../logo/zephyr-dark.png";
-import zephyrLogoLight from "../../../logo/zephyr-light.png";
-import "@zephyr/ui-react/themes/notion.css";
+} from "@zephrui/ai-registry";
+import registryData from "@zephrui/ai-registry/registry/components.json";
+import { ZephrCloudClient, type CloudBillingPlan } from "@zephrui/cloud-sdk";
+import type { AvatarStyleDefinition } from "@zephrui/avatars";
+import type { MaterialIconDefinition, MaterialIconStyle } from "@zephrui/icons-material";
+import type { LogoCatalogEntry } from "@zephrui/logos";
+import zephrLogoDark from "../../../logo/zephr-dark.png";
+import zephrLogoLight from "../../../logo/zephr-light.png";
+import "@zephrui/ui-react/themes/notion.css";
 
 const registry = registryData as unknown as RegistryEntry[];
 const DEFAULT_STYLE_PACK: StylePackName = "notion";
@@ -526,7 +526,7 @@ function aiContextFile(tool: AiToolKey): string {
     return "CLAUDE.md";
   }
   if (tool === "cursor") {
-    return ".cursor/rules/zephyr.mdc";
+    return ".cursor/rules/zephr.mdc";
   }
   return "AGENTS.md";
 }
@@ -836,9 +836,9 @@ function fromSearchParams(): {
   const params = new URLSearchParams(window.location.search);
   const componentId = params.get("component") ?? "button";
   const stylePack = resolveStylePackName(
-    params.get("theme") ?? sessionStorage.getItem("zephyr-style-pack") ?? DEFAULT_STYLE_PACK
+    params.get("theme") ?? sessionStorage.getItem("zephr-style-pack") ?? DEFAULT_STYLE_PACK
   );
-  const storedAccent = normalizeHexColor(sessionStorage.getItem("zephyr-accent-color"));
+  const storedAccent = normalizeHexColor(sessionStorage.getItem("zephr-accent-color"));
   const accentColor = migrateLegacyAccent(
     stylePack,
     normalizeHexColor(params.get("accent")) ?? storedAccent
@@ -988,7 +988,7 @@ function PreviewSurface({
   badgeSize,
   badgeNumber,
   badgeDisabled,
-  zephyrLogoSrc,
+  zephrLogoSrc,
   iconQuery,
   iconStyleVariant,
   iconResults,
@@ -1072,7 +1072,7 @@ function PreviewSurface({
   badgeSize: "sm" | "md";
   badgeNumber: boolean;
   badgeDisabled: boolean;
-  zephyrLogoSrc: string;
+  zephrLogoSrc: string;
   iconQuery: string;
   iconStyleVariant: MaterialIconStyle;
   iconResults?: MaterialIconDefinition[];
@@ -1471,7 +1471,7 @@ function PreviewSurface({
       <div className="preview-stack">
         <p>Logo block</p>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-          <img src={zephyrLogoSrc} alt="Zephyr logo" style={{ height: 28, width: "auto" }} />
+          <img src={zephrLogoSrc} alt="Zephr logo" style={{ height: 28, width: "auto" }} />
           <Logo name="OpenAI" size={40} />
           <Logo name="GitHub" size={40} />
           <Logo name="Stripe" size={40} />
@@ -2117,7 +2117,7 @@ function PreviewSurface({
       <div className="preview-stack">
         <p>Navigation block</p>
         <Navbar
-          brand={<strong>Zephyr</strong>}
+          brand={<strong>Zephr</strong>}
           links={[
             { id: "overview", label: "Overview", href: "#" },
             { id: "components", label: "Components", href: "#" },
@@ -2149,7 +2149,7 @@ function PreviewSurface({
         <LayoutShell
           topNav={(
             <Navbar
-              brand={<strong>Zephyr</strong>}
+              brand={<strong>Zephr</strong>}
               links={[
                 { id: "docs", label: "Docs", href: "#" },
                 { id: "components", label: "Components", href: "#" }
@@ -2330,7 +2330,7 @@ function PreviewSurface({
         <ModalDialog
           open={modalOpen}
           title="Confirm action"
-          description="This is Zephyr modal preview in the current theme."
+          description="This is Zephr modal preview in the current theme."
           onCancel={() => setModalOpen(false)}
           onConfirm={() => setModalOpen(false)}
         >
@@ -2511,7 +2511,7 @@ function TemplateBrowserFrame({
 function BrowserPreviewFrame({
 
   children,
-  address = "preview.zephyr.local",
+  address = "preview.zephr.local",
   minHeight,
   toolbar,
   flush = false
@@ -2682,7 +2682,7 @@ function InstallTabBlock({
             <Badge size="md" variant="stroke" color="yellow" style={{ marginRight: "0.5rem" }}>
               Private Beta
             </Badge>
-            @zephyr/ui-react is not yet published to npm — install command coming soon.
+            @zephrui/ui-react is not yet published to npm — install command coming soon.
           </div>
         )}
       </div>
@@ -2741,11 +2741,11 @@ function LicenseKeyModal({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Zephyr Pro license key"
+      aria-label="Zephr Pro license key"
     >
       <div className="upgrade-modal" onClick={(e) => e.stopPropagation()}>
         <div className="upgrade-modal-header">
-          <span>Zephyr Pro</span>
+          <span>Zephr Pro</span>
           <button type="button" className="upgrade-modal-close" onClick={onClose} aria-label="Close"><span className="ms">close</span></button>
         </div>
         <div className="upgrade-modal-body">
@@ -2784,7 +2784,7 @@ function LicenseKeyModal({
                 type="text"
                 value={draft}
                 onChange={(e) => { setDraft(e.target.value); setError(""); }}
-                placeholder="zephyr-xxxxxxxxxxxxxxxx"
+                placeholder="zephr-xxxxxxxxxxxxxxxx"
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 spellCheck={false}
@@ -3673,7 +3673,7 @@ export default function App() {
     if (typeof window === "undefined") return "shadow";
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get("surface");
-    const fromSession = sessionStorage.getItem("zephyr-surface-style");
+    const fromSession = sessionStorage.getItem("zephr-surface-style");
     const raw = fromQuery ?? fromSession;
     return raw === "flat" ? "flat" : "shadow";
   });
@@ -3700,15 +3700,15 @@ export default function App() {
   const [aiPackageManager, setAiPackageManager] = useState<AiPackageManager>("npm");
 
   const [cloudApiKey, setCloudApiKey] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephyr-cloud-api-key") ?? "" : ""
+    typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
   );
   const [cloudApiKeyDraft, setCloudApiKeyDraft] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephyr-cloud-api-key") ?? "" : ""
+    typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
   );
   const [iconQuery, setIconQuery] = useState("settings");
   const [iconStyleVariant, setIconStyleVariant] = useState<MaterialIconStyle>("filled");
   const [avatarQuery, setAvatarQuery] = useState("");
-  const [avatarSeed, setAvatarSeed] = useState("zephyr");
+  const [avatarSeed, setAvatarSeed] = useState("zephr");
   const [logoQuery, setLogoQuery] = useState("developer");
   const [iconCloudResults, setIconCloudResults] = useState<MaterialIconDefinition[] | undefined>(undefined);
   const [avatarCloudResults, setAvatarCloudResults] = useState<AvatarStyleDefinition[] | undefined>(undefined);
@@ -3801,10 +3801,10 @@ export default function App() {
   const toastTimeoutRef = useRef<number | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [licenseKey, setLicenseKey] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephyr-license-key") ?? "" : ""
+    typeof window !== "undefined" ? sessionStorage.getItem("zephr-license-key") ?? "" : ""
   );
   const [userTier, setUserTier] = useState<"free" | "pro">(() =>
-    typeof window !== "undefined" && sessionStorage.getItem("zephyr-license-key") ? "pro" : "free"
+    typeof window !== "undefined" && sessionStorage.getItem("zephr-license-key") ? "pro" : "free"
   );
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -3871,11 +3871,11 @@ export default function App() {
       `};`
     ].join("\n");
   }, [accentColor, stylePack]);
-  const cloudBaseUrl = (import.meta.env.VITE_ZEPHYR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
+  const cloudBaseUrl = (import.meta.env.VITE_ZEPHR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
   const checkoutEnvUrls: Record<CheckoutPlanId, string> = {
-    individual: (import.meta.env.VITE_ZEPHYR_CHECKOUT_INDIVIDUAL as string | undefined)?.trim() || "",
-    startup: (import.meta.env.VITE_ZEPHYR_CHECKOUT_STARTUP as string | undefined)?.trim() || "",
-    enterprise: (import.meta.env.VITE_ZEPHYR_CHECKOUT_ENTERPRISE as string | undefined)?.trim() || ""
+    individual: (import.meta.env.VITE_ZEPHR_CHECKOUT_INDIVIDUAL as string | undefined)?.trim() || "",
+    startup: (import.meta.env.VITE_ZEPHR_CHECKOUT_STARTUP as string | undefined)?.trim() || "",
+    enterprise: (import.meta.env.VITE_ZEPHR_CHECKOUT_ENTERPRISE as string | undefined)?.trim() || ""
   };
   const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlanOption[]>(() =>
     (Object.keys(CHECKOUT_PLAN_META) as CheckoutPlanId[]).map((id) => ({
@@ -3890,7 +3890,7 @@ export default function App() {
     if (!key) {
       return null;
     }
-    return new ZephyrCloudClient({
+    return new ZephrCloudClient({
       baseUrl: cloudBaseUrl,
       apiKey: key
     });
@@ -3898,7 +3898,7 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    const client = new ZephyrCloudClient({ baseUrl: cloudBaseUrl });
+    const client = new ZephrCloudClient({ baseUrl: cloudBaseUrl });
     client
       .getLicensePlans()
       .then((plans) => {
@@ -3937,11 +3937,11 @@ export default function App() {
     [aiPackageManager, aiProject]
   );
   const aiInstallCommand = useMemo(
-    () => managerInstallCommand(aiPackageManager, ["@zephyr/ui-react"]),
+    () => managerInstallCommand(aiPackageManager, ["@zephrui/ui-react"]),
     [aiPackageManager]
   );
   const aiCloudInstallCommand = useMemo(
-    () => managerInstallCommand(aiPackageManager, ["@zephyr/cloud-sdk"]),
+    () => managerInstallCommand(aiPackageManager, ["@zephrui/cloud-sdk"]),
     [aiPackageManager]
   );
   const aiContextPath = useMemo(() => aiContextFile(aiTool), [aiTool]);
@@ -3950,7 +3950,7 @@ export default function App() {
     return [
       `# ${assistantLabel} workspace instructions`,
       "",
-      "- Use Zephyr UI components from `@zephyr/ui-react`.",
+      "- Use Zephr UI components from `@zephrui/ui-react`.",
       `- Base theme: ${stylePack}.`,
       `- Surface style: ${SURFACE_STYLE_META[surfaceStyle].label}.`,
       `- Accent color: ${accentColor}.`,
@@ -3961,16 +3961,16 @@ export default function App() {
   const aiPromptSnippet = useMemo(() => {
     const assistantLabel = aiToolLabels[aiTool];
     return [
-      `Set up Zephyr UI in this ${aiProjectLabels[aiProject]} project.`,
+      `Set up Zephr UI in this ${aiProjectLabels[aiProject]} project.`,
       `Assistant target: ${assistantLabel}`,
       "",
-      "Note: @zephyr/ui-react is in private beta and not yet published to npm.",
+      "Note: @zephrui/ui-react is in private beta and not yet published to npm.",
       "Skip the install step for now — import paths will work once the package is published.",
       "",
       "Steps:",
       `1. Create app: ${aiProjectInitCommand}`,
-      `2. Install Zephyr (coming soon): ${aiInstallCommand}`,
-      "3. Import components from `@zephyr/ui-react`.",
+      `2. Install Zephr (coming soon): ${aiInstallCommand}`,
+      "3. Import components from `@zephrui/ui-react`.",
       `4. Set accent to "${accentColor}" (base theme is "${stylePack}").`,
       "5. Keep generated code accessible and production-ready."
     ].join("\n");
@@ -4011,21 +4011,21 @@ export default function App() {
     if (typeof window === "undefined") {
       return;
     }
-    sessionStorage.setItem("zephyr-accent-color", accentColor);
+    sessionStorage.setItem("zephr-accent-color", accentColor);
   }, [accentColor]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
-    sessionStorage.setItem("zephyr-style-pack", stylePack);
+    sessionStorage.setItem("zephr-style-pack", stylePack);
   }, [stylePack]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
-    sessionStorage.setItem("zephyr-surface-style", surfaceStyle);
+    sessionStorage.setItem("zephr-surface-style", surfaceStyle);
   }, [surfaceStyle]);
 
   // Close accent popover on outside click (portal-aware)
@@ -4112,9 +4112,9 @@ export default function App() {
       return;
     }
     if (cloudApiKey.trim()) {
-      sessionStorage.setItem("zephyr-cloud-api-key", cloudApiKey.trim());
+      sessionStorage.setItem("zephr-cloud-api-key", cloudApiKey.trim());
     } else {
-      sessionStorage.removeItem("zephyr-cloud-api-key");
+      sessionStorage.removeItem("zephr-cloud-api-key");
     }
   }, [cloudApiKey]);
 
@@ -4502,8 +4502,8 @@ export default function App() {
     [selectedEntry]
   );
 
-  const installCommand = componentTemplate?.installCommand ?? "pnpm add @zephyr/core @zephyr/ui-react";
-  const importSnippet = componentTemplate?.importSnippet ?? `import { ${selectedEntry.name} } from "@zephyr/ui-react";`;
+  const installCommand = componentTemplate?.installCommand ?? "pnpm add @zephrui/core @zephrui/ui-react";
+  const importSnippet = componentTemplate?.importSnippet ?? `import { ${selectedEntry.name} } from "@zephrui/ui-react";`;
   const usageSnippet = componentTemplate?.usageSnippet ?? `// No sample available for ${selectedEntry.name}`;
 
   const blockPrompt = useMemo(
@@ -4529,7 +4529,7 @@ export default function App() {
       : selectedEntry.id === "logo-library"
         ? logoCloudState
         : defaultCloudAssetState();
-  const brandLogoSrc = darkMode ? zephyrLogoLight : zephyrLogoDark;
+  const brandLogoSrc = darkMode ? zephrLogoLight : zephrLogoDark;
 
   const shareUrl = useMemo(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:4172";
@@ -4617,7 +4617,7 @@ export default function App() {
               }}
               aria-label="Go to introduction"
             >
-              <img src={brandLogoSrc} alt="Zephyr" className="brand-logo" />
+              <img src={brandLogoSrc} alt="Zephr" className="brand-logo" />
             </button>
           </div>
 
@@ -4970,12 +4970,12 @@ export default function App() {
                     ))}
                     <a
                       className="sidebar-link"
-                      href="https://www.npmjs.com/package/@zephyr/blocks"
+                      href="https://www.npmjs.com/package/@zephrui/blocks"
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ marginTop: 4 }}
                     >
-                      → @zephyr/blocks
+                      → @zephrui/blocks
                     </a>
                   </div>
                 )}
@@ -5152,7 +5152,7 @@ export default function App() {
                     <ul className="release-list">
                       <li>Dark mode with <code>[data-theme="dark"]</code> + <code>prefers-color-scheme</code> support.</li>
                       <li>Layout primitives: Stack, Grid, Box, Spacer — free tier.</li>
-                      <li>License key tier system: <code>zephyr upgrade --key</code> + <code>zephyr whoami</code>.</li>
+                      <li>License key tier system: <code>zephr upgrade --key</code> + <code>zephr whoami</code>.</li>
                       <li>Docs playground: dark mode toggle, tier simulator, PRO badges on components.</li>
                     </ul>
                   </div>
@@ -5264,7 +5264,7 @@ export default function App() {
               <section id="release-upcoming" className="doc-section">
                 <div className="section-heading">
                   <h2>Roadmap</h2>
-                  <p>Upcoming milestones for the Zephyr ecosystem.</p>
+                  <p>Upcoming milestones for the Zephr ecosystem.</p>
                 </div>
 
                 <div className="roadmap-track">
@@ -5277,7 +5277,7 @@ export default function App() {
                       </div>
                       <h4>npm publish &amp; MCP action tools</h4>
                       <ul className="release-list">
-                        <li>Publish <code>@zephyr/ui-react</code> to npm as a public package.</li>
+                        <li>Publish <code>@zephrui/ui-react</code> to npm as a public package.</li>
                         <li>MCP action tools: <code>scaffold_page</code>, <code>apply_theme</code>, <code>generate_component</code>.</li>
                         <li>Loading / empty / error states on all organisms.</li>
                         <li>Per-tool AI prompt variants (Claude Code, Cursor, Codex, Lovable).</li>
@@ -5329,7 +5329,7 @@ export default function App() {
                 </div>
                 <h1>Build beautiful UIs — the instant your AI does.</h1>
                 <p className="lead">
-                  Zephyr is a complete UI component system for vibe coders. Set your accent once, drop in
+                  Zephr is a complete UI component system for vibe coders. Set your accent once, drop in
                   components, and ship — with Claude Code, Cursor, Codex, or Lovable.
                 </p>
                 <div className="hero-actions">
@@ -5341,9 +5341,9 @@ export default function App() {
                 </div>
               </div>
 
-              <section id="why-zephyr" className="doc-section">
+              <section id="why-zephr" className="doc-section">
                 <div className="section-heading">
-                  <h2>Why Zephyr</h2>
+                  <h2>Why Zephr</h2>
                   <p>Everything your AI needs to build a production-quality UI, out of the box.</p>
                 </div>
                 <div className="intro-features">
@@ -5481,23 +5481,23 @@ export default function App() {
                 <div className="setup-tab-body">
                   {setupTab === "npm" && (
                     <div className="snippet-stack">
-                      <SnippetItem beta label="Install" code={`npm install @zephyr/ui-react`} onCopy={() => copyAndFlash("Install", "npm install @zephyr/ui-react")} />
-                      <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
-                      <SnippetItem label="zephyr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
+                      <SnippetItem beta label="Install" code={`npm install @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")} />
+                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
+                      <SnippetItem label="zephr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
                     </div>
                   )}
                   {setupTab === "pnpm" && (
                     <div className="snippet-stack">
-                      <SnippetItem beta label="Install" code={`pnpm add @zephyr/ui-react`} onCopy={() => copyAndFlash("Install", "pnpm add @zephyr/ui-react")} />
-                      <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
-                      <SnippetItem label="zephyr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
+                      <SnippetItem beta label="Install" code={`pnpm add @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")} />
+                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
+                      <SnippetItem label="zephr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
                     </div>
                   )}
                   {setupTab === "cli" && (
                     <div className="snippet-stack">
-                      <SnippetItem label="Init" code={`npx zephyr init --accent ${accentColor}`} onCopy={() => copyAndFlash("CLI", `npx zephyr init --accent ${accentColor}`)} />
-                      <SnippetItem label="Add a component" code={`npx zephyr add button`} onCopy={() => copyAndFlash("Add", "npx zephyr add button")} />
-                      <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
+                      <SnippetItem label="Init" code={`npx zephr init --accent ${accentColor}`} onCopy={() => copyAndFlash("CLI", `npx zephr init --accent ${accentColor}`)} />
+                      <SnippetItem label="Add a component" code={`npx zephr add button`} onCopy={() => copyAndFlash("Add", "npx zephr add button")} />
+                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
                     </div>
                   )}
                   {setupTab === "ai" && (
@@ -5569,7 +5569,7 @@ export default function App() {
                         code={aiContextSnippet}
                         onCopy={() => copyAndFlash(`${aiContextPath} snippet`, aiContextSnippet)}
                       />
-                      <p className="beta-notice">Zephyr is in private beta — not yet published to npm.</p>
+                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
                       <SnippetItem
                         label={`${aiToolLabels[aiTool]} prompt`}
                         code={aiPromptSnippet}
@@ -5953,7 +5953,7 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Foundations</p>
                 <h1>Design Tokens</h1>
                 <p className="lead">
-                  Every Zephyr component is styled through CSS variables generated from design tokens.
+                  Every Zephr component is styled through CSS variables generated from design tokens.
                   These tokens define your color palette, spacing, typography, and more — with one consistent base theme and customizable accents.
                 </p>
               </section>
@@ -6306,14 +6306,14 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Setup / Mission</p>
                 <h1>Mission and vision</h1>
                 <p className="lead">
-                  Zephyr helps vibe coders ship clean, production-ready interfaces without a full design or frontend team.
+                  Zephr helps vibe coders ship clean, production-ready interfaces without a full design or frontend team.
                 </p>
               </section>
 
               <section id="mission-pillars" className="doc-section">
                 <div className="section-heading">
                   <h2>Mission pillars</h2>
-                  <p>Principles that keep Zephyr useful for both designers and developers.</p>
+                  <p>Principles that keep Zephr useful for both designers and developers.</p>
                 </div>
                 <div className="mission-pillars-grid">
                   <article className="mission-pillar">
@@ -6358,7 +6358,7 @@ injectSpeedInsights();`}
               <section id="design-philosophy" className="doc-section">
                 <div className="section-heading">
                   <h2>Design philosophy</h2>
-                  <p>What makes Zephyr different from other component systems.</p>
+                  <p>What makes Zephr different from other component systems.</p>
                 </div>
                 <div className="philosophy-comparison">
                   <div className="philosophy-col before">
@@ -6372,7 +6372,7 @@ injectSpeedInsights();`}
                     </ul>
                   </div>
                   <div className="philosophy-col after">
-                    <h4>Zephyr approach</h4>
+                    <h4>Zephr approach</h4>
                     <ul>
                       <li>Import from a single package</li>
                       <li>Zero config — works instantly</li>
@@ -6427,7 +6427,7 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Setup / Team</p>
                 <h1>Team and operating model</h1>
                 <p className="lead">
-                  Zephyr is built as a cross-functional platform: product design, design systems, frontend engineering,
+                  Zephr is built as a cross-functional platform: product design, design systems, frontend engineering,
                   and developer relations moving on one release cadence.
                 </p>
               </section>
@@ -6491,7 +6491,7 @@ injectSpeedInsights();`}
                 <p className="eyebrow">{selectedEntry.category} • {selectedEntry.id}</p>
                 <h1>{selectedEntry.name} API</h1>
                 <p className="lead">
-                  Generated from Zephyr registry metadata. This is the canonical contract AI tools should follow.
+                  Generated from Zephr registry metadata. This is the canonical contract AI tools should follow.
                 </p>
                 <div className="hero-actions">
                   <Button onClick={() => copyAndFlash("Import snippet", importSnippet)}>Copy import</Button>
@@ -6584,7 +6584,7 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Templates</p>
                 <h1>Page Templates</h1>
                 <p className="lead">
-                  Drop-in page templates built entirely from Zephyr components. Each template is a React component you can copy, customise, and ship.
+                  Drop-in page templates built entirely from Zephr components. Each template is a React component you can copy, customise, and ship.
                 </p>
               </section>
 
@@ -6624,7 +6624,7 @@ injectSpeedInsights();`}
                   <h2>DashboardPage</h2>
                   <p>Revenue charts, project table, activity feed, and sidebar nav — ready to wire up to real data.</p>
                 </div>
-                <TemplateBrowserFrame address="zephyr.local/templates/dashboard" minHeight="620px">
+                <TemplateBrowserFrame address="zephr.local/templates/dashboard" minHeight="620px">
                   <div style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "153.85%", height: "960px", overflow: "hidden", pointerEvents: "none" }}>
                     <DashboardPage />
                   </div>
@@ -6632,13 +6632,13 @@ injectSpeedInsights();`}
                 <div style={{ marginTop: "1rem" }}>
                   <SnippetItem
                     label="Usage"
-                    code={`import { DashboardPage } from '@zephyr/ui-react';
+                    code={`import { DashboardPage } from '@zephrui/ui-react';
 
 <DashboardPage
   title="Analytics"
   onNewItem={() => {}}
 />`}
-                    onCopy={() => copyAndFlash("DashboardPage", `import { DashboardPage } from '@zephyr/ui-react';
+                    onCopy={() => copyAndFlash("DashboardPage", `import { DashboardPage } from '@zephrui/ui-react';
 
 <DashboardPage title="Analytics" onNewItem={() => {}} />`)}
                   />
@@ -6650,7 +6650,7 @@ injectSpeedInsights();`}
                   <h2>AuthPage</h2>
                   <p>Centered sign-in / sign-up form with OAuth provider slots, error handling, and mode switching.</p>
                 </div>
-                <TemplateBrowserFrame address="zephyr.local/templates/auth" minHeight="560px">
+                <TemplateBrowserFrame address="zephr.local/templates/auth" minHeight="560px">
                   <div style={{ transform: "scale(0.74)", transformOrigin: "top left", width: "135.14%", height: "760px", overflow: "hidden", pointerEvents: "none" }}>
                     <AuthPage />
                   </div>
@@ -6658,7 +6658,7 @@ injectSpeedInsights();`}
                 <div style={{ marginTop: "1rem" }}>
                   <SnippetItem
                     label="Usage"
-                    code={`import { AuthPage } from '@zephyr/ui-react';
+                    code={`import { AuthPage } from '@zephrui/ui-react';
 
 <AuthPage
   mode="sign-in"
@@ -6667,7 +6667,7 @@ injectSpeedInsights();`}
   }}
   onModeSwitch={() => setMode('sign-up')}
 />`}
-                    onCopy={() => copyAndFlash("AuthPage", `import { AuthPage } from '@zephyr/ui-react';
+                    onCopy={() => copyAndFlash("AuthPage", `import { AuthPage } from '@zephrui/ui-react';
 
 <AuthPage mode="sign-in" onSubmit={signIn} />`)}
                   />
@@ -6679,7 +6679,7 @@ injectSpeedInsights();`}
                   <h2>SettingsPage</h2>
                   <p>Tabbed settings layout with Profile (pending/success states), Notifications, and Danger Zone built in.</p>
                 </div>
-                <TemplateBrowserFrame address="zephyr.local/templates/settings" minHeight="560px">
+                <TemplateBrowserFrame address="zephr.local/templates/settings" minHeight="560px">
                   <div style={{ transform: "scale(0.62)", transformOrigin: "top left", width: "161.3%", height: "900px", overflow: "hidden", pointerEvents: "none" }}>
                     <SettingsPage />
                   </div>
@@ -6687,13 +6687,13 @@ injectSpeedInsights();`}
                 <div style={{ marginTop: "1rem" }}>
                   <SnippetItem
                     label="Usage"
-                    code={`import { SettingsPage } from '@zephyr/ui-react';
+                    code={`import { SettingsPage } from '@zephrui/ui-react';
 
 <SettingsPage
   title="Account Settings"
   subtitle="Manage your preferences"
 />`}
-                    onCopy={() => copyAndFlash("SettingsPage", `import { SettingsPage } from '@zephyr/ui-react';
+                    onCopy={() => copyAndFlash("SettingsPage", `import { SettingsPage } from '@zephrui/ui-react';
 
 <SettingsPage title="Account Settings" />`)}
                   />
@@ -6705,7 +6705,7 @@ injectSpeedInsights();`}
                   <h2>OnboardingPage</h2>
                   <p>Step-by-step wizard with animated progress bar, back / next navigation, and customisable step content.</p>
                 </div>
-                <TemplateBrowserFrame address="zephyr.local/templates/onboarding" minHeight="560px">
+                <TemplateBrowserFrame address="zephr.local/templates/onboarding" minHeight="560px">
                   <div style={{ transform: "scale(0.74)", transformOrigin: "top left", width: "135.14%", height: "760px", overflow: "hidden", pointerEvents: "none" }}>
                     <OnboardingPage />
                   </div>
@@ -6713,13 +6713,13 @@ injectSpeedInsights();`}
                 <div style={{ marginTop: "1rem" }}>
                   <SnippetItem
                     label="Usage"
-                    code={`import { OnboardingPage } from '@zephyr/ui-react';
+                    code={`import { OnboardingPage } from '@zephrui/ui-react';
 
 <OnboardingPage
   steps={mySteps}
   onComplete={() => router.push('/dashboard')}
 />`}
-                    onCopy={() => copyAndFlash("OnboardingPage", `import { OnboardingPage } from '@zephyr/ui-react';
+                    onCopy={() => copyAndFlash("OnboardingPage", `import { OnboardingPage } from '@zephrui/ui-react';
 
 <OnboardingPage steps={mySteps} onComplete={onDone} />`)}
                   />
@@ -6731,7 +6731,7 @@ injectSpeedInsights();`}
                   <h2>MarketingPage</h2>
                   <p>Landing page with hero, feature grid, social proof, pricing cards, and bottom CTA.</p>
                 </div>
-                <TemplateBrowserFrame address="zephyr.local/templates/marketing" minHeight="680px">
+                <TemplateBrowserFrame address="zephr.local/templates/marketing" minHeight="680px">
                   <div style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "153.85%", height: "1046px", overflow: "hidden", pointerEvents: "none" }}>
                     <MarketingPage />
                   </div>
@@ -6739,14 +6739,14 @@ injectSpeedInsights();`}
                 <div style={{ marginTop: "1rem" }}>
                   <SnippetItem
                     label="Usage"
-                    code={`import { MarketingPage } from '@zephyr/ui-react';
+                    code={`import { MarketingPage } from '@zephrui/ui-react';
 
 <MarketingPage
-  heroTitle="Ship faster with Zephyr"
+  heroTitle="Ship faster with Zephr"
   heroSubtitle="The AI-native component system"
   onCtaClick={() => router.push('/signup')}
 />`}
-                    onCopy={() => copyAndFlash("MarketingPage", `import { MarketingPage } from '@zephyr/ui-react';
+                    onCopy={() => copyAndFlash("MarketingPage", `import { MarketingPage } from '@zephrui/ui-react';
 
 <MarketingPage heroTitle="Ship faster" onCtaClick={onSignup} />`)}
                   />
@@ -6835,7 +6835,7 @@ injectSpeedInsights();`}
                   <div className="section-heading">
                     <h2>Cloud asset sync</h2>
                     <p>
-                      Connect your API key to fetch {selectedEntry.name} results from Zephyr Cloud.
+                      Connect your API key to fetch {selectedEntry.name} results from Zephr Cloud.
                       If the key is missing, invalid, or rate-limited, the preview automatically falls back to local catalog data.
                     </p>
                   </div>
@@ -6936,7 +6936,7 @@ injectSpeedInsights();`}
                     ) : null}
 
                     <BrowserPreviewFrame
-                      address={`zephyr.local/components/${selectedEntry.id}`}
+                      address={`zephr.local/components/${selectedEntry.id}`}
                       toolbar={selectedEntry.id === "button" ? (
                         <div className="variant-filters">
                           <label className="variant-filter-dropdown">
@@ -7917,7 +7917,7 @@ injectSpeedInsights();`}
                         badgeSize={badgeSize}
                         badgeNumber={badgeNumber}
                         badgeDisabled={badgeDisabled}
-                        zephyrLogoSrc={brandLogoSrc}
+                        zephrLogoSrc={brandLogoSrc}
                         iconQuery={iconQuery}
                         iconStyleVariant={iconStyleVariant}
                         iconResults={iconCloudResults}
@@ -7964,7 +7964,7 @@ injectSpeedInsights();`}
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => copyAndFlash("API key placeholder", "ZEPHYR_API_KEY=replace_me")}
+                    onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
                   >
                     Copy key token
                   </Button>
@@ -7979,7 +7979,7 @@ injectSpeedInsights();`}
 
                 <div className="snippet-stack">
                   <InstallTabBlock
-                    packageName="@zephyr/ui-react"
+                    packageName="@zephrui/ui-react"
                     onCopy={(cmd) => copyAndFlash("Install command", cmd)}
                     beta
                   />
@@ -7994,7 +7994,7 @@ injectSpeedInsights();`}
                     onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
                   />
                   <SnippetItem
-                    label="zephyr.config.ts"
+                    label="zephr.config.ts"
                     code={configSnippet}
                     onCopy={() => copyAndFlash("Config snippet", configSnippet)}
                   />
@@ -8025,7 +8025,7 @@ injectSpeedInsights();`}
           {topTab !== "changelog" && view === "introduction" && (
             <>
               <a className="toc-link" href="#setup-introduction">Overview</a>
-              <a className="toc-link" href="#why-zephyr">Why Zephyr</a>
+              <a className="toc-link" href="#why-zephr">Why Zephr</a>
             </>
           )}
           {topTab !== "changelog" && view === "getting-started" && (
@@ -8110,17 +8110,17 @@ injectSpeedInsights();`}
             licenseKey={licenseKey}
             plans={checkoutPlans}
             onSubmit={async (key) => {
-              const validationClient = new ZephyrCloudClient({
+              const validationClient = new ZephrCloudClient({
                 baseUrl: cloudBaseUrl
               });
-              let result: Awaited<ReturnType<ZephyrCloudClient["validateLicense"]>>;
+              let result: Awaited<ReturnType<ZephrCloudClient["validateLicense"]>>;
               try {
                 result = await validationClient.validateLicense({ licenseKey: key });
               } catch (error) {
                 const message = error instanceof Error ? error.message : String(error);
                 throw new Error(
                   message.toLowerCase().includes("failed to fetch")
-                    ? `License service unavailable at ${cloudBaseUrl}. Start @zephyr/cloud-api and retry.`
+                    ? `License service unavailable at ${cloudBaseUrl}. Start @zephrui/cloud-api and retry.`
                     : message
                 );
               }
@@ -8130,7 +8130,7 @@ injectSpeedInsights();`}
 
               setLicenseKey(key);
               setUserTier("pro");
-              sessionStorage.setItem("zephyr-license-key", key);
+              sessionStorage.setItem("zephr-license-key", key);
               setShowUpgradeModal(false);
               showToast(result.message || "Pro access enabled");
             }}
@@ -8138,7 +8138,7 @@ injectSpeedInsights();`}
               const plan = checkoutPlans.find((entry) => entry.id === planId);
               if (!plan?.checkoutUrl) {
                 showToast(
-                  "Set VITE_ZEPHYR_CHECKOUT_INDIVIDUAL / STARTUP / ENTERPRISE or configure cloud plan checkout links."
+                  "Set VITE_ZEPHR_CHECKOUT_INDIVIDUAL / STARTUP / ENTERPRISE or configure cloud plan checkout links."
                 );
                 return;
               }
@@ -8149,7 +8149,7 @@ injectSpeedInsights();`}
             onRemove={() => {
               setLicenseKey("");
               setUserTier("free");
-              sessionStorage.removeItem("zephyr-license-key");
+              sessionStorage.removeItem("zephr-license-key");
               setShowUpgradeModal(false);
             }}
             onClose={() => setShowUpgradeModal(false)}

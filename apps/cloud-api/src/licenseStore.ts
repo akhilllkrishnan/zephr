@@ -122,7 +122,7 @@ function defaultData(): LicenseStoreData {
 }
 
 function resolveStorePath(): string {
-  const configured = process.env.ZEPHYR_LICENSE_STORE_PATH?.trim();
+  const configured = process.env.ZEPHR_LICENSE_STORE_PATH?.trim();
   if (configured) {
     return path.resolve(configured);
   }
@@ -464,7 +464,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
 
   async getLicense(licenseKey: string): Promise<StoredLicenseRecord | null> {
     const key = normalizeKey(licenseKey);
-    const rows = await this.selectRows("zephyr_licenses", {
+    const rows = await this.selectRows("zephr_licenses", {
       key: `eq.${encodeURIComponent(key)}`
     });
     if (!rows[0]) {
@@ -497,7 +497,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
       updated_at: timestamp
     };
 
-    const rows = await this.upsertRows("zephyr_licenses", [row], "key");
+    const rows = await this.upsertRows("zephr_licenses", [row], "key");
     if (!rows[0]) {
       throw new Error("Failed to upsert license row.");
     }
@@ -506,7 +506,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
 
   async listActiveActivations(licenseKey: string): Promise<StoredActivationRecord[]> {
     const key = normalizeKey(licenseKey);
-    const rows = await this.selectRows("zephyr_activations", {
+    const rows = await this.selectRows("zephr_activations", {
       license_key: `eq.${encodeURIComponent(key)}`,
       status: "eq.active"
     });
@@ -514,7 +514,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
   }
 
   async upsertActivation(input: { id: string; licenseKey: string; instanceName: string }): Promise<StoredActivationRecord> {
-    const existingRows = await this.selectRows("zephyr_activations", {
+    const existingRows = await this.selectRows("zephr_activations", {
       id: `eq.${encodeURIComponent(input.id.trim())}`
     });
     const existing = existingRows[0] ? mapActivationRow(existingRows[0]) : null;
@@ -528,7 +528,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
       updated_at: timestamp,
       deactivated_at: null
     };
-    const rows = await this.upsertRows("zephyr_activations", [row], "id");
+    const rows = await this.upsertRows("zephr_activations", [row], "id");
     if (!rows[0]) {
       throw new Error("Failed to upsert activation row.");
     }
@@ -537,7 +537,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
 
   async deactivateActivation(instanceId: string, licenseKey?: string): Promise<StoredActivationRecord | null> {
     const normalizedId = instanceId.trim();
-    const existingRows = await this.selectRows("zephyr_activations", {
+    const existingRows = await this.selectRows("zephr_activations", {
       id: `eq.${encodeURIComponent(normalizedId)}`
     });
     if (!existingRows[0]) {
@@ -549,7 +549,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
     }
     const timestamp = nowIso();
     const rows = await this.patchRows(
-      "zephyr_activations",
+      "zephr_activations",
       {
         status: "deactivated",
         updated_at: timestamp,
@@ -581,7 +581,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
       created_at: existing?.createdAt ?? timestamp,
       updated_at: timestamp
     };
-    const rows = await this.upsertRows("zephyr_orders", [row], "id");
+    const rows = await this.upsertRows("zephr_orders", [row], "id");
     if (!rows[0]) {
       throw new Error("Failed to upsert order row.");
     }
@@ -589,7 +589,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
   }
 
   async getOrder(orderId: number): Promise<StoredOrderRecord | null> {
-    const rows = await this.selectRows("zephyr_orders", {
+    const rows = await this.selectRows("zephr_orders", {
       id: `eq.${orderId}`
     });
     if (!rows[0]) {
@@ -600,7 +600,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
 
   async upsertCustomer(input: { email: string; name?: string; lastOrderId?: number }): Promise<StoredCustomerRecord> {
     const normalized = normalizeEmail(input.email);
-    const existingRows = await this.selectRows("zephyr_customers", {
+    const existingRows = await this.selectRows("zephr_customers", {
       email: `eq.${encodeURIComponent(normalized)}`
     });
     const existing = existingRows[0];
@@ -612,7 +612,7 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
       last_seen_at: timestamp,
       last_order_id: input.lastOrderId ?? toOptionalNumber(existing?.last_order_id) ?? null
     };
-    const rows = await this.upsertRows("zephyr_customers", [row], "email");
+    const rows = await this.upsertRows("zephr_customers", [row], "email");
     if (!rows[0]) {
       throw new Error("Failed to upsert customer row.");
     }
@@ -631,14 +631,14 @@ class SupabaseLicenseStore implements LicenseStoreAdapter {
       return true;
     }
 
-    const existing = await this.selectRows("zephyr_webhook_events", {
+    const existing = await this.selectRows("zephr_webhook_events", {
       id: `eq.${encodeURIComponent(key)}`
     });
     if (existing.length > 0) {
       return false;
     }
 
-    const rows = await this.insertRows("zephyr_webhook_events", [
+    const rows = await this.insertRows("zephr_webhook_events", [
       {
         id: key,
         event_name: eventName,

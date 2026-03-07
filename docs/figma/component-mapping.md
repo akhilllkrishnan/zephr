@@ -1,8 +1,8 @@
-# Zephyr Figma Mapping
+# Zephr Figma Mapping
 
 ## Token Sync
 
-- Source: `@zephyr/core` style packs and tokens
+- Source: `@zephrui/core` style packs and tokens
 - Export: `figma/variables.generated.json` via `pnpm figma:export`
 - Figma Variables groups:
   - `Color/*`

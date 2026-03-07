@@ -66,7 +66,7 @@ export class InMemoryRateLimiter {
 // SQLite-backed rate limiter (persistent across process restarts)
 // ---------------------------------------------------------------------------
 // Uses the built-in `node:sqlite` module (Node 22.5+, no native build needed).
-// Activated when ZEPHYR_RATE_LIMIT_DB env var is set (e.g. ./data/ratelimit.db).
+// Activated when ZEPHR_RATE_LIMIT_DB env var is set (e.g. ./data/ratelimit.db).
 // Falls back gracefully to InMemoryRateLimiter if the module is unavailable.
 
 type SqliteDatabase = {
@@ -180,7 +180,7 @@ export function createRateLimiter(
   maxRequests: number,
   windowMs: number
 ): InMemoryRateLimiter | SqliteRateLimiter {
-  const dbPath = process.env.ZEPHYR_RATE_LIMIT_DB;
+  const dbPath = process.env.ZEPHR_RATE_LIMIT_DB;
   if (dbPath) {
     return new SqliteRateLimiter(dbPath, maxRequests, windowMs);
   }

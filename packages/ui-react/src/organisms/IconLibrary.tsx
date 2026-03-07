@@ -1,6 +1,6 @@
 "use client";
 import { CSSProperties, useMemo, useState } from "react";
-import * as MaterialIcons from "@zephyr/icons-material";
+import * as MaterialIcons from "@zephrui/icons-material";
 import { Input } from "../atoms/Input";
 
 type MaterialIconStyle = MaterialIcons.MaterialIconStyle;

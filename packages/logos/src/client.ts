@@ -24,7 +24,7 @@ export class LogoClient {
     this.providers = options.providers ?? [new CatalogLogoProvider()];
     this.cacheTtlMs = options.cacheTtlMs ?? 1000 * 60 * 60 * 24;
     this.fallbackAttribution =
-      options.fallbackAttribution ?? "Zephyr generated fallback logo";
+      options.fallbackAttribution ?? "Zephr generated fallback logo";
 
     for (const item of options.denylist ?? []) {
       this.denylist.add(this.normalizeDomain(item));
@@ -75,7 +75,7 @@ export class LogoClient {
     const fallback: LogoResult = {
       domain: normalized,
       url: createFallbackLogoDataUri(normalized),
-      source: "zephyr-fallback",
+      source: "zephr-fallback",
       attribution: this.fallbackAttribution,
       cacheExpiresAt: new Date(expiresAtMs).toISOString(),
       fromCache: false,

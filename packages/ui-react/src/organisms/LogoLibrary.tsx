@@ -2,7 +2,7 @@
 import { CSSProperties, useMemo, useState } from "react";
 import { Input } from "../atoms/Input";
 import { Logo } from "../atoms/Logo";
-import * as LogoAssets from "@zephyr/logos";
+import * as LogoAssets from "@zephrui/logos";
 
 const { createCatalogLogoDataUri, listLogoCatalog, searchLogoCatalog } = LogoAssets;
 

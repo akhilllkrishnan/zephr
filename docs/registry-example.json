@@ -11,7 +11,7 @@
     "Use form semantics so Enter triggers search.",
     "Ensure the input has a visible label or aria-label."
   ],
-  "dependencies": ["@zephyr/ui-react"],
+  "dependencies": ["@zephrui/ui-react"],
   "stylePackSupport": ["notion", "stripe", "linear", "framer"],
   "aiHints": {
     "positive": [
@@ -19,10 +19,10 @@
       "Pair with FiltersBar for faceted search."
     ],
     "negative": [
-      "Avoid raw HTML controls when a Zephyr component exists."
+      "Avoid raw HTML controls when a Zephr component exists."
     ],
     "preferredImports": [
-      "import { SearchBox } from \"@zephyr/ui-react\";"
+      "import { SearchBox } from \"@zephrui/ui-react\";"
     ]
   }
 }
