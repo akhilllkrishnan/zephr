@@ -22,9 +22,16 @@ export default async function handler(
     return;
   }
 
-  // Strip /api prefix injected by Vercel routing rewrites
-  const rawPath = (request.url ?? "/").replace(/^\/api/, "") || "/";
-  const url = new URL(rawPath, `http://${request.headers.host ?? "localhost"}`);
+  // Vercel routes send /(.*) → /api/handler?__path=$1
+  // Extract the original request path from the __path query parameter.
+  const incoming = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
+  const pathParam = incoming.searchParams.get("__path");
+  const rawPath = pathParam != null ? `/${pathParam}` : (incoming.pathname.replace(/^\/api\/handler|^\/api/, "") || "/");
+
+  // Rebuild URL with original path + original query params (minus __path)
+  incoming.searchParams.delete("__path");
+  const search = incoming.searchParams.toString();
+  const url = new URL(rawPath + (search ? `?${search}` : ""), `http://${request.headers.host ?? "localhost"}`);
 
   const bodyText =
     request.method === "GET" || request.method === "HEAD"
