@@ -2343,6 +2343,34 @@ h1 {
   border-bottom: 1px solid var(--line);
   display: grid;
   gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-mesh-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 340px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-mesh-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.intro-hero > *:not(.hero-mesh-decoration) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-mesh-decoration {
+    opacity: 0.38;
+  }
 }
 
 .intro-hero h1 {
