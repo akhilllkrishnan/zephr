@@ -6,22 +6,18 @@ React component library for the Zephr design system.
 ## Install
 
 ```sh
-pnpm add @zephrui/core @zephrui/ui-react
+npm install @zephrui/ui-react
 ```
 
 ## Quick Start
 
 ```tsx
-import { generateCssVariables } from "@zephrui/core/browser";
-import { Button, FormField, Input } from "@zephrui/ui-react";
-
-// 1. Inject CSS variables once at app entry
-const css = generateCssVariables({ stylePack: "notion" });
-const style = document.createElement("style");
-style.textContent = css;
-document.head.appendChild(style);
+// 1. Import a theme once at your app entry point
+import "@zephrui/ui-react/themes/notion.css";
 
 // 2. Use components
+import { Button, FormField, Input } from "@zephrui/ui-react";
+
 export function LoginForm() {
   return (
     <form>
@@ -33,6 +29,8 @@ export function LoginForm() {
   );
 }
 ```
+
+Available themes: `notion` (free), `stripe`, `linear`, `framer` (Pro).
 
 ## Component Catalog
 

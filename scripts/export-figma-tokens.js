@@ -64,7 +64,7 @@ function flattenTokens(obj, prefix = "") {
   return result;
 }
 
-// Mapping from Figma token key patterns → @zephyr/core token paths
+// Mapping from Figma token key patterns → @zephrui/core token paths
 const TOKEN_MAP = [
   // Colors
   { pattern: /^color\.background$/i, target: "color.background" },

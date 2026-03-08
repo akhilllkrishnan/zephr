@@ -2343,16 +2343,18 @@ h1 {
   border-bottom: 1px solid var(--line);
   display: grid;
   gap: 1.5rem;
+  min-height: 19rem;
   position: relative;
   overflow: hidden;
 }
 
 .hero-mesh-decoration {
   position: absolute;
-  top: 0;
+  top: 50%;
   right: 0;
   width: 240px;
   height: 226px;
+  transform: translateY(-50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -2384,10 +2386,10 @@ h1 {
 
 .intro-features {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   overflow: hidden;
   background: var(--line);
   margin-top: 0.5rem;
@@ -2411,6 +2413,12 @@ h1 {
   font-size: 0.84rem;
   color: var(--muted);
   line-height: 1.55;
+}
+
+@media (max-width: 1180px) {
+  .intro-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .mission-grid {

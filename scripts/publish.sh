@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 # scripts/publish.sh
 #
-# Zephyr npm publish pipeline.
+# Zephr npm publish pipeline.
 #
 # Usage:
 #   bash scripts/publish.sh              # dry-run (default, no files pushed)
 #   bash scripts/publish.sh --no-dry-run # publish for real
 #
 # Publishes the following packages (in dependency order):
-#   @zephyr/core
-#   @zephyr/ai-registry
-#   @zephyr/ui-react
-#   @zephyr/cli
-#   @zephyr/mcp-server
+#   @zephrui/core
+#   @zephrui/icons-material
+#   @zephrui/avatars
+#   @zephrui/logos
+#   @zephrui/ai-registry
+#   @zephrui/ui-react
+#   @zephrui/cli
+#   @zephrui/mcp-server
 #
 # Prerequisites:
 #   - Logged in to npm: npm whoami
@@ -21,7 +24,7 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}") /.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
 # ---------------------------------------------------------------------------
@@ -37,6 +40,9 @@ done
 
 PUBLISHABLE_PACKAGES=(
   "packages/core"
+  "packages/icons-material"
+  "packages/avatars"
+  "packages/logos"
   "packages/ai-registry"
   "packages/ui-react"
   "packages/cli"
@@ -71,7 +77,7 @@ check_git_clean() {
 
 echo ""
 echo "========================================"
-echo "  Zephyr npm publish pipeline"
+echo "  Zephr npm publish pipeline"
 if [[ "${DRY_RUN}" == "true" ]]; then
   echo "  MODE: DRY RUN (pass --no-dry-run to publish)"
 else

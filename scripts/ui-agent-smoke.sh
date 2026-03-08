@@ -59,7 +59,7 @@ fi
 
 if ! curl -fsS "${BASE_URL}" >/dev/null 2>&1; then
   echo "Starting docs playground on ${BASE_URL}..."
-  corepack pnpm --filter @zephyr/docs-playground dev --host 127.0.0.1 --port "${PORT}" >"${DEV_LOG}" 2>&1 &
+  corepack pnpm --filter @zephrui/docs-playground dev --host 127.0.0.1 --port "${PORT}" >"${DEV_LOG}" 2>&1 &
   dev_pid="$!"
 
   if ! wait_for_server "${BASE_URL}" 60 0.5; then
