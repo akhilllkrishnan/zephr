@@ -1,10 +1,13 @@
 {
   "name": "@zephrui/mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server exposing Zephr component discovery tools",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "zephr-mcp": "dist/index.js"
+  },
   "files": [
     "dist"
   ],

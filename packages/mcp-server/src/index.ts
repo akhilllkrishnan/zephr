@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { callTool, listTools, McpToolCall } from "./tools";
 
 interface JsonRpcRequest {
