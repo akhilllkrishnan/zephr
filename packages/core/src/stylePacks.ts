@@ -349,33 +349,33 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
   ),
   stripe: createPack(
     {
-      static: { black: "#111827", white: "#ffffff" },
+      static: { black: "#0a2540", white: "#ffffff" },
       background: {
-        "950": "#0f172a",
-        "800": "#1e293b",
-        "600": "#475569",
-        "400": "#94a3b8",
-        "200": "#e2e8f0",
-        "100": "#f1f5f9",
+        "950": "#0a2540",
+        "800": "#16304a",
+        "600": "#425466",
+        "400": "#8898aa",
+        "200": "#e6ebf1",
+        "100": "#f6f9fc",
         "0": "#ffffff"
       },
       text: {
-        "950": "#0f172a",
-        "700": "#1e293b",
-        "500": "#64748b",
-        "300": "#94a3b8"
+        "950": "#0a2540",
+        "700": "#16304a",
+        "500": "#697386",
+        "300": "#8898aa"
       },
       stroke: {
-        "400": "#94a3b8",
-        "300": "#cbd5e1",
-        "200": "#e2e8f0",
-        "100": "#f1f5f9"
+        "400": "#8898aa",
+        "300": "#d4dce8",
+        "200": "#e6ebf1",
+        "100": "#f6f9fc"
       },
       accent: {
-        "900": "#4f46e5",
-        "700": "#4f46e5",
-        "500": "#6366f1",
-        "300": "#a5b4fc"
+        "900": "#3d22d6",
+        "700": "#533afd",
+        "500": "#635bff",
+        "300": "#a8a2f5"
       },
       semanticRed: {
         "900": "#7f1d1d",
@@ -397,33 +397,33 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
       }
     },
     {
-      static: { black: "#111827", white: "#ffffff" },
+      static: { black: "#0a2540", white: "#ffffff" },
       background: {
-        "950": "#f8fafc",
-        "800": "#e2e8f0",
-        "600": "#94a3b8",
-        "400": "#64748b",
-        "200": "#334155",
-        "100": "#1e293b",
-        "0": "#0b1120"
+        "950": "#f6f9fc",
+        "800": "#e6ebf1",
+        "600": "#8898aa",
+        "400": "#697386",
+        "200": "#2a4160",
+        "100": "#16304a",
+        "0": "#0a2540"
       },
       text: {
-        "950": "#f8fafc",
-        "700": "#e2e8f0",
-        "500": "#94a3b8",
-        "300": "#64748b"
+        "950": "#f6f9fc",
+        "700": "#e6ebf1",
+        "500": "#8898aa",
+        "300": "#697386"
       },
       stroke: {
-        "400": "#64748b",
-        "300": "#475569",
-        "200": "#334155",
-        "100": "#1e293b"
+        "400": "#697386",
+        "300": "#425466",
+        "200": "#2a4160",
+        "100": "#16304a"
       },
       accent: {
-        "900": "#c7d2fe",
-        "700": "#a5b4fc",
-        "500": "#818cf8",
-        "300": "#6366f1"
+        "900": "#d4cffc",
+        "700": "#a8a2f5",
+        "500": "#7a73ff",
+        "300": "#635bff"
       },
       semanticRed: {
         "900": "#fecaca",
@@ -447,48 +447,48 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
     {
       radius: {
         ...baseRadius,
-        sm: "0.5rem",
-        md: "0.625rem",
-        lg: "0.875rem",
-        xl: "1rem"
+        sm: "0.375rem",
+        md: "0.5rem",
+        lg: "0.625rem",
+        xl: "0.75rem"
       },
       shadow: {
         ...baseShadow,
-        sm: "0 1px 2px rgba(2, 6, 23, 0.06)",
-        md: "0 8px 20px rgba(15, 23, 42, 0.1)",
-        lg: "0 18px 40px rgba(15, 23, 42, 0.14)"
+        sm: "0 2px 5px rgba(50, 50, 93, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+        md: "0 6px 12px rgba(50, 50, 93, 0.12), 0 3px 7px rgba(0, 0, 0, 0.08)",
+        lg: "0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.06)"
       }
     }
   ),
   linear: createPack(
     {
-      static: { black: "#0b0d12", white: "#ffffff" },
+      static: { black: "#1b1b1e", white: "#ffffff" },
       background: {
-        "950": "#0b0d12",
-        "800": "#161a22",
-        "600": "#30384a",
-        "400": "#6b7280",
-        "200": "#d1d5db",
-        "100": "#f3f4f6",
+        "950": "#1b1b1e",
+        "800": "#2c2c30",
+        "600": "#5a5a65",
+        "400": "#8a8a9a",
+        "200": "#e0e0e6",
+        "100": "#f7f8f9",
         "0": "#ffffff"
       },
       text: {
-        "950": "#0f172a",
-        "700": "#1f2937",
-        "500": "#6b7280",
-        "300": "#9ca3af"
+        "950": "#1b1b1e",
+        "700": "#2c2c30",
+        "500": "#6e6e80",
+        "300": "#8a8a9a"
       },
       stroke: {
-        "400": "#6b7280",
-        "300": "#d1d5db",
-        "200": "#e5e7eb",
-        "100": "#f3f4f6"
+        "400": "#8a8a9a",
+        "300": "#d0d0d8",
+        "200": "#e0e0e6",
+        "100": "#f0f0f3"
       },
       accent: {
-        "900": "#1f4ed8",
-        "700": "#245ef5",
-        "500": "#3b82f6",
-        "300": "#93c5fd"
+        "900": "#4850b8",
+        "700": "#5e6ad2",
+        "500": "#6c72cb",
+        "300": "#b0b4e8"
       },
       semanticRed: {
         "900": "#7f1d1d",
@@ -510,33 +510,33 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
       }
     },
     {
-      static: { black: "#0b0d12", white: "#ffffff" },
+      static: { black: "#1b1b1e", white: "#ffffff" },
       background: {
-        "950": "#f8fafc",
-        "800": "#cbd5e1",
-        "600": "#64748b",
-        "400": "#475569",
-        "200": "#1f2937",
-        "100": "#111827",
-        "0": "#0b0d12"
+        "950": "#eeeef0",
+        "800": "#d0d0d8",
+        "600": "#8a8a9a",
+        "400": "#6e6e80",
+        "200": "#26262a",
+        "100": "#1c1c1f",
+        "0": "#0f1012"
       },
       text: {
-        "950": "#e5e7eb",
-        "700": "#cbd5e1",
-        "500": "#94a3b8",
-        "300": "#64748b"
+        "950": "#eeeef0",
+        "700": "#d0d0d8",
+        "500": "#8a8a9a",
+        "300": "#6e6e80"
       },
       stroke: {
-        "400": "#64748b",
-        "300": "#475569",
-        "200": "#374151",
-        "100": "#1f2937"
+        "400": "#6e6e80",
+        "300": "#3a3a40",
+        "200": "#26262a",
+        "100": "#1c1c1f"
       },
       accent: {
-        "900": "#93c5fd",
-        "700": "#60a5fa",
-        "500": "#3b82f6",
-        "300": "#245ef5"
+        "900": "#c8caee",
+        "700": "#b0b4e8",
+        "500": "#7c82d2",
+        "300": "#5e6ad2"
       },
       semanticRed: {
         "900": "#fecaca",
@@ -560,49 +560,55 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
     {
       radius: {
         ...baseRadius,
-        sm: "0.375rem",
+        sm: "0.25rem",
         md: "0.375rem",
         lg: "0.5rem",
-        xl: "0.75rem"
+        xl: "0.625rem"
+      },
+      shadow: {
+        ...baseShadow,
+        sm: "0 1px 2px rgba(0, 0, 0, 0.05)",
+        md: "0 1px 3px rgba(0, 0, 0, 0.08)",
+        lg: "0 4px 12px rgba(0, 0, 0, 0.1)"
       },
       type: {
         ...baseTypography,
         family: {
           ...baseTypography.family,
-          mono: "'Monaco', 'SF Mono', monospace"
+          mono: "'SF Mono', 'Roboto Mono', monospace"
         }
       }
     }
   ),
   framer: createPack(
     {
-      static: { black: "#0f172a", white: "#ffffff" },
+      static: { black: "#111111", white: "#ffffff" },
       background: {
-        "950": "#0f172a",
-        "800": "#1e293b",
-        "600": "#334155",
-        "400": "#94a3b8",
-        "200": "#e2e8f0",
-        "100": "#f1f5f9",
+        "950": "#111111",
+        "800": "#1a1a1a",
+        "600": "#444444",
+        "400": "#888888",
+        "200": "#ebebeb",
+        "100": "#f5f5f5",
         "0": "#ffffff"
       },
       text: {
-        "950": "#0f172a",
-        "700": "#1e293b",
-        "500": "#475569",
-        "300": "#94a3b8"
+        "950": "#000000",
+        "700": "#111111",
+        "500": "#666666",
+        "300": "#999999"
       },
       stroke: {
-        "400": "#64748b",
-        "300": "#cbd5e1",
-        "200": "#e2e8f0",
-        "100": "#f1f5f9"
+        "400": "#888888",
+        "300": "#cccccc",
+        "200": "#e5e5e5",
+        "100": "#f0f0f0"
       },
       accent: {
-        "900": "#7c3aed",
-        "700": "#9333ea",
-        "500": "#a855f7",
-        "300": "#d8b4fe"
+        "900": "#0066cc",
+        "700": "#0088ee",
+        "500": "#0099ff",
+        "300": "#66c2ff"
       },
       semanticRed: {
         "900": "#7f1d1d",
@@ -624,33 +630,33 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
       }
     },
     {
-      static: { black: "#0f172a", white: "#ffffff" },
+      static: { black: "#111111", white: "#ffffff" },
       background: {
-        "950": "#f8fafc",
-        "800": "#e2e8f0",
-        "600": "#94a3b8",
-        "400": "#64748b",
-        "200": "#334155",
-        "100": "#1e293b",
-        "0": "#111827"
+        "950": "#f5f5f5",
+        "800": "#e5e5e5",
+        "600": "#888888",
+        "400": "#666666",
+        "200": "#333333",
+        "100": "#1a1a1a",
+        "0": "#111111"
       },
       text: {
-        "950": "#f8fafc",
-        "700": "#e2e8f0",
-        "500": "#94a3b8",
-        "300": "#64748b"
+        "950": "#ffffff",
+        "700": "#ebebeb",
+        "500": "#999999",
+        "300": "#666666"
       },
       stroke: {
-        "400": "#64748b",
-        "300": "#475569",
-        "200": "#334155",
-        "100": "#1e293b"
+        "400": "#666666",
+        "300": "#444444",
+        "200": "#333333",
+        "100": "#1a1a1a"
       },
       accent: {
-        "900": "#e9d5ff",
-        "700": "#c084fc",
-        "500": "#a855f7",
-        "300": "#9333ea"
+        "900": "#b3daff",
+        "700": "#66c2ff",
+        "500": "#33aaff",
+        "300": "#0099ff"
       },
       semanticRed: {
         "900": "#fecaca",
@@ -679,14 +685,24 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
           xl: "1.375rem",
           "2xl": "1.75rem",
           "3xl": "2.125rem"
+        },
+        family: {
+          ...baseTypography.family,
+          sans: "'Inter', 'Helvetica Neue', sans-serif"
         }
       },
       radius: {
         ...baseRadius,
         sm: "0.5rem",
-        md: "0.625rem",
-        lg: "0.875rem",
-        xl: "1.125rem"
+        md: "0.75rem",
+        lg: "1rem",
+        xl: "1.25rem"
+      },
+      shadow: {
+        ...baseShadow,
+        sm: "0 2px 4px rgba(0, 0, 0, 0.04)",
+        md: "0 4px 16px rgba(0, 0, 0, 0.08)",
+        lg: "0 8px 30px rgba(0, 0, 0, 0.12)"
       }
     }
   )

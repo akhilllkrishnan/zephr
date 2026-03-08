@@ -63,3 +63,5 @@ export * from "./templates/AuthPage";
 export * from "./templates/SettingsPage";
 export * from "./templates/OnboardingPage";
 export * from "./templates/MarketingPage";
+
+export * from "./widgets/Widgets";

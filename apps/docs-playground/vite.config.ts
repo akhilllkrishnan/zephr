@@ -4,6 +4,27 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+            return "react-vendor";
+          }
+          if (id.includes("/packages/ui-react/src/")) {
+            return "zephr-ui";
+          }
+          if (id.includes("/packages/ai-registry/")) {
+            return "zephr-registry";
+          }
+          if (id.includes("/packages/core/")) {
+            return "zephr-core";
+          }
+          return undefined;
+        }
+      }
+    }
+  },
   resolve: {
     alias: {
       "@zephrui/core": path.resolve(__dirname, "../../packages/core/src"),

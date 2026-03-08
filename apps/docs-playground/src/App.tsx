@@ -1,4 +1,4 @@
-import { CSSProperties, FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, FormEvent, ReactNode, Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Accordion,
@@ -8,6 +8,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
+  Card,
   Checkbox,
   CommandBar,
   DataTable,
@@ -38,11 +39,6 @@ import {
   Toast,
   Tooltip,
   Textarea,
-  DashboardPage,
-  AuthPage,
-  SettingsPage,
-  OnboardingPage,
-  MarketingPage,
   IconLibrary,
   AvatarLibrary,
   LogoLibrary
@@ -68,10 +64,14 @@ import type { MaterialIconDefinition, MaterialIconStyle } from "@zephrui/icons-m
 import type { LogoCatalogEntry } from "@zephrui/logos";
 import zephrLogoDark from "../../../logo/zephr-dark.png";
 import zephrLogoLight from "../../../logo/zephr-light.png";
-import "@zephrui/ui-react/themes/notion.css";
+import { widgetCatalogMeta } from "./views/widgetsCatalog";
+import { templateCatalogMeta } from "./views/templatesCatalog";
+// Theme CSS is injected dynamically via <style> tag — no static import needed
 
 const registry = registryData as unknown as RegistryEntry[];
 const DEFAULT_STYLE_PACK: StylePackName = "notion";
+const WidgetsPage = lazy(() => import("./views/WidgetsPage"));
+const TemplatesPage = lazy(() => import("./views/TemplatesPage"));
 
 type WorkspaceView =
   "introduction" |
@@ -83,6 +83,7 @@ type WorkspaceView =
   "component-gallery" |
   "components" |
   "api-reference" |
+  "widgets" |
   "templates";
 type TopTab = "setup" | "components" | "pages" | "changelog";
 
@@ -818,6 +819,56 @@ function buildPreviewThemeCss(
   return scopeThemeCssToPreviewSurface(generateCssVariables(themedTokens, "z"));
 }
 
+function buildGlobalThemeCss(
+  stylePack: StylePackName,
+  accentColor: string,
+  surfaceStyle: SurfaceStyleOption,
+  expandedPalettes: { light: Record<string, string>; dark: Record<string, string> }
+): string {
+  const contrast = accentTextColor(accentColor);
+  const baseTokens = stylePacks[stylePack];
+  const light = expandedPalettes.light;
+  const dark = expandedPalettes.dark;
+  const darkBase = baseTokens.colorDark ?? baseTokens.color;
+
+  const themedTokens: DesignTokens = {
+    ...baseTokens,
+    color: {
+      ...baseTokens.color,
+      ...light,
+      primary: accentColor,
+      accent: accentColor,
+      primaryContrast: contrast,
+      info: light.accent500,
+      "info-light": light.accent300,
+      verified: light.accent500,
+      feature: light.accent900
+    },
+    colorDark: {
+      ...darkBase,
+      ...dark,
+      primary: accentColor,
+      accent: accentColor,
+      primaryContrast: contrast,
+      info: dark.accent500,
+      "info-light": dark.accent300,
+      verified: dark.accent500,
+      feature: dark.accent900
+    },
+    shadow:
+      surfaceStyle === "flat"
+        ? {
+            ...baseTokens.shadow,
+            sm: "none",
+            md: "none",
+            lg: "none"
+          }
+        : baseTokens.shadow
+  };
+
+  return generateCssVariables(themedTokens, "z");
+}
+
 function fromSearchParams(): {
   stylePack: StylePackName;
   componentId: string;
@@ -854,6 +905,7 @@ function fromSearchParams(): {
               viewParam === "speed-insights" ? "speed-insights" :
                 viewParam === "mission" ? "mission" :
                   viewParam === "team" ? "team" :
+                    viewParam === "widgets" ? "widgets" :
                     viewParam === "templates" ? "templates" :
                       "introduction";
 
@@ -900,7 +952,7 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
-  if (view === "templates") return "pages";
+  if (view === "widgets" || view === "templates") return "pages";
   if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
 }
@@ -2347,167 +2399,6 @@ function PreviewSurface({
   );
 }
 
-/* ─── TemplateBrowserFrame ────────────────────────────────────── */
-type TplDevice = "desktop" | "tablet" | "mobile";
-const DEVICE_WIDTHS: Record<TplDevice, string> = {
-  desktop: "100%",
-  tablet: "768px",
-  mobile: "390px",
-};
-const DEVICE_ICONS: Record<TplDevice, string> = {
-  desktop: "M20 3H4a1 1 0 00-1 1v12a1 1 0 001 1h7v2H8v2h8v-2h-3v-2h7a1 1 0 001-1V4a1 1 0 00-1-1zM4 16V4h16v12H4z",
-  tablet: "M17 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2zm-5 18a1 1 0 110-2 1 1 0 010 2z",
-  mobile: "M17 1H7a2 2 0 00-2 2v18a2 2 0 002 2h10a2 2 0 002-2V3a2 2 0 00-2-2zm-5 20a1 1 0 110-2 1 1 0 010 2z",
-};
-
-function TemplateBrowserFrame({
-  children,
-  address,
-  minHeight,
-}: {
-  children: ReactNode;
-  address?: string;
-  minHeight?: string;
-}) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [device, setDevice] = useState<TplDevice>("desktop");
-  const [width, setWidth] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<{ startX: number; startW: number } | null>(null);
-
-  // Mouse-drag resize logic
-  function onDragStart(e: React.MouseEvent) {
-    e.preventDefault();
-    const el = containerRef.current;
-    if (!el) return;
-    dragRef.current = { startX: e.clientX, startW: el.getBoundingClientRect().width };
-    const onMove = (me: MouseEvent) => {
-      if (!dragRef.current) return;
-      const delta = me.clientX - dragRef.current.startX;
-      const next = Math.max(320, dragRef.current.startW + delta);
-      setWidth(next);
-      setDevice("desktop"); // reset device pill when manually resizing
-    };
-    const onUp = () => {
-      dragRef.current = null;
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  }
-
-  function selectDevice(d: TplDevice) {
-    setDevice(d);
-    setWidth(null); // let CSS drive width from DEVICE_WIDTHS
-  }
-
-  const containerStyle: React.CSSProperties = {
-    maxWidth: "100%",
-    width: width != null ? `${width}px` : DEVICE_WIDTHS[device],
-    transition: width != null ? "none" : "width 0.25s cubic-bezier(0.4,0,0.2,1)",
-    position: "relative",
-  };
-
-  return (
-    <div>
-      {/* ── Toolbar: sits above the browser frame ── */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        marginBottom: "10px", gap: "12px",
-      }}>
-        {/* Device switcher */}
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: "2px",
-          background: "var(--panel-soft, #f3f4f6)", border: "1px solid var(--line)",
-          borderRadius: "10px", padding: "3px",
-        }}>
-          {(["desktop", "tablet", "mobile"] as TplDevice[]).map(d => (
-            <button
-              key={d}
-              type="button"
-              title={d.charAt(0).toUpperCase() + d.slice(1)}
-              onClick={() => selectDevice(d)}
-              style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                gap: "5px", padding: "5px 10px", borderRadius: "7px", border: "none",
-                background: device === d ? "var(--panel, #fff)" : "transparent",
-                color: device === d ? "var(--fg, #111)" : "var(--muted, #888)",
-                fontSize: "12px", fontWeight: device === d ? 600 : 400,
-                cursor: "pointer", fontFamily: "inherit",
-                boxShadow: device === d ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                transition: "all 0.12s ease",
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                <path d={DEVICE_ICONS[d]} />
-              </svg>
-              {d.charAt(0).toUpperCase() + d.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Theme toggle */}
-        <button
-          type="button"
-          title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-          onClick={() => setTheme(t => t === "light" ? "dark" : "light")}
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "6px",
-            padding: "5px 12px", borderRadius: "8px", border: "1px solid var(--line)",
-            background: "var(--panel, #fff)", color: "var(--fg, #111)",
-            fontSize: "12px", fontWeight: 500, cursor: "pointer", fontFamily: "inherit",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.04)", transition: "all 0.12s",
-          }}
-        >
-          {theme === "light" ? (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-            </svg>
-          ) : (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-            </svg>
-          )}
-          {theme === "light" ? "Light" : "Dark"}
-        </button>
-      </div>
-
-      {/* ── Resizable container ── */}
-      <div ref={containerRef} style={containerStyle}>
-        <div data-theme={theme === "dark" ? "dark" : undefined}>
-          <BrowserPreviewFrame address={address} minHeight={minHeight} flush>
-            {children}
-          </BrowserPreviewFrame>
-        </div>
-        {/* Drag handle */}
-        <div
-          onMouseDown={onDragStart}
-          title="Drag to resize"
-          style={{
-            position: "absolute", top: 0, right: -6, width: 12, height: "100%",
-            cursor: "ew-resize", display: "flex", alignItems: "center", justifyContent: "center",
-            zIndex: 10, userSelect: "none",
-          }}
-        >
-          <div style={{
-            width: 4, height: 40, borderRadius: 9999,
-            background: "var(--line, #e5e7eb)",
-            transition: "background 0.12s",
-          }} />
-        </div>
-      </div>
-
-      {/* ── Width label ── */}
-      {width != null && (
-        <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "6px", textAlign: "center" }}>
-          {Math.round(width)}px
-        </div>
-      )}
-    </div>
-  );
-}
-
 function BrowserPreviewFrame({
 
   children,
@@ -2523,7 +2414,7 @@ function BrowserPreviewFrame({
   flush?: boolean;
 }) {
   return (
-    <div className="preview-theme-scope preview-browser">
+    <div className="preview-browser">
       <div className="preview-browser-top">
         <div className="preview-traffic" aria-hidden>
           <span className="traffic-dot traffic-red" />
@@ -2583,56 +2474,6 @@ function SnippetItem({ label, code, onCopy, beta }: { label: string; code: strin
 
 function Tag({ tone = "neutral", children }: { tone?: "neutral" | "info"; children: ReactNode }) {
   return <Badge tone={tone} size="sm">{children}</Badge>;
-}
-
-/* ── Preview / Code tab block ─── */
-function PreviewCodeBlock({
-  preview,
-  code,
-  onCopy,
-}: {
-  preview: ReactNode;
-  code: string;
-  onCopy: () => void;
-}) {
-  const [tab, setTab] = useState<"preview" | "code">("preview");
-  return (
-    <div className="pcb-root">
-      <div className="pcb-toolbar">
-        <button
-          type="button"
-          className={`pcb-tab${tab === "preview" ? " active" : ""}`}
-          onClick={() => setTab("preview")}
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
-          </svg>
-          Preview
-        </button>
-        <button
-          type="button"
-          className={`pcb-tab${tab === "code" ? " active" : ""}`}
-          onClick={() => setTab("code")}
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
-          </svg>
-          Code
-        </button>
-        <button type="button" className="pcb-copy" onClick={onCopy}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-          </svg>
-          Copy
-        </button>
-      </div>
-      {tab === "preview" ? (
-        <div className="pcb-preview-area">{preview}</div>
-      ) : (
-        <pre className="pcb-code-area">{code}</pre>
-      )}
-    </div>
-  );
 }
 
 /* ── Install tab block ─── */
@@ -3857,6 +3698,10 @@ export default function App() {
     () => buildPreviewThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
     [accentColor, expandedColorPalettes, stylePack, surfaceStyle]
   );
+  const globalThemeCss = useMemo(
+    () => buildGlobalThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
+    [accentColor, expandedColorPalettes, stylePack, surfaceStyle]
+  );
   const configSnippet = useMemo(() => {
     return [
       `export default {`,
@@ -4343,6 +4188,15 @@ export default function App() {
         anchor: "templates-overview"
       },
       {
+        id: "doc-pages-widgets",
+        kind: "doc",
+        label: "Widgets",
+        detail: "Pages",
+        tab: "pages",
+        view: "widgets",
+        anchor: "widgets-overview"
+      },
+      {
         id: "doc-components-api",
         kind: "doc",
         label: "API Reference",
@@ -4438,7 +4292,7 @@ export default function App() {
       return;
     }
     if (tab === "pages") {
-      setView("templates");
+      setView("widgets");
       return;
     }
   }
@@ -4530,6 +4384,7 @@ export default function App() {
         ? logoCloudState
         : defaultCloudAssetState();
   const brandLogoSrc = darkMode ? zephrLogoLight : zephrLogoDark;
+  const widgetSurface = surfaceStyle === "flat" ? "outlined" : "elevated";
 
   const shareUrl = useMemo(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:4172";
@@ -4573,12 +4428,7 @@ export default function App() {
   }
 
   function handleStylePackChange(nextPack: StylePackName): void {
-    if (STYLE_PACK_META[nextPack].tier === "pro" && userTier !== "pro") {
-      setShowUpgradeModal(true);
-      showToast("Unlock Pro to use this style pack");
-      return;
-    }
-
+    // Always apply the theme so users can preview all packs in the playground
     const wasUsingDefaultAccent = accentColor === defaultAccentForPack(stylePack);
     setStylePack(nextPack);
     if (wasUsingDefaultAccent) {
@@ -4595,7 +4445,7 @@ export default function App() {
 
   return (
     <div className="docs-root">
-      <style>{previewThemeCss}</style>
+      <style>{globalThemeCss}</style>
       <header className="top-nav">
         <div className="top-main">
           <button
@@ -4678,6 +4528,25 @@ export default function App() {
             </div>
           </div>
 
+          <div className="header-theme-pills" role="radiogroup" aria-label="Theme">
+            {(Object.keys(STYLE_PACK_META) as StylePackName[]).map((pack) => (
+              <button
+                key={pack}
+                type="button"
+                role="radio"
+                aria-checked={stylePack === pack}
+                className={`header-theme-pill ${stylePack === pack ? "is-active" : ""}`}
+                onClick={() => handleStylePackChange(pack)}
+                title={STYLE_PACK_META[pack].description}
+              >
+                {STYLE_PACK_META[pack].label}
+                {STYLE_PACK_META[pack].tier === "pro" && stylePack !== pack ? (
+                  <span className="pill-pro-dot" />
+                ) : null}
+              </button>
+            ))}
+          </div>
+
           <div className="top-actions">
             <Button
               size="sm"
@@ -4729,9 +4598,9 @@ export default function App() {
       <div className="docs-layout">
         <aside className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
 
-          {/* ── Sidebar Theme & Accent ── */}
+          {/* ── Sidebar Accent ── */}
           <div className="sidebar-theme-section">
-            <p className="sidebar-theme-label">Style &amp; Accent</p>
+            <p className="sidebar-theme-label">Accent</p>
             <div className="sidebar-theme-controls">
               <select
                 className="sidebar-theme-select"
@@ -4989,6 +4858,32 @@ export default function App() {
 
               <button
                 type="button"
+                className={`sidebar-link ${view === "widgets" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("pages");
+                  setView("widgets");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Widgets
+              </button>
+              {widgetCatalogMeta.map((widget) => (
+                <a
+                  key={widget.id}
+                  className="sidebar-link"
+                  href={`#${widget.id}`}
+                  onClick={() => {
+                    setTopTab("pages");
+                    setView("widgets");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  {widget.label}
+                </a>
+              ))}
+
+              <button
+                type="button"
                 className={`sidebar-link with-tag ${view === "templates" ? "is-active" : ""}`}
                 onClick={() => {
                   setTopTab("pages");
@@ -4999,61 +4894,20 @@ export default function App() {
                 <span className="sidebar-link-label">Templates Overview</span>
                 <span className={`pill-badge ${userTier === "pro" ? "" : "is-locked"}`}>PRO</span>
               </button>
-              <a
-                className="sidebar-link"
-                href="#template-dashboard"
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Dashboard
-              </a>
-              <a
-                className="sidebar-link"
-                href="#template-auth"
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Auth
-              </a>
-              <a
-                className="sidebar-link"
-                href="#template-settings"
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Settings
-              </a>
-              <a
-                className="sidebar-link"
-                href="#template-onboarding"
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Onboarding
-              </a>
-              <a
-                className="sidebar-link"
-                href="#template-marketing"
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Marketing
-              </a>
+              {templateCatalogMeta.map((template) => (
+                <a
+                  key={template.id}
+                  className="sidebar-link"
+                  href={`#${template.id}`}
+                  onClick={() => {
+                    setTopTab("pages");
+                    setView("templates");
+                    setMobileNavOpen(false);
+                  }}
+                >
+                  {template.label}
+                </a>
+              ))}
             </div>
           )}
 
@@ -6581,181 +6435,37 @@ injectSpeedInsights();`}
                 </div>
               </section>
             </>
-          ) : view === "templates" ? (
-            <>
-              <section id="templates-overview" className="doc-section hero">
-                <p className="breadcrumbs">Templates</p>
-                <h1>Page Templates</h1>
-                <p className="lead">
-                  Drop-in page templates built entirely from Zephr components. Each template is a React component you can copy, customise, and ship.
-                </p>
-              </section>
-
-              {userTier !== "pro" && (
+          ) : view === "widgets" ? (
+            <Suspense
+              fallback={(
                 <section className="doc-section">
-                  <div className="section-heading">
-                    <h2>Templates</h2>
-                    <p>Unlock Pro to access all 5 page templates — production-ready layouts you can copy and ship.</p>
-                  </div>
-                  <div className="template-teaser-grid">
-                    {[
-                      { name: "Dashboard", desc: "Stats, table, activity sidebar" },
-                      { name: "Auth", desc: "Sign-in / sign-up with OAuth slots" },
-                      { name: "Settings", desc: "Profile, billing, team management" },
-                      { name: "Onboarding", desc: "Multi-step setup wizard" },
-                      { name: "Marketing", desc: "Hero, pricing, testimonials" }
-                    ].map((t) => (
-                      <div key={t.name} className="template-teaser-card">
-                        <div className="template-teaser-preview">
-                          <span className="ms template-teaser-lock">lock</span>
-                        </div>
-                        <div className="template-teaser-info">
-                          <span className="template-teaser-name">{t.name}</span>
-                          <span className="template-teaser-desc">{t.desc}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ marginTop: "1.5rem" }}>
-                    <Button onClick={() => setShowUpgradeModal(true)}>Unlock Pro — access all templates</Button>
+                  <div className="widget-empty-state">
+                    <strong>Loading widgets…</strong>
+                    <p>Preparing the gallery and code examples.</p>
                   </div>
                 </section>
               )}
-
-              <section id="template-dashboard" className="doc-section">
-                <div className="section-heading">
-                  <h2>DashboardPage</h2>
-                  <p>Revenue charts, project table, activity feed, and sidebar nav — ready to wire up to real data.</p>
-                </div>
-                <TemplateBrowserFrame address="zephr.local/templates/dashboard" minHeight="620px">
-                  <div style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "153.85%", height: "960px", overflow: "hidden", pointerEvents: "none" }}>
-                    <DashboardPage />
+            >
+              <WidgetsPage widgetSurface={widgetSurface} onCopy={copyAndFlash} />
+            </Suspense>
+          ) : view === "templates" ? (
+            <Suspense
+              fallback={(
+                <section className="doc-section">
+                  <div className="widget-empty-state">
+                    <strong>Loading templates…</strong>
+                    <p>Preparing the page previews and snippets.</p>
                   </div>
-                </TemplateBrowserFrame>
-                <div style={{ marginTop: "1rem" }}>
-                  <SnippetItem
-                    label="Usage"
-                    code={`import { DashboardPage } from '@zephrui/ui-react';
-
-<DashboardPage
-  title="Analytics"
-  onNewItem={() => {}}
-/>`}
-                    onCopy={() => copyAndFlash("DashboardPage", `import { DashboardPage } from '@zephrui/ui-react';
-
-<DashboardPage title="Analytics" onNewItem={() => {}} />`)}
-                  />
-                </div>
-              </section>
-
-              <section id="template-auth" className="doc-section">
-                <div className="section-heading">
-                  <h2>AuthPage</h2>
-                  <p>Centered sign-in / sign-up form with OAuth provider slots, error handling, and mode switching.</p>
-                </div>
-                <TemplateBrowserFrame address="zephr.local/templates/auth" minHeight="560px">
-                  <div style={{ transform: "scale(0.74)", transformOrigin: "top left", width: "135.14%", height: "760px", overflow: "hidden", pointerEvents: "none" }}>
-                    <AuthPage />
-                  </div>
-                </TemplateBrowserFrame>
-                <div style={{ marginTop: "1rem" }}>
-                  <SnippetItem
-                    label="Usage"
-                    code={`import { AuthPage } from '@zephrui/ui-react';
-
-<AuthPage
-  mode="sign-in"
-  onSubmit={async (email, password) => {
-    await signIn(email, password);
-  }}
-  onModeSwitch={() => setMode('sign-up')}
-/>`}
-                    onCopy={() => copyAndFlash("AuthPage", `import { AuthPage } from '@zephrui/ui-react';
-
-<AuthPage mode="sign-in" onSubmit={signIn} />`)}
-                  />
-                </div>
-              </section>
-
-              <section id="template-settings" className="doc-section">
-                <div className="section-heading">
-                  <h2>SettingsPage</h2>
-                  <p>Tabbed settings layout with Profile (pending/success states), Notifications, and Danger Zone built in.</p>
-                </div>
-                <TemplateBrowserFrame address="zephr.local/templates/settings" minHeight="560px">
-                  <div style={{ transform: "scale(0.62)", transformOrigin: "top left", width: "161.3%", height: "900px", overflow: "hidden", pointerEvents: "none" }}>
-                    <SettingsPage />
-                  </div>
-                </TemplateBrowserFrame>
-                <div style={{ marginTop: "1rem" }}>
-                  <SnippetItem
-                    label="Usage"
-                    code={`import { SettingsPage } from '@zephrui/ui-react';
-
-<SettingsPage
-  title="Account Settings"
-  subtitle="Manage your preferences"
-/>`}
-                    onCopy={() => copyAndFlash("SettingsPage", `import { SettingsPage } from '@zephrui/ui-react';
-
-<SettingsPage title="Account Settings" />`)}
-                  />
-                </div>
-              </section>
-
-              <section id="template-onboarding" className="doc-section">
-                <div className="section-heading">
-                  <h2>OnboardingPage</h2>
-                  <p>Step-by-step wizard with animated progress bar, back / next navigation, and customisable step content.</p>
-                </div>
-                <TemplateBrowserFrame address="zephr.local/templates/onboarding" minHeight="560px">
-                  <div style={{ transform: "scale(0.74)", transformOrigin: "top left", width: "135.14%", height: "760px", overflow: "hidden", pointerEvents: "none" }}>
-                    <OnboardingPage />
-                  </div>
-                </TemplateBrowserFrame>
-                <div style={{ marginTop: "1rem" }}>
-                  <SnippetItem
-                    label="Usage"
-                    code={`import { OnboardingPage } from '@zephrui/ui-react';
-
-<OnboardingPage
-  steps={mySteps}
-  onComplete={() => router.push('/dashboard')}
-/>`}
-                    onCopy={() => copyAndFlash("OnboardingPage", `import { OnboardingPage } from '@zephrui/ui-react';
-
-<OnboardingPage steps={mySteps} onComplete={onDone} />`)}
-                  />
-                </div>
-              </section>
-
-              <section id="template-marketing" className="doc-section">
-                <div className="section-heading">
-                  <h2>MarketingPage</h2>
-                  <p>Landing page with hero, feature grid, social proof, pricing cards, and bottom CTA.</p>
-                </div>
-                <TemplateBrowserFrame address="zephr.local/templates/marketing" minHeight="680px">
-                  <div style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "153.85%", height: "1046px", overflow: "hidden", pointerEvents: "none" }}>
-                    <MarketingPage />
-                  </div>
-                </TemplateBrowserFrame>
-                <div style={{ marginTop: "1rem" }}>
-                  <SnippetItem
-                    label="Usage"
-                    code={`import { MarketingPage } from '@zephrui/ui-react';
-
-<MarketingPage
-  heroTitle="Ship faster with Zephr"
-  heroSubtitle="The AI-native component system"
-  onCtaClick={() => router.push('/signup')}
-/>`}
-                    onCopy={() => copyAndFlash("MarketingPage", `import { MarketingPage } from '@zephrui/ui-react';
-
-<MarketingPage heroTitle="Ship faster" onCtaClick={onSignup} />`)}
-                  />
-                </div>
-              </section>
-            </>
+                </section>
+              )}
+            >
+              <TemplatesPage
+                userTier={userTier}
+                widgetSurface={widgetSurface}
+                onOpenUpgrade={() => setShowUpgradeModal(true)}
+                onCopy={copyAndFlash}
+              />
+            </Suspense>
           ) : view === "component-gallery" ? (
             <>
               <section id="gallery-overview" className="doc-section hero">
@@ -8072,14 +7782,20 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#team-process">How we ship</a>
             </>
           )}
+          {topTab !== "changelog" && view === "widgets" && (
+            <>
+              <a className="toc-link" href="#widgets-overview">Overview</a>
+              {widgetCatalogMeta.map((widget) => (
+                <a key={widget.id} className="toc-link" href={`#${widget.id}`}>{widget.label}</a>
+              ))}
+            </>
+          )}
           {topTab !== "changelog" && view === "templates" && (
             <>
               <a className="toc-link" href="#templates-overview">Overview</a>
-              <a className="toc-link" href="#template-dashboard">Dashboard</a>
-              <a className="toc-link" href="#template-auth">Auth</a>
-              <a className="toc-link" href="#template-settings">Settings</a>
-              <a className="toc-link" href="#template-onboarding">Onboarding</a>
-              <a className="toc-link" href="#template-marketing">Marketing</a>
+              {templateCatalogMeta.map((template) => (
+                <a key={template.id} className="toc-link" href={`#${template.id}`}>{template.label}</a>
+              ))}
             </>
           )}
           {topTab !== "changelog" && view === "component-gallery" && (
