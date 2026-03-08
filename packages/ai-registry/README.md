@@ -1,20 +1,23 @@
 # @zephrui/ai-registry
 
-Machine-readable component registry and JSON schema for AI tools, MCP servers, and developer tooling.
+[![npm](https://img.shields.io/npm/v/@zephrui/ai-registry?color=blue)](https://www.npmjs.com/package/@zephrui/ai-registry)
+[![license](https://img.shields.io/npm/l/@zephrui/ai-registry)](https://github.com/akhilllkrishnan/zephr/blob/main/LICENSE)
+
+Machine-readable component registry for the Zephr design system. Powers the MCP server, CLI, and docs playground.
 
 ## Install
 
 ```sh
-pnpm add @zephrui/ai-registry
+npm install @zephrui/ai-registry
 ```
 
 ## Usage
 
 ```ts
 import {
+  searchComponents,
   getComponentSpec,
   generateComponentPrompt,
-  searchComponents,
   listComponents,
   getTemplateCatalog
 } from "@zephrui/ai-registry";
@@ -22,20 +25,21 @@ import {
 // Search by name or intent
 const results = searchComponents("dashboard");
 
-// Get full spec including propsSchema, a11y notes, aiHints
+// Get full spec (props schema, a11y notes, AI hints)
 const spec = getComponentSpec("button");
 
-// Generate a formatted prompt for your AI assistant
+// Generate a prompt for any AI assistant
 const prompt = generateComponentPrompt("button", {
   assistant: "Cursor",
   stylePack: "notion",
   accentColor: "#335cff"
 });
-
-// List all Pro page templates
-const templates = getTemplateCatalog();
 ```
+
+## Docs
+
+[zephr-docs.vercel.app](https://zephr-docs.vercel.app)
 
 ## License
 
-MIT
+[MIT](https://github.com/akhilllkrishnan/zephr/blob/main/LICENSE)

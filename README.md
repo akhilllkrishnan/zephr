@@ -1,119 +1,131 @@
-# Zephr
+<p align="center">
+  <strong>Zephr</strong><br>
+  The AI-native UI component library for React.
+</p>
 
-Zephr is an AI-native design system platform that combines:
+<p align="center">
+  <a href="https://www.npmjs.com/package/@zephrui/ui-react"><img src="https://img.shields.io/npm/v/@zephrui/ui-react?color=blue&label=npm" alt="npm version"></a>
+  <a href="https://github.com/akhilllkrishnan/zephr/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@zephrui/ui-react" alt="license"></a>
+  <a href="https://zephr-docs.vercel.app"><img src="https://img.shields.io/badge/docs-live-green" alt="docs"></a>
+</p>
 
-- A framework-agnostic styling core with token-driven theming
-- A React-first UI component library
-- Cloud APIs for logos, avatars, and snippet generation
-- AI discovery via a machine-readable registry and MCP server
-- Figma token/component sync artifacts
+---
 
-## Monorepo Layout
+58 production-ready components. 4 theme packs. Zero config. One CSS import and you're building.
 
-- `packages/core` - tokens, style packs, utility compiler, config loader
-- `packages/ui-react` - atoms, molecules, organisms
-- `packages/icons-material` - material-style icon wrappers
-- `packages/logos` - logo provider abstraction and fallback
-- `packages/avatars` - deterministic avatar generation and cloud client helper
-- `packages/ai-registry` - schemas and AI-facing component metadata
-- `packages/mcp-server` - MCP-compatible tool surface for AI assistants
-- `packages/cli` - `zephr` CLI (`init`, `add`, `theme`, `doctor`)
-- `packages/cloud-sdk` - typed REST client for Zephr cloud APIs
-- `apps/cloud-api` - Node API implementing `/v1` endpoints
-- `apps/docs-playground` - live docs playground with accent controls + interactive preview states
-- `docs` - human + AI docs (`llms.txt`, `llms-full.txt`, OpenAPI)
+Zephr replaces the Tailwind + shadcn stack with a single package that themes itself via CSS variables. No utility classes, no copy-paste, no config files. Install, import a theme, use components.
+
+## Install
+
+```sh
+npm install @zephrui/ui-react
+```
 
 ## Quick Start
 
-```bash
-pnpm install
-pnpm build
+```tsx
+// 1. Import a theme (once, at your app entry)
+import "@zephrui/ui-react/themes/notion.css";
+
+// 2. Use components
+import { Button, FormField, Input } from "@zephrui/ui-react";
+
+export function LoginForm() {
+  return (
+    <form>
+      <FormField label="Email" htmlFor="email">
+        <Input id="email" type="email" placeholder="name@company.com" />
+      </FormField>
+      <Button type="submit">Sign in</Button>
+    </form>
+  );
+}
 ```
 
-Generate a starter config:
+That's it. No providers, no config, no Tailwind setup.
 
-```bash
-pnpm --filter @zephrui/cli build
-node packages/cli/dist/index.js init
+## Theme Packs
+
+Switch your entire app's look with one CSS import:
+
+| Theme | Import | Style |
+|-------|--------|-------|
+| **Notion** | `themes/notion.css` | Warm white, no shadows, 4px radii, Inter |
+| **Stripe** | `themes/stripe.css` | Soft elevation, blue accent, 8px radii |
+| **Linear** | `themes/linear.css` | Compact, data-dense, 6px radii, monospace |
+| **Framer** | `themes/framer.css` | Large type scale, bold contrast, expressive |
+
+Notion is free. Stripe, Linear, and Framer are Pro.
+
+## Components
+
+### Atoms
+`Button` `Input` `Textarea` `Select` `Checkbox` `Radio` `Switch` `Badge` `Avatar` `Logo` `IconButton` `Card` `Divider` `Progress` `Skeleton` `Slider` `Tooltip` `Popover`
+
+### Molecules
+`FormField` `SearchBox` `InputGroup` `Tabs` `Accordion` `Breadcrumbs` `Pagination` `Dropdown` `CommandBar` `Toast` `Alert` `DatePicker` `ColorPicker` `ComboBox` `NumberInput` `TagInput` `Sheet` `AlertDialog` `ButtonGroup` `RichEditor`
+
+### Organisms
+`DataTable` `SearchResultsPanel` `Navbar` `Header` `SidebarNav` `LayoutShell` `ModalDialog` `FiltersBar`
+
+### Layout Primitives
+`Stack` `Grid` `Box` `Spacer`
+
+### Asset Libraries
+`IconLibrary` `AvatarLibrary` `LogoLibrary`
+
+### Page Templates
+`DashboardPage` `AuthPage` `SettingsPage` `OnboardingPage` `MarketingPage`
+
+## AI Integration
+
+Zephr is built for AI-assisted development. Give your coding assistant direct access to the component registry:
+
+### MCP Server (Claude Code, Cursor)
+
+Add to your `.claude/settings.json` or `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "zephr": {
+      "command": "npx",
+      "args": ["-y", "@zephrui/mcp-server"]
+    }
+  }
+}
 ```
 
-Zephr CLI workflows:
+Your AI assistant can now search components, get specs, generate usage examples, and scaffold pages — all from the registry.
 
-```bash
-# Initialize with theme + accent
-node packages/cli/dist/index.js init --style-pack notion --accent #335cff
+### CLI
 
-# Scaffold a component snippet + AI prompt
-node packages/cli/dist/index.js add button --tool Codex
-
-# Switch theme quickly
-node packages/cli/dist/index.js theme stripe --accent #1d4ed8
-
-# Health checks (config/css/deps/api-key)
-node packages/cli/dist/index.js doctor
+```sh
+npx @zephrui/cli init              # generates config + AI instruction files
+npx @zephrui/cli add button        # scaffold a component with AI prompt
+npx @zephrui/cli theme stripe      # switch theme
+npx @zephrui/cli doctor            # check setup
 ```
 
-Run cloud API locally:
+`zephr init` generates `CLAUDE.md`, `AGENTS.md`, and `llms.txt` so your AI tools know how to use Zephr correctly from the start.
 
-```bash
-pnpm --filter @zephrui/cloud-api build
-node apps/cloud-api/dist/index.js
-```
+## Packages
 
-For Lemon Squeezy local integration, copy `apps/cloud-api/.env.example` to `apps/cloud-api/.env` and set:
+| Package | Description |
+|---------|-------------|
+| [`@zephrui/ui-react`](https://www.npmjs.com/package/@zephrui/ui-react) | React components + theme CSS |
+| [`@zephrui/core`](https://www.npmjs.com/package/@zephrui/core) | Token system + CSS variable compiler |
+| [`@zephrui/cli`](https://www.npmjs.com/package/@zephrui/cli) | Project scaffolding + theme management |
+| [`@zephrui/mcp-server`](https://www.npmjs.com/package/@zephrui/mcp-server) | AI tool server (MCP protocol) |
+| [`@zephrui/ai-registry`](https://www.npmjs.com/package/@zephrui/ai-registry) | Machine-readable component metadata |
+| [`@zephrui/icons-material`](https://www.npmjs.com/package/@zephrui/icons-material) | Material icon set |
+| [`@zephrui/avatars`](https://www.npmjs.com/package/@zephrui/avatars) | Deterministic avatar generation |
+| [`@zephrui/logos`](https://www.npmjs.com/package/@zephrui/logos) | Logo provider + fallbacks |
 
-- `LEMON_SQUEEZY_API_KEY`
-- `LEMON_SQUEEZY_WEBHOOK_SECRET`
+## Docs
 
-Run docs playground:
+[zephr-docs.vercel.app](https://zephr-docs.vercel.app) — live playground with theme switcher and interactive component previews.
 
-```bash
-pnpm docs:dev
-```
+## License
 
-Optional checkout wiring for the Pro modal:
-
-- copy `apps/docs-playground/.env.example` to `apps/docs-playground/.env`
-- set one or more:
-  - `VITE_ZEPHR_CHECKOUT_INDIVIDUAL=https://your-individual-checkout`
-  - `VITE_ZEPHR_CHECKOUT_STARTUP=https://your-startup-checkout`
-  - `VITE_ZEPHR_CHECKOUT_ENTERPRISE=https://your-enterprise-checkout`
-
-## Deploy + Custom Domain (Vercel)
-
-This repo includes [`vercel.json`](/Users/akhilkrishnan/Documents/Design%20System%20Library/vercel.json) for monorepo deployment of `@zephrui/docs-playground`.
-
-1. In Vercel, import GitHub repo: `akhilllkrishnan/zephr`.
-2. Framework preset: `Other`.
-3. Vercel will use:
-   - install: `corepack enable && corepack pnpm install --frozen-lockfile`
-   - build: `corepack pnpm --filter @zephrui/docs-playground build && rm -rf dist && mkdir -p dist && cp -R apps/docs-playground/dist/. dist/`
-   - output: `dist`
-4. After first deploy, open Project Settings -> Domains and add your domain.
-5. Add DNS records in your domain provider exactly as Vercel shows.
-
-## API Key Model
-
-- Local package usage: no API key required
-- Cloud endpoints: `Authorization: Bearer <api_key>` required
-
-## Style Packs
-
-`notion`, `stripe`, `linear`, `framer`
-
-## Browser Automation Smoke Test
-
-Install browser automation CLI once:
-
-```bash
-npm install -g agent-browser
-agent-browser install
-```
-
-Run the docs smoke flow (screenshots + snapshot output):
-
-```bash
-pnpm ui:smoke:agent
-```
-
-Artifacts are written to `artifacts/agent-browser`.
+[MIT](LICENSE)

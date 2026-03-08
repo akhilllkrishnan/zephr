@@ -1,11 +1,16 @@
 # @zephrui/core
 
-Core token system, configuration model, and CSS variable compiler for the Zephr design system.
+[![npm](https://img.shields.io/npm/v/@zephrui/core?color=blue)](https://www.npmjs.com/package/@zephrui/core)
+[![license](https://img.shields.io/npm/l/@zephrui/core)](https://github.com/akhilllkrishnan/zephr/blob/main/LICENSE)
+
+Token system, style pack definitions, and CSS variable compiler for the Zephr design system.
+
+Most users should install [`@zephrui/ui-react`](https://www.npmjs.com/package/@zephrui/ui-react) directly — it includes `@zephrui/core` as a dependency.
 
 ## Install
 
 ```sh
-pnpm add @zephrui/core
+npm install @zephrui/core
 ```
 
 ## Usage
@@ -17,24 +22,23 @@ import type { ZephrConfig } from "@zephrui/core";
 const config: ZephrConfig = {
   stylePack: "notion",
   tokens: {
-    color: {
-      primary: "#335cff",
-      accent: "#335cff"
-    }
+    color: { primary: "#335cff", accent: "#335cff" }
   }
 };
 
-// Inject into a <style> tag at app startup
 const css = generateCssVariables(config);
-const style = document.createElement("style");
-style.textContent = css;
-document.head.appendChild(style);
 ```
 
 ## Style Packs
 
 `notion` · `stripe` · `linear` · `framer`
 
+All tokens use the `--z-*` CSS variable namespace (`--z-color-*`, `--z-space-*`, `--z-radius-*`, `--z-type-*`, `--z-shadow-*`).
+
+## Docs
+
+[zephr-docs.vercel.app](https://zephr-docs.vercel.app)
+
 ## License
 
-MIT
+[MIT](https://github.com/akhilllkrishnan/zephr/blob/main/LICENSE)
