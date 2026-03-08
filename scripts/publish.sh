@@ -124,9 +124,11 @@ echo "========================================"
 for entry in "${PUBLISHED[@]}"; do
   echo "  ✓ ${entry}"
 done
-for entry in "${SKIPPED[@]}"; do
-  echo "  - ${entry} (skipped)"
-done
+if [[ ${#SKIPPED[@]} -gt 0 ]]; then
+  for entry in "${SKIPPED[@]}"; do
+    echo "  - ${entry} (skipped)"
+  done
+fi
 
 if [[ "${DRY_RUN}" == "true" ]]; then
   echo ""
