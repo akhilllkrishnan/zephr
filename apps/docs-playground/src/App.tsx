@@ -1,5 +1,4 @@
 import { CSSProperties, FormEvent, ReactNode, Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   Accordion,
   Alert,
@@ -45,7 +44,6 @@ import {
 } from "@zephrui/ui-react";
 import {
   generateCssVariables,
-  resolveStylePackName,
   stylePacks,
   type DesignTokens,
   type StylePackName
@@ -185,40 +183,6 @@ interface CloudAssetState {
   loading: boolean;
   message: string;
 }
-
-const SURFACE_STYLE_META: Record<SurfaceStyleOption, { label: string; description: string }> = {
-  shadow: {
-    label: "Cards with shadows",
-    description: "Subtle elevation for cards, menus, and overlays."
-  },
-  flat: {
-    label: "Flat design",
-    description: "No elevation. Clean, minimal surfaces with border separation."
-  }
-};
-
-const STYLE_PACK_META: Record<StylePackName, { label: string; description: string; tier: "free" | "pro" }> = {
-  notion: {
-    label: "Notion",
-    description: "Warm white surfaces with minimal shadow.",
-    tier: "free"
-  },
-  stripe: {
-    label: "Stripe",
-    description: "Bright accent-driven surfaces with soft elevation.",
-    tier: "pro"
-  },
-  linear: {
-    label: "Linear",
-    description: "Compact data-dense rhythm with crisp edges.",
-    tier: "pro"
-  },
-  framer: {
-    label: "Framer",
-    description: "Expressive contrast and bolder typography scale.",
-    tier: "pro"
-  }
-};
 
 const CHECKOUT_PLAN_META: Record<CheckoutPlanId, { label: string; description: string; recommended?: boolean }> = {
   individual: {
@@ -886,12 +850,9 @@ function fromSearchParams(): {
 
   const params = new URLSearchParams(window.location.search);
   const componentId = params.get("component") ?? "button";
-  const stylePack = resolveStylePackName(
-    params.get("theme") ?? sessionStorage.getItem("zephr-style-pack") ?? DEFAULT_STYLE_PACK
-  );
   const storedAccent = normalizeHexColor(sessionStorage.getItem("zephr-accent-color"));
   const accentColor = migrateLegacyAccent(
-    stylePack,
+    DEFAULT_STYLE_PACK,
     normalizeHexColor(params.get("accent")) ?? storedAccent
   );
   const viewParam = params.get("view");
@@ -910,7 +871,7 @@ function fromSearchParams(): {
                       "introduction";
 
   return {
-    stylePack,
+    stylePack: DEFAULT_STYLE_PACK,
     componentId: registry.some((entry) => entry.id === componentId) ? componentId : "button",
     accentColor,
     view
@@ -920,31 +881,21 @@ function fromSearchParams(): {
 function updateSearchParams(
   componentId: string,
   accentColor: string,
-  view: WorkspaceView,
-  currentPack: StylePackName,
-  surfaceStyle: SurfaceStyleOption = "shadow"
+  view: WorkspaceView
 ): void {
   if (typeof window === "undefined") {
     return;
   }
 
   const params = new URLSearchParams(window.location.search);
-  if (currentPack === DEFAULT_STYLE_PACK) {
-    params.delete("theme");
-  } else {
-    params.set("theme", currentPack);
-  }
+  params.delete("theme");
   params.set("component", componentId);
-  if (accentColor === defaultAccentForPack(currentPack)) {
+  if (accentColor === defaultAccentForPack(DEFAULT_STYLE_PACK)) {
     params.delete("accent");
   } else {
     params.set("accent", accentColor);
   }
-  if (surfaceStyle === "flat") {
-    params.set("surface", "flat");
-  } else {
-    params.delete("surface");
-  }
+  params.delete("surface");
   params.set("view", view);
 
   const next = `${window.location.pathname}?${params.toString()}`;
@@ -1983,14 +1934,14 @@ function PreviewSurface({
     const titleBySeverity: Record<AlertSeverityOption, string> = {
       red: "Deployment failed. Please review build logs.",
       yellow: "API usage nearing current quota.",
-      green: "Theme synced successfully.",
+      green: "Accent updated successfully.",
       blue: "New registry schema available.",
       grey: "Maintenance window starts in 30 minutes."
     };
     const descriptionBySeverity: Record<AlertSeverityOption, string> = {
       red: "Check CI logs, fix the failing step, and redeploy.",
       yellow: "Upgrade the plan or reduce request volume to prevent throttling.",
-      green: "Your latest token changes were applied across all previews.",
+      green: "Your latest visual token changes were applied across all previews.",
       blue: "You can regenerate prompts to include the latest component metadata.",
       grey: "Some editor features may be temporarily unavailable."
     };
@@ -2233,7 +2184,7 @@ function PreviewSurface({
           <div className="table-shell" style={{ padding: "0.75rem", display: "grid", gap: "0.5rem" }}>
             <p className="preview-note">Main content surface for generated blocks.</p>
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              <Badge tone="info">Theme-ready</Badge>
+              <Badge tone="info">Accent-ready</Badge>
               <Badge tone="success">Ready</Badge>
             </div>
           </div>
@@ -2253,7 +2204,7 @@ function PreviewSurface({
               title: "Get Started",
               items: [
                 { id: "quickstart", label: "Quickstart", href: "#" },
-                { id: "setup", label: "Theme setup", href: "#", active: true }
+                { id: "setup", label: "Visual setup", href: "#", active: true }
               ]
             },
             {
@@ -2356,7 +2307,7 @@ function PreviewSurface({
             {
               id: "1",
               title: "Design tokens migration",
-              description: "Update semantic aliases for notion and stripe packs.",
+              description: "Update semantic aliases for the default visual system.",
               metadata: "Updated today",
               onSelect: () => setResultMessage("Opened: Design tokens migration")
             },
@@ -3509,21 +3460,10 @@ function ComponentThumbnail({ name }: { name: string }) {
 export default function App() {
   const initial = fromSearchParams();
 
-  const [stylePack, setStylePack] = useState<StylePackName>(initial.stylePack);
-  const [surfaceStyle, setSurfaceStyle] = useState<SurfaceStyleOption>(() => {
-    if (typeof window === "undefined") return "shadow";
-    const params = new URLSearchParams(window.location.search);
-    const fromQuery = params.get("surface");
-    const fromSession = sessionStorage.getItem("zephr-surface-style");
-    const raw = fromQuery ?? fromSession;
-    return raw === "flat" ? "flat" : "shadow";
-  });
+  const stylePack: StylePackName = DEFAULT_STYLE_PACK;
+  const surfaceStyle: SurfaceStyleOption = "shadow";
   const [accentColor, setAccentColor] = useState(initial.accentColor);
   const [accentDraft, setAccentDraft] = useState(initial.accentColor);
-  const [accentPopoverOpen, setAccentPopoverOpen] = useState(false);
-  const [accentPopoverPos, setAccentPopoverPos] = useState<{ top: number; left: number } | null>(null);
-  const accentPopoverRef = useRef<HTMLDivElement>(null);
-  const accentTriggerRef = useRef<HTMLButtonElement>(null);
   const [view, setView] = useState<WorkspaceView>(initial.view);
   const [topTab, setTopTab] = useState<TopTab>(() => getTopTabForView(initial.view));
   const [activeRegistryId, setActiveRegistryId] = useState(initial.componentId);
@@ -3692,20 +3632,19 @@ export default function App() {
 
   const expandedColorPalettes = useMemo(
     () => buildExpandedColorPalettes(stylePack, accentColor),
-    [accentColor, stylePack]
+    [accentColor]
   );
   const previewThemeCss = useMemo(
     () => buildPreviewThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
-    [accentColor, expandedColorPalettes, stylePack, surfaceStyle]
+    [accentColor, expandedColorPalettes]
   );
   const globalThemeCss = useMemo(
     () => buildGlobalThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
-    [accentColor, expandedColorPalettes, stylePack, surfaceStyle]
+    [accentColor, expandedColorPalettes]
   );
   const configSnippet = useMemo(() => {
     return [
       `export default {`,
-      `  stylePack: "${stylePack}",`,
       `  tokens: {`,
       `    color: {`,
       `      primary: "${accentColor}",`,
@@ -3715,7 +3654,7 @@ export default function App() {
       `  }`,
       `};`
     ].join("\n");
-  }, [accentColor, stylePack]);
+  }, [accentColor]);
   const cloudBaseUrl = (import.meta.env.VITE_ZEPHR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
   const checkoutEnvUrls: Record<CheckoutPlanId, string> = {
     individual: (import.meta.env.VITE_ZEPHR_CHECKOUT_INDIVIDUAL as string | undefined)?.trim() || "",
@@ -3796,13 +3735,12 @@ export default function App() {
       `# ${assistantLabel} workspace instructions`,
       "",
       "- Use Zephr UI components from `@zephrui/ui-react`.",
-      `- Base theme: ${stylePack}.`,
-      `- Surface style: ${SURFACE_STYLE_META[surfaceStyle].label}.`,
+      "- Use Zephr's default premium visual system.",
       `- Accent color: ${accentColor}.`,
       "- Prefer semantic component props over one-off style overrides.",
       "- Keep accessibility labels for icon-only and form controls."
     ].join("\n");
-  }, [accentColor, aiTool, stylePack, surfaceStyle]);
+  }, [accentColor, aiTool]);
   const aiPromptSnippet = useMemo(() => {
     const assistantLabel = aiToolLabels[aiTool];
     return [
@@ -3816,10 +3754,10 @@ export default function App() {
       `1. Create app: ${aiProjectInitCommand}`,
       `2. Install Zephr (coming soon): ${aiInstallCommand}`,
       "3. Import components from `@zephrui/ui-react`.",
-      `4. Set accent to "${accentColor}" (base theme is "${stylePack}").`,
+      `4. Set accent to "${accentColor}".`,
       "5. Keep generated code accessible and production-ready."
     ].join("\n");
-  }, [accentColor, aiInstallCommand, aiProject, aiProjectInitCommand, aiTool, stylePack]);
+  }, [accentColor, aiInstallCommand, aiProject, aiProjectInitCommand, aiTool]);
 
   const foundationColorGroups = useMemo(() => {
     const lightPalette = expandedColorPalettes.light;
@@ -3860,33 +3798,6 @@ export default function App() {
   }, [accentColor]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    sessionStorage.setItem("zephr-style-pack", stylePack);
-  }, [stylePack]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    sessionStorage.setItem("zephr-surface-style", surfaceStyle);
-  }, [surfaceStyle]);
-
-  // Close accent popover on outside click (portal-aware)
-  useEffect(() => {
-    if (!accentPopoverOpen) return;
-    function handleOutside(e: MouseEvent) {
-      const t = e.target as Node;
-      const inTrigger = accentPopoverRef.current?.contains(t);
-      const inPortal = (t as Element).closest?.(".accent-dropdown-popover");
-      if (!inTrigger && !inPortal) setAccentPopoverOpen(false);
-    }
-    document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
-  }, [accentPopoverOpen]);
-
-  useEffect(() => {
     return () => {
       if (toastTimeoutRef.current !== null) {
         window.clearTimeout(toastTimeoutRef.current);
@@ -3903,8 +3814,8 @@ export default function App() {
   }, [darkMode]);
 
   useEffect(() => {
-    updateSearchParams(activeRegistryId, accentColor, view, stylePack, surfaceStyle);
-  }, [accentColor, activeRegistryId, stylePack, surfaceStyle, view]);
+    updateSearchParams(activeRegistryId, accentColor, view);
+  }, [accentColor, activeRegistryId, view]);
 
   useEffect(() => {
     setIntentText(getDefaultIntent(activeRegistryId));
@@ -4391,18 +4302,12 @@ export default function App() {
     const path = typeof window !== "undefined" ? window.location.pathname : "/studio";
     const params = new URLSearchParams();
     params.set("component", selectedEntry.id);
-    if (stylePack !== DEFAULT_STYLE_PACK) {
-      params.set("theme", stylePack);
-    }
-    if (accentColor !== defaultAccentForPack(stylePack)) {
+    if (accentColor !== defaultAccentForPack(DEFAULT_STYLE_PACK)) {
       params.set("accent", accentColor);
-    }
-    if (surfaceStyle === "flat") {
-      params.set("surface", "flat");
     }
     params.set("view", view);
     return `${origin}${path}?${params.toString()}`;
-  }, [accentColor, selectedEntry.id, stylePack, surfaceStyle, view]);
+  }, [accentColor, selectedEntry.id, view]);
 
   function setAccentIfValid(value: string): void {
     setAccentDraft(value);
@@ -4421,21 +4326,6 @@ export default function App() {
     }
 
     setAccentDraft(accentColor);
-  }
-
-  function handleSurfaceStyleChange(nextStyle: SurfaceStyleOption): void {
-    setSurfaceStyle(nextStyle);
-  }
-
-  function handleStylePackChange(nextPack: StylePackName): void {
-    // Always apply the theme so users can preview all packs in the playground
-    const wasUsingDefaultAccent = accentColor === defaultAccentForPack(stylePack);
-    setStylePack(nextPack);
-    if (wasUsingDefaultAccent) {
-      const nextAccent = defaultAccentForPack(nextPack);
-      setAccentColor(nextAccent);
-      setAccentDraft(nextAccent);
-    }
   }
 
   async function copyAndFlash(label: string, text: string): Promise<void> {
@@ -4528,25 +4418,6 @@ export default function App() {
             </div>
           </div>
 
-          <div className="header-theme-pills" role="radiogroup" aria-label="Theme">
-            {(Object.keys(STYLE_PACK_META) as StylePackName[]).map((pack) => (
-              <button
-                key={pack}
-                type="button"
-                role="radio"
-                aria-checked={stylePack === pack}
-                className={`header-theme-pill ${stylePack === pack ? "is-active" : ""}`}
-                onClick={() => handleStylePackChange(pack)}
-                title={STYLE_PACK_META[pack].description}
-              >
-                {STYLE_PACK_META[pack].label}
-                {STYLE_PACK_META[pack].tier === "pro" && stylePack !== pack ? (
-                  <span className="pill-pro-dot" />
-                ) : null}
-              </button>
-            ))}
-          </div>
-
           <div className="top-actions">
             <Button
               size="sm"
@@ -4595,82 +4466,8 @@ export default function App() {
 
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
 
-      <div className="docs-layout">
+      <div className={`docs-layout${topTab === "pages" ? " docs-layout--pages" : ""}`}>
         <aside className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
-
-          {/* ── Sidebar Accent ── */}
-          <div className="sidebar-theme-section">
-            <p className="sidebar-theme-label">Accent</p>
-            <div className="sidebar-theme-controls">
-              <select
-                className="sidebar-theme-select"
-                value={surfaceStyle}
-                onChange={(e) => handleSurfaceStyleChange(e.target.value as SurfaceStyleOption)}
-                aria-label="Select surface style"
-              >
-                {(Object.keys(SURFACE_STYLE_META) as SurfaceStyleOption[]).map((mode) => (
-                  <option key={mode} value={mode}>{SURFACE_STYLE_META[mode].label}</option>
-                ))}
-              </select>
-              <div className="accent-dropdown" ref={accentPopoverRef}>
-                <button
-                  ref={accentTriggerRef}
-                  type="button"
-                  className="header-accent-trigger"
-                  onClick={() => {
-                    if (!accentPopoverOpen && accentTriggerRef.current) {
-                      const r = accentTriggerRef.current.getBoundingClientRect();
-                      setAccentPopoverPos({ top: r.bottom + 6, left: r.left });
-                    }
-                    setAccentPopoverOpen((o) => !o);
-                  }}
-                  aria-label="Choose accent color"
-                  aria-expanded={accentPopoverOpen}
-                >
-                  <span className="accent-dropdown-dot" style={{ backgroundColor: accentColor }} />
-                  <span className="ms accent-dropdown-chevron">expand_more</span>
-                </button>
-                {accentPopoverOpen && accentPopoverPos && createPortal(
-                  <div
-                    className="accent-dropdown-popover"
-                    style={{ position: "fixed", top: accentPopoverPos.top, left: accentPopoverPos.left, zIndex: 300 }}
-                  >
-                    <div className="accent-dropdown-swatches">
-                      {accentPresets.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          className={`accent-dot ${accentColor === color ? "is-active" : ""}`}
-                          style={{ backgroundColor: color }}
-                          aria-label={`Set accent ${color}`}
-                          onClick={() => { setAccentColor(color); setAccentDraft(color); setAccentPopoverOpen(false); }}
-                        />
-                      ))}
-                    </div>
-                    <div className="accent-dropdown-inputs">
-                      <input
-                        type="color"
-                        value={accentColor}
-                        onChange={(e) => { setAccentColor(e.target.value); setAccentDraft(e.target.value); }}
-                        aria-label="Accent color picker"
-                      />
-                      <input
-                        type="text"
-                        value={accentDraft}
-                        onChange={(e) => setAccentIfValid(e.target.value)}
-                        onBlur={applyAccentDraft}
-                        onKeyDown={(e) => { if (e.key === "Enter") applyAccentDraft(); }}
-                        placeholder="#121212"
-                        aria-label="Accent color hex"
-                      />
-                    </div>
-                  </div>,
-                  document.body
-                )}
-              </div>
-            </div>
-          </div>
-
           {topTab === "setup" && (
             <div className="nav-group">
               <p className="group-title">Setup</p>
@@ -4966,13 +4763,13 @@ export default function App() {
                     <span className="release-date">March 4, 2026</span>
                   </div>
                 </div>
-                <p className="release-summary">Style pack differentiation, PRO gating, premium page templates, and docs narrative pages.</p>
+                <p className="release-summary">Premium visual refinement, PRO gating, premium page templates, and docs narrative pages.</p>
                 <div className="release-changes">
                   <div className="release-category">
                     <h4>✦ New features</h4>
                     <ul className="release-list">
-                      <li>Style pack picker with visual mini-app mockups — each pack renders a unique UI.</li>
-                      <li>PRO style pack gating — free-tier users see locked overlay and upgrade modal.</li>
+                      <li>Premium docs shell with accent-driven previews and a single default Zephr theme.</li>
+                      <li>PRO component and page gating — free-tier users see locked overlay and upgrade modal.</li>
                       <li>5 premium page templates: Dashboard, Auth, Settings, Onboarding, Marketing.</li>
                       <li>Foundations page with "How tokens work" visual flow and naming convention reference.</li>
                       <li>Team page with Avatar components and process grid.</li>
@@ -5064,7 +4861,6 @@ export default function App() {
                     <h4>✦ New features</h4>
                     <ul className="release-list">
                       <li>30 components across atoms, molecules, and organisms.</li>
-                      <li>4 style packs: notion, stripe, linear, framer.</li>
                       <li>Accent switcher with persistent state via sessionStorage.</li>
                       <li>AI block prompts with one-click copy for Claude, Cursor, and Codex.</li>
                       <li>Install snippets (npm / pnpm / CLI) per component.</li>
@@ -5132,7 +4928,7 @@ export default function App() {
                       <h4>npm publish &amp; MCP action tools</h4>
                       <ul className="release-list">
                         <li>Publish <code>@zephrui/ui-react</code> to npm as a public package.</li>
-                        <li>MCP action tools: <code>scaffold_page</code>, <code>apply_theme</code>, <code>generate_component</code>.</li>
+                        <li>MCP action tools for page scaffolding, accent application, and component generation.</li>
                         <li>Loading / empty / error states on all organisms.</li>
                         <li>Per-tool AI prompt variants (Claude Code, Cursor, Codex, Lovable).</li>
                       </ul>
@@ -5150,8 +4946,8 @@ export default function App() {
                       <ul className="release-list">
                         <li>Cloud API key flows for logo / avatar / icon providers.</li>
                         <li>Figma token import via Variables API.</li>
-                        <li>Design-to-code sync: push Figma changes to style pack tokens.</li>
-                        <li>Team workspace with shared style packs.</li>
+                        <li>Design-to-code sync: push Figma changes into core design tokens.</li>
+                        <li>Team workspace with shared accent presets and visual defaults.</li>
                       </ul>
                     </div>
                   </div>
@@ -5213,8 +5009,8 @@ export default function App() {
                     <p>MCP tools, <code>llms.txt</code>, and per-tool prompts let any AI agent find and use components without manual lookup.</p>
                   </div>
                   <div className="intro-feature">
-                    <strong>Production style packs</strong>
-                    <p>Pick notion, stripe, linear, or framer and keep every generated UI consistent across projects and tools.</p>
+                    <strong>Premium default theme</strong>
+                    <p>One refined visual baseline with accent customization keeps every generated UI consistent across projects and tools.</p>
                   </div>
                   <div className="intro-feature">
                     <strong>No extra setup required</strong>
@@ -5229,45 +5025,8 @@ export default function App() {
                 <p className="breadcrumbs">Get Started</p>
                 <h1>Set up your visual system</h1>
                 <p className="lead">
-                  Choose a style pack to set your design personality, then pick an accent color. Both apply across previews, snippets, and prompts.
+                  Zephr ships with one polished default visual system. Pick an accent color once and it carries across previews, snippets, and prompts.
                 </p>
-              </section>
-
-              <section id="style-pack-selection" className="doc-section">
-                <div className="section-heading">
-                  <div className="section-heading-row">
-                    <div>
-                      <h2>Choose a style pack</h2>
-                      <p>Pick one visual baseline for component previews and generated snippets.</p>
-                    </div>
-                    <Badge tone="neutral">{STYLE_PACK_META[stylePack].label}</Badge>
-                  </div>
-                </div>
-                <div className="style-pack-grid">
-                  {(Object.keys(STYLE_PACK_META) as StylePackName[]).map((pack) => (
-                    <button
-                      key={pack}
-                      type="button"
-                      className={`style-pack-card surface-style-card ${stylePack === pack ? "is-active" : ""}`}
-                      onClick={() => handleStylePackChange(pack)}
-                    >
-                      <div className={`surface-style-preview ${pack === "notion" ? "is-flat" : ""}`}>
-                        <div className="surface-style-preview-card is-large" />
-                        <div className="surface-style-preview-row">
-                          <div className="surface-style-preview-card" />
-                          <div className="surface-style-preview-card" />
-                        </div>
-                      </div>
-                      <div className="spc-label">
-                        <div className="spc-label-row">
-                          <span className="spc-name">{STYLE_PACK_META[pack].label}</span>
-                          {STYLE_PACK_META[pack].tier === "pro" ? <Badge tone="neutral">Pro</Badge> : null}
-                        </div>
-                        <span className="spc-desc">{STYLE_PACK_META[pack].description}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
               </section>
 
               <section id="accent-selection" className="doc-section">
@@ -5275,7 +5034,7 @@ export default function App() {
                   <div className="section-heading-row">
                     <div>
                       <h2>Choose an accent color</h2>
-                      <p>Used for primary actions, links, and focus rings. This choice persists across all pages until you change it.</p>
+                      <p>Used for primary actions, links, focus rings, and component highlights. This choice persists across all previews until you change it.</p>
                     </div>
                     <Badge tone="neutral">{accentColor}</Badge>
                   </div>
@@ -5811,7 +5570,7 @@ injectSpeedInsights();`}
                 <h1>Design Tokens</h1>
                 <p className="lead">
                   Every Zephr component is styled through CSS variables generated from design tokens.
-                  These tokens define your color palette, spacing, typography, and more — with one consistent base theme and customizable accents.
+                  These tokens define your color palette, spacing, typography, and more — with one consistent premium baseline and customizable accents.
                 </p>
               </section>
 
@@ -5819,7 +5578,7 @@ injectSpeedInsights();`}
               <section id="how-tokens-work" className="doc-section">
                 <div className="section-heading">
                   <h2>How the token system works</h2>
-                  <p>Three layers transform a style pack into production UI — with zero manual CSS.</p>
+                  <p>Three layers transform design tokens into production UI — with zero manual CSS.</p>
                 </div>
                 <div className="token-flow">
                   <div className="token-flow-step">
@@ -5827,8 +5586,8 @@ injectSpeedInsights();`}
                       <span className="ms" style={{ fontSize: 24 }}>grid_view</span>
                     </div>
                     <div className="token-flow-num">1</div>
-                    <h3>Style Pack</h3>
-                    <p>A JSON object defining every visual decision — colors, fonts, spacing, radii, shadows, motion.</p>
+                    <h3>Design tokens</h3>
+                    <p>A single source of truth defining colors, typography, spacing, radii, shadows, and motion.</p>
                   </div>
                   <div className="token-flow-arrow">→</div>
                   <div className="token-flow-step">
@@ -5846,7 +5605,7 @@ injectSpeedInsights();`}
                     </div>
                     <div className="token-flow-num">3</div>
                     <h3>Components</h3>
-                    <p>Every component reads CSS variables at render time. Change the pack or accent — UI updates instantly.</p>
+                    <p>Every component reads CSS variables at render time. Change the accent — UI updates instantly.</p>
                   </div>
                 </div>
               </section>
@@ -5899,7 +5658,7 @@ injectSpeedInsights();`}
                       <h2>Color Palette</h2>
                       <p>Grouped semantic tokens with light and dark mappings for background, text, accent, and system feedback.</p>
                     </div>
-                    <Badge tone="info">{stylePack}</Badge>
+                    <Badge tone="info">Default theme</Badge>
                   </div>
                 </div>
                 <div className="foundation-color-groups">
@@ -6190,10 +5949,10 @@ injectSpeedInsights();`}
                       <span className="ms" style={{ fontSize: 28 }}>schedule</span>
                     </div>
                     <h3>Consistent visual language</h3>
-                    <p>Shared design tokens and style packs prevent the random look and feel that plagues AI-generated UIs. One accent color, one source of truth.</p>
+                    <p>Shared design tokens prevent the random look and feel that plagues AI-generated UIs. One accent color, one source of truth.</p>
                     <div className="mission-pillar-tags">
                       <span>CSS variables</span>
-                      <span>Style packs</span>
+                      <span>Default theme</span>
                       <span>Dark mode</span>
                     </div>
                   </article>
@@ -6251,7 +6010,7 @@ injectSpeedInsights();`}
                     <div className="vision-dot"></div>
                     <div className="vision-text">
                       <strong>Unified component API</strong>
-                      <p>Single API across light and dark modes with one base theme per style pack.</p>
+                      <p>Single API across light and dark modes with one refined default theme.</p>
                     </div>
                   </div>
                   <div className="vision-item">
@@ -6409,7 +6168,7 @@ injectSpeedInsights();`}
               <section id="api-contract" className="doc-section">
                 <div className="section-heading">
                   <h2>Contract notes</h2>
-                  <p>Additional metadata for runtime compatibility, accessibility, and theme support.</p>
+                  <p>Additional metadata for runtime compatibility, accessibility, and visual system support.</p>
                 </div>
                 <div className="api-meta-grid">
                   <article className="api-meta-card">
@@ -6417,8 +6176,8 @@ injectSpeedInsights();`}
                     <p>{selectedEntry.dependencies.join(", ")}</p>
                   </article>
                   <article className="api-meta-card">
-                    <h3>Theme Support</h3>
-                    <p>Base theme ({stylePack})</p>
+                    <h3>Visual system</h3>
+                    <p>Default Zephr visual system with accent overrides</p>
                   </article>
                   <article className="api-meta-card">
                     <h3>Accessibility</h3>
@@ -7717,6 +7476,7 @@ injectSpeedInsights();`}
           )}
         </main>
 
+        {topTab !== "pages" && (
         <aside className="right-rail">
           <span className="rail-title">On this page</span>
           {topTab === "changelog" && (
@@ -7821,6 +7581,7 @@ injectSpeedInsights();`}
             </>
           )}
         </aside>
+        )}
       </div >
 
       {
