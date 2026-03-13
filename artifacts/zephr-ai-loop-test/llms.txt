@@ -1,0 +1,63 @@
+# Zephr UI — llms.txt
+
+Zephr is a token-native React UI library for AI-assisted SaaS product development.
+Style pack: notion · Accent: #2563eb
+
+## Install
+```
+npm install @zephrui/ui-react @zephrui/core
+# Then import generated tokens in your root layout:
+import 'src/styles/zephr.css';
+```
+
+## Rules
+- Use Zephr components before raw HTML.
+- Never hardcode hex — use `var(--z-color-*)` tokens.
+- Wrap every labeled input in `<FormField label="..." htmlFor="...">...</FormField>`.
+- Use `<LayoutShell>` + `<SidebarNav>` for multi-page layouts.
+- Use `<DataTable columns rows>` for tabular data — pair with `<SearchBox>` and `<FiltersBar>`.
+
+## Component quick-reference
+```tsx
+// Button
+import { Button } from '@zephrui/ui-react';
+<Button variant='primary' size='md'>Save</Button>
+<Button variant='secondary'>Cancel</Button>
+<Button variant='danger'>Delete</Button>
+
+// Badge
+import { Badge } from '@zephrui/ui-react';
+<Badge color='green' variant='lighter' type='dot'>Active</Badge>
+<Badge color='red' variant='filled'>Error</Badge>
+
+// FormField + Input
+import { FormField, Input } from '@zephrui/ui-react';
+<FormField label='Email' htmlFor='email' hint='We will never share this.'>
+  <Input id='email' type='email' value={email} onChange={e => setEmail(e.target.value)} />
+</FormField>
+
+// DataTable
+import { DataTable } from '@zephrui/ui-react';
+const columns = [
+  { id: 'name', header: 'Name', cell: (row) => row.name },
+  { id: 'status', header: 'Status', cell: (row) => <Badge color='green' variant='lighter'>{row.status}</Badge> },
+];
+<DataTable columns={columns} rows={data} onRowClick={openDetail} />
+
+// LayoutShell
+import { LayoutShell, SidebarNav, Navbar } from '@zephrui/ui-react';
+<LayoutShell
+  navbar={<Navbar brand='MyApp' />}
+  sidebar={<SidebarNav items={navItems} activeId={currentPage} />}
+>
+  {children}
+</LayoutShell>
+
+// ModalDialog
+import { ModalDialog, Button } from '@zephrui/ui-react';
+<ModalDialog open={open} onClose={() => setOpen(false)} title='Confirm delete'
+  footer={<Button variant='danger' onClick={handleDelete}>Delete</Button>}
+>
+  This action cannot be undone.
+</ModalDialog>
+```
