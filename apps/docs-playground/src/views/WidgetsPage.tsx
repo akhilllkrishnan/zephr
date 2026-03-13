@@ -8,7 +8,6 @@ import {
   AssetReviewWidget,
   AuditTrailWidget,
   AutomationRunsWidget,
-  Badge,
   BillingRecoveryWidget,
   BillingUsageWidget,
   ChatPanelWidget,
@@ -19,7 +18,6 @@ import {
   EventSchedulerWidget,
   FeedbackInboxWidget,
   GoalTrackerWidget,
-  Input,
   IncidentDigestWidget,
   IncidentResponseWidget,
   IntegrationStatusWidget,
@@ -34,20 +32,43 @@ import {
   QuickActionsWidget,
   ReleaseNotesWidget,
   ReleaseChecklistWidget,
+  ReferralRewardWidget,
   RevenueSnapshotWidget,
   ReviewInboxWidget,
   SecurityAccessWidget,
   SettingsPanelWidget,
+  SetupJourneyWidget,
   SupportQueueWidget,
   TeamPulseWidget,
   TeamDirectoryWidget,
+  TravelItineraryWidget,
   UploadQueueWidget,
+  WelcomeProfileWidget,
+  MarketingInsightsWidget,
+  ConversionScoreWidget,
+  PromptComposerWidget,
+  DeliveryTimelineWidget,
   CommentThreadWidget,
   ExperimentResultsWidget,
+  DataTableWidget,
+  StatusPageWidget,
+  NavbarWidget,
+  DropdownMenuWidget,
+  DatePickerWidget,
+  FileManagerWidget,
+  MetricsDashboardWidget,
+  UserProfileCardWidget,
+  PricingTierWidget,
+  ChangelogFeedWidget,
+  Input,
+  Tabs,
+  type TabItem,
   type WidgetSurface
 } from "@zephrui/ui-react";
+import { widgetsV2CatalogIds } from "./widgetsCatalog";
 
 type WidgetCategory = "all" | "workflow" | "forms" | "team" | "settings";
+type ShowcaseVersion = "v1" | "v2";
 
 interface WidgetEntry {
   id: string;
@@ -56,11 +77,16 @@ interface WidgetEntry {
   category: WidgetCategory;
   featured: boolean;
   searchText: string;
-  tags: string[];
-  badge: ReactNode;
   preview: ReactNode;
   code: string;
 }
+
+const WIDGET_CATEGORY_LABELS: Record<Exclude<WidgetCategory, "all">, string> = {
+  workflow: "Workflow",
+  forms: "Forms",
+  team: "Team",
+  settings: "Settings",
+};
 
 function widgetSnippet(widgetName: string, propsBlock: string): string {
   return `import { ${widgetName} } from "@zephrui/ui-react";
@@ -90,12 +116,26 @@ function PreviewCodeBlock({
     <div className={`pcb-root${className ? ` ${className}` : ""}`}>
       <div className="pcb-toolbar">
         <button type="button" className={`pcb-tab${tab === "preview" ? " active" : ""}`} onClick={() => setTab("preview")}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
           Preview
         </button>
         <button type="button" className={`pcb-tab${tab === "code" ? " active" : ""}`} onClick={() => setTab("code")}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M16 18l6-6-6-6" />
+            <path d="M8 6l-6 6 6 6" />
+          </svg>
           Code
         </button>
-        <button type="button" className="pcb-copy" onClick={onCopy}>Copy</button>
+        <button type="button" className="pcb-copy" onClick={onCopy}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copy
+        </button>
       </div>
       {tab === "preview" ? <div className="pcb-preview-area">{preview}</div> : <pre className="pcb-code-area">{code}</pre>}
     </div>
@@ -106,33 +146,225 @@ function WidgetGalleryCard({
   widget,
   onCopy,
   featured = false,
+  showcaseVersion = "v1",
 }: {
   widget: WidgetEntry;
   onCopy: () => void;
   featured?: boolean;
+  showcaseVersion?: ShowcaseVersion;
 }) {
   return (
-    <article id={widget.id} className={`widget-gallery-card${featured ? " is-featured" : ""}`}>
-      <div className="widget-gallery-head">
-        <div>
+    <article
+      id={widget.id}
+      className={`widget-gallery-card${featured ? " is-featured" : ""}${showcaseVersion === "v2" ? " widget-gallery-card--v2" : ""}`}
+    >
+      <div className="widget-gallery-meta">
+        <div className="widget-gallery-head">
           <h3>{widget.title}</h3>
           <p>{widget.description}</p>
-          <div className="widget-tag-row" aria-label={`${widget.title} tags`}>
-            {widget.tags.map((tag) => (
-              <span key={tag} className="widget-tag">{tag}</span>
-            ))}
-          </div>
         </div>
-        {widget.badge}
       </div>
-      <PreviewCodeBlock
-        className={`widget-preview-block${featured ? " is-featured" : ""}`}
-        preview={<div className={`widget-preview-stage${featured ? " is-featured" : ""}`}>{widget.preview}</div>}
-        code={widget.code}
-        onCopy={onCopy}
-      />
+      <div className="widget-gallery-body">
+        <PreviewCodeBlock
+          preview={widget.preview}
+          code={widget.code}
+          onCopy={onCopy}
+        />
+      </div>
     </article>
   );
+}
+
+function WidgetSpotlightCard({ widget }: { widget: WidgetEntry }) {
+  return (
+    <a className="showcase-v2-card" href={`#${widget.id}`}>
+      <div className="showcase-v2-card-stage">
+        <span className="showcase-v2-card-eyebrow">{WIDGET_CATEGORY_LABELS[widget.category]}</span>
+        <div className="showcase-v2-card-preview">
+          <WidgetPreviewArt widget={widget} />
+        </div>
+      </div>
+      <div className="showcase-v2-card-copy">
+        <h3>{widget.title}</h3>
+        <p>{widget.description}</p>
+      </div>
+    </a>
+  );
+}
+
+function WidgetPreviewArt({ widget }: { widget: WidgetEntry }) {
+  switch (widget.id) {
+    case "widget-navbar":
+      return (
+        <div className="widget-preview-art widget-preview-art--navbar" aria-hidden="true">
+          <div className="widget-preview-toolbar">
+            <span className="widget-preview-brand" />
+            <span className="widget-preview-search" />
+            <div className="widget-preview-toolbar-group">
+              <span className="widget-preview-chip" />
+              <span className="widget-preview-avatar" />
+            </div>
+          </div>
+          <div className="widget-preview-tabs">
+            <span className="widget-preview-tab widget-preview-tab--active" />
+            <span className="widget-preview-tab" />
+            <span className="widget-preview-tab" />
+          </div>
+        </div>
+      );
+    case "widget-command-palette":
+      return (
+        <div className="widget-preview-art widget-preview-art--palette" aria-hidden="true">
+          <div className="widget-preview-shell">
+            <div className="widget-preview-toolbar">
+              <span className="widget-preview-search widget-preview-search--wide" />
+              <span className="widget-preview-kbd" />
+            </div>
+            <div className="widget-preview-list">
+              <span className="widget-preview-list-row" />
+              <span className="widget-preview-list-row widget-preview-list-row--active" />
+              <span className="widget-preview-list-row" />
+              <span className="widget-preview-list-row" />
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-data-table":
+      return (
+        <div className="widget-preview-art widget-preview-art--table" aria-hidden="true">
+          <div className="widget-preview-toolbar">
+            <div className="widget-preview-toolbar-group">
+              <span className="widget-preview-chip" />
+              <span className="widget-preview-chip" />
+            </div>
+            <span className="widget-preview-button" />
+          </div>
+          <div className="widget-preview-shell">
+            <div className="widget-preview-table widget-preview-table--wide">
+              <span className="widget-preview-table-row widget-preview-table-row--head" />
+              <span className="widget-preview-table-row" />
+              <span className="widget-preview-table-row" />
+              <span className="widget-preview-table-row" />
+              <span className="widget-preview-table-row" />
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-prompt-composer":
+      return (
+        <div className="widget-preview-art widget-preview-art--composer" aria-hidden="true">
+          <div className="widget-preview-shell">
+            <span className="widget-preview-input widget-preview-input--hero" />
+            <div className="widget-preview-toolbar">
+              <div className="widget-preview-toolbar-group">
+                <span className="widget-preview-button widget-preview-button--icon" />
+                <span className="widget-preview-chip widget-preview-chip--label" />
+              </div>
+              <div className="widget-preview-toolbar-group">
+                <span className="widget-preview-chip" />
+                <span className="widget-preview-button widget-preview-button--dark" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-team-directory":
+      return (
+        <div className="widget-preview-art widget-preview-art--directory" aria-hidden="true">
+          <div className="widget-preview-shell widget-preview-shell--split">
+            <div className="widget-preview-list widget-preview-list--people">
+              <span className="widget-preview-person-row widget-preview-person-row--active" />
+              <span className="widget-preview-person-row" />
+              <span className="widget-preview-person-row" />
+              <span className="widget-preview-person-row" />
+            </div>
+            <div className="widget-preview-rail">
+              <span className="widget-preview-heading" />
+              <span className="widget-preview-detail-line" />
+              <span className="widget-preview-detail-line widget-preview-detail-line--short" />
+              <span className="widget-preview-detail-line" />
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-settings-panel":
+      return (
+        <div className="widget-preview-art widget-preview-art--settings" aria-hidden="true">
+          <div className="widget-preview-shell">
+            <div className="widget-preview-list widget-preview-list--settings">
+              <span className="widget-preview-setting-row" />
+              <span className="widget-preview-setting-row" />
+              <span className="widget-preview-setting-row" />
+              <span className="widget-preview-setting-row" />
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-support-queue":
+      return (
+        <div className="widget-preview-art widget-preview-art--support" aria-hidden="true">
+          <div className="widget-preview-shell widget-preview-shell--split">
+            <div className="widget-preview-list widget-preview-list--support">
+              <span className="widget-preview-ticket-row widget-preview-ticket-row--active" />
+              <span className="widget-preview-ticket-row" />
+              <span className="widget-preview-ticket-row" />
+            </div>
+            <div className="widget-preview-rail">
+              <span className="widget-preview-pillline" />
+              <span className="widget-preview-detail-line" />
+              <span className="widget-preview-detail-line" />
+              <div className="widget-preview-actions">
+                <span className="widget-preview-button" />
+                <span className="widget-preview-button widget-preview-button--dark" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-api-keys":
+      return (
+        <div className="widget-preview-art widget-preview-art--api" aria-hidden="true">
+          <div className="widget-preview-toolbar">
+            <span className="widget-preview-chip widget-preview-chip--label" />
+            <span className="widget-preview-button widget-preview-button--dark" />
+          </div>
+          <div className="widget-preview-shell">
+            <div className="widget-preview-list widget-preview-list--api">
+              <span className="widget-preview-token-row" />
+              <span className="widget-preview-token-row" />
+              <span className="widget-preview-token-row" />
+            </div>
+          </div>
+        </div>
+      );
+    case "widget-analytics-overview":
+      return (
+        <div className="widget-preview-art widget-preview-art--analytics" aria-hidden="true">
+          <div className="widget-preview-metric-grid">
+            <span className="widget-preview-metric-card" />
+            <span className="widget-preview-metric-card" />
+            <span className="widget-preview-metric-card" />
+          </div>
+          <div className="widget-preview-shell">
+            <span className="widget-preview-graph" />
+            <div className="widget-preview-table">
+              <span className="widget-preview-table-row" />
+              <span className="widget-preview-table-row" />
+            </div>
+          </div>
+        </div>
+      );
+    default:
+      return (
+        <div className="widget-preview-art" aria-hidden="true">
+          <div className="widget-preview-shell">
+            <span className="widget-preview-heading" />
+            <span className="widget-preview-detail-line" />
+            <span className="widget-preview-detail-line widget-preview-detail-line--short" />
+          </div>
+        </div>
+      );
+  }
 }
 
 const CATEGORY_OPTIONS: Array<{ value: WidgetCategory; label: string }> = [
@@ -145,12 +377,13 @@ const CATEGORY_OPTIONS: Array<{ value: WidgetCategory; label: string }> = [
 
 interface WidgetsPageProps {
   widgetSurface: WidgetSurface;
+  showcaseVersion: ShowcaseVersion;
   onCopy: (label: string, value: string) => void;
 }
 
-export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps) {
-  const [activeCategory, setActiveCategory] = useState<WidgetCategory>("all");
+export default function WidgetsPage({ widgetSurface, showcaseVersion, onCopy }: WidgetsPageProps) {
   const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<WidgetCategory>("all");
 
   const widgetEntries = useMemo<WidgetEntry[]>(() => [
     {
@@ -160,8 +393,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: true,
       searchText: "modal approval dialog publish confirm workflow release review",
-      tags: ["modal", "approval", "workflow"],
-      badge: <Badge color="orange" variant="lighter">Workflow</Badge>,
       preview: <ApprovalModalWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ApprovalModalWidget", `      title="Approval modal"\n      subtitle="Review contract changes"\n      confirmLabel="Publish changes"`)
     },
@@ -172,8 +403,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: true,
       searchText: "form brief intake ai project request textarea goals context",
-      tags: ["form", "brief", "intake"],
-      badge: <Badge color="sky" variant="lighter">Forms</Badge>,
       preview: <ProjectBriefFormWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ProjectBriefFormWidget", `      title="Project brief"\n      subtitle="Collect the inputs before your AI generates the first screen."`)
     },
@@ -184,8 +413,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: true,
       searchText: "progress launch shipping checklist milestones qa project tracker",
-      tags: ["progress", "launch", "tracker"],
-      badge: <Badge color="green" variant="lighter">Progress</Badge>,
       preview: <LaunchProgressWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("LaunchProgressWidget", `      title="Launch progress"\n      subtitle="Track remaining work across design, QA, and customer-facing comms."`)
     },
@@ -196,8 +423,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: true,
       searchText: "team list directory members people avatars roles staffing availability",
-      tags: ["directory", "people", "team"],
-      badge: <Badge color="sky" variant="lighter">Team</Badge>,
       preview: <TeamDirectoryWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("TeamDirectoryWidget", `      title="Team list"\n      subtitle="Who is on the project, what they own, and whether they are available right now."`)
     },
@@ -208,8 +433,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "file upload drag drop progress queue media assets csv publish",
-      tags: ["upload", "files", "queue"],
-      badge: <Badge color="purple" variant="lighter">Assets</Badge>,
       preview: <UploadQueueWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("UploadQueueWidget", `      title="File upload"\n      subtitle="Monitor files, progress, and publish state from a single queue."`)
     },
@@ -220,8 +443,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "chat support assistant conversation thread reply customer success",
-      tags: ["chat", "support", "assistant"],
-      badge: <Badge color="teal" variant="lighter">Live</Badge>,
       preview: <ChatPanelWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ChatPanelWidget", `      title="Support chat"\n      subtitle="Compact assistant thread with recent context and a fast reply field."`)
     },
@@ -232,8 +453,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "invite members team access roles admin email tag input collaboration",
-      tags: ["invite", "roles", "access"],
-      badge: <Badge color="purple" variant="lighter">Admin</Badge>,
       preview: <InviteMembersWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("InviteMembersWidget", `      title="Invite team members"\n      subtitle="Add collaborators, assign a role, and send access in one step."`)
     },
@@ -244,8 +463,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "settings preferences toggles save reset controls workspace admin",
-      tags: ["settings", "toggles", "preferences"],
-      badge: <Badge tone="neutral">Settings</Badge>,
       preview: <SettingsPanelWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("SettingsPanelWidget", `      title="Workspace settings"\n      subtitle="Common account controls that combine switches, status, and action buttons."`)
     },
@@ -256,8 +473,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "notifications feed inbox alerts mentions publish approvals release updates",
-      tags: ["notifications", "feed", "alerts"],
-      badge: <Badge color="blue" variant="lighter">Inbox</Badge>,
       preview: <NotificationFeedWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("NotificationFeedWidget", `      title="Notifications feed"\n      subtitle="A mixed feed for approvals, releases, mentions, and customer-facing alerts."`)
     },
@@ -268,8 +483,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "security access sso scim audit logging settings admin compliance",
-      tags: ["security", "sso", "audit"],
-      badge: <Badge color="purple" variant="lighter">Admin</Badge>,
       preview: <SecurityAccessWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("SecurityAccessWidget", `      title="Security & access"\n      subtitle="A compact admin surface for SSO, audit logging, and role-sensitive controls."`)
     },
@@ -280,8 +493,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "payment methods billing cards invoices subscriptions finance",
-      tags: ["billing", "payments", "cards"],
-      badge: <Badge tone="neutral">Billing</Badge>,
       preview: <PaymentMethodsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("PaymentMethodsWidget", `      title="Payment methods"\n      subtitle="A reusable billing block for cards, invoices, and plan-level payment preferences."`)
     },
@@ -292,8 +503,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "activity timeline feed launches deploys edits history collaboration",
-      tags: ["timeline", "activity", "history"],
-      badge: <Badge color="gray" variant="stroke">Timeline</Badge>,
       preview: <ActivityTimelineWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ActivityTimelineWidget", `      title="Recent activity"\n      subtitle="A compact timeline for launches, merges, comments, and operational updates."`)
     },
@@ -304,8 +513,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "command palette search navigation shortcuts global actions",
-      tags: ["command", "search", "shortcuts"],
-      badge: <Badge color="blue" variant="lighter">Action</Badge>,
       preview: <CommandPaletteWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("CommandPaletteWidget", `      title="Command palette"\n      subtitle="A fast command surface for global navigation, actions, and recent entities."`)
     },
@@ -316,8 +523,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "kanban board tasks backlog review shipped project management",
-      tags: ["kanban", "tasks", "board"],
-      badge: <Badge color="orange" variant="lighter">Board</Badge>,
       preview: <KanbanBoardWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("KanbanBoardWidget", `      title="Kanban board"\n      subtitle="A compact task board for design, review, and shipping workflows."`)
     },
@@ -328,8 +533,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "scheduler calendar event meeting launch guests attendees",
-      tags: ["scheduler", "calendar", "meeting"],
-      badge: <Badge color="teal" variant="lighter">Calendar</Badge>,
       preview: <EventSchedulerWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("EventSchedulerWidget", `      title="Event scheduler"\n      subtitle="A small scheduling block for launches, demos, or stakeholder reviews."`)
     },
@@ -340,8 +543,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "comment thread discussion feedback review qa replies",
-      tags: ["comments", "review", "feedback"],
-      badge: <Badge color="gray" variant="stroke">Thread</Badge>,
       preview: <CommentThreadWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("CommentThreadWidget", `      title="Comment thread"\n      subtitle="A review thread for design QA, docs editing, or launch feedback."`)
     },
@@ -352,8 +553,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "plan comparison pricing upgrade tiers seats billing",
-      tags: ["pricing", "upgrade", "plans"],
-      badge: <Badge tone="neutral">Pricing</Badge>,
       preview: <PlanComparisonWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("PlanComparisonWidget", `      title="Plan comparison"\n      subtitle="A compact pricing widget for upgrades, workspace seats, and feature access."`)
     },
@@ -364,8 +563,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "asset review media content approval campaign images video",
-      tags: ["assets", "review", "media"],
-      badge: <Badge color="purple" variant="lighter">Review</Badge>,
       preview: <AssetReviewWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("AssetReviewWidget", `      title="Asset review"\n      subtitle="A media approval widget for content, homepage assets, and campaign files."`)
     },
@@ -376,8 +573,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "api keys developer access tokens rotate scopes webhooks",
-      tags: ["api", "keys", "developer"],
-      badge: <Badge tone="neutral">Settings</Badge>,
       preview: <ApiKeysWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ApiKeysWidget", `      title="API keys"\n      subtitle="Review scopes, generate internal tokens, and rotate credentials safely."`)
     },
@@ -388,8 +583,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: true,
       searchText: "support queue tickets customer ops triage priority owner",
-      tags: ["support", "queue", "triage"],
-      badge: <Badge color="orange" variant="lighter">Ops</Badge>,
       preview: <SupportQueueWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("SupportQueueWidget", `      title="Support queue"\n      subtitle="Prioritize customer issues, assign owners, and track response urgency."`)
     },
@@ -400,8 +593,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "goals okr tracker progress planning quarterly metrics",
-      tags: ["goals", "okr", "planning"],
-      badge: <Badge color="teal" variant="lighter">Goals</Badge>,
       preview: <GoalTrackerWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("GoalTrackerWidget", `      title="Goal tracker"\n      subtitle="Track quarter goals, current confidence, and what is blocking the metric."`)
     },
@@ -412,8 +603,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "integrations status health webhooks sync dependencies vercel supabase",
-      tags: ["integrations", "status", "health"],
-      badge: <Badge color="blue" variant="lighter">Status</Badge>,
       preview: <IntegrationStatusWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("IntegrationStatusWidget", `      title="Integration status"\n      subtitle="See what third-party systems are healthy, degraded, or awaiting review."`)
     },
@@ -424,8 +613,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "access requests roles permissions guest admin audit approvals",
-      tags: ["access", "permissions", "review"],
-      badge: <Badge color="purple" variant="lighter">Admin</Badge>,
       preview: <AccessRequestsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("AccessRequestsWidget", `      title="Access requests"\n      subtitle="Review elevated permissions, guest invites, and audit-sensitive access changes."`)
     },
@@ -436,8 +623,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "license activations seats usage resets customers commercial billing",
-      tags: ["licensing", "seats", "activations"],
-      badge: <Badge tone="neutral">Billing</Badge>,
       preview: <LicenseActivationsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("LicenseActivationsWidget", `      title="License activations"\n      subtitle="Track seats, reset requests, and current activation health across customers."`)
     },
@@ -448,8 +633,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "experiment results ab test confidence rollout winner growth",
-      tags: ["experiments", "growth", "rollout"],
-      badge: <Badge color="green" variant="lighter">Growth</Badge>,
       preview: <ExperimentResultsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ExperimentResultsWidget", `      title="Experiment results"\n      subtitle="Review confidence, uplift, and rollout readiness before shipping the winner."`)
     },
@@ -460,8 +643,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "release notes changelog launch communication publish copy",
-      tags: ["release", "changelog", "comms"],
-      badge: <Badge color="blue" variant="lighter">Comms</Badge>,
       preview: <ReleaseNotesWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ReleaseNotesWidget", `      title="Release notes"\n      subtitle="Draft launch communication and choose where the update should go live."`)
     },
@@ -472,8 +653,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: true,
       searchText: "analytics overview dashboard kpi retention growth metrics product",
-      tags: ["analytics", "kpi", "growth"],
-      badge: <Badge color="blue" variant="lighter">Metrics</Badge>,
       preview: <AnalyticsOverviewWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("AnalyticsOverviewWidget", `      title="Analytics overview"\n      subtitle="Keep the top-line product and growth signals visible in one compact widget."`)
     },
@@ -484,8 +663,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "deals pipeline crm opportunities revenue sales commercial arr",
-      tags: ["crm", "pipeline", "revenue"],
-      badge: <Badge color="teal" variant="lighter">CRM</Badge>,
       preview: <DealsPipelineWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("DealsPipelineWidget", `      title="Deals pipeline"\n      subtitle="Review opportunity stage, ownership, and ARR context in one compact workspace block."`)
     },
@@ -496,8 +673,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: true,
       searchText: "billing recovery dunning failed invoices retry payments revenue",
-      tags: ["billing", "recovery", "dunning"],
-      badge: <Badge color="yellow" variant="lighter">Billing</Badge>,
       preview: <BillingRecoveryWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("BillingRecoveryWidget", `      title="Billing recovery"\n      subtitle="Prioritize failed charges and the next intervention path before revenue slips."`)
     },
@@ -508,8 +683,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "automation runs jobs workflows retries webhooks scheduled agents",
-      tags: ["automation", "jobs", "runs"],
-      badge: <Badge color="purple" variant="lighter">Ops</Badge>,
       preview: <AutomationRunsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("AutomationRunsWidget", `      title="Automation runs"\n      subtitle="Monitor scheduled jobs, retries, and workflow health before your team gets blocked."`)
     },
@@ -520,8 +693,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "audit trail compliance access billing roles admin history",
-      tags: ["audit", "compliance", "history"],
-      badge: <Badge tone="neutral">Audit</Badge>,
       preview: <AuditTrailWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("AuditTrailWidget", `      title="Audit trail"\n      subtitle="Track sensitive admin and billing events without opening a separate audit screen."`)
     },
@@ -532,8 +703,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "forms",
       featured: false,
       searchText: "content calendar publishing launch campaign release notes schedule",
-      tags: ["content", "calendar", "publishing"],
-      badge: <Badge color="blue" variant="lighter">Content</Badge>,
       preview: <ContentCalendarWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ContentCalendarWidget", `      title="Content calendar"\n      subtitle="Coordinate launch content, homepage updates, and release-notes publishing in one schedule-aware block."`)
     },
@@ -544,8 +713,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: true,
       searchText: "incident response reliability mitigation outage status postmortem",
-      tags: ["incident", "reliability", "response"],
-      badge: <Badge color="red" variant="lighter">P1</Badge>,
       preview: <IncidentResponseWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("IncidentResponseWidget", `      title="Incident response"\n      subtitle="Keep mitigation steps, owner handoff, and incident state visible while the team is in flight."`)
     },
@@ -556,8 +723,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "feedback inbox customer insights themes product requests research",
-      tags: ["feedback", "insights", "product"],
-      badge: <Badge color="teal" variant="lighter">Insights</Badge>,
       preview: <FeedbackInboxWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("FeedbackInboxWidget", `      title="Feedback inbox"\n      subtitle="Collect qualitative product feedback, group themes, and route follow-up without losing the thread."`)
     },
@@ -568,8 +733,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "revenue snapshot kpi target growth finance weekly metrics",
-      tags: ["revenue", "kpi", "finance"],
-      badge: <Badge color="green" variant="lighter">Metrics</Badge>,
       preview: <RevenueSnapshotWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("RevenueSnapshotWidget", `      title="Revenue snapshot"\n      subtitle="Track the top-line commercial metrics that matter every week."`)
     },
@@ -580,8 +743,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "release checklist launch qa publish readiness operations ship",
-      tags: ["release", "checklist", "launch"],
-      badge: <Badge color="orange" variant="lighter">Launch</Badge>,
       preview: <ReleaseChecklistWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ReleaseChecklistWidget", `      title="Release checklist"\n      subtitle="Track the final tasks that stand between staging and ship."`)
     },
@@ -592,8 +753,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "team pulse staffing availability owners collaboration people",
-      tags: ["team", "staffing", "availability"],
-      badge: <Badge color="sky" variant="lighter">People</Badge>,
       preview: <TeamPulseWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("TeamPulseWidget", `      title="Team pulse"\n      subtitle="Track current staffing, availability, and ownership across your workspace."`)
     },
@@ -604,8 +763,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "settings",
       featured: false,
       searchText: "billing usage spend budget monthly finance limits alerts",
-      tags: ["billing", "usage", "budget"],
-      badge: <Badge tone="neutral">Billing</Badge>,
       preview: <BillingUsageWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("BillingUsageWidget", `      title="Billing usage"\n      subtitle="Keep spend, limits, and billing alerts visible without opening a separate dashboard."`)
     },
@@ -616,8 +773,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "customer health success renewals risk accounts owner churn",
-      tags: ["customers", "health", "success"],
-      badge: <Badge color="teal" variant="lighter">CS</Badge>,
       preview: <CustomerHealthWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("CustomerHealthWidget", `      title="Customer health"\n      subtitle="Review account health, ownership, and renewal risk in one compact block."`)
     },
@@ -628,8 +783,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "incident digest reliability outage updates severity escalation",
-      tags: ["incident", "digest", "reliability"],
-      badge: <Badge color="red" variant="lighter">Reliability</Badge>,
       preview: <IncidentDigestWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("IncidentDigestWidget", `      title="Incident digest"\n      subtitle="Summarize the current incident, severity, and the operator update stream."`)
     },
@@ -640,8 +793,6 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "team",
       featured: false,
       searchText: "review inbox approvals priorities queue collaboration tasks",
-      tags: ["review", "queue", "approvals"],
-      badge: <Badge color="purple" variant="lighter">Review</Badge>,
       preview: <ReviewInboxWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("ReviewInboxWidget", `      title="Review inbox"\n      subtitle="Prioritize the items that need team review before shipping."`)
     },
@@ -652,85 +803,304 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
       category: "workflow",
       featured: false,
       searchText: "quick actions commands operators shortcuts internal tools",
-      tags: ["actions", "shortcuts", "ops"],
-      badge: <Badge color="blue" variant="lighter">Actions</Badge>,
       preview: <QuickActionsWidget surface={widgetSurface} className="widget-card-surface" />,
       code: widgetSnippet("QuickActionsWidget", `      title="Quick actions"\n      subtitle="Collect the highest-frequency internal tools into one compact action surface."`)
+    },
+    {
+      id: "widget-welcome-profile",
+      title: "Welcome profile",
+      description: "A polished onboarding card for avatar upload, display-name setup, and clean first-run handoff.",
+      category: "forms",
+      featured: true,
+      searchText: "welcome profile onboarding avatar upload display name account setup first run",
+      preview: <WelcomeProfileWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("WelcomeProfileWidget", `      title="Welcome to Zephr"\n      subtitle="Add your profile details before entering the workspace."`)
+    },
+    {
+      id: "widget-referral-reward",
+      title: "Referral reward",
+      description: "A referral and credits block with invite link, incentive explanation, and copy-first CTA.",
+      category: "workflow",
+      featured: true,
+      searchText: "referral reward invite credits growth sharing link copy acquisition",
+      preview: <ReferralRewardWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("ReferralRewardWidget", `      title="Refer & earn"\n      subtitle="Reward users for sharing the product with friends or teammates."`)
+    },
+    {
+      id: "widget-setup-journey",
+      title: "Setup journey",
+      description: "A step-driven setup widget for workspace activation, company setup, and first-run success paths.",
+      category: "workflow",
+      featured: true,
+      searchText: "setup journey checklist onboarding progress activation steps company resource service",
+      preview: <SetupJourneyWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("SetupJourneyWidget", `      title="Let’s start now"\n      subtitle="Guide new users through workspace setup without losing momentum."`)
+    },
+    {
+      id: "widget-delivery-timeline",
+      title: "Delivery timeline",
+      description: "A clean shipment or order-progress widget with timeline stages, status badge, and feedback CTA.",
+      category: "workflow",
+      featured: true,
+      searchText: "delivery timeline order progress shipping tracking logistics handoff rating",
+      preview: <DeliveryTimelineWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("DeliveryTimelineWidget", `      title="Order timeline"\n      subtitle="Track shipping stages and prompt customers for feedback at the right moment."`)
+    },
+    {
+      id: "widget-travel-itinerary",
+      title: "Travel itinerary",
+      description: "A route and itinerary widget for trips, multi-leg travel, and schedule-heavy planning flows.",
+      category: "workflow",
+      featured: true,
+      searchText: "travel itinerary trip route flights schedule passengers timeline booking",
+      preview: <TravelItineraryWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("TravelItineraryWidget", `      title="Your trip"\n      subtitle="Show route legs, passenger counts, and departure detail in one compact view."`)
+    },
+    {
+      id: "widget-prompt-composer",
+      title: "Prompt composer",
+      description: "A premium AI composer surface with attachments, mode selector, microphone input, and send action.",
+      category: "forms",
+      featured: true,
+      searchText: "prompt composer ai input attachments microphone mode selector brainwave inspiration",
+      preview: <PromptComposerWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("PromptComposerWidget", `      title="Prompt composer"\n      subtitle="Compose richer AI instructions with attachments, modes, and voice-ready actions."`)
+    },
+    {
+      id: "widget-conversion-score",
+      title: "Conversion score",
+      description: "A focused scorecard for audit-style feedback, severity ranking, and prioritized UX recommendations.",
+      category: "settings",
+      featured: true,
+      searchText: "conversion score audit ux review scorecard recommendations impact analysis",
+      preview: <ConversionScoreWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("ConversionScoreWidget", `      title="Conversion score"\n      subtitle="Explain UX issues in ranked order with a single top-line health score."`)
+    },
+    {
+      id: "widget-marketing-insights",
+      title: "Marketing insights",
+      description: "A premium metrics block for channel performance, device split, and live campaign readouts.",
+      category: "settings",
+      featured: true,
+      searchText: "marketing insights analytics channels device traffic performance campaigns metrics",
+      preview: <MarketingInsightsWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("MarketingInsightsWidget", `      title="Marketing insights"\n      subtitle="Track channel performance and device trends in one premium analytics surface."`)
+    },
+    {
+      id: "widget-data-table",
+      title: "Data table",
+      description: "A sortable, paginated table for structured data with status badges and actions.",
+      category: "workflow",
+      featured: true,
+      searchText: "data table sort paginate transactions list grid rows columns",
+      preview: <DataTableWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("DataTableWidget", `      title="Recent transactions"\n      subtitle="A sortable overview of the latest entries."`)
+    },
+    {
+      id: "widget-status-page",
+      title: "Status page",
+      description: "Service health dashboard showing uptime, degraded services, and status indicators.",
+      category: "settings",
+      featured: true,
+      searchText: "status page uptime health services operational degraded monitor incidents",
+      preview: <StatusPageWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("StatusPageWidget", `      title="System status"\n      subtitle="All services are operating normally."`)
+    },
+    {
+      id: "widget-navbar",
+      title: "Navigation bar",
+      description: "Responsive top navigation with links, search trigger, and avatar.",
+      category: "workflow",
+      featured: false,
+      searchText: "navbar navigation header menu topbar links responsive avatar search",
+      preview: <NavbarWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("NavbarWidget", `      title="Navigation bar"\n      subtitle="Responsive top navigation with actions."`)
+    },
+    {
+      id: "widget-dropdown-menu",
+      title: "Dropdown menu",
+      description: "Contextual action menus with keyboard shortcuts and danger zone separators.",
+      category: "workflow",
+      featured: false,
+      searchText: "dropdown menu context actions select shortcuts popover overlay",
+      preview: <DropdownMenuWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("DropdownMenuWidget", `      title="Dropdown menu"\n      subtitle="Contextual action menus and selects."`)
+    },
+    {
+      id: "widget-date-picker",
+      title: "Date picker",
+      description: "Calendar-based date selector with today highlight, selection state, and month navigation.",
+      category: "forms",
+      featured: true,
+      searchText: "date picker calendar month day select schedule booking time",
+      preview: <DatePickerWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("DatePickerWidget", `      title="Date picker"\n      subtitle="Calendar-based date selection."`)
+    },
+    {
+      id: "widget-file-manager",
+      title: "File manager",
+      description: "Browse, upload, and manage project files with type indicators and metadata.",
+      category: "forms",
+      featured: false,
+      searchText: "file manager browser upload download folder documents assets storage",
+      preview: <FileManagerWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("FileManagerWidget", `      title="File manager"\n      subtitle="Browse and manage project files."`)
+    },
+    {
+      id: "widget-metrics-dashboard",
+      title: "Metrics dashboard",
+      description: "KPI cards with real-time values, deltas, and trend indicators.",
+      category: "workflow",
+      featured: true,
+      searchText: "metrics dashboard kpi analytics revenue users churn performance indicators",
+      preview: <MetricsDashboardWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("MetricsDashboardWidget", `      title="Key metrics"\n      subtitle="Real-time performance indicators."`)
+    },
+    {
+      id: "widget-user-profile",
+      title: "User profile",
+      description: "Account profile card with avatar, details, and quick actions.",
+      category: "team",
+      featured: false,
+      searchText: "user profile account card avatar details settings preferences identity",
+      preview: <UserProfileCardWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("UserProfileCardWidget", `      title="Profile"\n      subtitle="Manage your account details and preferences."`)
+    },
+    {
+      id: "widget-pricing-tier",
+      title: "Pricing tier",
+      description: "Product pricing card with feature list, price display, and conversion actions.",
+      category: "forms",
+      featured: true,
+      searchText: "pricing plan tier subscription billing features comparison upgrade",
+      preview: <PricingTierWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("PricingTierWidget", `      title="Pro plan"\n      subtitle="Everything you need to scale your product."`)
+    },
+    {
+      id: "widget-changelog-feed",
+      title: "Changelog feed",
+      description: "Version changelog with release types, dates, and descriptions.",
+      category: "workflow",
+      featured: false,
+      searchText: "changelog feed releases updates versions history improvements features fixes",
+      preview: <ChangelogFeedWidget surface={widgetSurface} className="widget-card-surface" />,
+      code: widgetSnippet("ChangelogFeedWidget", `      title="Changelog"\n      subtitle="Recent updates and improvements."`)
     }
   ], [widgetSurface]);
 
-  const visibleWidgetEntries = useMemo(() => {
+  const queryFilteredEntries = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return widgetEntries.filter((entry) => {
-      const categoryMatch = activeCategory === "all" || entry.category === activeCategory;
-      if (!categoryMatch) return false;
-      if (!normalized) return true;
-      return `${entry.title} ${entry.description} ${entry.searchText}`.toLowerCase().includes(normalized);
-    });
-  }, [activeCategory, query, widgetEntries]);
+    if (!normalized) return widgetEntries;
+    return widgetEntries.filter((entry) =>
+      `${entry.title} ${entry.description} ${entry.searchText}`.toLowerCase().includes(normalized)
+    );
+  }, [query, widgetEntries]);
 
-  const featuredWidgetEntries = useMemo(() => visibleWidgetEntries.filter((entry) => entry.featured), [visibleWidgetEntries]);
-  const catalogWidgetEntries = useMemo(() => visibleWidgetEntries.filter((entry) => !entry.featured), [visibleWidgetEntries]);
+  const visibleEntries = useMemo(() => (
+    activeCategory === "all"
+      ? queryFilteredEntries
+      : queryFilteredEntries.filter((entry) => entry.category === activeCategory)
+  ), [activeCategory, queryFilteredEntries]);
 
-  return (
-    <>
-      <section id="widgets-overview" className="doc-section hero">
-        <p className="breadcrumbs">Pages / Widgets</p>
-        <h1>Widgets</h1>
-        <p className="lead">
-          Real-world product widgets composed from Zephr foundations and components. Use them as starting points for approvals, forms, team management, uploads, settings, billing, and internal tools.
-        </p>
-        <div className="widget-hero-metrics" aria-label="Widget page highlights">
-          <div className="widget-hero-metric">
-            <strong>{widgetEntries.length}</strong>
-            <span>Package-backed widgets</span>
-          </div>
-          <div className="widget-hero-metric">
-            <strong>Preview + code</strong>
-            <span>Toggle each block before copying</span>
-          </div>
-          <div className="widget-hero-metric">
-            <strong>Built from primitives</strong>
-            <span>Every widget uses the same Zephr components you ship in your app</span>
-          </div>
+  const curatedVisibleEntries = useMemo(() => {
+    const order = new Map(widgetsV2CatalogIds.map((id, index) => [id, index]));
+    return visibleEntries
+      .filter((entry) => order.has(entry.id))
+      .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+  }, [visibleEntries]);
+
+  const featuredEntries = useMemo(
+    () => visibleEntries.filter((entry) => entry.featured),
+    [visibleEntries]
+  );
+
+  const spotlightEntries = useMemo(
+    () => curatedVisibleEntries.slice(0, 3),
+    [curatedVisibleEntries]
+  );
+
+  const libraryEntries = useMemo(
+    () => visibleEntries,
+    [visibleEntries]
+  );
+
+  const curatedLibraryEntries = useMemo(
+    () => curatedVisibleEntries.slice(3, 6),
+    [curatedVisibleEntries]
+  );
+
+  const tabItems = useMemo<TabItem[]>(() =>
+    CATEGORY_OPTIONS.map(({ value, label }) => {
+      const entries = value === "all"
+        ? queryFilteredEntries
+        : queryFilteredEntries.filter((e) => e.category === value);
+      const featured = entries.filter((e) => e.featured);
+      const catalog = entries.filter((e) => !e.featured);
+      const content = entries.length === 0 ? (
+        <div className="widget-empty-state">
+          <strong>No widgets match this search.</strong>
+          <p>Clear the search or switch categories to see the full gallery again.</p>
         </div>
-      </section>
-
-      <section className="doc-section">
-        <div className="section-heading">
-          <h2>Ready-made widget patterns</h2>
-          <p>Preview each widget, copy the composition, and adapt it to your workflows without dropping to raw HTML controls.</p>
-        </div>
-        <div className="widget-toolbar-shell">
-          <div className="widget-toolbar-meta">
-            <span className="widget-toolbar-count">{visibleWidgetEntries.length} widgets</span>
-            <p>Search by workflow, form, team, or settings use case, then copy a production-ready starting point.</p>
-          </div>
-          <div className="widget-toolbar-row">
-            <div className="widget-search">
-              <span className="widget-search-icon" aria-hidden="true">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
-              </span>
-              <Input
-                controlSize="sm"
-                className="widget-search-input"
-                aria-label="Search widgets"
-                placeholder="Search widgets, forms, modals, team..."
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
+      ) : (
+        <>
+          {featured.length > 0 && (
+            <div className="widget-section-shell">
+              <div className="widget-section-head"><h3>Featured</h3></div>
+              <div className="widget-feature-grid">
+                {featured.map((w) => (
+                  <WidgetGalleryCard key={w.id} widget={w} featured onCopy={() => onCopy(`${w.title} widget`, w.code)} />
+                ))}
+              </div>
             </div>
-            <div className="widget-filter-row" role="tablist" aria-label="Widget categories">
+          )}
+          {catalog.length > 0 && (
+            <div className="widget-section-shell">
+              <div className="widget-section-head"><h3>All widgets</h3></div>
+              <div className="widget-gallery-grid">
+                {catalog.map((w) => (
+                  <WidgetGalleryCard key={w.id} widget={w} onCopy={() => onCopy(`${w.title} widget`, w.code)} />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      );
+      return { id: value, label, content };
+    }),
+  [queryFilteredEntries, onCopy]);
+
+  if (showcaseVersion === "v2") {
+    return (
+      <>
+        <section id="widgets-overview" className="doc-section showcase-v2-hero">
+          <div className="showcase-v2-hero-grid">
+            <div className="showcase-v2-copy">
+              <h1>Curated blocks for real products.</h1>
+              <p className="lead">
+                SaaS-native blocks for navigation, search, records, AI workspaces, settings, support, and developer workflows built from the same Zephr primitives you ship in production.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="doc-section showcase-v2-toolbar-shell">
+          <div className="showcase-v2-toolbar">
+            <Input
+              controlSize="xs"
+              aria-label="Search widgets"
+              placeholder="Search widgets, onboarding, metrics, support..."
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="showcase-v2-search"
+            />
+            <div className="showcase-v2-filter-row" role="tablist" aria-label="Widget categories">
               {CATEGORY_OPTIONS.map(({ value, label }) => (
                 <button
                   key={value}
                   type="button"
                   role="tab"
                   aria-selected={activeCategory === value}
-                  className={`widget-filter-chip ${activeCategory === value ? "is-active" : ""}`}
+                  className={`showcase-v2-filter${activeCategory === value ? " is-active" : ""}`}
                   onClick={() => setActiveCategory(value)}
                 >
                   {label}
@@ -738,48 +1108,80 @@ export default function WidgetsPage({ widgetSurface, onCopy }: WidgetsPageProps)
               ))}
             </div>
           </div>
-        </div>
-        {visibleWidgetEntries.length > 0 ? (
+        </section>
+
+        {curatedVisibleEntries.length === 0 ? (
+          <section className="doc-section">
+            <div className="widget-empty-state">
+              <strong>No widgets match this search.</strong>
+              <p>Clear the search or switch categories to see the curated library again.</p>
+            </div>
+          </section>
+        ) : (
           <>
-            {featuredWidgetEntries.length > 0 ? (
-              <div className="widget-section-shell">
-                <div className="widget-section-head">
-                  <div>
-                    <p className="widget-section-kicker">Featured</p>
-                    <h3>Start with the most reusable flows</h3>
-                  </div>
-                  <p>These blocks cover the highest-frequency product needs: approvals, intake, progress, and people operations.</p>
+            {spotlightEntries.length > 0 ? (
+              <section className="doc-section showcase-v2-section">
+                <div className="showcase-v2-section-head">
+                  <h2>Spotlight</h2>
                 </div>
-                <div className="widget-feature-grid">
-                  {featuredWidgetEntries.map((widget) => (
-                    <WidgetGalleryCard key={widget.id} widget={widget} featured onCopy={() => onCopy(`${widget.title} widget`, widget.code)} />
+                <div className="showcase-v2-spotlight-grid">
+                  {spotlightEntries.map((widget) => (
+                    <WidgetSpotlightCard key={widget.id} widget={widget} />
                   ))}
                 </div>
-              </div>
+              </section>
             ) : null}
-            {catalogWidgetEntries.length > 0 ? (
-              <div className="widget-section-shell">
-                <div className="widget-section-head">
-                  <div>
-                    <p className="widget-section-kicker">Catalog</p>
-                    <h3>More widgets for team operations, settings, internal tools, and billing</h3>
-                  </div>
-                  <p>Each widget stays grounded in the same Zephr token and component contract, so styling remains consistent as you scale.</p>
+
+            {curatedLibraryEntries.length > 0 ? (
+              <section className="doc-section showcase-v2-section">
+                <div className="showcase-v2-section-head">
+                  <h2>Library selection</h2>
                 </div>
                 <div className="widget-gallery-grid">
-                  {catalogWidgetEntries.map((widget) => (
-                    <WidgetGalleryCard key={widget.id} widget={widget} onCopy={() => onCopy(`${widget.title} widget`, widget.code)} />
+                  {curatedLibraryEntries.map((widget) => (
+                    <WidgetGalleryCard
+                      key={widget.id}
+                      widget={widget}
+                      featured={widget.featured}
+                      showcaseVersion="v2"
+                      onCopy={() => onCopy(`${widget.title} widget`, widget.code)}
+                    />
                   ))}
                 </div>
-              </div>
+              </section>
             ) : null}
           </>
-        ) : (
-          <div className="widget-empty-state">
-            <strong>No widgets match this search.</strong>
-            <p>Clear the search or switch categories to see the full gallery again.</p>
-          </div>
         )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <section id="widgets-overview" className="doc-section hero">
+        <h1>Widgets</h1>
+        <p className="lead">
+          Real-world product widgets composed from Zephr foundations and components. Use them as starting points for approvals, forms, team management, uploads, settings, billing, and internal tools.
+        </p>
+      </section>
+
+      <section className="doc-section">
+        <div className="section-heading">
+          <h2>Ready-made widget patterns</h2>
+        </div>
+        <Input
+          controlSize="xs"
+          aria-label="Search widgets"
+          placeholder="Search widgets, forms, modals, team..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          style={{ maxWidth: "var(--z-breakpoint-sm, 640px)" }}
+        />
+        <Tabs
+          className="widget-tabs"
+          items={tabItems}
+          initialTabId="all"
+        />
       </section>
     </>
   );

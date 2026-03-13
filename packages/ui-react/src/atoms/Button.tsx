@@ -64,7 +64,7 @@ function getVariantStyles(
       background: "var(--z-color-weak, var(--z-color-background, #f7f7f7))",
       borderColor: "transparent",
       boxShadow: "none",
-      color: "#d1d1d1",
+      color: "var(--z-color-text300, #a1a1aa)",
       cursor: "not-allowed",
       outline: "none"
     };
@@ -100,7 +100,7 @@ function getVariantStyles(
       boxShadow: hovered
         ? "0 3px 10px rgba(14, 18, 27, 0.18), inset 0 0 0 1px var(--z-color-danger, #fb3748)"
         : "inset 0 0 0 1px var(--z-color-danger, #fb3748)",
-      color: "#ffffff"
+      color: "var(--z-color-primaryContrast, #ffffff)"
     };
   }
 

@@ -30,31 +30,41 @@ import {
   LaunchProgressWidget,
   LicenseActivationsWidget,
   MarketingPage,
+  MarketingInsightsWidget,
   NotificationFeedWidget,
   OnboardingPage,
   PaymentMethodsWidget,
+  PromptComposerWidget,
   QuickActionsWidget,
   ReleaseChecklistWidget,
   RevenueSnapshotWidget,
   ReleaseNotesWidget,
+  ReferralRewardWidget,
   ReviewInboxWidget,
   SecurityAccessWidget,
   SettingsPage,
   SettingsPanelWidget,
+  SetupJourneyWidget,
   SupportQueueWidget,
   TeamPulseWidget,
   TeamDirectoryWidget,
+  TravelItineraryWidget,
   UploadQueueWidget,
+  WelcomeProfileWidget,
+  ConversionScoreWidget,
+  DeliveryTimelineWidget,
   type WidgetSurface,
 } from "@zephrui/ui-react";
-import { templateCatalogMeta } from "./templatesCatalog";
+import { templateCatalogMeta, templatesV2CatalogIds } from "./templatesCatalog";
 
 type UserTier = "free" | "pro";
 type TemplateCategory = "all" | "template" | "example";
+type ShowcaseVersion = "v1" | "v2";
 
 interface TemplatesPageProps {
   userTier: UserTier;
   widgetSurface: WidgetSurface;
+  showcaseVersion: ShowcaseVersion;
   onOpenUpgrade: () => void;
   onCopy: (label: string, value: string) => void;
 }
@@ -68,6 +78,11 @@ interface TemplateEntry {
   badge: ReactNode;
   previewCardLabel: string;
 }
+
+const TEMPLATE_CATEGORY_LABELS: Record<Exclude<TemplateCategory, "all">, string> = {
+  template: "Template",
+  example: "Example",
+};
 
 const CATEGORY_OPTIONS: Array<{ value: TemplateCategory; label: string }> = [
   { value: "all", label: "All pages" },
@@ -143,6 +158,287 @@ function TemplateBrowserFrame({
   minHeight?: string;
 }) {
   return <BrowserPreviewFrame address={address} minHeight={minHeight}>{children}</BrowserPreviewFrame>;
+}
+
+function TemplateSpotlightCard({
+  entry,
+}: {
+  entry: TemplateEntry;
+}) {
+  return (
+    <a className="showcase-v2-card showcase-v2-card--template" href={`#${entry.id}`}>
+      <div className="showcase-v2-card-stage">
+        <span className="showcase-v2-card-eyebrow">{TEMPLATE_CATEGORY_LABELS[entry.category]}</span>
+        <TemplatePreviewArt entry={entry} />
+      </div>
+      <div className="showcase-v2-card-copy">
+        <h3>{entry.title}</h3>
+        <p>{entry.description}</p>
+      </div>
+    </a>
+  );
+}
+
+function TemplatePreviewArt({ entry }: { entry: TemplateEntry }) {
+  switch (entry.id) {
+    case "template-dashboard":
+      return (
+        <div className="template-preview-art template-preview-art--dashboard" aria-hidden="true">
+          <div className="template-preview-app-topbar">
+            <span className="template-preview-pill">Recruiting</span>
+            <div className="template-preview-app-actions">
+              <span className="template-preview-chip" />
+              <span className="template-preview-button template-preview-button--dark" />
+            </div>
+          </div>
+          <div className="template-preview-app-table">
+            <span className="template-preview-app-table-row template-preview-app-table-row--head" />
+            <span className="template-preview-app-table-row" />
+            <span className="template-preview-app-table-row" />
+            <span className="template-preview-app-table-row" />
+            <span className="template-preview-app-table-row" />
+          </div>
+        </div>
+      );
+    case "template-team-workspace":
+      return (
+        <div className="template-preview-art template-preview-art--team" aria-hidden="true">
+          <div className="template-preview-app-shell">
+            <div className="template-preview-app-sidebar">
+              <span className="template-preview-search" />
+              <div className="template-preview-app-list">
+                <span className="template-preview-app-list-item template-preview-app-list-item--active" />
+                <span className="template-preview-app-list-item" />
+                <span className="template-preview-app-list-item" />
+                <span className="template-preview-app-list-item" />
+              </div>
+            </div>
+            <div className="template-preview-app-main">
+              <div className="template-preview-app-tab-row">
+                <span className="template-preview-app-tab template-preview-app-tab--active" />
+                <span className="template-preview-app-tab" />
+                <span className="template-preview-app-tab" />
+              </div>
+              <div className="template-preview-app-panel">
+                <span className="template-preview-line template-preview-line--medium" />
+                <span className="template-preview-line template-preview-line--full" />
+                <span className="template-preview-line template-preview-line--short" />
+              </div>
+            </div>
+            <div className="template-preview-app-aside">
+              <span className="template-preview-line template-preview-line--medium" />
+              <span className="template-preview-line template-preview-line--short" />
+              <span className="template-preview-line template-preview-line--medium" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-developer-console":
+      return (
+        <div className="template-preview-art template-preview-art--developer" aria-hidden="true">
+          <div className="template-preview-toolbar">
+            <span className="template-preview-pill">API</span>
+            <span className="template-preview-chip" />
+            <span className="template-preview-chip" />
+          </div>
+          <div className="template-preview-shell">
+            <span className="template-preview-line template-preview-line--medium" />
+            <div className="template-preview-code-block">
+              <span className="template-preview-code-line" />
+              <span className="template-preview-code-line template-preview-code-line--short" />
+              <span className="template-preview-code-line" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-crm-workspace":
+      return (
+        <div className="template-preview-art template-preview-art--crm" aria-hidden="true">
+          <div className="template-preview-app-topbar">
+            <span className="template-preview-pill">Deals</span>
+            <div className="template-preview-app-actions">
+              <span className="template-preview-chip" />
+              <span className="template-preview-chip" />
+            </div>
+          </div>
+          <div className="template-preview-kanban-shell">
+            <div className="template-preview-kanban-column">
+              <span className="template-preview-kanban-head" />
+              <span className="template-preview-kanban-card" />
+              <span className="template-preview-kanban-card" />
+            </div>
+            <div className="template-preview-kanban-column">
+              <span className="template-preview-kanban-head" />
+              <span className="template-preview-kanban-card template-preview-kanban-card--active" />
+              <span className="template-preview-kanban-card" />
+            </div>
+            <div className="template-preview-kanban-column">
+              <span className="template-preview-kanban-head" />
+              <span className="template-preview-kanban-card" />
+            </div>
+            <div className="template-preview-kanban-column">
+              <span className="template-preview-kanban-head" />
+              <span className="template-preview-kanban-card" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-support-portal":
+      return (
+        <div className="template-preview-art template-preview-art--support" aria-hidden="true">
+          <div className="template-preview-app-shell">
+            <div className="template-preview-app-main">
+              <div className="template-preview-app-tab-row">
+                <span className="template-preview-app-tab template-preview-app-tab--active" />
+                <span className="template-preview-app-tab" />
+              </div>
+              <div className="template-preview-app-list">
+                <span className="template-preview-app-list-item template-preview-app-list-item--active" />
+                <span className="template-preview-app-list-item" />
+                <span className="template-preview-app-list-item" />
+              </div>
+            </div>
+            <div className="template-preview-app-aside">
+              <span className="template-preview-pill template-preview-pill--accent">Urgent</span>
+              <span className="template-preview-line template-preview-line--full" />
+              <span className="template-preview-line template-preview-line--medium" />
+              <span className="template-preview-line template-preview-line--short" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-customer-onboarding":
+      return (
+        <div className="template-preview-art template-preview-art--onboarding" aria-hidden="true">
+          <div className="template-preview-pill">Welcome flow</div>
+          <div className="template-preview-hero" />
+          <div className="template-preview-input-row">
+            <span className="template-preview-avatar" />
+            <span className="template-preview-button template-preview-button--dark" />
+          </div>
+          <span className="template-preview-line template-preview-line--full" />
+        </div>
+      );
+    case "template-referral-center":
+      return (
+        <div className="template-preview-art template-preview-art--referral" aria-hidden="true">
+          <div className="template-preview-banner">
+            <div className="template-preview-copy">
+              <span className="template-preview-pill">Earn credits</span>
+              <span className="template-preview-line template-preview-line--medium" />
+            </div>
+            <span className="template-preview-orb" />
+          </div>
+          <div className="template-preview-list">
+            <span className="template-preview-row" />
+            <span className="template-preview-row" />
+            <span className="template-preview-row" />
+          </div>
+          <div className="template-preview-input-row">
+            <span className="template-preview-line template-preview-line--medium" />
+            <span className="template-preview-button template-preview-button--dark" />
+          </div>
+        </div>
+      );
+    case "template-ai-composer-studio":
+      return (
+        <div className="template-preview-art template-preview-art--composer" aria-hidden="true">
+          <div className="template-preview-toolbar">
+            <span className="template-preview-icon" />
+            <span className="template-preview-line template-preview-line--short" />
+            <span className="template-preview-chip" />
+          </div>
+          <div className="template-preview-shell">
+            <span className="template-preview-line template-preview-line--full" />
+            <span className="template-preview-line template-preview-line--medium" />
+            <div className="template-preview-actions">
+              <span className="template-preview-chip" />
+              <span className="template-preview-chip" />
+              <span className="template-preview-button template-preview-button--icon" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-delivery-operations":
+      return (
+        <div className="template-preview-art template-preview-art--timeline" aria-hidden="true">
+          <div className="template-preview-timeline-header">
+            <span className="template-preview-pill">In transit</span>
+            <span className="template-preview-chip" />
+          </div>
+          <div className="template-preview-timeline">
+            <span className="template-preview-node" />
+            <span className="template-preview-node-line" />
+            <span className="template-preview-node" />
+            <span className="template-preview-node-line" />
+            <span className="template-preview-node" />
+          </div>
+          <div className="template-preview-list">
+            <span className="template-preview-row" />
+            <span className="template-preview-row" />
+            <span className="template-preview-row" />
+          </div>
+        </div>
+      );
+    case "template-growth-insights":
+    case "template-analytics-workspace":
+      return (
+        <div className="template-preview-art template-preview-art--analytics" aria-hidden="true">
+          <div className="template-preview-tabs">
+            <span className="template-preview-tab template-preview-tab--active" />
+            <span className="template-preview-tab" />
+            <span className="template-preview-tab" />
+          </div>
+          <div className="template-preview-chart-grid">
+            <div className="template-preview-stat-card">
+              <span className="template-preview-line template-preview-line--short" />
+              <span className="template-preview-chart-bars" />
+            </div>
+            <div className="template-preview-stat-card">
+              <span className="template-preview-line template-preview-line--short" />
+              <span className="template-preview-chart-wave" />
+            </div>
+          </div>
+        </div>
+      );
+    case "template-content-studio":
+      return (
+        <div className="template-preview-art template-preview-art--content" aria-hidden="true">
+          <div className="template-preview-grid template-preview-grid--content">
+            <span className="template-preview-media template-preview-media--large" />
+            <span className="template-preview-media" />
+            <span className="template-preview-media" />
+          </div>
+          <span className="template-preview-line template-preview-line--full" />
+        </div>
+      );
+    case "template-product-review-board":
+      return (
+        <div className="template-preview-art template-preview-art--review" aria-hidden="true">
+          <div className="template-preview-board">
+            <span className="template-preview-board-column" />
+            <span className="template-preview-board-column template-preview-board-column--active" />
+            <span className="template-preview-board-column" />
+          </div>
+          <div className="template-preview-input-row">
+            <span className="template-preview-chip" />
+            <span className="template-preview-chip" />
+            <span className="template-preview-chip" />
+          </div>
+        </div>
+      );
+    default:
+      return (
+        <div className="template-preview-stack" aria-hidden="true">
+          <span className="template-preview-line template-preview-line--full" />
+          <div className="template-preview-grid">
+            <span className="template-preview-line" />
+            <span className="template-preview-line" />
+          </div>
+          <div className="template-preview-caption">{entry.previewCardLabel}</div>
+        </div>
+      );
+  }
 }
 
 function examplePageShellStyle(): CSSProperties {
@@ -539,9 +835,604 @@ function ExampleProductReviewBoard({ widgetSurface }: { widgetSurface: WidgetSur
   );
 }
 
+function ExampleCustomerOnboarding({ widgetSurface }: { widgetSurface: WidgetSurface }) {
+  return (
+    <div style={examplePageShellStyle()}>
+      <div style={examplePageHeaderStyle()}>
+        <div style={examplePageMetaStyle()}>
+          <span className="widget-section-kicker">Onboarding</span>
+          <h3 style={{ margin: 0, fontSize: "1.15rem" }}>Customer onboarding</h3>
+          <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>Guide new customers from account setup to workspace activation with a polished, conversion-friendly first-run flow.</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Badge color="purple" variant="lighter">Activation</Badge>
+          <Button size="sm">Preview journey</Button>
+        </div>
+      </div>
+      <div className="example-page-grid example-page-grid--asymmetric">
+        <WelcomeProfileWidget surface={widgetSurface} />
+        <SetupJourneyWidget surface={widgetSurface} />
+        <div className="example-page-span-two">
+          <InviteMembersWidget surface={widgetSurface} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExampleReferralCenter({ widgetSurface }: { widgetSurface: WidgetSurface }) {
+  return (
+    <div style={examplePageShellStyle()}>
+      <div style={examplePageHeaderStyle()}>
+        <div style={examplePageMetaStyle()}>
+          <span className="widget-section-kicker">Growth loops</span>
+          <h3 style={{ margin: 0, fontSize: "1.15rem" }}>Referral center</h3>
+          <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>Combine incentives, account health, and weekly outcomes into one conversion-friendly referral surface.</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Badge color="green" variant="lighter">Growth</Badge>
+          <Button size="sm">Share campaign</Button>
+        </div>
+      </div>
+      <div className="example-page-grid example-page-grid--two">
+        <ReferralRewardWidget surface={widgetSurface} />
+        <GoalTrackerWidget surface={widgetSurface} />
+        <CustomerHealthWidget surface={widgetSurface} />
+        <RevenueSnapshotWidget surface={widgetSurface} />
+      </div>
+    </div>
+  );
+}
+
+function ExampleAIComposerStudio({ widgetSurface }: { widgetSurface: WidgetSurface }) {
+  return (
+    <div style={examplePageShellStyle()}>
+      <div style={examplePageHeaderStyle()}>
+        <div style={examplePageMetaStyle()}>
+          <span className="widget-section-kicker">AI tooling</span>
+          <h3 style={{ margin: 0, fontSize: "1.15rem" }}>AI composer studio</h3>
+          <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>A premium workspace for prompt composition, asset staging, and threaded creative review before generation runs.</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Badge color="purple" variant="lighter">AI</Badge>
+          <Button size="sm">Generate draft</Button>
+        </div>
+      </div>
+      <div className="example-page-grid example-page-grid--two">
+        <PromptComposerWidget surface={widgetSurface} />
+        <AssetReviewWidget surface={widgetSurface} />
+        <UploadQueueWidget surface={widgetSurface} />
+        <CommentThreadWidget surface={widgetSurface} />
+      </div>
+    </div>
+  );
+}
+
+function ExampleDeliveryOperations({ widgetSurface }: { widgetSurface: WidgetSurface }) {
+  return (
+    <div style={examplePageShellStyle()}>
+      <div style={examplePageHeaderStyle()}>
+        <div style={examplePageMetaStyle()}>
+          <span className="widget-section-kicker">Delivery</span>
+          <h3 style={{ margin: 0, fontSize: "1.15rem" }}>Delivery operations</h3>
+          <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>Track movement, handoffs, schedules, and support readiness from a single fulfillment control surface.</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Badge color="sky" variant="lighter">Ops</Badge>
+          <Button size="sm">Open route board</Button>
+        </div>
+      </div>
+      <div className="example-page-grid example-page-grid--two">
+        <DeliveryTimelineWidget surface={widgetSurface} />
+        <TravelItineraryWidget surface={widgetSurface} />
+        <SupportQueueWidget surface={widgetSurface} />
+        <ActivityTimelineWidget surface={widgetSurface} />
+      </div>
+    </div>
+  );
+}
+
+function ExampleGrowthInsights({ widgetSurface }: { widgetSurface: WidgetSurface }) {
+  return (
+    <div style={examplePageShellStyle()}>
+      <div style={examplePageHeaderStyle()}>
+        <div style={examplePageMetaStyle()}>
+          <span className="widget-section-kicker">Performance</span>
+          <h3 style={{ margin: 0, fontSize: "1.15rem" }}>Growth insights</h3>
+          <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>Bring live marketing metrics, conversion analysis, and product KPIs into a premium decision-making workspace.</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Badge color="blue" variant="lighter">Insights</Badge>
+          <Button size="sm">Open metrics</Button>
+        </div>
+      </div>
+      <div className="example-page-grid example-page-grid--two">
+        <MarketingInsightsWidget surface={widgetSurface} />
+        <ConversionScoreWidget surface={widgetSurface} />
+        <AnalyticsOverviewWidget surface={widgetSurface} />
+        <RevenueSnapshotWidget surface={widgetSurface} />
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   CRM Contacts — full app-shell contacts table with Sheet + ModalDialog
+────────────────────────────────────────────────────────────────────────── */
+
+interface CRMContact {
+  id: string;
+  name: string;
+  initials: string;
+  avatarColor: string;
+  email: string;
+  company: string;
+  role: string;
+  status: "Active" | "Churned" | "Trial" | "Prospect";
+  lastSeen: string;
+  deals: number;
+  phone: string;
+  location: string;
+}
+
+const CRM_CONTACTS: CRMContact[] = [
+  { id: "1", name: "Alice Hartmann", initials: "AH", avatarColor: "#f3f4f6", email: "alice@hartmann.io", company: "Hartmann & Co", role: "Head of Growth", status: "Active", lastSeen: "2 min ago", deals: 3, phone: "+1 415 900 1234", location: "San Francisco, CA" },
+  { id: "2", name: "Jordan Miles", initials: "JM", avatarColor: "#eff6ff", email: "jordan@milesconsulting.co", company: "Miles Consulting", role: "CTO", status: "Trial", lastSeen: "1 hr ago", deals: 1, phone: "+1 212 555 8821", location: "New York, NY" },
+  { id: "3", name: "Priya Kapoor", initials: "PK", avatarColor: "#f0fdf4", email: "priya@kapoortech.in", company: "Kapoor Tech", role: "CEO", status: "Active", lastSeen: "Yesterday", deals: 5, phone: "+91 98100 22233", location: "Bangalore, IN" },
+  { id: "4", name: "Marco Benedetti", initials: "MB", avatarColor: "#fefce8", email: "marco@benedetti.eu", company: "Benedetti SRL", role: "VP Engineering", status: "Prospect", lastSeen: "3 days ago", deals: 0, phone: "+39 334 555 4411", location: "Milan, IT" },
+  { id: "5", name: "Sakura Tanaka", initials: "ST", avatarColor: "#fdf4ff", email: "s.tanaka@genki.jp", company: "Genki Systems", role: "Product Lead", status: "Active", lastSeen: "Today", deals: 2, phone: "+81 80 1234 5678", location: "Tokyo, JP" },
+  { id: "6", name: "Lena Müller", initials: "LM", avatarColor: "#fff7ed", email: "lena@muller-digital.de", company: "Müller Digital", role: "COO", status: "Churned", lastSeen: "2 weeks ago", deals: 4, phone: "+49 176 555 9900", location: "Berlin, DE" },
+  { id: "7", name: "Carlos Ríos", initials: "CR", avatarColor: "#f0f9ff", email: "carlos@riosventures.mx", company: "Ríos Ventures", role: "Founder", status: "Trial", lastSeen: "4 hrs ago", deals: 1, phone: "+52 55 1234 5678", location: "Mexico City, MX" },
+  { id: "8", name: "Amy Chen", initials: "AC", avatarColor: "#f0fdf4", email: "amy.chen@quantumleap.ai", company: "QuantumLeap AI", role: "Head of Sales", status: "Active", lastSeen: "Just now", deals: 7, phone: "+1 650 900 4321", location: "Palo Alto, CA" },
+];
+
+const STATUS_COLOR: Record<CRMContact["status"], { color: "green" | "red" | "blue" | "gray"; variant: "lighter" | "filled" }> = {
+  Active: { color: "green", variant: "lighter" },
+  Churned: { color: "red", variant: "lighter" },
+  Trial: { color: "blue", variant: "lighter" },
+  Prospect: { color: "gray", variant: "lighter" },
+};
+
+function ExampleCRMContacts() {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"All" | CRMContact["status"]>("All");
+  const [selectedContact, setSelectedContact] = useState<CRMContact | null>(null);
+  const [contactToDelete, setContactToDelete] = useState<CRMContact | null>(null);
+  const [contacts, setContacts] = useState<CRMContact[]>(CRM_CONTACTS);
+
+  const filtered = contacts.filter((c) => {
+    const matchSearch = search === "" || `${c.name} ${c.email} ${c.company}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "All" || c.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  const STATUS_FILTERS: Array<"All" | CRMContact["status"]> = ["All", "Active", "Trial", "Prospect", "Churned"];
+
+  function confirmDelete() {
+    if (!contactToDelete) return;
+    setContacts((prev) => prev.filter((c) => c.id !== contactToDelete.id));
+    if (selectedContact?.id === contactToDelete.id) setSelectedContact(null);
+    setContactToDelete(null);
+  }
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100%",
+      background: "var(--z-color-surface, #fff)",
+      fontFamily: "var(--z-font-sans, Inter, system-ui, sans-serif)",
+    }}>
+      {/* ── Page header ── */}
+      <div style={{
+        padding: "1.25rem 1.5rem 0",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: "1rem",
+        flexWrap: "wrap",
+      }}>
+        <div>
+          <span style={{ fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--z-color-muted, #667085)" }}>CRM</span>
+          <h2 style={{ margin: "0.2rem 0 0.3rem", fontSize: "1.3rem", fontWeight: 700, color: "var(--z-color-text, #111827)", letterSpacing: "-0.01em" }}>Contacts</h2>
+          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--z-color-muted, #667085)" }}>{contacts.length} contacts · {contacts.filter(c => c.status === "Active").length} active</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
+          <Button size="sm" variant="secondary">Import CSV</Button>
+          <Button size="sm">Add contact</Button>
+        </div>
+      </div>
+
+      {/* ── Toolbar: search + filter pills ── */}
+      <div style={{
+        padding: "1rem 1.5rem",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.75rem",
+        flexWrap: "wrap",
+        borderBottom: "1px solid var(--z-color-line, #e5e7eb)",
+      }}>
+        <div className="crm-search-wrap">
+          <span className="ms crm-search-icon" aria-hidden="true">search</span>
+          <Input
+            controlSize="sm"
+            type="search"
+            placeholder="Search contacts…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          {STATUS_FILTERS.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setStatusFilter(s)}
+              style={{
+                padding: "0.3rem 0.75rem",
+                borderRadius: "var(--z-radius-full, 9999px)",
+                border: "1.5px solid",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                background: statusFilter === s ? "var(--z-color-primary, #2563eb)" : "transparent",
+                color: statusFilter === s ? "var(--z-color-primary-contrast, #fff)" : "var(--z-color-text, #374151)",
+                borderColor: statusFilter === s ? "var(--z-color-primary, #2563eb)" : "var(--z-color-line, #d1d5db)",
+              }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Table ── */}
+      <div style={{ overflowX: "auto", flex: 1 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem" }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--z-color-line, #e5e7eb)", background: "var(--z-color-bg, #f9fafb)" }}>
+              {["Contact", "Company", "Status", "Last seen", "Deals", ""].map((col) => (
+                <th key={col} style={{
+                  padding: "0.65rem 1rem",
+                  textAlign: "left",
+                  fontWeight: 600,
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: "var(--z-color-muted, #6b7280)",
+                  whiteSpace: "nowrap",
+                }}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6} style={{ padding: "3rem", textAlign: "center", color: "var(--z-color-muted, #9ca3af)" }}>
+                  No contacts match your search.
+                </td>
+              </tr>
+            ) : filtered.map((contact, i) => (
+              <tr
+                key={contact.id}
+                onClick={() => setSelectedContact(contact)}
+                style={{
+                  borderBottom: i < filtered.length - 1 ? "1px solid var(--z-color-line, #f3f4f6)" : undefined,
+                  cursor: "pointer",
+                  transition: "background 0.1s",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = "var(--z-color-bg, #f9fafb)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = ""; }}
+              >
+                {/* Name + Avatar */}
+                <td style={{ padding: "0.85rem 1rem", whiteSpace: "nowrap" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: "50%",
+                      background: contact.avatarColor,
+                      border: "1px solid var(--z-color-line, #e5e7eb)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.7rem", fontWeight: 700,
+                      color: "var(--z-color-text, #374151)",
+                      flexShrink: 0,
+                    }}>{contact.initials}</div>
+                    <div>
+                      <div style={{ fontWeight: 600, color: "var(--z-color-text, #111827)" }}>{contact.name}</div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--z-color-muted, #6b7280)" }}>{contact.email}</div>
+                    </div>
+                  </div>
+                </td>
+                {/* Company */}
+                <td style={{ padding: "0.85rem 1rem", color: "var(--z-color-text, #374151)" }}>
+                  <div style={{ fontWeight: 500 }}>{contact.company}</div>
+                  <div style={{ fontSize: "0.78rem", color: "var(--z-color-muted, #9ca3af)" }}>{contact.role}</div>
+                </td>
+                {/* Status */}
+                <td style={{ padding: "0.85rem 1rem" }}>
+                  <Badge
+                    color={STATUS_COLOR[contact.status].color}
+                    variant={STATUS_COLOR[contact.status].variant}
+                    type="dot"
+                  >
+                    {contact.status}
+                  </Badge>
+                </td>
+                {/* Last seen */}
+                <td style={{ padding: "0.85rem 1rem", color: "var(--z-color-muted, #6b7280)", whiteSpace: "nowrap", fontSize: "0.82rem" }}>
+                  {contact.lastSeen}
+                </td>
+                {/* Deals */}
+                <td style={{ padding: "0.85rem 1rem", textAlign: "center" }}>
+                  {contact.deals > 0
+                    ? <Badge color="blue" variant="lighter">{contact.deals}</Badge>
+                    : <span style={{ color: "var(--z-color-muted, #d1d5db)" }}>—</span>
+                  }
+                </td>
+                {/* Actions */}
+                <td style={{ padding: "0.85rem 1rem", textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
+                  <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.35rem" }}>
+                    <button
+                      type="button"
+                      aria-label={`View ${contact.name}`}
+                      title="View details"
+                      onClick={() => setSelectedContact(contact)}
+                      style={{
+                        padding: "0.3rem", borderRadius: "var(--z-radius-md, 6px)",
+                        border: "none", background: "transparent", cursor: "pointer",
+                        color: "var(--z-color-muted, #9ca3af)",
+                        transition: "color 0.1s, background 0.1s",
+                        display: "flex", alignItems: "center",
+                      }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--z-color-bg, #f3f4f6)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--z-color-text)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--z-color-muted)"; }}
+                    >
+                      <span className="ms" style={{ fontSize: "1rem" }}>open_in_new</span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Delete ${contact.name}`}
+                      title="Delete"
+                      onClick={() => setContactToDelete(contact)}
+                      style={{
+                        padding: "0.3rem", borderRadius: "var(--z-radius-md, 6px)",
+                        border: "none", background: "transparent", cursor: "pointer",
+                        color: "var(--z-color-muted, #9ca3af)",
+                        transition: "color 0.1s, background 0.1s",
+                        display: "flex", alignItems: "center",
+                      }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#fef2f2"; (e.currentTarget as HTMLButtonElement).style.color = "#ef4444"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "var(--z-color-muted)"; }}
+                    >
+                      <span className="ms" style={{ fontSize: "1rem" }}>delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Footer ── */}
+      <div style={{
+        padding: "0.75rem 1.5rem",
+        borderTop: "1px solid var(--z-color-line, #e5e7eb)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        color: "var(--z-color-muted, #6b7280)",
+        fontSize: "0.82rem",
+      }}>
+        <span>Showing {filtered.length} of {contacts.length} contacts</span>
+        <div style={{ display: "flex", gap: "0.4rem" }}>
+          {[1].map((p) => (
+            <button key={p} type="button" style={{
+              width: 28, height: 28, borderRadius: "var(--z-radius-md, 6px)",
+              border: "1.5px solid var(--z-color-primary, #2563eb)",
+              background: "var(--z-color-primary, #2563eb)",
+              color: "#fff", fontSize: "0.82rem", fontWeight: 600, cursor: "default",
+            }}>{p}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Sheet: Contact detail ── */}
+      {selectedContact && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedContact.name} details`}
+          style={{
+            position: "absolute", inset: 0,
+            display: "flex", justifyContent: "flex-end",
+            background: "rgba(0,0,0,0.25)",
+            backdropFilter: "blur(2px)",
+            zIndex: 50,
+          }}
+          onClick={() => setSelectedContact(null)}
+        >
+          <div
+            style={{
+              width: "min(380px, 100%)",
+              background: "var(--z-color-surface, #fff)",
+              height: "100%",
+              overflowY: "auto",
+              boxShadow: "-8px 0 32px rgba(0,0,0,0.12)",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Sheet header */}
+            <div style={{
+              padding: "1.25rem 1.25rem 1rem",
+              borderBottom: "1px solid var(--z-color-line, #e5e7eb)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <span style={{ fontWeight: 700, fontSize: "1rem", color: "var(--z-color-text, #111827)" }}>Contact details</span>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setSelectedContact(null)}
+                style={{
+                  background: "none", border: "none", cursor: "pointer",
+                  color: "var(--z-color-muted, #9ca3af)", display: "flex", alignItems: "center",
+                  borderRadius: "var(--z-radius-md, 6px)", padding: "0.25rem",
+                }}
+              >
+                <span className="ms" style={{ fontSize: "1.2rem" }}>close</span>
+              </button>
+            </div>
+
+            {/* Avatar + name block */}
+            <div style={{ padding: "1.5rem 1.25rem 1rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+              <div style={{
+                width: 52, height: 52, borderRadius: "50%",
+                background: selectedContact.avatarColor,
+                border: "1px solid var(--z-color-line, #e5e7eb)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "1.05rem", fontWeight: 700,
+                color: "var(--z-color-text, #374151)",
+                flexShrink: 0,
+              }}>{selectedContact.initials}</div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: "1.1rem", color: "var(--z-color-text, #111827)" }}>{selectedContact.name}</div>
+                <div style={{ fontSize: "0.83rem", color: "var(--z-color-muted, #6b7280)" }}>{selectedContact.role} · {selectedContact.company}</div>
+                <div style={{ marginTop: "0.4rem" }}>
+                  <Badge color={STATUS_COLOR[selectedContact.status].color} variant={STATUS_COLOR[selectedContact.status].variant} type="dot">
+                    {selectedContact.status}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div style={{ padding: "0 1.25rem 1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {[
+                { icon: "mail", label: "Email", value: selectedContact.email },
+                { icon: "phone", label: "Phone", value: selectedContact.phone },
+                { icon: "location_on", label: "Location", value: selectedContact.location },
+                { icon: "business", label: "Company", value: selectedContact.company },
+                { icon: "schedule", label: "Last seen", value: selectedContact.lastSeen },
+              ].map(({ icon, label, value }) => (
+                <div key={label} style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                  <span className="ms" style={{ fontSize: "1rem", color: "var(--z-color-muted, #9ca3af)", marginTop: 2, flexShrink: 0 }}>{icon}</span>
+                  <div>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--z-color-muted, #9ca3af)" }}>{label}</div>
+                    <div style={{ fontSize: "0.875rem", color: "var(--z-color-text, #374151)", fontWeight: 500 }}>{value}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Active deals */}
+            <div style={{
+              margin: "0 1.25rem 1.25rem",
+              padding: "1rem",
+              borderRadius: "var(--z-radius-lg, 10px)",
+              background: "var(--z-color-bg, #f9fafb)",
+              border: "1px solid var(--z-color-line, #e5e7eb)",
+            }}>
+              <div style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--z-color-muted, #6b7280)", marginBottom: "0.5rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Active deals</div>
+              {selectedContact.deals === 0
+                ? <p style={{ margin: 0, fontSize: "0.83rem", color: "var(--z-color-muted, #9ca3af)" }}>No active deals yet.</p>
+                : Array.from({ length: Math.min(selectedContact.deals, 3) }).map((_, idx) => (
+                  <div key={idx} style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "0.5rem 0",
+                    borderBottom: idx < Math.min(selectedContact.deals, 3) - 1 ? "1px solid var(--z-color-line, #e5e7eb)" : undefined,
+                  }}>
+                    <span style={{ fontSize: "0.83rem", color: "var(--z-color-text, #374151)" }}>Deal #{(idx + 1) * 1001}</span>
+                    <Badge color={["green", "blue", "orange"][idx % 3] as "green" | "blue" | "orange"} variant="lighter">
+                      {["Closed", "Negotiation", "Proposal"][idx % 3]}
+                    </Badge>
+                  </div>
+                ))
+              }
+            </div>
+
+            {/* Sheet actions */}
+            <div style={{
+              marginTop: "auto",
+              padding: "1rem 1.25rem",
+              borderTop: "1px solid var(--z-color-line, #e5e7eb)",
+              display: "flex",
+              gap: "0.6rem",
+            }}>
+              <Button size="sm" style={{ flex: 1 }}>Send email</Button>
+              <Button size="sm" variant="secondary" onClick={() => { setContactToDelete(selectedContact); setSelectedContact(null); }}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── ModalDialog: Delete confirmation ── */}
+      {contactToDelete && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirm delete"
+          style={{
+            position: "absolute", inset: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0,0,0,0.35)",
+            backdropFilter: "blur(3px)",
+            zIndex: 60,
+          }}
+          onClick={() => setContactToDelete(null)}
+        >
+          <div
+            style={{
+              width: "min(420px, 90%)",
+              background: "var(--z-color-surface, #fff)",
+              borderRadius: "var(--z-radius-xl, 14px)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+              overflow: "hidden",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ padding: "1.5rem 1.5rem 1rem" }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: "50%",
+                background: "#fef2f2",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                marginBottom: "1rem",
+              }}>
+                <span className="ms" style={{ fontSize: "1.25rem", color: "#ef4444" }}>delete_forever</span>
+              </div>
+              <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.05rem", fontWeight: 700, color: "var(--z-color-text, #111827)" }}>
+                Delete contact
+              </h3>
+              <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--z-color-muted, #6b7280)" }}>
+                Are you sure you want to delete <strong>{contactToDelete.name}</strong>? This will permanently remove the contact and all associated deal data. This action cannot be undone.
+              </p>
+            </div>
+            <div style={{
+              padding: "1rem 1.5rem",
+              display: "flex",
+              gap: "0.6rem",
+              justifyContent: "flex-end",
+              borderTop: "1px solid var(--z-color-line, #e5e7eb)",
+            }}>
+              <Button size="sm" variant="secondary" onClick={() => setContactToDelete(null)}>Cancel</Button>
+              <Button size="sm" variant="danger" onClick={confirmDelete}>Delete contact</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function TemplatesPage({
   userTier,
   widgetSurface,
+  showcaseVersion,
   onOpenUpgrade,
   onCopy,
 }: TemplatesPageProps) {
@@ -680,9 +1571,18 @@ export default function TemplatesPage({
       title: "CRM Workspace",
       description: "A commercial workspace for opportunities, owners, team discussion, and automation health.",
       category: "example",
-      featured: false,
+      featured: true,
       badge: <Badge color="teal" variant="lighter">Example</Badge>,
       previewCardLabel: "CRM example",
+    },
+    {
+      id: "template-crm-contacts",
+      title: "CRM Contacts",
+      description: "An Attio-style contacts table with search, status filters, a slide-over detail panel, and delete confirmation.",
+      category: "example",
+      featured: true,
+      badge: <Badge color="teal" variant="lighter">Example</Badge>,
+      previewCardLabel: "Contacts table",
     },
     {
       id: "template-audit-center",
@@ -729,6 +1629,51 @@ export default function TemplatesPage({
       badge: <Badge color="purple" variant="lighter">Example</Badge>,
       previewCardLabel: "Product example",
     },
+    {
+      id: "template-customer-onboarding",
+      title: "Customer Onboarding",
+      description: "A premium onboarding workspace for profile setup, activation progress, and first-team invite handoff.",
+      category: "example",
+      featured: true,
+      badge: <Badge color="purple" variant="lighter">Example</Badge>,
+      previewCardLabel: "Onboarding example",
+    },
+    {
+      id: "template-referral-center",
+      title: "Referral Center",
+      description: "A conversion-focused growth workspace for referrals, incentives, and revenue-aware campaign review.",
+      category: "example",
+      featured: true,
+      badge: <Badge color="green" variant="lighter">Example</Badge>,
+      previewCardLabel: "Growth example",
+    },
+    {
+      id: "template-ai-composer-studio",
+      title: "AI Composer Studio",
+      description: "A prompt-and-assets workspace for AI generation, creative review, and staged asset handling.",
+      category: "example",
+      featured: true,
+      badge: <Badge color="purple" variant="lighter">Example</Badge>,
+      previewCardLabel: "AI example",
+    },
+    {
+      id: "template-delivery-operations",
+      title: "Delivery Operations",
+      description: "A premium logistics workspace for timeline tracking, route context, and support-ready handoff.",
+      category: "example",
+      featured: false,
+      badge: <Badge color="sky" variant="lighter">Example</Badge>,
+      previewCardLabel: "Delivery example",
+    },
+    {
+      id: "template-growth-insights",
+      title: "Growth Insights",
+      description: "A metrics workspace combining marketing performance, scorecards, and top-line product health.",
+      category: "example",
+      featured: true,
+      badge: <Badge color="blue" variant="lighter">Example</Badge>,
+      previewCardLabel: "Metrics example",
+    },
   ], []);
 
   const visibleTemplateEntries = useMemo(() => {
@@ -742,174 +1687,276 @@ export default function TemplatesPage({
   }, [activeCategory, query, templateEntries]);
 
   const visibleTemplateIds = useMemo(
-    () => new Set(visibleTemplateEntries.map((entry) => entry.id)),
-    [visibleTemplateEntries]
+    () => new Set(
+      visibleTemplateEntries
+        .filter((entry) => entry.category === "template" || userTier === "pro" || entry.id === "template-crm-contacts")
+        .map((entry) => entry.id)
+    ),
+    [visibleTemplateEntries, userTier]
   );
 
+  const curatedTemplateEntries = useMemo(() => {
+    const order = new Map(templatesV2CatalogIds.map((id, index) => [id, index]));
+    type CatalogId = typeof templatesV2CatalogIds[number];
+    return visibleTemplateEntries
+      .filter((entry) => order.has(entry.id as CatalogId))
+      .sort((a, b) => (order.get(a.id as CatalogId) ?? 0) - (order.get(b.id as CatalogId) ?? 0));
+  }, [visibleTemplateEntries]);
+
   const featuredTemplateEntries = useMemo(
-    () => visibleTemplateEntries.filter((entry) => entry.featured),
-    [visibleTemplateEntries]
+    () => curatedTemplateEntries.slice(0, 2),
+    [curatedTemplateEntries]
   );
 
   const catalogTemplateEntries = useMemo(
-    () => visibleTemplateEntries.filter((entry) => !entry.featured),
-    [visibleTemplateEntries]
+    () => curatedTemplateEntries.slice(2, 5),
+    [curatedTemplateEntries]
   );
 
   return (
     <>
-      <section id="templates-overview" className="doc-section hero">
-        <p className="breadcrumbs">Pages / Templates</p>
-        <h1>Page templates</h1>
-        <p className="lead">
-          Drop-in page templates and assembled page examples built from Zephr components. Use the search and category filter to narrow the catalog before copying the full page composition.
-        </p>
-        <div className="widget-hero-metrics" aria-label="Template page highlights">
-          <div className="widget-hero-metric">
-            <strong>{templateEntries.filter((entry) => entry.category === "template").length}</strong>
-            <span>Reusable page templates</span>
-          </div>
-          <div className="widget-hero-metric">
-            <strong>{templateEntries.filter((entry) => entry.category === "example").length}</strong>
-            <span>Composed page examples</span>
-          </div>
-          <div className="widget-hero-metric">
-            <strong>Search + filter</strong>
-            <span>Find the right page shape before dropping into the detailed examples below</span>
-          </div>
-        </div>
-      </section>
+      {showcaseVersion === "v2" ? (
+        <>
+          <section id="templates-overview" className="doc-section showcase-v2-hero">
+            <div className="showcase-v2-hero-grid">
+              <div className="showcase-v2-copy">
+                <h1>Page systems with product-level polish.</h1>
+                <p className="lead">
+                  SaaS-native dashboards, settings, team, support, and developer surfaces designed to feel production-ready before you customize anything.
+                </p>
+              </div>
+            </div>
+          </section>
 
-      <section className="doc-section">
-        <div className="section-heading">
-          <h2>Browse templates</h2>
-          <p>Search the catalog first, then jump into the matching full-size preview and implementation snippet below.</p>
-        </div>
-        <div className="widget-toolbar-shell">
-          <div className="widget-toolbar-meta">
-            <span className="widget-toolbar-count">{visibleTemplateEntries.length} pages</span>
-            <p>Filter by first-party templates or assembled examples, then jump directly to the page section you want.</p>
-          </div>
-          <div className="widget-toolbar-row">
-            <div className="widget-search">
-              <span className="widget-search-icon" aria-hidden="true">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
-              </span>
+          <section className="doc-section showcase-v2-toolbar-shell">
+            <div className="showcase-v2-toolbar">
               <Input
-                controlSize="sm"
-                className="widget-search-input"
+                controlSize="xs"
+                className="showcase-v2-search"
                 aria-label="Search templates"
-                placeholder="Search templates, admin, auth, dashboard..."
+                placeholder="Search templates, onboarding, analytics, support..."
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
+              <div className="showcase-v2-filter-row" role="tablist" aria-label="Template categories">
+                {CATEGORY_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeCategory === value}
+                    className={`showcase-v2-filter ${activeCategory === value ? "is-active" : ""}`}
+                    onClick={() => setActiveCategory(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="widget-filter-row" role="tablist" aria-label="Template categories">
-              {CATEGORY_OPTIONS.map(({ value, label }) => (
-                <button
-                  key={value}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeCategory === value}
-                  className={`widget-filter-chip ${activeCategory === value ? "is-active" : ""}`}
-                  onClick={() => setActiveCategory(value)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        {visibleTemplateEntries.length > 0 ? (
-          <div className="widget-section-shell">
-            {featuredTemplateEntries.length > 0 ? (
-              <div className="widget-section-shell">
-                <div className="widget-section-head">
-                  <div>
-                    <p className="widget-section-kicker">Featured</p>
-                    <h3>Best starting points</h3>
+          </section>
+
+          {curatedTemplateEntries.length > 0 ? (
+            <>
+              {featuredTemplateEntries.length > 0 ? (
+                <section className="doc-section showcase-v2-section">
+                  <div className="showcase-v2-section-head">
+                    <h2>Spotlight</h2>
                   </div>
-                  <p>Curated templates and examples that show the strongest end-to-end surfaces in the current catalog.</p>
-                </div>
-                <div className="template-feature-grid">
-                  {featuredTemplateEntries.map((entry) => (
-                    <a key={entry.id} className="template-teaser-card is-featured" href={`#${entry.id}`}>
-                      <div className="template-teaser-preview">
-                        <div className="template-preview-stack" aria-hidden="true">
-                          <span className="template-preview-line template-preview-line--full" />
-                          <div className="template-preview-grid">
-                            <span className="template-preview-line" />
-                            <span className="template-preview-line" />
+                  <div className="showcase-v2-spotlight-grid showcase-v2-spotlight-grid--templates">
+                    {featuredTemplateEntries.map((entry) => (
+                      <TemplateSpotlightCard key={entry.id} entry={entry} />
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {catalogTemplateEntries.length > 0 ? (
+                <section className="doc-section showcase-v2-section">
+                  <div className="showcase-v2-section-head">
+                    <h2>Library selection</h2>
+                  </div>
+                  <div className="template-teaser-grid showcase-v2-template-grid">
+                    {catalogTemplateEntries.map((entry) => (
+                      <a key={entry.id} className="template-teaser-card showcase-v2-template-card" href={`#${entry.id}`}>
+                        <div className="template-teaser-preview">
+                          <TemplatePreviewArt entry={entry} />
+                        </div>
+                        <div className="template-teaser-info">
+                          <div className="template-teaser-head">
+                            <span className="template-teaser-name">{entry.title}</span>
                           </div>
-                          <div className="template-preview-caption">{entry.previewCardLabel}</div>
+                          <span className="template-teaser-desc">{entry.description}</span>
                         </div>
-                      </div>
-                      <div className="template-teaser-info">
-                        <div className="template-teaser-head">
-                          <span className="template-teaser-name">{entry.title}</span>
-                          {entry.badge}
-                        </div>
-                        <span className="template-teaser-desc">{entry.description}</span>
-                      </div>
-                    </a>
+                      </a>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+            </>
+          ) : (
+            <section className="doc-section">
+              <div className="widget-empty-state">
+                <strong>No templates match this search.</strong>
+                <p>Clear the search or switch categories to see the curated pages again.</p>
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        <>
+          <section id="templates-overview" className="doc-section hero">
+            <h1>Page templates</h1>
+            <p className="lead">
+              Drop-in page templates and assembled page examples built from Zephr components. Use the search and category filter to narrow the catalog before copying the full page composition.
+            </p>
+            <div className="widget-hero-metrics" aria-label="Template page highlights">
+              <div className="widget-hero-metric">
+                <strong>{templateEntries.filter((entry) => entry.category === "template").length}</strong>
+                <span>Reusable page templates</span>
+              </div>
+              <div className="widget-hero-metric">
+                <strong>{templateEntries.filter((entry) => entry.category === "example").length}</strong>
+                <span>Composed page examples</span>
+              </div>
+              <div className="widget-hero-metric">
+                <strong>Search + filter</strong>
+                <span>Find the right page shape before dropping into the detailed examples below</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="doc-section">
+            <div className="section-heading">
+              <h2>Browse templates</h2>
+              <p>Search the catalog first, then jump into the matching full-size preview and implementation snippet below.</p>
+            </div>
+            <div className="widget-toolbar-shell">
+              <div className="widget-toolbar-meta">
+                <span className="widget-toolbar-count">{visibleTemplateEntries.length} pages</span>
+                <p>Filter by first-party templates or assembled examples, then jump directly to the page section you want.</p>
+              </div>
+              <div className="widget-toolbar-row">
+                <div className="widget-search">
+                  <span className="widget-search-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m20 20-3.5-3.5" />
+                    </svg>
+                  </span>
+                  <Input
+                    controlSize="sm"
+                    className="widget-search-input"
+                    aria-label="Search templates"
+                    placeholder="Search templates, admin, auth, dashboard..."
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+                </div>
+                <div className="widget-filter-row" role="tablist" aria-label="Template categories">
+                  {CATEGORY_OPTIONS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeCategory === value}
+                      className={`widget-filter-chip ${activeCategory === value ? "is-active" : ""}`}
+                      onClick={() => setActiveCategory(value)}
+                    >
+                      {label}
+                    </button>
                   ))}
                 </div>
               </div>
-            ) : null}
-            {catalogTemplateEntries.length > 0 ? (
+            </div>
+            {visibleTemplateEntries.length > 0 ? (
               <div className="widget-section-shell">
-                <div className="widget-section-head">
-                  <div>
-                    <p className="widget-section-kicker">Catalog</p>
-                    <h3>Browse the full page library</h3>
-                  </div>
-                  <p>Search and filter first, then jump directly into the matching full-size preview and implementation snippet below.</p>
-                </div>
-                <div className="template-teaser-grid">
-                  {catalogTemplateEntries.map((entry) => (
-                    <a key={entry.id} className="template-teaser-card" href={`#${entry.id}`}>
-                      <div className="template-teaser-preview">
-                        <div className="template-preview-stack" aria-hidden="true">
-                          <span className="template-preview-line template-preview-line--full" />
-                          <div className="template-preview-grid">
-                            <span className="template-preview-line" />
-                            <span className="template-preview-line" />
+                {featuredTemplateEntries.length > 0 ? (
+                  <div className="widget-section-shell">
+                    <div className="widget-section-head">
+                      <div>
+                        <p className="widget-section-kicker">Featured</p>
+                        <h3>Best starting points</h3>
+                      </div>
+                      <p>Curated templates and examples that show the strongest end-to-end surfaces in the current catalog.</p>
+                    </div>
+                    <div className="template-feature-grid">
+                      {featuredTemplateEntries.map((entry) => (
+                        <a key={entry.id} className="template-teaser-card is-featured" href={`#${entry.id}`}>
+                          <div className="template-teaser-preview">
+                            <div className="template-preview-stack" aria-hidden="true">
+                              <span className="template-preview-line template-preview-line--full" />
+                              <div className="template-preview-grid">
+                                <span className="template-preview-line" />
+                                <span className="template-preview-line" />
+                              </div>
+                              <div className="template-preview-caption">{entry.previewCardLabel}</div>
+                            </div>
                           </div>
-                          <div className="template-preview-caption">{entry.previewCardLabel}</div>
-                        </div>
+                          <div className="template-teaser-info">
+                            <div className="template-teaser-head">
+                              <span className="template-teaser-name">{entry.title}</span>
+                              {entry.badge}
+                            </div>
+                            <span className="template-teaser-desc">{entry.description}</span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {catalogTemplateEntries.length > 0 ? (
+                  <div className="widget-section-shell">
+                    <div className="widget-section-head">
+                      <div>
+                        <p className="widget-section-kicker">Catalog</p>
+                        <h3>Browse the full page library</h3>
                       </div>
-                      <div className="template-teaser-info">
-                        <div className="template-teaser-head">
-                          <span className="template-teaser-name">{entry.title}</span>
-                          {entry.badge}
-                        </div>
-                        <span className="template-teaser-desc">{entry.description}</span>
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                      <p>Search and filter first, then jump directly into the matching full-size preview and implementation snippet below.</p>
+                    </div>
+                    <div className="template-teaser-grid">
+                      {catalogTemplateEntries.map((entry) => (
+                        <a key={entry.id} className="template-teaser-card" href={`#${entry.id}`}>
+                          <div className="template-teaser-preview">
+                            <div className="template-preview-stack" aria-hidden="true">
+                              <span className="template-preview-line template-preview-line--full" />
+                              <div className="template-preview-grid">
+                                <span className="template-preview-line" />
+                                <span className="template-preview-line" />
+                              </div>
+                              <div className="template-preview-caption">{entry.previewCardLabel}</div>
+                            </div>
+                          </div>
+                          <div className="template-teaser-info">
+                            <div className="template-teaser-head">
+                              <span className="template-teaser-name">{entry.title}</span>
+                              {entry.badge}
+                            </div>
+                            <span className="template-teaser-desc">{entry.description}</span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="widget-empty-state">
-            <strong>No templates match this search.</strong>
-            <p>Clear the search or switch categories to see the full catalog again.</p>
-          </div>
-        )}
-      </section>
+            ) : (
+              <div className="widget-empty-state">
+                <strong>No templates match this search.</strong>
+                <p>Clear the search or switch categories to see the full catalog again.</p>
+              </div>
+            )}
+          </section>
+        </>
+      )}
 
       {userTier !== "pro" ? (
         <section className="doc-section">
           <div className="section-heading">
-            <h2>Unlock the full page library</h2>
-            <p>Pro keeps the assembled page kits together in one install path with support for larger product surfaces and internal tools.</p>
+            <h2>Premium page examples</h2>
+            <p>20 assembled page examples — Ops Center, CRM, Analytics, Support Desk, and more. One-time purchase, all future examples included.</p>
           </div>
           <div className="template-teaser-grid">
-            {templateCatalogMeta.map((entry) => (
+            {templateCatalogMeta.filter((entry) => entry.category === "example").map((entry) => (
               <div key={entry.id} className="template-teaser-card">
                 <div className="template-teaser-preview">
                   <span className="ms template-teaser-lock">lock</span>
@@ -917,17 +1964,15 @@ export default function TemplatesPage({
                 <div className="template-teaser-info">
                   <div className="template-teaser-head">
                     <span className="template-teaser-name">{entry.label}</span>
-                    <Badge size="sm" tone="neutral">Pro</Badge>
+                    <Badge size="sm" tone="neutral">Paid</Badge>
                   </div>
-                  <span className="template-teaser-desc">
-                    {entry.category === "template" ? "Reusable page scaffold" : "Composed page example"}
-                  </span>
+                  <span className="template-teaser-desc">Composed page example</span>
                 </div>
               </div>
             ))}
           </div>
           <div style={{ marginTop: "1.5rem" }}>
-            <Button onClick={onOpenUpgrade}>Unlock Pro — access all templates</Button>
+            <Button onClick={onOpenUpgrade}>Get Templates — $49</Button>
           </div>
         </section>
       ) : null}
@@ -1711,6 +2756,291 @@ export function ProductReviewBoard() {
       <CommentThreadWidget />
       <TeamPulseWidget />
       <QuickActionsWidget />
+    </div>
+  );
+}`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-customer-onboarding") ? <section id="template-customer-onboarding" className="doc-section">
+        <div className="section-heading">
+          <h2>Customer Onboarding</h2>
+          <p>A first-run onboarding workspace with profile setup, activation progress, and team invite follow-through.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/templates/customer-onboarding" minHeight="760px">
+          <ExampleCustomerOnboarding widgetSurface={widgetSurface} />
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import {
+  InviteMembersWidget,
+  SetupJourneyWidget,
+  WelcomeProfileWidget
+} from "@zephrui/ui-react";
+
+export function CustomerOnboarding() {
+  return (
+    <div className="customer-onboarding-grid">
+      <WelcomeProfileWidget />
+      <SetupJourneyWidget />
+      <InviteMembersWidget />
+    </div>
+  );
+}`, () => onCopy("Customer Onboarding", `import {
+  InviteMembersWidget,
+  SetupJourneyWidget,
+  WelcomeProfileWidget
+} from "@zephrui/ui-react";
+
+export function CustomerOnboarding() {
+  return (
+    <div className="customer-onboarding-grid">
+      <WelcomeProfileWidget />
+      <SetupJourneyWidget />
+      <InviteMembersWidget />
+    </div>
+  );
+}`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-referral-center") ? <section id="template-referral-center" className="doc-section">
+        <div className="section-heading">
+          <h2>Referral Center</h2>
+          <p>A growth workspace for referral loops, weekly outcomes, customer quality, and commercial impact.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/templates/referral-center" minHeight="760px">
+          <ExampleReferralCenter widgetSurface={widgetSurface} />
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import {
+  CustomerHealthWidget,
+  GoalTrackerWidget,
+  ReferralRewardWidget,
+  RevenueSnapshotWidget
+} from "@zephrui/ui-react";
+
+export function ReferralCenter() {
+  return (
+    <div className="referral-center-grid">
+      <ReferralRewardWidget />
+      <GoalTrackerWidget />
+      <CustomerHealthWidget />
+      <RevenueSnapshotWidget />
+    </div>
+  );
+}`, () => onCopy("Referral Center", `import {
+  CustomerHealthWidget,
+  GoalTrackerWidget,
+  ReferralRewardWidget,
+  RevenueSnapshotWidget
+} from "@zephrui/ui-react";
+
+export function ReferralCenter() {
+  return (
+    <div className="referral-center-grid">
+      <ReferralRewardWidget />
+      <GoalTrackerWidget />
+      <CustomerHealthWidget />
+      <RevenueSnapshotWidget />
+    </div>
+  );
+}`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-ai-composer-studio") ? <section id="template-ai-composer-studio" className="doc-section">
+        <div className="section-heading">
+          <h2>AI Composer Studio</h2>
+          <p>A premium AI workspace for composing prompts, staging inputs, and reviewing output-ready assets.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/templates/ai-composer-studio" minHeight="760px">
+          <ExampleAIComposerStudio widgetSurface={widgetSurface} />
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import {
+  AssetReviewWidget,
+  CommentThreadWidget,
+  PromptComposerWidget,
+  UploadQueueWidget
+} from "@zephrui/ui-react";
+
+export function AIComposerStudio() {
+  return (
+    <div className="ai-composer-studio-grid">
+      <PromptComposerWidget />
+      <AssetReviewWidget />
+      <UploadQueueWidget />
+      <CommentThreadWidget />
+    </div>
+  );
+}`, () => onCopy("AI Composer Studio", `import {
+  AssetReviewWidget,
+  CommentThreadWidget,
+  PromptComposerWidget,
+  UploadQueueWidget
+} from "@zephrui/ui-react";
+
+export function AIComposerStudio() {
+  return (
+    <div className="ai-composer-studio-grid">
+      <PromptComposerWidget />
+      <AssetReviewWidget />
+      <UploadQueueWidget />
+      <CommentThreadWidget />
+    </div>
+  );
+}`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-delivery-operations") ? <section id="template-delivery-operations" className="doc-section">
+        <div className="section-heading">
+          <h2>Delivery Operations</h2>
+          <p>A logistics-focused workspace for route context, timeline visibility, and customer-facing handoff readiness.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/templates/delivery-operations" minHeight="760px">
+          <ExampleDeliveryOperations widgetSurface={widgetSurface} />
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import {
+  ActivityTimelineWidget,
+  DeliveryTimelineWidget,
+  SupportQueueWidget,
+  TravelItineraryWidget
+} from "@zephrui/ui-react";
+
+export function DeliveryOperations() {
+  return (
+    <div className="delivery-operations-grid">
+      <DeliveryTimelineWidget />
+      <TravelItineraryWidget />
+      <SupportQueueWidget />
+      <ActivityTimelineWidget />
+    </div>
+  );
+}`, () => onCopy("Delivery Operations", `import {
+  ActivityTimelineWidget,
+  DeliveryTimelineWidget,
+  SupportQueueWidget,
+  TravelItineraryWidget
+} from "@zephrui/ui-react";
+
+export function DeliveryOperations() {
+  return (
+    <div className="delivery-operations-grid">
+      <DeliveryTimelineWidget />
+      <TravelItineraryWidget />
+      <SupportQueueWidget />
+      <ActivityTimelineWidget />
+    </div>
+  );
+}`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-crm-contacts") ? <section id="template-crm-contacts" className="doc-section">
+        <div className="section-heading">
+          <h2>CRM Contacts</h2>
+          <p>A full-page contacts table with search, status filter pills, avatar+name rows, a slide-over detail panel, and a delete confirmation modal — showing the complete Zephr component composition for a CRM contacts screen.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/crm/contacts" minHeight="640px">
+          <div style={{ position: "relative", height: "640px", overflow: "hidden" }}>
+            <ExampleCRMContacts />
+          </div>
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import { useState } from 'react';
+import { Badge, Button, Input } from '@zephrui/ui-react';
+
+// Contact data shape
+interface CRMContact {
+  id: string; name: string; email: string; company: string; role: string;
+  status: 'Active' | 'Trial' | 'Prospect' | 'Churned';
+  lastSeen: string; deals: number;
+}
+
+export function ContactsPage() {
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [selected, setSelected] = useState<CRMContact | null>(null);
+  const [toDelete, setToDelete] = useState<CRMContact | null>(null);
+
+  const filtered = contacts.filter(c =>
+    (statusFilter === 'All' || c.status === statusFilter) &&
+    (search === '' || [c.name, c.email, c.company].join(' ').toLowerCase().includes(search.toLowerCase()))
+  );
+
+  return (
+    <LayoutShell sidebar={<SidebarNav items={navItems} activeId="contacts" />}>
+      {/* Toolbar */}
+      <div className="contacts-toolbar">
+        <Input placeholder="Search contacts…" value={search} onChange={e => setSearch(e.target.value)} />
+        {['All', 'Active', 'Trial', 'Prospect', 'Churned'].map(s => (
+          <button key={s} onClick={() => setStatusFilter(s)}>{s}</button>
+        ))}
+      </div>
+      {/* Table */}
+      <DataTable
+        data={filtered}
+        columns={[
+          { id: 'name', header: 'Contact', render: row => <AvatarNameCell contact={row} /> },
+          { id: 'company', header: 'Company', accessor: 'company' },
+          { id: 'status', header: 'Status', render: row => <Badge color={statusColor[row.status]} variant='lighter' type='dot'>{row.status}</Badge> },
+          { id: 'lastSeen', header: 'Last seen', accessor: 'lastSeen' },
+          { id: 'deals', header: 'Deals', render: row => row.deals ? <Badge color='blue' variant='lighter'>{row.deals}</Badge> : '—' },
+        ]}
+        rowKey={row => row.id}
+        onRowClick={setSelected}
+      />
+      {/* Detail slide-over */}
+      {selected && <Sheet open title={selected.name} onClose={() => setSelected(null)}>...</Sheet>}
+      {/* Delete confirmation */}
+      {toDelete && <ModalDialog open title='Delete contact' onCancel={() => setToDelete(null)} onConfirm={handleDelete} />}
+    </LayoutShell>
+  );
+}`, () => onCopy("CRM Contacts", `// See full source above — paste into your contacts page route`))}
+        </div>
+      </section> : null}
+
+      {visibleTemplateIds.has("template-growth-insights") ? <section id="template-growth-insights" className="doc-section">
+        <div className="section-heading">
+          <h2>Growth Insights</h2>
+          <p>A premium metrics workspace that blends marketing performance, conversion analysis, and top-line KPI review.</p>
+        </div>
+        <TemplateBrowserFrame address="zephr.local/templates/growth-insights" minHeight="760px">
+          <ExampleGrowthInsights widgetSurface={widgetSurface} />
+        </TemplateBrowserFrame>
+        <div style={{ marginTop: "1rem" }}>
+          {snippet("Usage", `import {
+  AnalyticsOverviewWidget,
+  ConversionScoreWidget,
+  MarketingInsightsWidget,
+  RevenueSnapshotWidget
+} from "@zephrui/ui-react";
+
+export function GrowthInsights() {
+  return (
+    <div className="growth-insights-grid">
+      <MarketingInsightsWidget />
+      <ConversionScoreWidget />
+      <AnalyticsOverviewWidget />
+      <RevenueSnapshotWidget />
+    </div>
+  );
+}`, () => onCopy("Growth Insights", `import {
+  AnalyticsOverviewWidget,
+  ConversionScoreWidget,
+  MarketingInsightsWidget,
+  RevenueSnapshotWidget
+} from "@zephrui/ui-react";
+
+export function GrowthInsights() {
+  return (
+    <div className="growth-insights-grid">
+      <MarketingInsightsWidget />
+      <ConversionScoreWidget />
+      <AnalyticsOverviewWidget />
+      <RevenueSnapshotWidget />
     </div>
   );
 }`))}

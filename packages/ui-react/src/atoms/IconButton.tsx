@@ -19,7 +19,7 @@ function toneStyles(
     return {
       background: "transparent",
       borderColor: "transparent",
-      color: "#b5b5b5",
+      color: "var(--z-color-text300, #a1a1aa)",
       boxShadow: "none",
       cursor: "not-allowed"
     };
@@ -42,7 +42,7 @@ function toneStyles(
     return {
       background: "var(--z-color-danger, #fb3748)",
       borderColor: "rgba(255, 255, 255, 0.12)",
-      color: "#ffffff",
+      color: "var(--z-color-primaryContrast, #ffffff)",
       boxShadow: focused
         ? "0 0 0 2px var(--z-color-surface, #ffffff), 0 0 0 4px rgba(153, 160, 174, 0.22)"
         : hovered

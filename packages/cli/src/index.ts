@@ -192,22 +192,96 @@ function buildClaudeContext(stylePack: StylePackName, accent: string): string {
   return [
     "# Zephr Workspace Context",
     "",
-    "## Rules",
-    "- Always prefer Zephr components from `@zephrui/ui-react` over raw HTML controls.",
-    `- Default style pack: \`${stylePack}\`.`,
-    `- Accent color: \`${accent}\`.`,
-    "- Use `zephr.config.ts` as the source of truth for theme and token overrides.",
-    "- Keep output accessible (labels, aria attributes, keyboard flow) and production-ready.",
-    "- Avoid inline hex colors when a Zephr token exists.",
+    "## What is Zephyr?",
+    "Zephr is a token-native React UI library for AI-assisted SaaS product development.",
+    "Every component is built on `--z-*` CSS custom properties. Do not hardcode colors, radii, or spacing.",
     "",
-    "## MCP Server",
-    "Zephr ships a local MCP server. If the `zephr` MCP server is connected you can:",
-    "- Search components: `zephr_search` tool",
-    "- Get component spec: `zephr_spec` tool with a component ID",
-    "- List themes: `zephr_themes` tool",
+    "## Configuration",
+    `- Style pack: \`${stylePack}\``,
+    `- Accent color: \`${accent}\``,
+    "- Config file: `zephr.config.ts` (source of truth for theme overrides)",
+    "- Generated CSS: `src/styles/zephr.css` (import this in your root layout)",
     "",
-    "To connect, add this to your Claude Desktop config",
-    "(`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):",
+    "## Critical rules",
+    "1. Always import from `@zephrui/ui-react` — never write raw `<button>`, `<input>`, `<select>`, or `<textarea>` when a Zephr equivalent exists.",
+    "2. Never hardcode hex colors. Use `var(--z-color-*)` tokens or let components handle their own color.",
+    "3. Use `FormField` to wrap any labeled input — it handles label, hint, and error text.",
+    "4. Use `LayoutShell` + `SidebarNav` for any multi-page admin/dashboard layout — do not build custom sidebar scaffolding.",
+    "5. Use `DataTable` + `SearchBox` + `FiltersBar` for any tabular data view.",
+    "6. Use `ModalDialog` or `Sheet` for confirmation dialogs and slide-over panels — never `<dialog>` directly.",
+    "7. Keep components accessible: pass `aria-label` to icon-only buttons, link labels to inputs via `htmlFor`/`id`.",
+    "",
+    "## Component catalogue",
+    "",
+    "### Atoms (import all from `@zephrui/ui-react`)",
+    "| Component | Key props | Notes |",
+    "|---|---|---|",
+    "| `Button` | `variant` (primary\|secondary\|ghost\|danger), `size` (sm\|md\|lg), `loading`, `disabled` | Default: primary md |",
+    "| `Input` | `value`, `onChange`, `placeholder`, `type` | Wrap in `FormField` for labels |",
+    "| `Textarea` | `value`, `onChange`, `rows`, `placeholder` | Wrap in `FormField` for labels |",
+    "| `Select` | `value`, `onChange`, `children` (option elements) | Wrap in `FormField` for labels |",
+    "| `Checkbox` | `checked`, `onChange`, `disabled` | Wrap with `<label>` text |",
+    "| `Switch` | `checked`, `onChange(next: boolean)`, `disabled` | For feature flags |",
+    "| `Badge` | `color` (gray\|blue\|green\|red\|orange…), `variant` (filled\|lighter\|stroke), `type` (basic\|dot) | Prefer `type=dot` for passive status |",
+    "| `Avatar` | `name`, `src`, `size` | Shows initials fallback |",
+    "| `Progress` | `value` (0–100), `size` (sm\|md) | Linear progress indicator |",
+    "| `Skeleton` | `width`, `height`, `radius` | Loading placeholder |",
+    "",
+    "### Molecules",
+    "| Component | Key props | Notes |",
+    "|---|---|---|",
+    "| `FormField` | `label`, `hint`, `error`, `htmlFor`, `children` | Wraps any input |",
+    "| `SearchBox` | `value`, `onChange`, `placeholder` | Pair with `FiltersBar` and `DataTable` |",
+    "| `Tabs` | `items` ([{id,label}]), `activeId`, `onChange` | Top-level page tabs |",
+    "| `Dropdown` | `trigger`, `items` ([{label,onClick}]) | Action menus, context menus |",
+    "| `Alert` | `status` (info\|success\|warning\|error), `title`, `children` | Inline status messages |",
+    "| `Toast` | `message`, `tone`, show via state | Ephemeral notifications |",
+    "| `CommandBar` | `placeholder`, `items`, `onSelect` | Keyboard-driven command palette |",
+    "| `Pagination` | `page`, `totalPages`, `onChange` | Table and list pagination |",
+    "| `Tooltip` | `content`, `children` | Wraps any triggering element |",
+    "",
+    "### Organisms",
+    "| Component | Key props | Notes |",
+    "|---|---|---|",
+    "| `Navbar` | `brand`, `actions`, `navItems` | Top nav — use at app root |",
+    "| `SidebarNav` | `items` ([{id,label,icon,href}]), `activeId` | Left rail navigation |",
+    "| `LayoutShell` | `sidebar`, `navbar`, `children` | Full page shell — use once per layout |",
+    "| `DataTable` | `columns` ([{id,header,cell}]), `rows`, `onRowClick` | Main data grid |",
+    "| `FiltersBar` | `filters` ([{id,label,options}]), `value`, `onChange` | Filter strip above `DataTable` |",
+    "| `ModalDialog` | `open`, `onClose`, `title`, `children`, `footer` | Confirmation dialogs |",
+    "| `Sheet` | `open`, `onClose`, `title`, `children` | Slide-over detail panel |",
+    "| `SearchResultsPanel` | `results`, `onSelect` | Floating search results |",
+    "",
+    "### Layout primitives",
+    "`Stack`, `Grid`, `Box`, `Spacer` — composable layout wrappers.",
+    "",
+    "## Common composition recipes",
+    "",
+    "### CRM / admin table page",
+    "```tsx",
+    `import { LayoutShell, SidebarNav, DataTable, SearchBox, FiltersBar, Button } from '@zephrui/ui-react';`,
+    "// 1. Wrap the page in <LayoutShell>",
+    "// 2. Pass <SidebarNav items={navItems} activeId={currentRoute} /> to sidebar prop",
+    "// 3. Above the table: <SearchBox /> and <FiltersBar />",
+    "// 4. <DataTable columns={cols} rows={data} onRowClick={openDetail} />",
+    "// 5. Detail opens in <Sheet> slide-over",
+    "```",
+    "",
+    "### Settings page",
+    "```tsx",
+    `import { FormField, Input, Switch, Button, Tabs } from '@zephrui/ui-react';`,
+    "// 1. <Tabs> for Settings sections (General, Security, Notifications, Billing)",
+    "// 2. Each section uses <FormField> wrapping <Input> or <Switch>",
+    "// 3. Submit row: <Button variant='primary'>Save changes</Button>",
+    "```",
+    "",
+    "## MCP Server (optional — greatly improves output quality)",
+    "If the `zephr` MCP server is connected, use these tools before generating any component:",
+    "- `zephr_search` — find the right component by keyword",
+    "- `zephr_spec` — get full prop schema for a specific component",
+    "- `zephr_scaffold_page` — scaffold a full page template",
+    "",
+    "Add to Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json`):",
     "```json",
     "{",
     '  "mcpServers": {',
@@ -215,8 +289,7 @@ function buildClaudeContext(stylePack: StylePackName, accent: string): string {
     "  }",
     "}",
     "```",
-    "",
-    "For Cursor, add the same block to `.cursor/mcp.json` in your project root."
+    "For Cursor: add the same block to `.cursor/mcp.json` in your project root."
   ].join("\n") + "\n";
 }
 
@@ -225,36 +298,103 @@ function buildAgentsContext(stylePack: StylePackName, accent: string): string {
     "# AGENTS",
     "",
     "## Zephr usage policy",
-    "- Import components from `@zephrui/ui-react` first.",
-    "- Do not generate raw `<button>`, `<input>`, or `<select>` if an equivalent Zephr component exists.",
-    `- Current style pack: \`${stylePack}\`.`,
-    `- Current accent: \`${accent}\`.`,
-    "- Keep styles token-driven via `--z-*` CSS variables.",
+    `- Style pack: \`${stylePack}\` · Accent: \`${accent}\``,
+    "- Import all UI components from `@zephrui/ui-react`.",
+    "- Never emit raw `<button>`, `<input>`, `<select>`, `<textarea>`, or `<dialog>` when an equivalent Zephr component exists.",
+    "- Never hardcode colors — use `var(--z-color-*)` tokens.",
+    "- Always wrap labeled inputs in `<FormField>`.",
+    "- For any data list / table view, use `DataTable` + `SearchBox` + `FiltersBar`.",
+    "- For slide-over panels, use `<Sheet>`. For modals, use `<ModalDialog>`.",
+    "- For page layout, use `<LayoutShell>` with `<SidebarNav>` — do not build custom sidebar scaffolding.",
     "",
-    "## Preferred imports",
-    "- `import { Button, Input, Select } from \"@zephrui/ui-react\"`",
-    "- `import { resolveConfig, generateCssVariables } from \"@zephrui/core\"`"
+    "## Available components (import from `@zephrui/ui-react`)",
+    "",
+    "Atoms: Button, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Avatar, Logo, Progress, Skeleton, Slider",
+    "Molecules: FormField, SearchBox, Tabs, Dropdown, Alert, Toast, CommandBar, Pagination, Tooltip, Accordion, DatePicker, ButtonGroup, TagInput, NumberInput",
+    "Organisms: Navbar, SidebarNav, LayoutShell, DataTable, FiltersBar, ModalDialog, Sheet, SearchResultsPanel",
+    "Layout: Stack, Grid, Box, Spacer",
+    "",
+    "## Key prop signatures",
+    "```ts",
+    "Button: variant='primary'|'secondary'|'ghost'|'danger', size='sm'|'md'|'lg', loading?, disabled?",
+    "Badge: color='gray'|'blue'|'green'|'red'|'orange'|'purple'|'teal'|'sky'|'pink'|'yellow', variant='filled'|'lighter'|'stroke', type='basic'|'dot'",
+    "DataTable: columns=[{id, header, cell:(row)=>ReactNode}], rows=[...], onRowClick?",
+    "Tabs: items=[{id,label}], activeId, onChange",
+    "ModalDialog: open, onClose, title, children, footer?",
+    "Sheet: open, onClose, title, children",
+    "LayoutShell: sidebar, navbar?, children",
+    "SidebarNav: items=[{id,label,icon?,href?}], activeId",
+    "FormField: label, hint?, error?, htmlFor, children",
+    "Alert: status='info'|'success'|'warning'|'error', title, children?",
+    "```"
   ].join("\n") + "\n";
 }
 
 function buildLlmsContext(stylePack: StylePackName, accent: string): string {
   return [
-    "# Zephr UI",
+    "# Zephr UI — llms.txt",
     "",
-    "Zephr is a token-native UI framework for AI-assisted product development.",
-    "",
-    "## Defaults",
-    `- stylePack: ${stylePack}`,
-    `- accent: ${accent}`,
-    "",
-    "## Rules",
-    "- Use Zephr components before raw HTML controls.",
-    "- Keep color/radius/spacing values token-based via `--z-*`.",
-    "- Prefer composable molecules and organisms for larger blocks.",
+    "Zephr is a token-native React UI library for AI-assisted SaaS product development.",
+    `Style pack: ${stylePack} · Accent: ${accent}`,
     "",
     "## Install",
-    "- `pnpm add @zephrui/core @zephrui/ui-react`",
-    "- `zephr init`"
+    "```",
+    "npm install @zephrui/ui-react @zephrui/core",
+    "# Then import generated tokens in your root layout:",
+    "import 'src/styles/zephr.css';",
+    "```",
+    "",
+    "## Rules",
+    "- Use Zephr components before raw HTML.",
+    "- Never hardcode hex — use `var(--z-color-*)` tokens.",
+    "- Wrap every labeled input in `<FormField label=\"...\" htmlFor=\"...\">...</FormField>`.",
+    "- Use `<LayoutShell>` + `<SidebarNav>` for multi-page layouts.",
+    "- Use `<DataTable columns rows>` for tabular data — pair with `<SearchBox>` and `<FiltersBar>`.",
+    "",
+    "## Component quick-reference",
+    "```tsx",
+    `// Button
+import { Button } from '@zephrui/ui-react';
+<Button variant='primary' size='md'>Save</Button>
+<Button variant='secondary'>Cancel</Button>
+<Button variant='danger'>Delete</Button>`,
+    "",
+    `// Badge
+import { Badge } from '@zephrui/ui-react';
+<Badge color='green' variant='lighter' type='dot'>Active</Badge>
+<Badge color='red' variant='filled'>Error</Badge>`,
+    "",
+    `// FormField + Input
+import { FormField, Input } from '@zephrui/ui-react';
+<FormField label='Email' htmlFor='email' hint='We will never share this.'>
+  <Input id='email' type='email' value={email} onChange={e => setEmail(e.target.value)} />
+</FormField>`,
+    "",
+    `// DataTable
+import { DataTable } from '@zephrui/ui-react';
+const columns = [
+  { id: 'name', header: 'Name', cell: (row) => row.name },
+  { id: 'status', header: 'Status', cell: (row) => <Badge color='green' variant='lighter'>{row.status}</Badge> },
+];
+<DataTable columns={columns} rows={data} onRowClick={openDetail} />`,
+    "",
+    `// LayoutShell
+import { LayoutShell, SidebarNav, Navbar } from '@zephrui/ui-react';
+<LayoutShell
+  navbar={<Navbar brand='MyApp' />}
+  sidebar={<SidebarNav items={navItems} activeId={currentPage} />}
+>
+  {children}
+</LayoutShell>`,
+    "",
+    `// ModalDialog
+import { ModalDialog, Button } from '@zephrui/ui-react';
+<ModalDialog open={open} onClose={() => setOpen(false)} title='Confirm delete'
+  footer={<Button variant='danger' onClick={handleDelete}>Delete</Button>}
+>
+  This action cannot be undone.
+</ModalDialog>`,
+    "```"
   ].join("\n") + "\n";
 }
 

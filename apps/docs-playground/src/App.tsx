@@ -62,8 +62,8 @@ import type { MaterialIconDefinition, MaterialIconStyle } from "@zephrui/icons-m
 import type { LogoCatalogEntry } from "@zephrui/logos";
 import zephrLogoDark from "../../../logo/zephr-dark.png";
 import zephrLogoLight from "../../../logo/zephr-light.png";
-import { widgetCatalogMeta } from "./views/widgetsCatalog";
-import { templateCatalogMeta } from "./views/templatesCatalog";
+import { widgetCatalogMeta, widgetsV2CatalogIds } from "./views/widgetsCatalog";
+import { templateCatalogMeta, templatesV2CatalogIds } from "./views/templatesCatalog";
 // Theme CSS is injected dynamically via <style> tag — no static import needed
 
 const registry = registryData as unknown as RegistryEntry[];
@@ -84,6 +84,7 @@ type WorkspaceView =
   "widgets" |
   "templates";
 type TopTab = "setup" | "components" | "pages" | "changelog";
+type ShowcaseVersion = "v1" | "v2";
 
 interface SearchResultItem {
   id: string;
@@ -167,7 +168,7 @@ type BadgeColorOption =
   | "pink"
   | "teal";
 type SurfaceStyleOption = "shadow" | "flat";
-type CheckoutPlanId = "individual" | "startup" | "enterprise";
+type CheckoutPlanId = "templates";
 
 interface CheckoutPlanOption {
   id: CheckoutPlanId;
@@ -185,31 +186,21 @@ interface CloudAssetState {
 }
 
 const CHECKOUT_PLAN_META: Record<CheckoutPlanId, { label: string; description: string; recommended?: boolean }> = {
-  individual: {
-    label: "Individual",
-    description: "For solo builders and personal projects."
-  },
-  startup: {
-    label: "Startup",
-    description: "For small teams shipping products quickly.",
+  templates: {
+    label: "Templates",
+    description: "Lifetime access to all 20 premium page templates.",
     recommended: true
-  },
-  enterprise: {
-    label: "Enterprise",
-    description: "For larger teams with advanced support needs."
   }
 };
 
 function normalizeCheckoutPlans(plans: CloudBillingPlan[]): CheckoutPlanOption[] {
   return plans
-    .filter((plan): plan is CloudBillingPlan & { id: CheckoutPlanId } =>
-      plan.id === "individual" || plan.id === "startup" || plan.id === "enterprise"
-    )
+    .filter((plan) => plan.id === "templates")
     .map((plan) => ({
-      id: plan.id,
-      label: plan.label || CHECKOUT_PLAN_META[plan.id].label,
-      description: plan.description || CHECKOUT_PLAN_META[plan.id].description,
-      recommended: plan.recommended ?? CHECKOUT_PLAN_META[plan.id].recommended,
+      id: "templates" as CheckoutPlanId,
+      label: plan.label || CHECKOUT_PLAN_META.templates.label,
+      description: plan.description || CHECKOUT_PLAN_META.templates.description,
+      recommended: plan.recommended ?? CHECKOUT_PLAN_META.templates.recommended,
       checkoutUrl: plan.checkoutUrl,
       available: Boolean(plan.available && plan.checkoutUrl)
     }));
@@ -626,21 +617,6 @@ function buildExpandedColorPalettes(stylePack: StylePackName, accentColor: strin
     ...lightBase,
     staticBlack: "#111111",
     staticWhite: "#ffffff",
-    background950: backgroundLight[0],
-    background800: backgroundLight[1],
-    background600: backgroundLight[2],
-    background400: backgroundLight[3],
-    background200: backgroundLight[4],
-    background100: backgroundLight[5],
-    background0: backgroundLight[6],
-    text950: textLight[0],
-    text700: textLight[1],
-    text500: textLight[2],
-    text300: textLight[3],
-    stroke400: strokeLight[0],
-    stroke300: strokeLight[1],
-    stroke200: strokeLight[2],
-    stroke100: strokeLight[3],
     accent900: accentScaleLight[0],
     accent700: accentScaleLight[1],
     accent500: accentScaleLight[2],
@@ -663,21 +639,6 @@ function buildExpandedColorPalettes(stylePack: StylePackName, accentColor: strin
     ...darkBase,
     staticBlack: "#111111",
     staticWhite: "#ffffff",
-    background950: backgroundDark[0],
-    background800: backgroundDark[1],
-    background600: backgroundDark[2],
-    background400: backgroundDark[3],
-    background200: backgroundDark[4],
-    background100: backgroundDark[5],
-    background0: backgroundDark[6],
-    text950: textDark[0],
-    text700: textDark[1],
-    text500: textDark[2],
-    text300: textDark[3],
-    stroke400: strokeDark[0],
-    stroke300: strokeDark[1],
-    stroke200: strokeDark[2],
-    stroke100: strokeDark[3],
     accent900: accentScaleDark[0],
     accent700: accentScaleDark[1],
     accent500: accentScaleDark[2],
@@ -838,23 +799,29 @@ function fromSearchParams(): {
   componentId: string;
   accentColor: string;
   view: WorkspaceView;
+  showcaseVersion: ShowcaseVersion;
 } {
   if (typeof window === "undefined") {
     return {
       stylePack: DEFAULT_STYLE_PACK,
       componentId: "button",
       accentColor: defaultAccentForPack(DEFAULT_STYLE_PACK),
-      view: "introduction"
+      view: "component-gallery",
+      showcaseVersion: "v1"
     };
   }
 
   const params = new URLSearchParams(window.location.search);
   const componentId = params.get("component") ?? "button";
   const storedAccent = normalizeHexColor(sessionStorage.getItem("zephr-accent-color"));
+  const storedShowcaseVersion = sessionStorage.getItem("zephr-showcase-version");
   const accentColor = migrateLegacyAccent(
     DEFAULT_STYLE_PACK,
     normalizeHexColor(params.get("accent")) ?? storedAccent
   );
+  const showcaseVersionParam = params.get("showcase");
+  const showcaseVersion: ShowcaseVersion =
+    showcaseVersionParam === "v2" || storedShowcaseVersion === "v2" ? "v2" : "v1";
   const viewParam = params.get("view");
   const view: WorkspaceView =
     viewParam === "introduction" ? "introduction" :
@@ -868,20 +835,22 @@ function fromSearchParams(): {
                   viewParam === "team" ? "team" :
                     viewParam === "widgets" ? "widgets" :
                     viewParam === "templates" ? "templates" :
-                      "introduction";
+                      "component-gallery";
 
   return {
     stylePack: DEFAULT_STYLE_PACK,
     componentId: registry.some((entry) => entry.id === componentId) ? componentId : "button",
     accentColor,
-    view
+    view,
+    showcaseVersion
   };
 }
 
 function updateSearchParams(
   componentId: string,
   accentColor: string,
-  view: WorkspaceView
+  view: WorkspaceView,
+  showcaseVersion: ShowcaseVersion
 ): void {
   if (typeof window === "undefined") {
     return;
@@ -897,6 +866,11 @@ function updateSearchParams(
   }
   params.delete("surface");
   params.set("view", view);
+  if (showcaseVersion === "v2") {
+    params.set("showcase", "v2");
+  } else {
+    params.delete("showcase");
+  }
 
   const next = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState({}, "", next);
@@ -2448,16 +2422,15 @@ function InstallTabBlock({
   const cmd = `${verb} ${packageName}`;
   return (
     <div className="itb-block">
-      <div className="itb-tabrow">
-        {(["npm", "pnpm", "yarn"] as PkgManager[]).map((p) => (
-          <button key={p} type="button" className={`itb-tab${pm === p ? " active" : ""}`} onClick={() => setPm(p)}>
-            {p}
-          </button>
-        ))}
-      </div>
       <div className="itb-root">
         <div className="itb-file-row">
-          <span className="itb-file-label">terminal</span>
+          <div className="itb-tabrow">
+            {(["npm", "pnpm", "yarn"] as PkgManager[]).map((p) => (
+              <button key={p} type="button" className={`itb-tab${pm === p ? " active" : ""}`} onClick={() => setPm(p)}>
+                {p}
+              </button>
+            ))}
+          </div>
           <button type="button" className="snippet-item-copy" onClick={() => onCopy(cmd)} aria-label="Copy command">
             Copy
           </button>
@@ -2533,44 +2506,45 @@ function LicenseKeyModal({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Zephr Pro license key"
+      aria-label="Zephr Templates"
     >
       <div className="upgrade-modal" onClick={(e) => e.stopPropagation()}>
         <div className="upgrade-modal-header">
-          <span>Zephr Pro</span>
+          <span>Zephr Templates</span>
           <button type="button" className="upgrade-modal-close" onClick={onClose} aria-label="Close"><span className="ms">close</span></button>
         </div>
         <div className="upgrade-modal-body">
           {isPro ? (
             <>
-              <p className="upgrade-modal-note upgrade-modal-note--success">✓ Pro access active</p>
+              <p className="upgrade-modal-note upgrade-modal-note--success">✓ Templates active</p>
               <p className="upgrade-modal-note">Current key: <code>{licenseKey.slice(0, 4)}••••••••</code></p>
               <div className="upgrade-modal-actions">
-                <button type="button" className="upgrade-modal-remove" onClick={onRemove}>Remove key &amp; downgrade</button>
+                <button type="button" className="upgrade-modal-remove" onClick={onRemove}>Remove key &amp; deactivate</button>
               </div>
             </>
           ) : (
             <form className="upgrade-modal-form" onSubmit={handleSubmit}>
-              <p className="upgrade-modal-note">Enter your license key to unlock Pro molecules, organisms, and page templates.</p>
-              {plans.length > 0 && (
-                <div className="upgrade-modal-plan-grid">
-                  {plans.map((plan) => (
-                    <button
-                      key={plan.id}
-                      type="button"
-                      className="upgrade-modal-plan"
-                      disabled={!plan.available || isSubmitting}
-                      onClick={() => onGetKey(plan.id)}
-                    >
-                      <span className="upgrade-modal-plan-title">
-                        {plan.label}
-                        {plan.recommended ? <Badge tone="neutral">Popular</Badge> : null}
-                      </span>
-                      <span className="upgrade-modal-plan-copy">{plan.description}</span>
-                    </button>
-                  ))}
+              <div className="upgrade-modal-feature-card">
+                <div className="upgrade-modal-feature-price">
+                  <span className="upgrade-modal-price-amount">$49</span>
+                  <span className="upgrade-modal-price-period">one-time</span>
                 </div>
-              )}
+                <ul className="upgrade-modal-feature-list">
+                  <li>20 production-ready page templates</li>
+                  <li>Ops Center, CRM, Analytics, Dashboard variants</li>
+                  <li>All future templates included</li>
+                  <li>Use in unlimited projects</li>
+                </ul>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={isSubmitting}
+                  onClick={() => onGetKey("templates")}
+                >
+                  Get Templates — $49
+                </Button>
+              </div>
+              <p className="upgrade-modal-note" style={{ marginTop: 20 }}>Already purchased? Enter your license key below.</p>
               <input
                 className="upgrade-modal-input"
                 type="text"
@@ -2584,8 +2558,8 @@ function LicenseKeyModal({
               />
               {error && <p className="upgrade-modal-error">{error}</p>}
               <div className="upgrade-modal-actions">
-                <Button type="submit" size="sm" loading={isSubmitting} disabled={isSubmitting}>
-                  Unlock Pro
+                <Button type="submit" size="sm" variant="secondary" loading={isSubmitting} disabled={isSubmitting}>
+                  Activate
                 </Button>
               </div>
             </form>
@@ -3460,11 +3434,12 @@ function ComponentThumbnail({ name }: { name: string }) {
 export default function App() {
   const initial = fromSearchParams();
 
-  const stylePack: StylePackName = DEFAULT_STYLE_PACK;
+  const stylePack: StylePackName = "stripe";
   const surfaceStyle: SurfaceStyleOption = "shadow";
   const [accentColor, setAccentColor] = useState(initial.accentColor);
   const [accentDraft, setAccentDraft] = useState(initial.accentColor);
   const [view, setView] = useState<WorkspaceView>(initial.view);
+  const [showcaseVersion, setShowcaseVersion] = useState<ShowcaseVersion>(initial.showcaseVersion);
   const [topTab, setTopTab] = useState<TopTab>(() => getTopTabForView(initial.view));
   const [activeRegistryId, setActiveRegistryId] = useState(initial.componentId);
   const [catalogSearch, setCatalogSearch] = useState("");
@@ -3479,6 +3454,7 @@ export default function App() {
   const [framework, setFramework] = useState<"nextjs" | "nextjs-app" | "react" | "remix" | "sveltekit" | "vue" | "nuxt" | "astro" | "html" | "other">("nextjs");
   const [packageManager, setPackageManager] = useState<"npm" | "pnpm" | "yarn" | "bun">("pnpm");
   const [aiPackageManager, setAiPackageManager] = useState<AiPackageManager>("npm");
+  const [componentUseMode, setComponentUseMode] = useState<"prompt" | "code">("prompt");
 
   const [cloudApiKey, setCloudApiKey] = useState<string>(() =>
     typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
@@ -3504,7 +3480,19 @@ export default function App() {
     defaultCloudAssetState("Using local logo catalog. Add API key to use cloud sync.")
   );
 
-  const [intentText, setIntentText] = useState(() => getDefaultIntent(initial.componentId));
+  const pageWidgetNavItems = useMemo(() => (
+    showcaseVersion === "v2"
+      ? widgetCatalogMeta.filter((item) => widgetsV2CatalogIds.includes(item.id as (typeof widgetsV2CatalogIds)[number]))
+      : widgetCatalogMeta
+  ), [showcaseVersion]);
+
+  const pageTemplateNavItems = useMemo(() => (
+    showcaseVersion === "v2"
+      ? templateCatalogMeta.filter((item) => templatesV2CatalogIds.includes(item.id as (typeof templatesV2CatalogIds)[number]))
+      : templateCatalogMeta
+  ), [showcaseVersion]);
+
+  const [intentText] = useState(() => getDefaultIntent(initial.componentId));
 
   const [buttonLabel, setButtonLabel] = useState("Launch Campaign");
   const [buttonVariant, setButtonVariant] = useState<"primary" | "secondary" | "ghost" | "danger">(
@@ -3512,7 +3500,6 @@ export default function App() {
   );
   const [buttonSize, setButtonSize] = useState<"sm" | "md" | "lg">("md");
   const [previewState, setPreviewState] = useState<PreviewStateKey>("default");
-  const [componentDetailTab, setComponentDetailTab] = useState<"preview" | "code">("preview");
 
   // Button variant grid filters
   const [btnFilterType, setBtnFilterType] = useState<"all" | "primary" | "secondary" | "ghost" | "danger">("all");
@@ -3591,6 +3578,75 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
+  const leftRailRef = useRef<HTMLDivElement | null>(null);
+  const [sidebarIndicator, setSidebarIndicator] = useState({ top: 0, height: 0, opacity: 0 });
+  const setupTabsRef = useRef<HTMLDivElement | null>(null);
+  const [setupIndicator, setSetupIndicator] = useState({ left: 0, width: 0, opacity: 0 });
+  const rightRailRef = useRef<HTMLDivElement | null>(null);
+  const [tocIndicator, setTocIndicator] = useState({ top: 0, height: 0, opacity: 0 });
+
+  useEffect(() => {
+    const rail = leftRailRef.current;
+    if (!rail) return;
+
+    let raf = 0;
+    const updateIndicator = () => {
+      if (!rail) return;
+      const active = rail.querySelector<HTMLElement>(".sidebar-link.is-active");
+      if (!active) {
+        setSidebarIndicator((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      const railRect = rail.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      const top = activeRect.top - railRect.top + rail.scrollTop;
+      const height = activeRect.height;
+      setSidebarIndicator({ top, height, opacity: 1 });
+    };
+
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(updateIndicator);
+    };
+
+    schedule();
+    rail.addEventListener("scroll", schedule);
+    window.addEventListener("resize", schedule);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      rail.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [topTab, view, activeRegistryId, catalogSearch, mobileNavOpen, showcaseVersion, pageWidgetNavItems.length, pageTemplateNavItems.length]);
+
+  useEffect(() => {
+    const tabs = setupTabsRef.current;
+    if (!tabs) return;
+    let raf = 0;
+    const update = () => {
+      const active = tabs.querySelector<HTMLElement>(".setup-inner-tab.is-active");
+      if (!active) {
+        setSetupIndicator((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      const parentRect = tabs.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      const left = activeRect.left - parentRect.left;
+      const width = activeRect.width;
+      setSetupIndicator({ left, width, opacity: 1 });
+    };
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    schedule();
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [setupTab]);
 
   // ── TOC active link tracker ──────────────────────────────────
   useEffect(() => {
@@ -3606,6 +3662,21 @@ export default function App() {
         const href = a.getAttribute("href");
         const matches = href === `#${id}`;
         a.classList.toggle("is-active", matches);
+      });
+      const rail = rightRailRef.current;
+      if (!rail) return;
+      const activeLink = rail.querySelector<HTMLAnchorElement>(`a.toc-link[href="#${id}"]`);
+      if (!activeLink) {
+        setTocIndicator((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      const railRect = rail.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      const top = linkRect.top - railRect.top + rail.scrollTop;
+      setTocIndicator({
+        top,
+        height: linkRect.height,
+        opacity: 1
       });
     };
 
@@ -3632,15 +3703,15 @@ export default function App() {
 
   const expandedColorPalettes = useMemo(
     () => buildExpandedColorPalettes(stylePack, accentColor),
-    [accentColor]
+    [stylePack, accentColor]
   );
   const previewThemeCss = useMemo(
     () => buildPreviewThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
-    [accentColor, expandedColorPalettes]
+    [stylePack, accentColor, expandedColorPalettes]
   );
   const globalThemeCss = useMemo(
     () => buildGlobalThemeCss(stylePack, accentColor, surfaceStyle, expandedColorPalettes),
-    [accentColor, expandedColorPalettes]
+    [stylePack, accentColor, expandedColorPalettes]
   );
   const configSnippet = useMemo(() => {
     return [
@@ -3656,19 +3727,15 @@ export default function App() {
     ].join("\n");
   }, [accentColor]);
   const cloudBaseUrl = (import.meta.env.VITE_ZEPHR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
-  const checkoutEnvUrls: Record<CheckoutPlanId, string> = {
-    individual: (import.meta.env.VITE_ZEPHR_CHECKOUT_INDIVIDUAL as string | undefined)?.trim() || "",
-    startup: (import.meta.env.VITE_ZEPHR_CHECKOUT_STARTUP as string | undefined)?.trim() || "",
-    enterprise: (import.meta.env.VITE_ZEPHR_CHECKOUT_ENTERPRISE as string | undefined)?.trim() || ""
-  };
-  const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlanOption[]>(() =>
-    (Object.keys(CHECKOUT_PLAN_META) as CheckoutPlanId[]).map((id) => ({
-      id,
-      ...CHECKOUT_PLAN_META[id],
-      checkoutUrl: checkoutEnvUrls[id] || undefined,
-      available: Boolean(checkoutEnvUrls[id])
-    }))
-  );
+  const checkoutTemplatesUrl = (import.meta.env.VITE_ZEPHR_CHECKOUT_TEMPLATES as string | undefined)?.trim() || "";
+  const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlanOption[]>(() => [
+    {
+      id: "templates",
+      ...CHECKOUT_PLAN_META.templates,
+      checkoutUrl: checkoutTemplatesUrl || undefined,
+      available: Boolean(checkoutTemplatesUrl)
+    }
+  ]);
   const cloudClient = useMemo(() => {
     const key = cloudApiKey.trim();
     if (!key) {
@@ -3692,8 +3759,8 @@ export default function App() {
           setCheckoutPlans(
             normalized.map((plan) => ({
               ...plan,
-              checkoutUrl: plan.checkoutUrl || checkoutEnvUrls[plan.id] || undefined,
-              available: Boolean(plan.checkoutUrl || checkoutEnvUrls[plan.id])
+              checkoutUrl: plan.checkoutUrl || checkoutTemplatesUrl || undefined,
+              available: Boolean(plan.checkoutUrl || checkoutTemplatesUrl)
             }))
           );
           return;
@@ -3702,19 +3769,19 @@ export default function App() {
       })
       .catch(() => {
         if (cancelled) return;
-        setCheckoutPlans(
-          (Object.keys(CHECKOUT_PLAN_META) as CheckoutPlanId[]).map((id) => ({
-            id,
-            ...CHECKOUT_PLAN_META[id],
-            checkoutUrl: checkoutEnvUrls[id] || undefined,
-            available: Boolean(checkoutEnvUrls[id])
-          }))
-        );
+        setCheckoutPlans([
+          {
+            id: "templates",
+            ...CHECKOUT_PLAN_META.templates,
+            checkoutUrl: checkoutTemplatesUrl || undefined,
+            available: Boolean(checkoutTemplatesUrl)
+          }
+        ]);
       });
     return () => {
       cancelled = true;
     };
-  }, [cloudBaseUrl, checkoutEnvUrls.enterprise, checkoutEnvUrls.individual, checkoutEnvUrls.startup]);
+  }, [cloudBaseUrl, checkoutTemplatesUrl]);
 
   const aiProjectInitCommand = useMemo(
     () => managerProjectInitCommand(aiProject, aiPackageManager),
@@ -3774,7 +3841,8 @@ export default function App() {
               token,
               variable: `--z-color-${token}`,
               light,
-              dark
+              dark,
+              activeColor: darkMode ? dark : light
             };
           });
 
@@ -3784,7 +3852,7 @@ export default function App() {
         };
       })
       .filter((group) => group.tokens.length > 0);
-  }, [expandedColorPalettes]);
+  }, [expandedColorPalettes, darkMode]);
 
   useEffect(() => {
     setAccentDraft(accentColor);
@@ -3796,6 +3864,13 @@ export default function App() {
     }
     sessionStorage.setItem("zephr-accent-color", accentColor);
   }, [accentColor]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    sessionStorage.setItem("zephr-showcase-version", showcaseVersion);
+  }, [showcaseVersion]);
 
   useEffect(() => {
     return () => {
@@ -3814,19 +3889,18 @@ export default function App() {
   }, [darkMode]);
 
   useEffect(() => {
-    updateSearchParams(activeRegistryId, accentColor, view);
-  }, [accentColor, activeRegistryId, view]);
-
-  useEffect(() => {
-    setIntentText(getDefaultIntent(activeRegistryId));
-  }, [activeRegistryId]);
+    updateSearchParams(activeRegistryId, accentColor, view, showcaseVersion);
+  }, [accentColor, activeRegistryId, showcaseVersion, view]);
 
   useEffect(() => {
     const config = previewStateConfig[activeRegistryId];
     const firstState = config?.options[0]?.value ?? "default";
     setPreviewState(firstState);
-    setComponentDetailTab("preview");
   }, [activeRegistryId]);
+
+  useEffect(() => {
+    setComponentUseMode("prompt");
+  }, [activeRegistryId, view]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
@@ -4072,24 +4146,6 @@ export default function App() {
         anchor: "foundations-overview"
       },
       {
-        id: "doc-setup-mission",
-        kind: "doc",
-        label: "Mission and Vision",
-        detail: "Setup",
-        tab: "setup",
-        view: "mission",
-        anchor: "mission-overview"
-      },
-      {
-        id: "doc-setup-team",
-        kind: "doc",
-        label: "Team",
-        detail: "Setup",
-        tab: "setup",
-        view: "team",
-        anchor: "team-overview"
-      },
-      {
         id: "doc-pages-templates",
         kind: "doc",
         label: "Page Templates",
@@ -4295,7 +4351,7 @@ export default function App() {
         ? logoCloudState
         : defaultCloudAssetState();
   const brandLogoSrc = darkMode ? zephrLogoLight : zephrLogoDark;
-  const widgetSurface = surfaceStyle === "flat" ? "outlined" : "elevated";
+  const widgetSurface = (surfaceStyle as SurfaceStyleOption) === "flat" ? "outlined" : "elevated";
 
   const shareUrl = useMemo(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:4172";
@@ -4419,12 +4475,27 @@ export default function App() {
           </div>
 
           <div className="top-actions">
+            {topTab === "pages" ? (
+              <div className="top-version-control">
+                <span className="top-version-label">Library</span>
+                <Select
+                  controlSize="xs"
+                  className="top-version-select"
+                  aria-label="Pages showcase version"
+                  value={showcaseVersion}
+                  onChange={(event) => setShowcaseVersion(event.target.value === "v2" ? "v2" : "v1")}
+                >
+                  <option value="v1">V1</option>
+                  <option value="v2">V2</option>
+                </Select>
+              </div>
+            ) : null}
             <Button
               size="sm"
               variant={userTier === "pro" ? "secondary" : "primary"}
               onClick={() => setShowUpgradeModal(true)}
             >
-              {userTier === "pro" ? "✓ Pro" : "Unlock Pro"}
+              {userTier === "pro" ? "✓ Templates" : "Get Templates"}
             </Button>
             <span className="btn-hide-mobile">
               <Button
@@ -4467,7 +4538,16 @@ export default function App() {
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
 
       <div className={`docs-layout${topTab === "pages" ? " docs-layout--pages" : ""}`}>
-        <aside className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
+        <aside ref={leftRailRef} className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
+          <span
+            className="sidebar-active-indicator"
+            aria-hidden="true"
+            style={{
+              transform: `translateY(${sidebarIndicator.top}px)`,
+              height: sidebarIndicator.height,
+              opacity: sidebarIndicator.opacity
+            }}
+          />
           {topTab === "setup" && (
             <div className="nav-group">
               <p className="group-title">Setup</p>
@@ -4515,28 +4595,6 @@ export default function App() {
               >
                 Foundations
               </button>
-              <button
-                type="button"
-                className={`sidebar-link ${view === "mission" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("mission");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Mission &amp; Vision
-              </button>
-              <button
-                type="button"
-                className={`sidebar-link ${view === "team" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("team");
-                  setMobileNavOpen(false);
-                }}
-              >
-                Team
-              </button>
             </div>
           )}
           {topTab === "components" && (
@@ -4577,13 +4635,10 @@ export default function App() {
                             <button
                               key={entry.id}
                               type="button"
-                              className={`component-link ${entry.tier === "pro" ? "with-tag" : ""} ${entry.id === selectedEntry.id && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
+                              className={`component-link ${entry.id === selectedEntry.id && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
                               onClick={() => selectComponent(entry.id)}
                             >
                               <span>{entry.name}</span>
-                              {entry.tier === "pro" && (
-                                <span className={`pill-badge ${userTier === "pro" ? "" : "is-locked"}`}>PRO</span>
-                              )}
                             </button>
                           ))}
                         </div>
@@ -4664,7 +4719,7 @@ export default function App() {
               >
                 Widgets
               </button>
-              {widgetCatalogMeta.map((widget) => (
+              {pageWidgetNavItems.map((widget) => (
                 <a
                   key={widget.id}
                   className="sidebar-link"
@@ -4681,17 +4736,16 @@ export default function App() {
 
               <button
                 type="button"
-                className={`sidebar-link with-tag ${view === "templates" ? "is-active" : ""}`}
+                className={`sidebar-link ${view === "templates" ? "is-active" : ""}`}
                 onClick={() => {
                   setTopTab("pages");
                   setView("templates");
                   setMobileNavOpen(false);
                 }}
               >
-                <span className="sidebar-link-label">Templates Overview</span>
-                <span className={`pill-badge ${userTier === "pro" ? "" : "is-locked"}`}>PRO</span>
+                Templates Overview
               </button>
-              {templateCatalogMeta.map((template) => (
+              {pageTemplateNavItems.map((template) => (
                 <a
                   key={template.id}
                   className="sidebar-link"
@@ -4714,20 +4768,17 @@ export default function App() {
               <a className="sidebar-link" href="#changelog-overview" onClick={() => setMobileNavOpen(false)}>
                 Overview
               </a>
-              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-4-0" onClick={() => setMobileNavOpen(false)}>
-                <span className="changelog-version-tags">
-                  <Tag tone="neutral">v0.4.0</Tag>
-                  <Tag tone="info">Latest</Tag>
-                </span>
+              <a className="sidebar-link changelog-version-link" href="#release-0-4-0" onClick={() => setMobileNavOpen(false)}>
+                v0.4.0 · Latest
               </a>
-              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-3-0" onClick={() => setMobileNavOpen(false)}>
-                <Tag tone="neutral">v0.3.0</Tag>
+              <a className="sidebar-link changelog-version-link" href="#release-0-3-0" onClick={() => setMobileNavOpen(false)}>
+                v0.3.0
               </a>
-              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-2-0" onClick={() => setMobileNavOpen(false)}>
-                <Tag tone="neutral">v0.2.0</Tag>
+              <a className="sidebar-link changelog-version-link" href="#release-0-2-0" onClick={() => setMobileNavOpen(false)}>
+                v0.2.0
               </a>
-              <a className="sidebar-link with-tag changelog-version-link" href="#release-0-1-0" onClick={() => setMobileNavOpen(false)}>
-                <Tag tone="neutral">v0.1.0</Tag>
+              <a className="sidebar-link changelog-version-link" href="#release-0-1-0" onClick={() => setMobileNavOpen(false)}>
+                v0.1.0
               </a>
               <a className="sidebar-link" href="#migrations-overview" onClick={() => setMobileNavOpen(false)}>
                 Migrations
@@ -4973,49 +5024,232 @@ export default function App() {
             </>
           ) : view === "introduction" ? (
             <>
-              <div id="setup-introduction" className="intro-hero">
-                <div className="hero-mesh-decoration" aria-hidden="true">
-                  <img src="/hero.svg" alt="" className="hero-mesh-svg" />
-                </div>
-                <div>
-                  <p className="eyebrow">Design System</p>
-                </div>
-                <h1>Build beautiful UIs — the instant your AI does.</h1>
+              {/* ── HERO ──────────────────────────────────────────────────── */}
+              <section id="setup-introduction" className="doc-section hero">
+                <p className="breadcrumbs">Setup / Introduction</p>
+                <h1>
+                  A UI library built{" "}
+                  <span className="hero-accent-word">for the AI era.</span>
+                </h1>
                 <p className="lead">
-                  Zephr is a complete UI component system for vibe coders. Set your accent once, drop in
-                  components, and ship — with Claude Code, Cursor, Codex, or Lovable.
+                  Every token, component, and AI hint in Zephyr is engineered so
+                  that Claude, Cursor, Codex, and Lovable produce quality output
+                  by default. Install once. Vibe code forever.
                 </p>
-                <div className="hero-actions">
-                  <Button onClick={() => {
-                    setTopTab("setup");
-                    setView("getting-started");
-                  }}>Get started</Button>
-                  <Button variant="secondary" onClick={() => { setTopTab("components"); setView("component-gallery"); setMobileNavOpen(false); }}>Browse components</Button>
+                <div className="hero-cta-row">
+                  <Button
+                    onClick={() => {
+                      setTopTab("components");
+                      setView("component-gallery");
+                    }}
+                  >
+                    Browse components
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setTopTab("setup");
+                      setView("getting-started");
+                      setSetupTab("ai");
+                    }}
+                  >
+                    AI quick start →
+                  </Button>
                 </div>
-              </div>
 
-              <section id="why-zephr" className="doc-section">
-                <div className="section-heading">
-                  <h2>Why Zephr</h2>
-                  <p>Everything your AI needs to build a production-quality UI, out of the box.</p>
+                {/* decorative mesh */}
+                <div className="hero-mesh-decoration" aria-hidden="true">
+                  <svg className="hero-mesh-svg" viewBox="0 0 240 226" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <radialGradient id="hm1" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="var(--accent,#121212)" stopOpacity="0.18" />
+                        <stop offset="100%" stopColor="var(--accent,#121212)" stopOpacity="0" />
+                      </radialGradient>
+                    </defs>
+                    <ellipse cx="120" cy="113" rx="120" ry="113" fill="url(#hm1)" />
+                    {[0,1,2,3,4,5,6,7,8].map((row) =>
+                      [0,1,2,3,4,5,6,7,8].map((col) => (
+                        <circle
+                          key={`${row}-${col}`}
+                          cx={col * 30}
+                          cy={row * 28}
+                          r="1.5"
+                          fill="var(--accent,#121212)"
+                          opacity={0.12}
+                        />
+                      ))
+                    )}
+                  </svg>
                 </div>
+              </section>
+
+              {/* ── 4-FEATURE AI-NATIVE GRID ──────────────────────────────── */}
+              <section className="doc-section">
                 <div className="intro-features">
                   <div className="intro-feature">
-                    <strong>Zero-config install</strong>
-                    <p>One package. Defaults that look great immediately. No utility-class setup or config file required.</p>
+                    <strong>⚡ AI-native tokens</strong>
+                    <p>
+                      Every <code>--z-*</code> variable is named for intent, not
+                      implementation. AIs reason about them correctly the first
+                      time.
+                    </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>AI-native registry</strong>
-                    <p>MCP tools, <code>llms.txt</code>, and per-tool prompts let any AI agent find and use components without manual lookup.</p>
+                    <strong>🧩 60+ SaaS components</strong>
+                    <p>
+                      Atoms to full-page templates. Every component ships with
+                      structured <code>aiHints</code> for context-aware
+                      generation.
+                    </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>Premium default theme</strong>
-                    <p>One refined visual baseline with accent customization keeps every generated UI consistent across projects and tools.</p>
+                    <strong>🛠 MCP + CLI tooling</strong>
+                    <p>
+                      <code>zephr init</code> seeds your project with{" "}
+                      <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and{" "}
+                      <code>llms.txt</code> in one command.
+                    </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>No extra setup required</strong>
-                    <p>Components self-style via CSS variables. Your AI writes semantic JSX props, not class strings.</p>
+                    <strong>🎨 One cohesive theme</strong>
+                    <p>
+                      Token-driven, accent-customisable. No fighting generic
+                      variable names or overriding conflicting defaults.
+                    </p>
                   </div>
+                </div>
+              </section>
+
+              {/* ── HOW IT WORKS — 3-STEP FLOW ────────────────────────────── */}
+              <section className="doc-section">
+                <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                  <p className="section-eyebrow">How it works</p>
+                  <h2>Zero config. AI-ready in one command.</h2>
+                  <p>
+                    Zephyr wires your AI coding tool directly to the component
+                    registry. The AI knows your design system before you write a
+                    single prompt.
+                  </p>
+                </div>
+                <div className="gs-flow">
+                  <div className="gs-flow-step">
+                    <div className="gs-flow-num">1</div>
+                    <p className="gs-flow-title">Initialise your project</p>
+                    <p className="gs-flow-desc">
+                      One command seeds context files that AI tools read
+                      automatically every session. No copy-paste required.
+                    </p>
+                    <code className="gs-flow-code">npx zephr init</code>
+                  </div>
+                  <div className="gs-flow-step">
+                    <div className="gs-flow-num">2</div>
+                    <p className="gs-flow-title">Describe what you want</p>
+                    <p className="gs-flow-desc">
+                      Your AI reads the registry — every component{"'"}s props,
+                      tokens, and intent hints — and generates production-ready
+                      code on the first pass.
+                    </p>
+                    <code className="gs-flow-code">"Build a CRM table with Zephyr"</code>
+                  </div>
+                  <div className="gs-flow-step">
+                    <div className="gs-flow-num">3</div>
+                    <p className="gs-flow-title">Ship with confidence</p>
+                    <p className="gs-flow-desc">
+                      No token overrides. No style drift. No cleanup pass.
+                      Consistent design quality across every AI-generated screen.
+                    </p>
+                    <code className="gs-flow-code">npm run build → deploy</code>
+                  </div>
+                </div>
+              </section>
+
+              {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
+              <section id="install" className="doc-section">
+                <div className="section-heading" style={{ marginBottom: "0.75rem" }}>
+                  <h2>Install</h2>
+                  <p>Add Zephyr to any React project.</p>
+                </div>
+                <div className="snippet-stack">
+                  <SnippetItem
+                    label="npm"
+                    code="npm install @zephrui/ui-react"
+                    onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")}
+                  />
+                  <SnippetItem
+                    label="pnpm"
+                    code="pnpm add @zephrui/ui-react"
+                    onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")}
+                  />
+                  <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
+                </div>
+              </section>
+
+              {/* ── EXPLORE ───────────────────────────────────────────────── */}
+              <section id="explore" className="doc-section">
+                <div className="section-heading" style={{ marginBottom: "0.75rem" }}>
+                  <h2>Explore</h2>
+                  <p>Everything you need to build a complete SaaS product.</p>
+                </div>
+                <div className="intro-links intro-links-4">
+                  <button
+                    type="button"
+                    className="intro-link-card"
+                    onClick={() => {
+                      setTopTab("components");
+                      setView("component-gallery");
+                      setMobileNavOpen(false);
+                    }}
+                  >
+                    <span className="intro-link-label">Components →</span>
+                    <span className="intro-link-desc">
+                      49 components across atoms, molecules, and organisms
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="intro-link-card"
+                    onClick={() => {
+                      setTopTab("pages");
+                      setView("templates");
+                      setMobileNavOpen(false);
+                    }}
+                  >
+                    <span className="intro-link-label">Pages →</span>
+                    <span className="intro-link-desc">
+                      Full-page SaaS examples — CRM, ops, analytics, support
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="intro-link-card"
+                    onClick={() => {
+                      setTopTab("pages");
+                      setView("widgets");
+                      setMobileNavOpen(false);
+                    }}
+                  >
+                    <span className="intro-link-label">Widgets →</span>
+                    <span className="intro-link-desc">
+                      60 SaaS-focused widgets with elevated &amp; outlined
+                      surface variants
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="intro-link-card"
+                    onClick={() => {
+                      setTopTab("setup");
+                      setView("getting-started");
+                      setSetupTab("ai");
+                      setMobileNavOpen(false);
+                    }}
+                  >
+                    <span className="intro-link-label">AI Setup →</span>
+                    <span className="intro-link-desc">
+                      Claude, Cursor, Codex, Lovable — pick your tool and get
+                      the exact prompt to use
+                    </span>
+                  </button>
                 </div>
               </section>
             </>
@@ -5025,7 +5259,7 @@ export default function App() {
                 <p className="breadcrumbs">Get Started</p>
                 <h1>Set up your visual system</h1>
                 <p className="lead">
-                  Zephr ships with one polished default visual system. Pick an accent color once and it carries across previews, snippets, and prompts.
+                  Fine-tune with an accent color, then copy the install snippet to get started.
                 </p>
               </section>
 
@@ -5080,7 +5314,16 @@ export default function App() {
                   <h2>Install in your project</h2>
                   <p>Pick your package manager or tool below.</p>
                 </div>
-                <div className="setup-inner-tabs" role="tablist">
+                <div ref={setupTabsRef} className="setup-inner-tabs" role="tablist">
+                  <span
+                    className="setup-inner-indicator"
+                    aria-hidden="true"
+                    style={{
+                      transform: `translateX(${setupIndicator.left}px)`,
+                      width: setupIndicator.width,
+                      opacity: setupIndicator.opacity
+                    }}
+                  />
                   {(["npm", "pnpm", "cli", "ai"] as const).map((t) => (
                     <button
                       key={t}
@@ -5678,10 +5921,11 @@ injectSpeedInsights();`}
                             onClick={() => copyAndFlash(token.variable, `var(${token.variable})`)}
                             title={`Copy var(${token.variable})`}
                           >
-                            <div className="foundation-color-swatch-split" aria-hidden="true">
-                              <span style={{ background: token.light }} />
-                              <span style={{ background: token.dark }} />
-                            </div>
+                            <div
+                              className="foundation-color-swatch"
+                              style={{ background: token.activeColor }}
+                              aria-hidden="true"
+                            />
                             <div className="foundation-color-tile-meta">
                               <strong>{token.token}</strong>
                               <code>{token.variable}</code>
@@ -5695,8 +5939,7 @@ injectSpeedInsights();`}
                           <thead>
                             <tr>
                               <th>Variable name</th>
-                              <th>Light mode</th>
-                              <th>Dark mode</th>
+                              <th>Value</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -5716,22 +5959,11 @@ injectSpeedInsights();`}
                                   <button
                                     type="button"
                                     className="foundation-color-chip"
-                                    onClick={() => copyAndFlash(`${token.variable} light`, token.light)}
-                                    title={`Copy light value ${token.light}`}
+                                    onClick={() => copyAndFlash(token.variable, token.activeColor)}
+                                    title={`Copy ${token.activeColor}`}
                                   >
-                                    <span className="foundation-color-dot" style={{ background: token.light }} />
-                                    <code>{token.light}</code>
-                                  </button>
-                                </td>
-                                <td>
-                                  <button
-                                    type="button"
-                                    className="foundation-color-chip"
-                                    onClick={() => copyAndFlash(`${token.variable} dark`, token.dark)}
-                                    title={`Copy dark value ${token.dark}`}
-                                  >
-                                    <span className="foundation-color-dot" style={{ background: token.dark }} />
-                                    <code>{token.dark}</code>
+                                    <span className="foundation-color-dot" style={{ background: token.activeColor }} />
+                                    <code>{token.activeColor}</code>
                                   </button>
                                 </td>
                               </tr>
@@ -5850,8 +6082,14 @@ injectSpeedInsights();`}
                 </div>
 
                 <div className="typography-family-row">
-                  <span className="typography-family-chip">Sans: Inter</span>
-                  <span className="typography-family-chip">Monospace: Monaco</span>
+                  <div className="typography-family-card">
+                    <div className="typography-family-letter">Aa</div>
+                    <div className="typography-family-name">Inter</div>
+                  </div>
+                  <div className="typography-family-card typography-family-card--mono">
+                    <div className="typography-family-letter">Aa</div>
+                    <div className="typography-family-name">Monaco</div>
+                  </div>
                 </div>
 
                 <div className="typography-groups">
@@ -6205,7 +6443,11 @@ injectSpeedInsights();`}
                 </section>
               )}
             >
-              <WidgetsPage widgetSurface={widgetSurface} onCopy={copyAndFlash} />
+              <WidgetsPage
+                widgetSurface={widgetSurface}
+                showcaseVersion={showcaseVersion}
+                onCopy={copyAndFlash}
+              />
             </Suspense>
           ) : view === "templates" ? (
             <Suspense
@@ -6221,6 +6463,7 @@ injectSpeedInsights();`}
               <TemplatesPage
                 userTier={userTier}
                 widgetSurface={widgetSurface}
+                showcaseVersion={showcaseVersion}
                 onOpenUpgrade={() => setShowUpgradeModal(true)}
                 onCopy={copyAndFlash}
               />
@@ -6231,7 +6474,7 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Components</p>
                 <h1>Component Library</h1>
                 <p className="lead">
-                  {registry.filter(e => e.tier === "free").length} free components and {registry.filter(e => e.tier === "pro").length} Pro components across atoms, molecules, and organisms.
+                  {registry.filter(e => e.category === "atom" || e.category === "molecule" || e.category === "organism").length} components across atoms, molecules, and organisms — all free.
                 </p>
               </section>
               {(["atom", "molecule", "organism"] as const).map((cat) => {
@@ -6249,7 +6492,7 @@ injectSpeedInsights();`}
                         <button
                           key={entry.id}
                           type="button"
-                          className={`gallery-card ${entry.tier === "pro" && userTier === "free" ? "is-locked" : ""}`}
+                          className="gallery-card"
                           onClick={() => selectComponent(entry.id)}
                         >
                           <div className="gallery-card-preview">
@@ -6257,9 +6500,6 @@ injectSpeedInsights();`}
                           </div>
                           <div className="gallery-card-info">
                             <span className="gallery-card-name">{entry.name}</span>
-                            {entry.tier === "pro" && (
-                              <span className={`pill-badge ${userTier === "pro" ? "" : "is-locked"}`}>PRO</span>
-                            )}
                           </div>
                           <p className="gallery-card-desc">{entry.description}</p>
                         </button>
@@ -6340,56 +6580,15 @@ injectSpeedInsights();`}
                 </section>
               )}
 
-              <section id="preview" className="doc-section">
+              <section id="examples" className="doc-section">
                 <div className="section-heading">
-                  <div className="section-heading-row">
-                    <div>
-                      <h2>Live preview</h2>
-                      <p>Interactive canvas with selectable states. Switch to Code for a copy-ready snippet.</p>
-                    </div>
-                    {/* Preview / Code tab toggle */}
-                    <div className="pcb-toolbar" style={{ border: "1px solid var(--line)", borderRadius: 8, padding: "3px", background: "var(--z-color-background100)", gap: 2 }}>
-                      <button
-                        type="button"
-                        className={`pcb-tab${componentDetailTab === "preview" ? " active" : ""}`}
-                        onClick={() => setComponentDetailTab("preview")}
-                        style={{ padding: "4px 12px" }}
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
-                        </svg>
-                        Preview
-                      </button>
-                      <button
-                        type="button"
-                        className={`pcb-tab${componentDetailTab === "code" ? " active" : ""}`}
-                        onClick={() => setComponentDetailTab("code")}
-                        style={{ padding: "4px 12px" }}
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
-                        </svg>
-                        Code
-                      </button>
-                    </div>
+                  <div>
+                    <h2>Examples</h2>
+                    <p>Live preview of all component states and variants.</p>
                   </div>
                 </div>
 
-                {componentDetailTab === "code" ? (
-                  <div className="pcb-root">
-                    <div className="pcb-toolbar" style={{ justifyContent: "flex-end" }}>
-                      <button type="button" className="pcb-copy" onClick={() => copyAndFlash("Usage snippet", usageSnippet)}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                        </svg>
-                        Copy
-                      </button>
-                    </div>
-                    <pre className="pcb-code-area">{usageSnippet}</pre>
-                  </div>
-                ) : (
-                  <>
-                    {selectedPreviewStateConfig && selectedEntry.id !== "alert" && selectedEntry.id !== "accordion" && selectedEntry.id !== "tooltip" ? (
+                {selectedPreviewStateConfig && selectedEntry.id !== "alert" && selectedEntry.id !== "accordion" && selectedEntry.id !== "tooltip" ? (
                       <div className="preview-toolbar">
                         <label className="field compact preview-state-field">
                           <span>{selectedPreviewStateConfig.label}</span>
@@ -6409,46 +6608,7 @@ injectSpeedInsights();`}
 
                     <BrowserPreviewFrame
                       address={`zephr.local/components/${selectedEntry.id}`}
-                      toolbar={selectedEntry.id === "button" ? (
-                        <div className="variant-filters">
-                          <label className="variant-filter-dropdown">
-                            <span>Type</span>
-                            <select value={btnFilterType} onChange={(e) => setBtnFilterType(e.target.value as typeof btnFilterType)}>
-                              <option value="all">All</option>
-                              <option value="primary">Primary</option>
-                              <option value="secondary">Secondary</option>
-                              <option value="ghost">Ghost</option>
-                              <option value="danger">Danger</option>
-                            </select>
-                          </label>
-                          <label className="variant-filter-dropdown">
-                            <span>Size</span>
-                            <select value={btnFilterSize} onChange={(e) => setBtnFilterSize(e.target.value as typeof btnFilterSize)}>
-                              <option value="all">All</option>
-                              <option value="sm">Small</option>
-                              <option value="md">Medium</option>
-                              <option value="lg">Large</option>
-                            </select>
-                          </label>
-                          <label className="variant-filter-dropdown">
-                            <span>State</span>
-                            <select value={btnFilterState} onChange={(e) => setBtnFilterState(e.target.value as typeof btnFilterState)}>
-                              <option value="all">All</option>
-                              <option value="default">Default</option>
-                              <option value="hover">Hover</option>
-                              <option value="pressed">Pressed</option>
-                              <option value="loading">Loading</option>
-                              <option value="disabled">Disabled</option>
-                            </select>
-                          </label>
-                          <label className="variant-toggle">
-                            <span className="variant-toggle-track" data-on={btnOnlyIcon || undefined} onClick={() => setBtnOnlyIcon(!btnOnlyIcon)} role="switch" aria-checked={btnOnlyIcon} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBtnOnlyIcon(!btnOnlyIcon); } }}>
-                              <span className="variant-toggle-thumb" />
-                            </span>
-                            <span>Only Icon</span>
-                          </label>
-                        </div>
-                      ) : selectedEntry.id === "button-group" ? (
+                      toolbar={selectedEntry.id === "button-group" ? (
                         <div className="variant-filters">
                           <label className="variant-filter-dropdown">
                             <span>Quantity</span>
@@ -7405,100 +7565,311 @@ injectSpeedInsights();`}
                         onLogoQueryChange={setLogoQuery}
                       />
                     </BrowserPreviewFrame>
-                  </>
+              </section>
+
+              <section id="use" className="doc-section">
+                <div className="section-heading">
+                  <h2>Use this component</h2>
+                  <p>Choose prompt-first or code-first usage depending on your workflow.</p>
+                </div>
+                <div className="setup-inner-tabs component-use-tabs">
+                  <button
+                    type="button"
+                    className={`setup-inner-tab ${componentUseMode === "prompt" ? "is-active" : ""}`}
+                    onClick={() => setComponentUseMode("prompt")}
+                  >
+                    AI prompt
+                  </button>
+                  <button
+                    type="button"
+                    className={`setup-inner-tab ${componentUseMode === "code" ? "is-active" : ""}`}
+                    onClick={() => setComponentUseMode("code")}
+                  >
+                    Code
+                  </button>
+                </div>
+                {componentUseMode === "prompt" ? (
+                  <div className="component-use-panel">
+                    <label className="field">
+                      <span>Prompt to paste into Claude / Cursor</span>
+                      <Textarea value={blockPrompt} readOnly rows={12} />
+                    </label>
+                    <div className="inline-actions">
+                      <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
+                        Copy AI Prompt
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
+                      >
+                        Copy key token
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="snippet-stack">
+                    <SnippetItem
+                      label="Import"
+                      code={importSnippet}
+                      onCopy={() => copyAndFlash("Import snippet", importSnippet)}
+                    />
+                    <SnippetItem
+                      label="Usage"
+                      code={usageSnippet}
+                      onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
+                    />
+                  </div>
                 )}
               </section>
 
-              <section id="ai-reference" className="doc-section">
+              {(selectedEntry.id === "button" || selectedEntry.id === "input" || selectedEntry.id === "select") && (
+                <section id="customize" className="doc-section">
+                  <div className="section-heading">
+                    <h2>Edit the {selectedEntry.name.toLowerCase()}</h2>
+                    <p>Switch tone, size, and state without rewriting your UI.</p>
+                  </div>
+                  <div className="component-edit-grid">
+                    {selectedEntry.id === "button" ? (
+                      <>
+                        <div>
+                          <h3>Prompt edits</h3>
+                          <ul className="component-edit-list">
+                            <li>“Make the primary button secondary.”</li>
+                            <li>“Use a ghost button for the secondary action.”</li>
+                            <li>“Make the save button small and loading.”</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3>Code edits</h3>
+                          <pre className="component-edit-code">{`<Button variant="primary">Save</Button>
+<Button variant="secondary">Cancel</Button>
+<Button variant="ghost">Learn more</Button>
+<Button size="sm" loading>Saving…</Button>`}</pre>
+                        </div>
+                      </>
+                    ) : selectedEntry.id === "input" ? (
+                      <>
+                        <div>
+                          <h3>Prompt edits</h3>
+                          <ul className="component-edit-list">
+                            <li>“Add a placeholder like ‘name@company.com’.”</li>
+                            <li>“Show an error state with helper text.”</li>
+                            <li>“Make the input small and disabled.”</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3>Code edits</h3>
+                          <pre className="component-edit-code">{`<FormField label="Work email" hint="We'll only use this for updates.">
+  <Input placeholder="name@company.com" />
+</FormField>
+<FormField label="Backup email" error="Please enter a valid email.">
+  <Input defaultValue="invalid-email" aria-invalid />
+</FormField>
+<Input size="sm" disabled />`}</pre>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <h3>Prompt edits</h3>
+                          <ul className="component-edit-list">
+                            <li>“Make the select small and full width.”</li>
+                            <li>“Preselect the ‘Weekly’ option.”</li>
+                            <li>“Show a disabled select with helper text.”</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3>Code edits</h3>
+                          <pre className="component-edit-code">{`<FormField label="Frequency">
+  <Select defaultValue="weekly">
+    <option value="daily">Daily</option>
+    <option value="weekly">Weekly</option>
+  </Select>
+</FormField>
+<Select size="sm" disabled />`}</pre>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="component-edit-table">
+                    <h3>{selectedEntry.id === "button" ? "Variants" : "States"}</h3>
+                    {selectedEntry.id === "button" ? (
+                      <table className="component-variant-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Variant</th>
+                            <th scope="col">Prompt</th>
+                            <th scope="col">Code</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Primary</td>
+                            <td>“Make the button primary.”</td>
+                            <td><code>variant="primary"</code></td>
+                          </tr>
+                          <tr>
+                            <td>Secondary</td>
+                            <td>“Use a secondary button.”</td>
+                            <td><code>variant="secondary"</code></td>
+                          </tr>
+                          <tr>
+                            <td>Ghost</td>
+                            <td>“Use a ghost button for the secondary action.”</td>
+                            <td><code>variant="ghost"</code></td>
+                          </tr>
+                          <tr>
+                            <td>Danger</td>
+                            <td>“Make the delete button destructive.”</td>
+                            <td><code>variant="danger"</code></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    ) : (
+                      <table className="component-variant-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">State</th>
+                            <th scope="col">Prompt</th>
+                            <th scope="col">Code</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Default</td>
+                            <td>“Use the default {selectedEntry.name.toLowerCase()}.”</td>
+                            <td><code>{`<${selectedEntry.name} />`}</code></td>
+                          </tr>
+                          <tr>
+                            <td>Error</td>
+                            <td>“Show an error state with helper text.”</td>
+                            <td><code>aria-invalid</code></td>
+                          </tr>
+                          <tr>
+                            <td>Disabled</td>
+                            <td>“Make it disabled.”</td>
+                            <td><code>disabled</code></td>
+                          </tr>
+                          <tr>
+                            <td>Read-only</td>
+                            <td>“Make it read-only.”</td>
+                            <td><code>readOnly</code></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                  <div className="component-edit-table">
+                    <h3>Core props</h3>
+                    <table className="component-props-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Prop</th>
+                          <th scope="col">Options</th>
+                          <th scope="col">Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedEntry.id === "button" ? (
+                          <tr>
+                            <td><code>variant</code></td>
+                            <td>primary, secondary, ghost, danger</td>
+                            <td>Sets visual tone.</td>
+                          </tr>
+                        ) : null}
+                        <tr>
+                          <td><code>size</code></td>
+                          <td>{selectedEntry.id === "button" ? "xs, sm, md" : "sm, md"}</td>
+                          <td>Controls height and padding.</td>
+                        </tr>
+                        <tr>
+                          <td><code>{selectedEntry.id === "button" ? "loading" : "disabled"}</code></td>
+                          <td>true | false</td>
+                          <td>{selectedEntry.id === "button" ? "Shows spinner, disables clicks." : "Blocks interaction."}</td>
+                        </tr>
+                        <tr>
+                          <td><code>{selectedEntry.id === "button" ? "disabled" : "readOnly"}</code></td>
+                          <td>true | false</td>
+                          <td>{selectedEntry.id === "button" ? "Blocks interaction." : "Keeps value but locks edits."}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              )}
+
+              <section id="installation" className="doc-section">
                 <div className="section-heading">
-                  <h2>AI Block Reference</h2>
-                  <p>Paste this prompt into your vibe coding platform — the component inserts with your current accent and token settings.</p>
+                  <h2>Installation</h2>
+                  <p>Get {selectedEntry.name} into your project in three steps.</p>
                 </div>
 
-                <label className="field">
-                  <span>Your goal</span>
-                  <Textarea
-                    value={intentText}
-                    onChange={(event) => setIntentText(event.target.value)}
-                    rows={4}
-                  />
-                </label>
+                <ol className="install-steps">
+                  <li className="install-step">
+                    <div className="install-step-number">1</div>
+                    <div className="install-step-body">
+                      <p className="install-step-title">Install the package</p>
+                      <InstallTabBlock
+                        packageName="@zephrui/ui-react"
+                        onCopy={(cmd) => copyAndFlash("Install command", cmd)}
+                        beta
+                      />
+                    </div>
+                  </li>
+                  <li className="install-step">
+                    <div className="install-step-number">2</div>
+                    <div className="install-step-body">
+                      <p className="install-step-title">Import the component</p>
+                      <SnippetItem
+                        label="Import"
+                        code={importSnippet}
+                        onCopy={() => copyAndFlash("Import snippet", importSnippet)}
+                      />
+                    </div>
+                  </li>
+                  <li className="install-step">
+                    <div className="install-step-number">3</div>
+                    <div className="install-step-body">
+                      <p className="install-step-title">Use it</p>
+                      <SnippetItem
+                        label="Usage"
+                        code={usageSnippet}
+                        onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
+                      />
+                    </div>
+                  </li>
+                </ol>
 
-                <label className="field">
-                  <span>Prompt to paste into Claude / Cursor</span>
-                  <Textarea value={blockPrompt} readOnly rows={12} />
-                </label>
-
-                <div className="inline-actions">
-                  <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
-                    Copy AI Prompt
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
-                  >
-                    Copy key token
-                  </Button>
-                </div>
-              </section>
-
-              <section id="integration" className="doc-section">
-                <div className="section-heading">
-                  <h2>Install and use</h2>
-                  <p>Install the following dependencies:</p>
-                </div>
-
-                <div className="snippet-stack">
-                  <InstallTabBlock
-                    packageName="@zephrui/ui-react"
-                    onCopy={(cmd) => copyAndFlash("Install command", cmd)}
-                    beta
-                  />
+                {configSnippet && (
                   <SnippetItem
-                    label="Import"
-                    code={importSnippet}
-                    onCopy={() => copyAndFlash("Import snippet", importSnippet)}
-                  />
-                  <SnippetItem
-                    label="Usage"
-                    code={usageSnippet}
-                    onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
-                  />
-                  <SnippetItem
-                    label="zephr.config.ts"
+                    label="zephr.config.ts (optional)"
                     code={configSnippet}
                     onCopy={() => copyAndFlash("Config snippet", configSnippet)}
                   />
-                </div>
+                )}
               </section>
             </>
           )}
         </main>
 
-        {topTab !== "pages" && (
-        <aside className="right-rail">
+        {topTab !== "pages" && topTab !== "changelog" && (
+        <aside ref={rightRailRef} className="right-rail">
+          <span
+            className="toc-active-indicator"
+            aria-hidden="true"
+            style={{
+              transform: `translateY(${tocIndicator.top}px)`,
+              height: tocIndicator.height,
+              opacity: tocIndicator.opacity
+            }}
+          />
           <span className="rail-title">On this page</span>
-          {topTab === "changelog" && (
-            <>
-              <a className="toc-link" href="#changelog-overview">Overview</a>
-              <a className="toc-link" href="#release-0-4-0">
-                <span className="changelog-version-tags">
-                  <Tag tone="neutral">v0.4.0</Tag>
-                  <Tag tone="info">Latest</Tag>
-                </span>
-              </a>
-              <a className="toc-link" href="#release-0-3-0"><Tag tone="neutral">v0.3.0</Tag></a>
-              <a className="toc-link" href="#release-0-2-0"><Tag tone="neutral">v0.2.0</Tag></a>
-              <a className="toc-link" href="#release-0-1-0"><Tag tone="neutral">v0.1.0</Tag></a>
-              <a className="toc-link" href="#migrations-overview">Migrations</a>
-              <a className="toc-link" href="#release-upcoming">Roadmap</a>
-            </>
-          )}
           {topTab !== "changelog" && view === "introduction" && (
             <>
               <a className="toc-link" href="#setup-introduction">Overview</a>
-              <a className="toc-link" href="#why-zephr">Why Zephr</a>
+              <a className="toc-link" href="#install">Install</a>
+              <a className="toc-link" href="#explore">Explore</a>
             </>
           )}
           {topTab !== "changelog" && view === "getting-started" && (
@@ -7545,7 +7916,7 @@ injectSpeedInsights();`}
           {topTab !== "changelog" && view === "widgets" && (
             <>
               <a className="toc-link" href="#widgets-overview">Overview</a>
-              {widgetCatalogMeta.map((widget) => (
+              {pageWidgetNavItems.map((widget) => (
                 <a key={widget.id} className="toc-link" href={`#${widget.id}`}>{widget.label}</a>
               ))}
             </>
@@ -7553,7 +7924,7 @@ injectSpeedInsights();`}
           {topTab !== "changelog" && view === "templates" && (
             <>
               <a className="toc-link" href="#templates-overview">Overview</a>
-              {templateCatalogMeta.map((template) => (
+              {pageTemplateNavItems.map((template) => (
                 <a key={template.id} className="toc-link" href={`#${template.id}`}>{template.label}</a>
               ))}
             </>
@@ -7567,9 +7938,12 @@ injectSpeedInsights();`}
             <>
               <a className="toc-link" href="#overview">Overview</a>
               {isAssetLibraryComponent ? <a className="toc-link" href="#cloud-assets">Cloud asset sync</a> : null}
-              <a className="toc-link" href="#preview">Live preview</a>
-              <a className="toc-link" href="#ai-reference">AI reference</a>
-              <a className="toc-link" href="#integration">Install and use</a>
+              <a className="toc-link" href="#examples">Examples</a>
+              <a className="toc-link" href="#use">Use this component</a>
+              {["button", "input", "select"].includes(selectedEntry.id) ? (
+                <a className="toc-link" href="#customize">Edit the {selectedEntry.name.toLowerCase()}</a>
+              ) : null}
+              <a className="toc-link" href="#installation">Installation</a>
             </>
           )}
           {topTab !== "changelog" && view === "api-reference" && (
@@ -7618,7 +7992,7 @@ injectSpeedInsights();`}
               const plan = checkoutPlans.find((entry) => entry.id === planId);
               if (!plan?.checkoutUrl) {
                 showToast(
-                  "Set VITE_ZEPHR_CHECKOUT_INDIVIDUAL / STARTUP / ENTERPRISE or configure cloud plan checkout links."
+                  "Set VITE_ZEPHR_CHECKOUT_TEMPLATES or configure cloud plan checkout links."
                 );
                 return;
               }

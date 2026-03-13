@@ -40,6 +40,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const invalid = props["aria-invalid"] === true || props["aria-invalid"] === "true";
+  const readOnly = Boolean(props.readOnly) && !disabled;
 
   const dynamicStyles: CSSProperties = {
     ...sizeStyles[controlSize],
@@ -57,7 +58,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     resize: "vertical"
   };
 
-  if (hovered && !focused && !disabled && !invalid) {
+  if (hovered && !focused && !disabled && !invalid && !readOnly) {
     dynamicStyles.background = "var(--z-color-weak, var(--z-color-background, #f7f7f7))";
     dynamicStyles.borderColor = "transparent";
     dynamicStyles.boxShadow = "none";
@@ -81,16 +82,16 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   if (disabled) {
     dynamicStyles.background = "var(--z-color-weak, var(--z-color-background, #f7f7f7))";
     dynamicStyles.borderColor = "transparent";
-    dynamicStyles.color = "#d1d1d1";
+    dynamicStyles.color = "var(--z-color-text300, #a1a1aa)";
     dynamicStyles.boxShadow = "none";
     dynamicStyles.cursor = "not-allowed";
     dynamicStyles.resize = "none";
   }
 
-  if (props.readOnly && !disabled) {
-    dynamicStyles.background = "var(--z-color-weak, var(--z-color-background, #f7f7f7))";
-    dynamicStyles.borderColor = "transparent";
-    dynamicStyles.color = "var(--z-color-muted, #5c5c5c)";
+  if (readOnly) {
+    dynamicStyles.background = "var(--z-color-background0, #ffffff)";
+    dynamicStyles.borderColor = "var(--z-color-border, #ebebeb)";
+    dynamicStyles.color = "var(--z-color-text, #171717)";
     dynamicStyles.boxShadow = "none";
     dynamicStyles.cursor = "default";
     dynamicStyles.resize = "none";

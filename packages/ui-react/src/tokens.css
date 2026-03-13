@@ -1,0 +1,5 @@
+/* Zephr default tokens
+   Import this file to get all --z-* CSS variables.
+   import "@zephrui/ui-react/tokens.css";
+*/
+@import "./themes/default.css";

@@ -92,7 +92,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   if (disabled) {
     dynamicStyles.backgroundColor = "var(--z-color-weak, var(--z-color-background, #f7f7f7))";
     dynamicStyles.borderColor = "transparent";
-    dynamicStyles.color = "#d1d1d1";
+    dynamicStyles.color = "var(--z-color-text300, #a1a1aa)";
     dynamicStyles.boxShadow = "none";
     dynamicStyles.cursor = "not-allowed";
   }

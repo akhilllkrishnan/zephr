@@ -243,7 +243,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "600": "#666666",
         "400": "#a3a3a3",
         "200": "#e5e5e5",
-        "100": "#f5f5f5",
+        "100": "#f7f7f7",
         "0": "#ffffff"
       },
       text: {
@@ -256,7 +256,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "400": "#bdbdbd",
         "300": "#d4d4d8",
         "200": "#e5e7eb",
-        "100": "#f3f4f6"
+        "100": "#ebebeb"
       },
       accent: {
         "900": "#1d4ed8",
@@ -369,7 +369,7 @@ export const stylePacks: Record<StylePackName, DesignTokens> = {
         "400": "#8898aa",
         "300": "#d4dce8",
         "200": "#e6ebf1",
-        "100": "#f6f9fc"
+        "100": "#f2f1f1"
       },
       accent: {
         "900": "#3d22d6",

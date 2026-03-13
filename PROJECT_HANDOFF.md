@@ -1,6 +1,6 @@
 # Zephr Project Handoff
 
-Last updated: March 6, 2026
+Last updated: March 10, 2026
 
 ---
 
@@ -12,8 +12,28 @@ Zephr is a single-product UI system focused on:
 - React component primitives + composed blocks,
 - AI-first integration (CLI context files, registry hints, MCP tools),
 - plug-and-play setup for AI-assisted app building.
+- a single premium public theme in docs, with accent-color customization.
 
 Multi-product experiments are out of scope for this phase.
+
+### March 10 product-direction update
+
+The current public UX direction is no longer "multiple themes exposed in docs." The active direction is:
+
+- one premium default public theme,
+- accent-only customization in docs,
+- `Pages` as the showcase layer,
+- `Components` as the technical reference layer,
+- `Pages > V2` as the curated premium SaaS direction.
+
+`Pages > V2` is now being rebuilt against Attio-style product UI benchmarks:
+
+- calmer white/neutral surfaces,
+- thin borders,
+- low shadow,
+- compact SaaS spacing,
+- tables, split views, pipelines, sidebars, settings, search, and record-detail patterns,
+- less decorative gallery art and more reusable product surfaces.
 
 ---
 
@@ -21,12 +41,10 @@ Multi-product experiments are out of scope for this phase.
 
 1. No Tailwind dependency in core product flow.
 2. Zephr tokens are the source of truth (`--z-*` namespace).
-3. Theme packs are static CSS assets, swapped by `<link>` (not runtime JS variable generation for docs theming).
-4. Public style packs are exactly:
-   - `notion` (default)
-   - `stripe`
-   - `linear`
-   - `framer`
+3. Theme packs still exist in the codebase as static CSS assets, but public docs UX is currently simplified to a single premium theme plus accent selection.
+4. `Pages` uses a `V1 / V2` comparison model:
+   - `V1` preserves the broader exploratory showcase
+   - `V2` is the curated premium SaaS direction
 5. Docs playground must consume the same token/component primitives as package consumers.
 6. AI integration is required, not optional:
    - `zephr init` writes `CLAUDE.md`, `AGENTS.md`, `llms.txt`
@@ -64,6 +82,14 @@ Multi-product experiments are out of scope for this phase.
 
 Legacy pack names are still read via a mapper with deprecation warnings for one transition cycle.
 
+### Docs UX note
+
+The docs currently do **not** expose public multi-theme switching. The visible public customization path is:
+
+- one premium default theme,
+- accent color selection,
+- `Pages > V1 / V2` for showcase comparison only.
+
 ---
 
 ## 4) Sprint F Status
@@ -81,17 +107,129 @@ Legacy pack names are still read via a mapper with deprecation warnings for one 
 5. CLI context-file generation implemented in `init`.
 6. MCP tools include `scaffold_page` + `apply_theme`.
 7. Guard script added to catch raw theme color literals in docs styles.
+8. Token pipeline fixed: `buildExpandedColorPalettes` (App.tsx) no longer overrides pack-defined background/stroke/text tones with computed gradients — pack values from `stylePacks.ts` are now authoritative for neutral scales; only accent and semantic color scales remain computed from the accent color.
+9. Notion pack token values corrected (March 9, 2026):
+   - `background100`: `#f5f5f5` → `#f7f7f7` (JS `stylePacks.ts` + `notion.css`)
+   - `stroke100`: `#f3f4f6` → `#ebebeb` (JS `stylePacks.ts`; `notion.css` was already `#EBEBEB`)
+10. Docs playground visual polish (March 9, 2026):
+    - Right-rail ("On this page") `border-left` changed to `var(--line)` — consistent with all other structural borders.
+    - Colors page redesigned: split swatch (light left / dark right) replaced with a single 80px swatch showing the active mode's color; table simplified from 3 columns to 2 ("Variable Name" / "Value"); `foundationColorGroups` useMemo now takes `darkMode` as a dependency and computes `activeColor` per token.
+
+11. Widgets library shipped (March 8–9, 2026):
+    - 60 widget components in `packages/ui-react/src/widgets/Widgets.tsx` (4244 lines).
+    - All widgets implement `WidgetSurface` type: `"elevated" | "outlined"`.
+    - Exported via `packages/ui-react/src/index.ts` → `export * from "./widgets/Widgets"`.
+12. Docs playground architecture refactored (March 8–9, 2026):
+    - `WidgetsPage.tsx` (879 lines): interactive widget showcase with category filtering and search.
+    - `TemplatesPage.tsx` (2116 lines): template showcase with tier-aware access (free/pro) and code snippets.
+    - `widgetsCatalog.ts`: 49 navigation entries covering workflow, forms, team, settings domains.
+    - `templatesCatalog.ts`: 24 page examples (OpsCenter, TeamWorkspace, AdminHub, etc.) with category flags.
+    - App.tsx reduced by ~925 lines via extraction into dedicated view files; lazy-loads WidgetsPage and TemplatesPage.
+13. README overhaul (March 7, 2026):
+    - All package READMEs rewritten for GitHub and npm: `core`, `ui-react`, `ai-registry`, `cli`, `mcp-server`, `avatars`, `icons-material`, `logos`.
+    - Root README updated with product positioning and package overview.
+14. MCP server npx support (March 7, 2026):
+    - `package.json` now has `bin` entry: `zephr-mcp` → `dist/index.js`.
+    - Shebang added to `src/index.ts` for direct CLI execution.
+15. Vercel routing fixes (March 6–7, 2026):
+    - Multiple iterations to resolve multi-segment API path routing.
+    - Final solution: `api/[[...route]].ts` catch-all with `vercel.json` rewrites.
+    - Root `vercel.json` cleaned to remove docs-specific settings (separate project).
+    - Workspace dist files committed for Vercel deployment.
+16. npm scope rename (March 6, 2026):
+    - All packages renamed from `@zephr/*` → `@zephrui/*`.
+    - Publish scripts corrected to match new scope.
+17. Theme CSS files fully expanded (March 8–9, 2026):
+    - All four packs (`notion.css`, `stripe.css`, `linear.css`, `framer.css`) now ~6.5 KB each.
+    - Complete `--z-color-*` variable coverage: background, text, stroke, accent, semantic scales.
+    - Light + dark mode mappings in all four files.
+18. Layout polish (March 9, 2026):
+    - Component gallery cards switched to 4-column grid.
+    - `BrowserPreviewFrame` changed to stroke-only (no fill background).
+    - Right-rail border consistency applied across all structural borders.
+19. Monetization restructure (March 9, 2026):
+    - **Old model**: 3 tiers (Individual/Startup/Enterprise), components gated, style packs gated.
+    - **New model**: Single $49 one-time payment, ALL components + ALL 4 style packs free, 20 premium example templates are the paid gate.
+    - `CheckoutPlanId` type simplified: `"individual" | "startup" | "enterprise"` → `"templates"`.
+    - `CHECKOUT_PLAN_META` reduced to single "Templates" entry.
+    - `LicenseKeyModal` redesigned: single feature card ($49 · one-time, feature list, "Get Templates — $49" CTA) + key input below.
+    - Header CTA: "Unlock Pro" → "Get Templates"; "✓ Pro" → "✓ Templates".
+    - All component-level PRO badges removed from sidebar nav + gallery grid.
+    - Templates sidebar link: PRO badge removed (template section always visible, 20 premium examples gated within TemplatesPage).
+    - `cloud-api/src/billing.ts`: `LicensePlan` simplified to `"pro" | "free"`, entitlement for "pro" = `["ui.page-templates"]` only, single `getBillingPlans()` returning "templates" plan.
+    - `packages/cloud-sdk/src/types.ts`: `CloudBillingPlan.id` widened to `string` (future-proofed).
+    - Env vars: `VITE_ZEPHR_CHECKOUT_INDIVIDUAL/STARTUP/ENTERPRISE` removed → `VITE_ZEPHR_CHECKOUT_TEMPLATES`.
+    - Lemon Squeezy: update to single product "Zephr Templates", set `ZEPHR_LS_VARIANT_TEMPLATES`.
+20. Docs UX direction (March 9, 2026):
+    - Default view changed from `"introduction"` → `"component-gallery"` (oat.ink-inspired, tool-first).
+    - Mission & Vision + Team removed from Setup sidebar nav (→ future marketing site).
+    - Reference sites: **oat.ink** = Phase 1 docs target (component-first, zero friction); **solodesign.cc** = Sprint M marketing site target (story-driven, single price, visual hero).
+21. Public docs simplified to single-theme UX (March 10, 2026):
+    - public multi-theme controls removed from docs header/sidebar
+    - accent color remains
+    - style-pack infrastructure remains in codebase but is no longer the active public docs story
+22. `Pages` now has `V1 / V2` showcase comparison (March 10, 2026):
+    - selector appears in navbar when `Pages` is active
+    - `V1` preserves earlier exploratory gallery work
+    - `V2` is the premium rebuild track and should be treated as the primary direction
+23. `Pages > V2` is now curated and intentionally narrow (March 10, 2026):
+    - widgets sidebar in V2 only shows the curated subset from `widgetsV2CatalogIds`
+    - templates sidebar in V2 only shows the curated subset from `templatesV2CatalogIds`
+    - visible density reduced to:
+      - widgets: 3 spotlight + 3 library entries
+      - templates: 2 spotlight + 3 library entries
+24. `Pages > V2` shifted from decorative gallery art to Attio-style SaaS preview language (March 10, 2026):
+    - tables
+    - split detail views
+    - pipelines / kanban boards
+    - list-detail shells
+    - support queue / detail patterns
+    - calmer neutral surfaces and thinner borders
+25. Widgets page shell cleanup (March 10, 2026):
+    - right rail removed from `Pages`
+    - `Preview / Code / Copy` shell aligned with other pages for consistency
+    - extra gradients, hero metrics, widget-count pills, helper lines, and section marketing copy removed
+    - gallery sections flattened to line-separated editorial sections rather than nested cards
+26. Widget internals flattened substantially (March 10, 2026):
+    - repeated card-in-card patterns replaced with divider rows and simpler bands
+    - premium/featured widgets cleaned first, then older utility widgets
+    - current gap is now art direction and full-page SaaS fidelity, not raw structural clutter
 
 ### In progress / pending
 
-1. Finish full docs-shell parity audit so all shell colors/typography resolve from `--z-*` aliases only.
-2. Complete visual regression coverage across all 4 packs in light/dark.
-3. Expand generated AI snippets and MCP scaffolds for page-level quality consistency.
-4. Continue component-depth pass (variant completeness + interaction states) with consistent token usage.
+1. Complete visual regression coverage across all 4 packs in light/dark.
+2. Expand generated AI snippets and MCP scaffolds for page-level quality consistency.
+3. Continue component-depth pass (variant completeness + interaction states) with consistent token usage.
+4. Audit remaining packs (stripe/linear/framer) — confirm their JS token values in `stylePacks.ts` match their CSS theme files after the token pipeline fix.
 
 ---
 
-## 5) Package Responsibilities
+## 5) Component Surface (as of March 10, 2026)
+
+### Atoms (15)
+Button, Input, Textarea, Select, Checkbox, Radio, Switch, Badge, Avatar, Logo, Card, Divider, Progress, Skeleton, Slider
+
+### Molecules (20)
+SearchBox, FormField, InputGroup, Dropdown, Tabs, Accordion, DatePicker, ColorPicker, Alert, Toast, Breadcrumbs, Pagination, CommandBar, ButtonGroup, RichEditor, Tooltip, Popover, ComboBox, NumberInput, TagInput
+
+### Organisms (13)
+Navbar, Header, SidebarNav, DataTable, SearchResultsPanel, FiltersBar, ModalDialog, LayoutShell, IconLibrary, AvatarLibrary, LogoLibrary, Sheet, AlertDialog
+
+### Layout (4)
+Stack, Grid, Box, Spacer
+
+### Templates (5)
+DashboardPage, AuthPage, SettingsPage, OnboardingPage, MarketingPage
+
+### Widgets (60)
+Full widget library in `packages/ui-react/src/widgets/Widgets.tsx`. All implement `WidgetSurface` type.
+
+### Page Examples (20)
+OpsCenter, TeamWorkspace, AdminHub, GrowthWorkspace, SupportDesk, DevConsole, ReleaseCenter, AnalyticsWorkspace, BillingConsole, CRMWorkspace, AuditCenter, ContentStudio, SupportPortal, FinanceWorkspace, ProductReviewBoard, CustomerOnboarding, ReferralCenter, AIComposerStudio, DeliveryOperations, GrowthInsights.
+
+---
+
+## 6) Package Responsibilities
 
 - `@zephrui/core`: token model, style pack resolution, config resolution, compiler utilities.
 - `@zephrui/ui-react`: component library + theme CSS assets + templates.
@@ -103,68 +241,143 @@ Legacy pack names are still read via a mapper with deprecation warnings for one 
 
 ---
 
-## 6) Docs Playground Baseline
+## 7) Docs Playground Baseline
 
 The docs playground is the single visual QA and demonstration surface:
 
-- style pack selector values: `notion`, `stripe`, `linear`, `framer`
-- default pack: `notion`
-- no retired pack labels in docs controls or generated snippets
+- public docs UX uses a single premium default theme
+- accent color selection remains
+- `Pages` exposes `V1 / V2` showcase comparison
+- `Pages > V2` is the active premium SaaS rebuild path
+- `Pages` does not show the right-rail "On this page" sidebar
+- shared `Preview / Code / Copy` shell should be visually consistent across Components and Pages
+
+### Architecture (as of March 10, 2026)
+
+Key files and sizes:
+
+| File | Lines | Purpose |
+|---|---|---|
+| `App.tsx` | ~7544 | Main app shell, routing, showcase mode state, component detail views |
+| `styles.css` | ~6064 | Structural layout, docs shell, V2 showcase styling, token-bridge aliases |
+| `views/WidgetsPage.tsx` | ~1190 | Widget showcase with V1/V2 behavior, curation, category filtering, and search |
+| `views/TemplatesPage.tsx` | ~2506 | Template/page showcase with V1/V2 behavior and curated premium previews |
+| `views/widgetsCatalog.ts` | 50 entries | Widget navigation metadata + curated V2 widget subset IDs |
+| `views/templatesCatalog.ts` | 25 entries | Template/example navigation metadata + curated V2 template subset IDs |
+
+Public navigation emphasis: Setup, Components, Pages, Changelog.
+
+WidgetsPage and TemplatesPage are lazy-loaded from App.tsx.
+
+### Current V2 showcase state
+
+- `Pages > V2` is the premium SaaS exploration track
+- benchmark has shifted from Sigma-style library curation to Attio-style SaaS product UI
+- current V2 work favors:
+  - recruiting tables
+  - CRM detail views
+  - split activity/detail shells
+  - support queues
+  - settings and record management surfaces
+- V2 is curated on purpose; breadth should not increase until the visual system is stable
 
 ---
 
-## 7) Local Runbook
+## 8) Local Runbook
 
 From repo root:
 
 1. Install:
    - `corepack pnpm install`
 2. Docs dev:
-   - `corepack pnpm --filter @zephrui/docs-playground dev`
+   - `corepack pnpm --filter ./apps/docs-playground dev`
 3. Docs build:
-   - `corepack pnpm --filter @zephrui/docs-playground build`
+   - `corepack pnpm --filter ./apps/docs-playground build`
 4. Monorepo validation:
    - `corepack pnpm test`
    - `corepack pnpm build`
 
 ---
 
-## 8) Release Readiness Checklist
+## 9) Release Readiness Checklist
 
-1. Style switch visibly re-themes full shell + previews in under 1s.
-2. Token parity checks pass for all 4 packs (light/dark key parity).
-3. Docs theme-color guard passes (no disallowed raw shell colors).
-4. `zephr init` emits all AI context files correctly.
-5. Registry schema validates structured AI hints for all components.
-6. MCP contract tests pass for `scaffold_page` and `apply_theme`.
-7. Accessibility smoke pass on top-tier components in each style pack.
-
----
-
-## 9) Immediate Next Steps
-
-1. Finalize docs-shell token parity and remove remaining local visual exceptions where possible.
-2. Expand component variant/state coverage in docs playground previews.
-3. Stabilize visual QA matrix for `notion/stripe/linear/framer` in light/dark.
-4. Tighten AI output quality with richer `aiHints` negative guidance and scaffold examples.
+1. Accent switching visibly updates docs previews and shared component surfaces without breaking contrast or layout.
+2. Shared `Preview / Code / Copy` shell is consistent between Components and Pages.
+3. `Pages > V2` stays curated and visually calmer than `V1`.
+4. Docs theme-color guard passes (no disallowed raw shell colors).
+5. `zephr init` emits all AI context files correctly.
+6. Registry schema validates structured AI hints for all components.
+7. MCP contract tests pass for `scaffold_page` and `apply_theme`.
+8. Accessibility smoke pass covers top-tier SaaS widgets/pages, not only primitive components.
 
 ---
 
-## 10) Files to Read First (for New Agent)
+## 10) Immediate Next Steps
 
-1. `/Users/akhilkrishnan/Documents/Design System Library/packages/core/src/types.ts`
-2. `/Users/akhilkrishnan/Documents/Design System Library/packages/core/src/stylePacks.ts`
-3. `/Users/akhilkrishnan/Documents/Design System Library/packages/core/src/tokens.ts`
-4. `/Users/akhilkrishnan/Documents/Design System Library/packages/ui-react/src/themes/notion.css`
-5. `/Users/akhilkrishnan/Documents/Design System Library/apps/docs-playground/src/App.tsx`
-6. `/Users/akhilkrishnan/Documents/Design System Library/apps/docs-playground/src/styles.css`
-7. `/Users/akhilkrishnan/Documents/Design System Library/packages/ai-registry/src/index.ts`
-8. `/Users/akhilkrishnan/Documents/Design System Library/packages/mcp-server/src/tools.ts`
-9. `/Users/akhilkrishnan/Documents/Design System Library/packages/cli/src/index.ts`
+1. Rebuild `Pages > V2` full-page examples around Attio-style SaaS patterns:
+   - record detail
+   - recruiting / CRM tables
+   - split activity/detail views
+   - pipelines / kanban boards
+   - support queue / detail shells
+2. Redesign the top V2 widgets so their internals match the same product language as the page examples.
+3. Keep V2 curated; do not add more breadth until visual consistency is solved.
+4. Finalize docs-shell token parity and remove remaining local visual exceptions where possible.
+5. Tighten AI output quality with richer `aiHints` negative guidance and scaffold examples.
 
 ---
 
-## 11) Non-Negotiable Guardrails
+## 11) Token Pipeline Architecture (Critical for Docs Playground)
+
+The docs playground injects design tokens at runtime via JS — it does **not** import `notion.css` directly.
+
+### Flow
+
+```
+stylePacks.ts (notion light/dark PackColors)
+  → composeColorTokens()         → flat { background100, stroke100, ... }
+  → buildExpandedColorPalettes() → adds computed accent + semantic scales
+  → buildGlobalThemeCss()        → merges into DesignTokens, spreads expanded palette
+  → generateCssVariables()       → emits :root { --z-color-background100: ...; ... }
+  → <style> tag in React          → CSS custom properties available to all components
+```
+
+### Key rule
+
+**Background / stroke / text tones are authoritative from `stylePacks.ts`.**
+`buildExpandedColorPalettes` (App.tsx ~line 578) spreads `...lightBase` and `...darkBase` from `composeColorTokens()`, which already contains all neutral tones. The function then adds computed accent and semantic scales on top — it must NOT re-assign `background*`, `stroke*`, or `text*` keys, as that would override the hand-crafted pack values.
+
+### Where to change token values
+
+| Token category | Authoritative source |
+|---|---|
+| background, stroke, text, accent, semantic colors | `packages/core/src/stylePacks.ts` → `createPack(light, dark)` |
+| CSS theme files (static consumers) | `packages/ui-react/src/themes/notion.css` etc. |
+| Computed accent scales in docs | `buildExpandedColorPalettes()` in `apps/docs-playground/src/App.tsx` |
+| Bridge aliases for docs shell | `apps/docs-playground/src/styles.css` `:root` block |
+
+Changes to `notion.css` do **not** affect the playground (it uses JS-generated vars). Changes must be made in `stylePacks.ts`.
+
+---
+
+## 12) Files to Read First (for New Agent)
+
+1. `packages/core/src/types.ts`
+2. `packages/core/src/stylePacks.ts`
+3. `packages/core/src/tokens.ts`
+4. `packages/ui-react/src/themes/notion.css`
+5. `apps/docs-playground/src/App.tsx`
+6. `apps/docs-playground/src/styles.css`
+7. `apps/docs-playground/src/views/WidgetsPage.tsx`
+8. `apps/docs-playground/src/views/TemplatesPage.tsx`
+9. `packages/ui-react/src/widgets/Widgets.tsx`
+10. `packages/ai-registry/src/index.ts`
+11. `packages/mcp-server/src/tools.ts`
+12. `packages/cli/src/index.ts`
+
+---
+
+## 13) Non-Negotiable Guardrails
 
 1. Do not reintroduce Tailwind as required setup.
 2. Do not add new public style pack names outside the locked 4 without explicit owner sign-off.
@@ -174,7 +387,7 @@ From repo root:
 
 ---
 
-## 12) Hardening Pass (March 5, 2026)
+## 14) Hardening Pass (March 5, 2026)
 
 ### Shipped in this pass
 
@@ -207,7 +420,7 @@ From repo root:
 
 ---
 
-## 13) Billing + Licensing Architecture (Locked)
+## 15) Billing + Licensing Architecture (Locked)
 
 ### Recommended public checkout model
 
@@ -284,7 +497,7 @@ Optional docs fallback only:
 
 ---
 
-## 14) Deployment Direction (Cost-Optimized)
+## 16) Deployment Direction (Cost-Optimized)
 
 ### Recommended near-term deployment
 
@@ -319,7 +532,7 @@ Refactoring the API to Vercel Functions does not reduce quality if these conditi
 
 ---
 
-## 15) Minimal Vercel Refactor Plan
+## 17) Minimal Vercel Refactor Plan
 
 ### Goal
 
@@ -354,7 +567,7 @@ Convert `apps/cloud-api` from a manually hosted Node server into request-based h
 
 ---
 
-## 16) Immediate Next Steps (Business + Infra)
+## 18) Immediate Next Steps (Business + Infra)
 
 1. Wire real Lemon Squeezy production env values.
 2. Configure Supabase schema and production service-role access.
@@ -363,9 +576,7 @@ Convert `apps/cloud-api` from a manually hosted Node server into request-based h
    - license persistence
    - validate
    - activate
-4. Decide whether to:
-   - launch quickly on a cheap Node host first, or
-   - do the Vercel Functions refactor now and keep a single-platform deployment model
+4. Keep docs and API on separate Vercel projects (`zephr-docs`, `zephr-api`) and finish production env validation there before adding more infra.
 5. If public launch is close, prioritize:
    - license/account UX
    - refund/cancellation handling
@@ -374,12 +585,12 @@ Convert `apps/cloud-api` from a manually hosted Node server into request-based h
 
 ---
 
-## 17) Launch Checklist (Minimum Public Release)
+## 19) Launch Checklist (Minimum Public Release)
 
 ### Billing + license flow
 
-1. `GET /v1/licenses/plans` returns 3 available plans with real checkout URLs.
-2. Docs Unlock modal opens the correct hosted checkout for each plan.
+1. `GET /v1/licenses/plans` returns the single paid `templates` plan with a real checkout URL.
+2. Docs "Get Templates" modal opens the correct hosted checkout.
 3. Lemon Squeezy webhook is configured and signed.
 4. One real purchase has been completed end-to-end.
 5. Purchased key validates successfully via `POST /v1/licenses/validate`.
@@ -459,7 +670,7 @@ Required Lemon Squeezy webhook target:
 
 ---
 
-## 18) Vercel Refactor Estimate (Based on Current Code)
+## 20) Vercel Refactor Estimate (Based on Current Code)
 
 ### Current shape
 

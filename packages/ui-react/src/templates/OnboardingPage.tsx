@@ -160,7 +160,7 @@ function WelcomeContent() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
         {[
           { icon: "⚡", label: "Zero config", desc: "Works out of the box" },
-          { icon: "🎨", label: "6 style packs", desc: "Swap themes instantly" },
+          { icon: "🎨", label: "Accent tokens", desc: "Personalize the core accent" },
           { icon: "🤖", label: "AI-native", desc: "Built for LLM tooling" },
           { icon: "📦", label: "200+ comps",  desc: "Every pattern covered" },
         ].map(f => (
@@ -230,18 +230,18 @@ function InstallContent() {
   );
 }
 
-function ThemeContent() {
-  const [selected, setSelected] = useState("notion");
-  const packs = [
-    { name: "notion", desc: "Warm white, flat-first and calm.", swatches: ["#121212", "#f5f5f5", "#ffffff"] },
-    { name: "stripe", desc: "White dashboards with subtle elevation.", swatches: ["#4f46e5", "#e2e8f0", "#ffffff"] },
-    { name: "linear", desc: "Data-dense UI with compact rhythm.", swatches: ["#245ef5", "#d1d5db", "#ffffff"] },
-    { name: "framer", desc: "Expressive contrast and bold accents.", swatches: ["#9333ea", "#e2e8f0", "#ffffff"] },
+function AccentContent() {
+  const [selected, setSelected] = useState("indigo");
+  const accents = [
+    { name: "indigo", desc: "Balanced product accent for polished interfaces.", swatches: ["#335cff", "#dbe4ff", "#ffffff"] },
+    { name: "teal", desc: "Calm operational accent for product and support surfaces.", swatches: ["#0f766e", "#ccfbf1", "#ffffff"] },
+    { name: "orange", desc: "High-signal accent for growth, actions, and CTAs.", swatches: ["#f97316", "#ffedd5", "#ffffff"] },
+    { name: "violet", desc: "Expressive accent for AI, insights, and creative tooling.", swatches: ["#7c3aed", "#ede9fe", "#ffffff"] },
   ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      {packs.map(p => (
+      {accents.map(p => (
         <button
           key={p.name}
           type="button"
@@ -295,12 +295,12 @@ const DEFAULT_STEPS: OnboardingStep[] = [
     content: <InstallContent />,
   },
   {
-    id: "theme",
+    id: "accent",
     emoji: "🎨",
-    title: "Pick a style pack",
-    subtitle: "You can switch anytime — no code changes required.",
+    title: "Choose your accent",
+    subtitle: "Keep the premium default theme and personalize the accent across the product.",
     nextLabel: "Finish setup",
-    content: <ThemeContent />,
+    content: <AccentContent />,
   },
 ];
 

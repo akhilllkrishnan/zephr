@@ -2,7 +2,7 @@ import { ensureCloudEnvLoaded } from "./env";
 
 ensureCloudEnvLoaded();
 
-export type LicensePlan = "individual" | "startup" | "enterprise" | "pro" | "team";
+export type LicensePlan = "pro" | "free";
 
 export interface PlanResolutionInput {
   variantId?: number;
@@ -11,7 +11,7 @@ export interface PlanResolutionInput {
 }
 
 export interface BillingPlanDefinition {
-  id: "individual" | "startup" | "enterprise";
+  id: "templates";
   label: string;
   description: string;
   recommended?: boolean;
@@ -28,96 +28,35 @@ function parseOptionalInt(raw: string | undefined): number | undefined {
 }
 
 function getEnvVariantMapping(): {
-  individual?: number;
-  startup?: number;
-  enterprise?: number;
+  templates?: number;
 } {
   return {
-    individual: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_INDIVIDUAL),
-    startup: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_STARTUP),
-    enterprise: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_ENTERPRISE)
+    templates: parseOptionalInt(process.env.ZEPHR_LS_VARIANT_TEMPLATES)
   };
-}
-
-function resolveFromText(raw: string): LicensePlan | null {
-  const normalized = raw.toLowerCase();
-
-  if (normalized.includes("enterprise")) return "enterprise";
-  if (normalized.includes("startup")) return "startup";
-  if (normalized.includes("individual")) return "individual";
-  if (normalized.includes("team")) return "team";
-  if (normalized.includes("pro")) return "pro";
-
-  return null;
 }
 
 export function resolvePlan(input: PlanResolutionInput): LicensePlan {
   const byVariant = getEnvVariantMapping();
 
   if (input.variantId !== undefined) {
-    if (byVariant.enterprise !== undefined && input.variantId === byVariant.enterprise) return "enterprise";
-    if (byVariant.startup !== undefined && input.variantId === byVariant.startup) return "startup";
-    if (byVariant.individual !== undefined && input.variantId === byVariant.individual) return "individual";
+    if (byVariant.templates !== undefined && input.variantId === byVariant.templates) return "pro";
   }
 
-  const variantNamePlan = input.variantName ? resolveFromText(input.variantName) : null;
-  if (variantNamePlan) {
-    return variantNamePlan;
-  }
-
-  const productNamePlan = input.productName ? resolveFromText(input.productName) : null;
-  if (productNamePlan) {
-    return productNamePlan;
-  }
+  // Any recognized paid product resolves to "pro"
+  const text = [input.variantName, input.productName].filter(Boolean).join(" ").toLowerCase();
+  if (text.includes("template") || text.includes("pro") || text.includes("zephr")) return "pro";
 
   // Safe default for paid license products when metadata is ambiguous.
-  return "individual";
+  return "pro";
 }
 
 export function entitlementsForPlan(plan: LicensePlan | null): string[] {
-  if (!plan) {
+  if (!plan || plan === "free") {
     return [];
   }
 
-  switch (plan) {
-    case "enterprise":
-      return [
-        "ui.components",
-        "ui.page-templates",
-        "cloud.assets",
-        "cloud.audit",
-        "mcp.actions",
-        "team.workspaces",
-        "priority.support"
-      ];
-    case "startup":
-      return [
-        "ui.components",
-        "ui.page-templates",
-        "cloud.assets",
-        "cloud.audit",
-        "mcp.actions"
-      ];
-    case "individual":
-    case "pro":
-      return [
-        "ui.components",
-        "ui.page-templates",
-        "cloud.assets",
-        "mcp.actions"
-      ];
-    case "team":
-      return [
-        "ui.components",
-        "ui.page-templates",
-        "cloud.assets",
-        "cloud.audit",
-        "mcp.actions",
-        "team.workspaces"
-      ];
-    default:
-      return [];
-  }
+  // "pro" = templates entitlement only
+  return ["ui.page-templates"];
 }
 
 function envCheckout(key: string): string | undefined {
@@ -128,23 +67,11 @@ function envCheckout(key: string): string | undefined {
 export function getBillingPlans(): BillingPlanDefinition[] {
   return [
     {
-      id: "individual",
-      label: "Individual",
-      description: "For solo builders and personal projects.",
-      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_INDIVIDUAL")
-    },
-    {
-      id: "startup",
-      label: "Startup",
-      description: "For small teams shipping products quickly.",
+      id: "templates",
+      label: "Templates",
+      description: "Lifetime access to all 20 premium page templates.",
       recommended: true,
-      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_STARTUP")
-    },
-    {
-      id: "enterprise",
-      label: "Enterprise",
-      description: "For larger teams with advanced support needs.",
-      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_ENTERPRISE")
+      checkoutUrl: envCheckout("ZEPHR_LS_CHECKOUT_TEMPLATES")
     }
   ];
 }

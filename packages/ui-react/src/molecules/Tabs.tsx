@@ -67,7 +67,7 @@ export function Tabs({ items, initialTabId, className, style }: TabsProps) {
                 color: isActive
                   ? "var(--z-color-primaryContrast, #ffffff)"
                   : item.disabled
-                    ? "#b5b5b5"
+                    ? "var(--z-color-text300, #a1a1aa)"
                     : "var(--z-color-text, #171717)",
                 fontSize: "14px",
                 fontWeight: "var(--z-type-weight-medium, 500)" as CSSProperties["fontWeight"],

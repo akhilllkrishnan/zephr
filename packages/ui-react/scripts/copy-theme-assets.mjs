@@ -22,3 +22,10 @@ for (const entry of fs.readdirSync(sourceDir, { withFileTypes: true })) {
   const targetPath = path.join(targetDir, entry.name);
   fs.copyFileSync(sourcePath, targetPath);
 }
+
+// Copy tokens.css (consumer entry point — defaults to Notion pack)
+const tokensSrc = path.join(packageRoot, "src", "tokens.css");
+const tokensDst = path.join(packageRoot, "dist", "tokens.css");
+if (fs.existsSync(tokensSrc)) {
+  fs.copyFileSync(tokensSrc, tokensDst);
+}

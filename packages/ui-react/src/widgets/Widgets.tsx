@@ -361,6 +361,70 @@ export interface ExperimentResultsWidgetProps {
   style?: CSSProperties;
 }
 
+export interface WelcomeProfileWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface ReferralRewardWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface SetupJourneyWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface DeliveryTimelineWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface TravelItineraryWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface PromptComposerWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface ConversionScoreWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface MarketingInsightsWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
 export interface ReleaseNotesWidgetProps {
   title?: string;
   subtitle?: string;
@@ -484,6 +548,29 @@ function surfaceProps(surface: WidgetSurface) {
 function cardStyle(style?: CSSProperties): CSSProperties {
   return {
     gap: "1rem",
+    border: "1px solid color-mix(in srgb, var(--z-color-border, #ebebeb) 88%, #ffffff 12%)",
+    background: "var(--z-color-surface, #ffffff)",
+    boxShadow: "none",
+    ...style
+  };
+}
+
+function panelStyle(style?: CSSProperties): CSSProperties {
+  return {
+    padding: "1rem",
+    borderRadius: 18,
+    border: "1px solid color-mix(in srgb, var(--z-color-border, #ebebeb) 92%, #ffffff 8%)",
+    background: "var(--z-color-background100, #f4f6fa)",
+    ...style
+  };
+}
+
+function summaryBandStyle(style?: CSSProperties): CSSProperties {
+  return {
+    padding: "1rem 1.1rem",
+    borderRadius: 18,
+    border: "1px solid color-mix(in srgb, var(--z-color-border, #ebebeb) 92%, #ffffff 8%)",
+    background: "var(--z-color-background100, #f4f6fa)",
     ...style
   };
 }
@@ -493,6 +580,22 @@ function stackStyle(gap = "0.75rem"): CSSProperties {
     display: "flex",
     flexDirection: "column",
     gap
+  };
+}
+
+function dividedListStyle(style?: CSSProperties): CSSProperties {
+  return {
+    display: "grid",
+    gap: 0,
+    ...style
+  };
+}
+
+function dividedRowStyle(style?: CSSProperties): CSSProperties {
+  return {
+    padding: "0.95rem 0",
+    borderTop: "1px solid var(--z-color-border, #ebebeb)",
+    ...style
   };
 }
 
@@ -536,8 +639,9 @@ function kickerStyle(): CSSProperties {
 function titleStyle(): CSSProperties {
   return {
     margin: "0.35rem 0 0",
-    fontSize: "1.1rem",
+    fontSize: "1.12rem",
     lineHeight: 1.25,
+    letterSpacing: "-0.02em",
     color: "var(--z-color-text, #171717)"
   };
 }
@@ -607,16 +711,21 @@ export function RevenueSnapshotWidget({
         </div>
         <Badge tone="success">{statusLabel}</Badge>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.75rem" }}>
-        {metrics.map((metric) => (
+      <div
+        style={{
+          ...summaryBandStyle(),
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem"
+        }}
+      >
+        {metrics.map((metric, index) => (
           <div
             key={metric.label}
             style={{
-              ...stackStyle("0.3rem"),
-              padding: "0.8rem 0.9rem",
-              borderRadius: 10,
-              border: "1px solid var(--z-color-border, #ebebeb)",
-              background: "var(--z-color-surface, #ffffff)"
+              ...stackStyle("0.15rem"),
+              paddingLeft: index === 0 ? 0 : "1rem",
+              borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
             }}
           >
             <span style={mutedTextStyle()}>{metric.label}</span>
@@ -821,18 +930,17 @@ export function CustomerHealthWidget({
         </div>
         <Badge color="teal" variant="lighter">{tagLabel}</Badge>
       </div>
-      <div style={stackStyle()}>
-        {accounts.map((account) => {
+      <div style={dividedListStyle()}>
+        {accounts.map((account, index) => {
           const palette = healthColor(account.health);
           return (
             <div
               key={account.name}
               style={{
-                ...stackStyle("0.65rem"),
-                padding: "0.85rem 0.95rem",
-                borderRadius: 10,
-                border: "1px solid var(--z-color-border, #ebebeb)",
-                background: "var(--z-color-surface, #ffffff)"
+                ...stackStyle("0.5rem"),
+                ...dividedRowStyle({
+                  borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+                })
               }}
             >
               <div style={inlineRowStyle()}>
@@ -982,6 +1090,704 @@ export function QuickActionsWidget({
   );
 }
 
+export function WelcomeProfileWidget({
+  title = "Welcome to Zephr",
+  subtitle = "Set up your profile, add a photo, and pick the name your team will see across every workspace.",
+  surface = "elevated",
+  className,
+  style
+}: WelcomeProfileWidgetProps) {
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div
+        style={{
+          padding: "1rem",
+          borderRadius: 24,
+          border: "1px solid color-mix(in srgb, var(--z-color-border, #ebebeb) 86%, #ffffff 14%)",
+          background:
+            "radial-gradient(circle at 18% 12%, rgba(255, 189, 82, 0.32) 0%, rgba(255, 189, 82, 0) 28%), radial-gradient(circle at 88% 20%, rgba(245, 115, 71, 0.22) 0%, rgba(245, 115, 71, 0) 26%), linear-gradient(180deg, rgba(83, 153, 255, 0.96) 0%, rgba(218, 236, 255, 0.94) 62%, rgba(255, 255, 255, 1) 100%)",
+          minHeight: 236,
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) 120px",
+          alignItems: "end",
+          gap: "1rem",
+          overflow: "hidden"
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            padding: "1.2rem 1.2rem 0.55rem",
+            borderRadius: 20,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.78) 42%, rgba(255,255,255,0.98) 100%)"
+          }}
+        >
+          <Badge color="sky" variant="lighter">Workspace setup</Badge>
+          <h3 style={{ ...titleStyle(), fontSize: "1.72rem" }}>{title}</h3>
+          <p style={{ ...mutedTextStyle(), margin: "0.45rem 0 0", lineHeight: 1.58, maxWidth: 420 }}>{subtitle}</p>
+        </div>
+        <div
+          style={{
+            justifySelf: "end",
+            alignSelf: "stretch",
+            width: "100%",
+            maxWidth: 112,
+            borderRadius: 18,
+            background:
+              "radial-gradient(circle at 30% 24%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 32%), radial-gradient(circle at 58% 82%, rgba(255, 162, 95, 0.5) 0%, rgba(255, 162, 95, 0) 34%), linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 100%)",
+            border: "1px solid rgba(255,255,255,0.38)",
+            position: "relative"
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              inset: "18px 22px auto auto",
+              width: 34,
+              height: 34,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.42)",
+              backdropFilter: "blur(10px)"
+            }}
+          />
+        </div>
+      </div>
+      <div
+        style={{
+          ...dividedRowStyle({
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1fr) auto",
+            gap: "0.85rem",
+            alignItems: "center",
+            paddingTop: "1rem"
+          })
+        }}
+      >
+        <div style={personMetaStyle()}>
+          <Avatar name="Ava" size={44} />
+          <div style={personCopyStyle()}>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.95rem" }}>Your photo</strong>
+            <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>PNG or JPG up to 5 MB · 500×500 recommended</span>
+          </div>
+        </div>
+        <Button size="sm" variant="secondary">Upload</Button>
+      </div>
+      <div style={{ ...stackStyle("0.9rem"), paddingTop: "0.15rem" }}>
+        <FormField label="Display name" htmlFor="widget-profile-name">
+          <Input id="widget-profile-name" defaultValue="@username" />
+        </FormField>
+        <Button>Continue</Button>
+      </div>
+    </Card>
+  );
+}
+
+export function ReferralRewardWidget({
+  title = "Refer & earn",
+  subtitle = "Share your invite link. Your friend gets credits and you earn the same reward after their first paid action.",
+  surface = "elevated",
+  className,
+  style
+}: ReferralRewardWidgetProps) {
+  const steps = [
+    "Share your invite link",
+    "Your friend gets 10 credits when they subscribe",
+    "You receive 10 credits for each referral"
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div
+        style={{
+          padding: "1.15rem",
+          borderRadius: 24,
+          background: "color-mix(in srgb, var(--z-color-background100, #f4f6fa) 74%, #ffffff 26%)",
+          border: "1px solid color-mix(in srgb, var(--z-color-border, #ebebeb) 82%, #ffffff 18%)",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) 116px",
+          gap: "1rem"
+        }}
+      >
+        <div style={stackStyle("0.55rem")}>
+          <Badge color="yellow" variant="lighter">Earn 10 credits</Badge>
+          <h3 style={{ ...titleStyle(), fontSize: "1.6rem" }}>{title}</h3>
+          <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55, maxWidth: 420 }}>{subtitle}</p>
+        </div>
+        <div
+          style={{
+            alignSelf: "stretch",
+            borderRadius: 18,
+            background: "radial-gradient(circle at 32% 26%, rgba(255, 170, 66, 0.82) 0%, rgba(255, 170, 66, 0) 38%), radial-gradient(circle at 68% 62%, rgba(110, 120, 255, 0.72) 0%, rgba(110, 120, 255, 0.08) 48%), linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248, 235, 255, 0.94) 100%)",
+            border: "1px solid rgba(255,255,255,0.6)",
+            position: "relative"
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              inset: "16px 16px auto auto",
+              padding: "0.25rem 0.55rem",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.72)",
+              color: "var(--z-color-text, #171717)",
+              fontSize: "0.72rem",
+              fontWeight: 600
+            }}
+          >
+            Invite
+          </span>
+        </div>
+      </div>
+      <div style={{ ...stackStyle("0"), borderTop: "1px solid var(--z-color-border, #ebebeb)" }}>
+        {steps.map((step, index) => (
+          <div
+            key={step}
+            style={{
+              ...dividedRowStyle({
+                display: "grid",
+                gridTemplateColumns: "20px minmax(0, 1fr)",
+                gap: "0.75rem",
+                alignItems: "start"
+              })
+            }}
+          >
+            <div
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 999,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "color-mix(in srgb, var(--accent, #121212) 8%, white)",
+                color: "var(--accent, #121212)",
+                fontSize: "0.72rem",
+                fontWeight: 700
+              }}
+            >
+              {index + 1}
+            </div>
+            <div style={stackStyle("0.14rem")}>
+              <strong style={{ color: "var(--z-color-text, #171717)", lineHeight: 1.45, fontSize: "0.95rem" }}>{step}</strong>
+              <span style={mutedTextStyle()}>{index === 0 ? "Post the link in your welcome flow or customer email." : index === 1 ? "Credits land instantly on the first paid action." : "Track rewarded conversions from the same referral surface."}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div
+        style={{
+          ...dividedRowStyle({
+            paddingTop: "1rem"
+          }),
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) auto",
+          gap: "0.75rem",
+          alignItems: "center"
+        }}
+      >
+        <Input readOnly value="https://zephr.work/invite/ava-product" aria-label="Invite link" />
+        <Button size="sm">Copy link</Button>
+      </div>
+    </Card>
+  );
+}
+
+export function SetupJourneyWidget({
+  title = "Let's get you live",
+  subtitle = "Guide new accounts through a short setup path with visible progress and clear next actions.",
+  surface = "elevated",
+  className,
+  style
+}: SetupJourneyWidgetProps) {
+  const steps = [
+    { label: "Set up company", done: true },
+    { label: "Create resource", active: true },
+    { label: "Create service" },
+    { label: "Link service with resource" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div style={stackStyle("0.3rem")}>
+          <Badge color="green" variant="lighter">Onboarding</Badge>
+          <h3 style={{ ...titleStyle(), fontSize: "1.5rem", margin: 0 }}>{title}</h3>
+          <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{subtitle}</p>
+        </div>
+        <Button size="sm" variant="secondary">Dismiss</Button>
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "56px minmax(0, 1fr) auto",
+          gap: "0.9rem",
+          alignItems: "center",
+          padding: "1rem 0 0.95rem",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 18,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(180deg, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0.05) 100%)",
+            color: "var(--z-color-success, #0a7d53)",
+            fontSize: "1.4rem"
+          }}
+        >
+          🚀
+        </div>
+        <div style={stackStyle("0.35rem")}>
+          <Progress value={25} tone="success" />
+          <span style={mutedTextStyle()}>Step 2 of 4 · 3 actions remaining before first publish</span>
+        </div>
+        <strong style={{ color: "var(--z-color-text, #171717)" }}>25%</strong>
+      </div>
+      <div style={dividedListStyle()}>
+        {steps.map((step, index) => {
+          const isDone = Boolean(step.done);
+          const isActive = Boolean(step.active);
+          return (
+            <div
+              key={step.label}
+              style={{
+                ...dividedRowStyle({
+                  padding: "1rem 0"
+                }),
+                display: "grid",
+                gridTemplateColumns: "42px minmax(0, 1fr) auto",
+                gap: "0.9rem",
+                alignItems: "center",
+                background: "transparent"
+              }}
+            >
+              <div
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 999,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: `1.5px solid ${isDone || isActive ? "color-mix(in srgb, var(--accent, #121212) 55%, white)" : "var(--z-color-border, #ebebeb)"}`,
+                  background: isDone ? "color-mix(in srgb, var(--accent, #121212) 16%, white)" : "var(--z-color-surface, #ffffff)",
+                  color: isDone || isActive ? "var(--accent, #121212)" : "var(--z-color-muted, #667085)",
+                  fontWeight: 700
+                }}
+              >
+                {isDone ? "✓" : index + 1}
+              </div>
+              <div style={stackStyle("0.18rem")}>
+                <strong style={{ color: isDone ? "var(--z-color-text, #171717)" : isActive ? "var(--z-color-text, #171717)" : "var(--z-color-muted, #667085)", fontSize: "0.98rem" }}>
+                  {step.label}
+                </strong>
+                <span style={mutedTextStyle()}>
+                  {isDone ? "Completed" : isActive ? "Recommended next step" : "Queued until the previous step is finished"}
+                </span>
+              </div>
+              <Badge tone={isDone ? "success" : isActive ? "info" : "neutral"}>
+                {isDone ? "Done" : isActive ? "Next" : "Locked"}
+              </Badge>
+            </div>
+          );
+        })}
+      </div>
+      <Button>Continue setup</Button>
+    </Card>
+  );
+}
+
+export function DeliveryTimelineWidget({
+  title = "Delivery timeline",
+  subtitle = "A customer-safe shipment tracker with status, timestamps, and an end-of-journey rating action.",
+  surface = "elevated",
+  className,
+  style
+}: DeliveryTimelineWidgetProps) {
+  const stages = [
+    { label: "Order confirmed", note: "Order placed and confirmed", time: "17 Nov, 13:45", icon: "□" },
+    { label: "Shipping", note: "Handed to logistics provider", time: "17 Nov, 18:10", icon: "▣" },
+    { label: "Transit", note: "Moving through the network", time: "18 Nov, 09:20", icon: "→" },
+    { label: "Sent to customer", note: "Out for delivery", time: "18 Nov, 14:55", icon: "◎" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div style={stackStyle("0.25rem")}>
+          <Badge color="sky" variant="lighter">Timeline</Badge>
+          <h3 style={{ ...titleStyle(), margin: 0, fontSize: "1.35rem" }}>{title}</h3>
+        </div>
+        <Badge color="sky" variant="lighter">In progress</Badge>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{subtitle}</p>
+      <div style={stackStyle("0.8rem")}>
+        {stages.map((stage, index) => (
+          <div key={stage.label} style={{ display: "grid", gridTemplateColumns: "44px minmax(0, 1fr) auto", gap: "0.9rem", alignItems: "start" }}>
+            <div style={{ position: "relative", display: "flex", justifyContent: "center" }}>
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 999,
+                  border: "1px dashed var(--z-color-border, #ebebeb)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--z-color-text, #171717)",
+                  background: "var(--z-color-surface, #ffffff)"
+                }}
+              >
+                {stage.icon}
+              </div>
+              {index < stages.length - 1 ? (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 48,
+                    width: 1,
+                    height: 40,
+                    background: "var(--z-color-border, #ebebeb)"
+                  }}
+                />
+              ) : null}
+            </div>
+            <div style={stackStyle("0.2rem")}>
+              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{stage.label}</strong>
+              <span style={{ ...mutedTextStyle(), lineHeight: 1.5 }}>{stage.note}</span>
+            </div>
+            <span style={{ ...mutedTextStyle(), whiteSpace: "nowrap", fontSize: "0.86rem" }}>{stage.time}</span>
+          </div>
+        ))}
+      </div>
+      <Button variant="secondary">Rate this delivery</Button>
+    </Card>
+  );
+}
+
+export function TravelItineraryWidget({
+  title = "Travel itinerary",
+  subtitle = "A compact itinerary card for route-heavy products, mobility workflows, and travel planning.",
+  surface = "elevated",
+  className,
+  style
+}: TravelItineraryWidgetProps) {
+  const legs = [
+    {
+      day: "Sat, 1 Feb 2025",
+      time: "3:00",
+      passengers: "5 passengers",
+      from: "Prague",
+      fromMeta: "Vaclav Havel Airport",
+      to: "Berlin",
+      toMeta: "Berlin Brandenburg"
+    },
+    {
+      day: "Sun, 2 Feb 2025",
+      time: "20:40",
+      passengers: "8 passengers",
+      from: "Dubai",
+      fromMeta: "Dubai International",
+      to: "Amsterdam",
+      toMeta: "Amsterdam Schiphol"
+    }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div style={stackStyle("0.2rem")}>
+          <div style={kickerStyle()}>One way</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Button size="sm" variant="secondary">Edit search</Button>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{subtitle}</p>
+      <div style={stackStyle("0.9rem")}>
+        {legs.map((leg, index) => (
+          <div
+            key={leg.day}
+            style={{
+              ...stackStyle("0.7rem"),
+              ...dividedRowStyle({
+                padding: index === 0 ? "0.2rem 0 1rem" : "1rem 0 0.1rem"
+              })
+            }}
+          >
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{leg.day}</strong>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.45rem" }}>
+              <Badge tone="neutral">{leg.time}</Badge>
+              <Badge tone="neutral">{leg.passengers}</Badge>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "20px minmax(0, 1fr)", gap: "0.75rem" }}>
+              <div style={{ position: "relative", display: "flex", justifyContent: "center" }}>
+                <span style={{ width: 10, height: 10, borderRadius: 999, border: "2px solid var(--z-color-text, #171717)", background: "var(--z-color-surface, #ffffff)", marginTop: 4 }} />
+                <span style={{ position: "absolute", top: 16, width: 2, height: 32, background: "var(--z-color-text, #171717)" }} />
+                <span style={{ position: "absolute", top: 54, width: 10, height: 10, borderRadius: 999, border: "2px solid var(--z-color-text, #171717)", background: "var(--z-color-surface, #ffffff)" }} />
+              </div>
+              <div style={stackStyle("1rem")}>
+                <div style={stackStyle("0.15rem")}>
+                  <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{leg.from}</strong>
+                  <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{leg.fromMeta}</span>
+                </div>
+                <div style={stackStyle("0.15rem")}>
+                  <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{leg.to}</strong>
+                  <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{leg.toMeta}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+export function PromptComposerWidget({
+  title = "Prompt composer",
+  subtitle = "A cleaner AI input surface for asset prompts, attachments, model selection, and send controls.",
+  surface = "elevated",
+  className,
+  style
+}: PromptComposerWidgetProps) {
+  const [mode, setMode] = useState(0);
+  const modes = ["Inspiration", "Production", "Storyboard"];
+  const attachments = ["Add photos or videos", "Add 3D objects", "Add files (docs, PDF…)"];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={stackStyle("0.65rem")}>
+        <div style={inlineRowStyle()}>
+          <div>
+            <Badge color="purple" variant="lighter">AI workspace</Badge>
+            <h3 style={titleStyle()}>{title}</h3>
+          </div>
+          <Badge color="purple" variant="lighter">Brainwave 2.5</Badge>
+        </div>
+        <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{subtitle}</p>
+      </div>
+      <div style={{ ...stackStyle("0.9rem"), borderTop: "1px solid var(--z-color-border, #ebebeb)", paddingTop: "1rem" }}>
+        <div
+          style={{
+            ...panelStyle({
+              width: "min(280px, 100%)",
+              gap: "0",
+              alignSelf: "flex-start",
+              padding: "0.4rem 1rem"
+            }),
+            display: "grid"
+          }}
+        >
+          {attachments.map((item, index) => (
+            <div
+              key={item}
+              style={{
+                ...dividedRowStyle({
+                  borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)",
+                  padding: "0.78rem 0"
+                }),
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem"
+              }}
+            >
+              <span style={{ color: "var(--z-color-muted, #667085)" }}>+</span>
+              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item}</strong>
+            </div>
+          ))}
+        </div>
+        <div style={panelStyle({ padding: "1rem" })}>
+          <div style={stackStyle("0.9rem")}>
+            <Textarea rows={3} defaultValue="Describe your 3D object or scene…" />
+            <div style={{ display: "grid", gridTemplateColumns: "auto auto minmax(0, 1fr) auto auto", gap: "0.6rem", alignItems: "center" }}>
+              <Button size="sm" variant="secondary">+</Button>
+              <ButtonGroup quantity={3} labels={modes} value={mode} onValueChange={setMode} />
+              <div />
+              <Button size="sm" variant="secondary">Mic</Button>
+              <Button size="sm">Send</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export function ConversionScoreWidget({
+  title = "Experience score",
+  subtitle = "Summarize the biggest UX gaps into one visible score and a ranked list of fixes.",
+  surface = "elevated",
+  className,
+  style
+}: ConversionScoreWidgetProps) {
+  const findings = [
+    { label: "Reviews", note: "No visible reviews or testimonial found", score: 55, tone: "High impact" },
+    { label: "Social proof", note: "Missing trust badges near buy box", score: 80, tone: "High impact" },
+    { label: "Buy box", note: "Add payment icons and USPs for trust", score: 72, tone: "Moderate impact" },
+    { label: "Copywriting", note: "Engaging copy detected", score: 59, tone: "Low impact" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={{ ...stackStyle("1rem"), alignItems: "center" }}>
+        <div
+          style={{
+            width: 172,
+            height: 172,
+            borderRadius: "50%",
+            background: "conic-gradient(#f59e0b 0deg, #fb923c 124deg, #ef4444 214deg, rgba(239,68,68,0.08) 214deg 360deg)",
+            display: "grid",
+            placeItems: "center",
+            position: "relative"
+          }}
+        >
+          <div
+            style={{
+              width: 136,
+              height: 136,
+              borderRadius: "50%",
+              background: "var(--z-color-surface, #ffffff)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "inset 0 0 0 1px var(--z-color-border, #ebebeb)"
+            }}
+          >
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "2.2rem", lineHeight: 1 }}>79</strong>
+            <span style={mutedTextStyle()}>Zephr score</span>
+          </div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <h3 style={titleStyle()}>{title}</h3>
+          <p style={{ ...mutedTextStyle(), margin: "0.35rem 0 0", lineHeight: 1.55 }}>{subtitle}</p>
+        </div>
+      </div>
+      <div style={{ ...summaryBandStyle({ display: "grid", gap: "0.2rem", padding: "0.9rem 1rem" }) }}>
+        <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>Prioritize high-impact fixes first</strong>
+        <span style={mutedTextStyle()}>Tackle trust and proof gaps before refining lower-severity copy changes.</span>
+      </div>
+      <div style={dividedListStyle()}>
+        {findings.map((finding) => (
+          <div
+            key={finding.label}
+            style={{
+              ...dividedRowStyle({
+                padding: "0.95rem 0"
+              }),
+              display: "grid",
+              gridTemplateColumns: "44px minmax(0, 1fr) auto",
+              gap: "0.85rem",
+              alignItems: "center"
+            }}
+          >
+            <div style={{ width: 44, height: 44, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", border: "2px solid color-mix(in srgb, var(--accent, #121212) 28%, white)", color: "var(--accent, #121212)", fontWeight: 700 }}>
+              {finding.score}
+            </div>
+            <div style={stackStyle("0.15rem")}>
+              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.95rem" }}>{finding.label}</strong>
+              <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{finding.note}</span>
+            </div>
+            <Badge tone={finding.tone === "High impact" ? "danger" : finding.tone === "Moderate impact" ? "info" : "success"}>
+              {finding.tone}
+            </Badge>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+export function MarketingInsightsWidget({
+  title = "Marketing insights",
+  subtitle = "Live channel performance and device split in one surface for faster planning decisions.",
+  surface = "elevated",
+  className,
+  style
+}: MarketingInsightsWidgetProps) {
+  const channels = [
+    { label: "Organic search", share: 38, color: "#f59e0b" },
+    { label: "Social media", share: 34, color: "#eab308" },
+    { label: "Direct", share: 28, color: "#2dd4bf" }
+  ];
+  const devices = [
+    { label: "Desktop", share: "27%", delta: "-3.2%" },
+    { label: "Tablet", share: "12%", delta: "-6.4%" },
+    { label: "Mobile", share: "61%", delta: "+0.8%" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div style={stackStyle("0.2rem")}>
+          <Badge color="purple" variant="lighter">Marketing</Badge>
+          <h3 style={{ ...titleStyle(), fontSize: "1.45rem" }}>{title}</h3>
+        </div>
+        <Button size="sm" variant="secondary">Report</Button>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{subtitle}</p>
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", paddingTop: "0.2rem" }}>
+        <Badge tone="neutral">Channel performance</Badge>
+        <Badge tone="neutral">Engagement trends</Badge>
+        <Badge tone="neutral">Conversion health</Badge>
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: "1.1rem",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          paddingTop: "1rem"
+        }}
+      >
+        <div style={{ ...stackStyle("0.8rem"), paddingRight: "1.1rem", borderRight: "1px solid var(--z-color-border, #ebebeb)" }}>
+          <div style={inlineRowStyle()}>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1rem" }}>Marketing channels</strong>
+            <span style={{ color: "var(--z-color-success, #0a7d53)", fontWeight: 600, fontSize: "0.88rem" }}>+2.1% vs last week</span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: channels.map((item) => `${item.share}fr`).join(" "), gap: "0.35rem" }}>
+            {channels.map((item) => (
+              <span key={item.label} style={{ height: 12, borderRadius: 999, background: item.color }} />
+            ))}
+          </div>
+          <div style={stackStyle("0.45rem")}>
+            {channels.map((item) => (
+              <div key={item.label} style={{ ...inlineRowStyle(), fontSize: "0.9rem" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "var(--z-color-text, #171717)" }}>
+                  <span style={{ width: 9, height: 9, borderRadius: 999, background: item.color }} />
+                  {item.label}
+                </span>
+                <strong style={{ color: "var(--z-color-text, #171717)" }}>{item.share}%</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ ...stackStyle("0.8rem"), paddingLeft: "0.1rem" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "2rem", lineHeight: 1 }}>237,456</strong>
+            <Badge tone="danger">-1.4%</Badge>
+          </div>
+          <span style={mutedTextStyle()}>Total visitors</span>
+          <Divider />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.7rem" }}>
+            {devices.map((device) => (
+              <div key={device.label} style={stackStyle("0.35rem")}>
+                <span style={mutedTextStyle()}>{device.label}</span>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.15rem" }}>{device.share}</strong>
+                <span style={{ color: device.delta.startsWith("+") ? "var(--z-color-success, #0a7d53)" : "var(--z-color-danger, #c43b2f)", fontSize: "0.9rem", fontWeight: 600 }}>{device.delta}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 export function ApprovalModalWidget({
   title = "Approval modal",
   subtitle = "Review contract changes",
@@ -994,22 +1800,28 @@ export function ApprovalModalWidget({
 }: ApprovalModalWidgetProps) {
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
-      <div style={{ ...stackStyle("0.85rem"), padding: "1rem", borderRadius: 14, border: "1px solid var(--z-color-border, #ebebeb)", background: "linear-gradient(180deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.05) 100%)" }}>
-        <div style={{ ...inlineRowStyle(), alignItems: "center" }}>
-          <div style={kickerStyle()}>Workflow</div>
-          <Badge color="orange" variant="lighter">Needs review</Badge>
+      <div style={{ ...inlineRowStyle(), alignItems: "center" }}>
+        <Badge color="orange" variant="lighter">Pricing update</Badge>
+        <Badge color="orange" variant="lighter">Needs review</Badge>
+      </div>
+      <div style={stackStyle("0.65rem")}>
+        <h3 style={titleStyle()}>{title}</h3>
+        <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{subtitle}</strong>
+        <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{body}</p>
+      </div>
+      <div style={{ ...summaryBandStyle(), display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1rem" }}>
+        <div style={stackStyle("0.15rem")}>
+          <span style={mutedTextStyle()}>Affected accounts</span>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.96rem" }}>14 active customers</strong>
         </div>
-        <div style={{ padding: "1rem", borderRadius: 14, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)", boxShadow: "0 10px 24px rgba(15, 23, 42, 0.08)" }}>
-          <div style={stackStyle("0.55rem")}>
-            <h3 style={titleStyle()}>{title}</h3>
-            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.98rem" }}>{subtitle}</strong>
-            <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{body}</p>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", marginTop: "1rem" }}>
-            <Button size="sm" variant="secondary">{cancelLabel}</Button>
-            <Button size="sm">{confirmLabel}</Button>
-          </div>
+        <div style={stackStyle("0.15rem")}>
+          <span style={mutedTextStyle()}>Approval state</span>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.96rem" }}>Legal attached · finance pending</strong>
         </div>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", paddingTop: "1rem" }}>
+        <Button size="sm" variant="secondary">{cancelLabel}</Button>
+        <Button size="sm">{confirmLabel}</Button>
       </div>
     </Card>
   );
@@ -1024,18 +1836,44 @@ export function ProjectBriefFormWidget({
 }: ProjectBriefFormWidgetProps) {
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
-      <div style={stackStyle("0.4rem")}>
-        <div style={kickerStyle()}>Forms</div>
-        <h3 style={titleStyle()}>{title}</h3>
-        <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={inlineRowStyle()}>
+        <div style={stackStyle("0.25rem")}>
+          <div style={kickerStyle()}>Forms</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Badge color="sky" variant="lighter">Structured</Badge>
       </div>
-      <div style={stackStyle("0.9rem")}>
-        <FormField label="Project name" required htmlFor="widget-project-name">
-          <Input id="widget-project-name" defaultValue="Billing command center" />
-        </FormField>
-        <FormField label="Primary goal" htmlFor="widget-project-goal">
-          <Input id="widget-project-goal" defaultValue="Reduce failed invoice recovery time" />
-        </FormField>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {[
+          { label: "Goal", value: "Reduce failed invoice recovery time" },
+          { label: "Audience", value: "Finance and support teams" },
+          { label: "Surface", value: "Internal command center" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.95rem", lineHeight: 1.45 }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "grid", gap: "0.95rem", paddingTop: "0.2rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.95rem" }}>
+          <FormField label="Project name" required htmlFor="widget-project-name">
+            <Input id="widget-project-name" defaultValue="Billing command center" />
+          </FormField>
+          <FormField label="Primary goal" htmlFor="widget-project-goal">
+            <Input id="widget-project-goal" defaultValue="Reduce failed invoice recovery time" />
+          </FormField>
+        </div>
         <FormField label="Context for the AI" hint="Be explicit about constraints, data sources, and team needs." htmlFor="widget-project-context">
           <Textarea id="widget-project-context" rows={4} defaultValue="Build an internal dashboard for finance and support. Prioritize failed payments, retry outcomes, and customer intervention paths." />
         </FormField>
@@ -1061,28 +1899,33 @@ export function UploadQueueWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Upload queue</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Button size="sm">Add files</Button>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={{ padding: "0.95rem 1rem", borderRadius: 12, border: "1px dashed var(--z-color-border, #ebebeb)", background: "var(--z-color-weak, var(--z-color-background, #f7f7f7))" }}>
-        <strong style={{ color: "var(--z-color-text, #171717)" }}>Drop files here or browse from your device</strong>
-        <p style={{ ...mutedTextStyle(), margin: "0.35rem 0 0" }}>Supports media, CSV, and zipped design asset bundles.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "1rem", alignItems: "center", padding: "0.95rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <div style={stackStyle("0.2rem")}>
+          <strong style={{ color: "var(--z-color-text, #171717)" }}>3 files in motion</strong>
+          <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>Supports media, CSV, and zipped design asset bundles.</p>
+        </div>
+        <Badge tone="neutral">106.2 MB</Badge>
       </div>
-      <div style={stackStyle("0.8rem")}>
-        {files.map((file) => (
-          <div key={file.name} style={{ ...stackStyle("0.45rem"), padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
-              <div style={stackStyle("0.1rem")}>
-                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{file.name}</strong>
-                <span style={mutedTextStyle()}>{file.size}</span>
+      <div style={dividedListStyle()}>
+        {files.map((file, index) => (
+          <div key={file.name} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...stackStyle("0.45rem") }}>
+              <div style={inlineRowStyle()}>
+                <div style={stackStyle("0.1rem")}>
+                  <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{file.name}</strong>
+                  <span style={mutedTextStyle()}>{file.size}</span>
+                </div>
+                <Badge color={file.color} variant="lighter">{file.status}</Badge>
               </div>
-              <Badge color={file.color} variant="lighter">{file.status}</Badge>
+              <Progress value={file.progress} tone={file.progress === 100 ? "success" : "primary"} />
             </div>
-            <Progress value={file.progress} tone={file.progress === 100 ? "success" : "primary"} />
           </div>
         ))}
       </div>
@@ -1106,20 +1949,34 @@ export function ChatPanelWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Chat</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="sky" variant="lighter">Live</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={{ ...stackStyle("0.75rem"), padding: "0.95rem", borderRadius: 14, border: "1px solid var(--z-color-border, #ebebeb)", background: "linear-gradient(180deg, var(--z-color-surface, #ffffff) 0%, var(--z-color-weak, #f7f7f7) 100%)" }}>
-        {messages.map((message) => (
-          <div key={`${message.author}-${message.text}`} style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "0.75rem", alignItems: "start" }}>
-            <Avatar name={message.author} size={34} status={message.status} />
-            <div style={{ ...stackStyle("0.2rem"), padding: "0.8rem 0.9rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.92rem" }}>{message.author} · {message.role}</strong>
-              <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{message.text}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "1rem", padding: "0.95rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        {[
+          { label: "Participants", value: "3 active" },
+          { label: "SLA", value: "Reply in 6 min" },
+          { label: "Channel", value: "Customer support" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {messages.map((message, index) => (
+          <div key={`${message.author}-${message.text}`} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "0.75rem", alignItems: "start" }}>
+              <Avatar name={message.author} size={34} status={message.status} />
+              <div style={{ ...stackStyle("0.2rem") }}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.92rem" }}>{message.author} · {message.role}</strong>
+                <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{message.text}</p>
+              </div>
             </div>
           </div>
         ))}
@@ -1144,23 +2001,23 @@ export function InviteMembersWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Team access</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="purple" variant="lighter">Admin</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <FormField label="Email addresses" hint="Press enter after each email to add multiple people.">
-        <TagInput value={emails} onChange={setEmails} placeholder="name@company.com" />
-      </FormField>
-      <div style={{ ...inlineRowStyle(), padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-        <div style={stackStyle("0.1rem")}>
-          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>Role</strong>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "1rem", alignItems: "center", padding: "0.95rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <div style={stackStyle("0.18rem")}>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.96rem" }}>2 people ready to invite</strong>
           <span style={mutedTextStyle()}>Editors can ship screens, reviewers can comment only.</span>
         </div>
         <Badge color="sky" variant="lighter">Editor</Badge>
       </div>
+      <FormField label="Email addresses" hint="Press enter after each email to add multiple people.">
+        <TagInput value={emails} onChange={setEmails} placeholder="name@company.com" />
+      </FormField>
       {actionRow([{ label: "Send invites" }, { label: "Copy invite link", variant: "secondary" }])}
     </Card>
   );
@@ -1182,26 +2039,41 @@ export function TeamDirectoryWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Directory</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="green" variant="lighter">{members.length} members</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.8rem")}>
-        {members.map((member) => (
-          <div key={member.name} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "0.75rem", alignItems: "center", padding: "0.8rem 0.9rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={personMetaStyle()}>
-              <Avatar name={member.name} size={34} status={member.status} />
-              <div style={personCopyStyle()}>
-                <strong style={{ color: "var(--z-color-text, #171717)" }}>{member.name}</strong>
-                <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{member.role} · {member.note}</span>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.9rem", alignItems: "center", padding: "0.2rem 0 0.1rem" }}>
+        {[
+          { label: "Available", value: "2 teammates" },
+          { label: "In review", value: "1 teammate" },
+          { label: "Owner", value: "Maya Carter" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+            {index > 0 ? <span style={{ width: 3, height: 3, borderRadius: 999, background: "var(--z-color-stroke300, #d4d7dd)" }} /> : null}
+            <span style={{ ...mutedTextStyle(), fontSize: "0.9rem" }}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.92rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {members.map((member, index) => (
+          <div key={member.name} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "0.75rem", alignItems: "center" }}>
+              <div style={personMetaStyle()}>
+                <Avatar name={member.name} size={34} status={member.status} />
+                <div style={personCopyStyle()}>
+                  <strong style={{ color: "var(--z-color-text, #171717)" }}>{member.name}</strong>
+                  <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{member.role} · {member.note}</span>
+                </div>
               </div>
+              <Badge tone={member.status === "busy" ? "danger" : "success"}>
+                {member.status === "busy" ? "Busy" : "Available"}
+              </Badge>
             </div>
-            <Badge tone={member.status === "busy" ? "danger" : "success"}>
-              {member.status === "busy" ? "Busy" : "Available"}
-            </Badge>
           </div>
         ))}
       </div>
@@ -1245,21 +2117,30 @@ export function SettingsPanelWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Settings</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge tone="neutral">3 controls</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.8rem")}>
-        {rows.map((row) => (
-          <div key={row.title} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={stackStyle("0.15rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{row.title}</strong>
-              <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{row.description}</span>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "1rem", alignItems: "center", padding: "0.95rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <div style={stackStyle("0.18rem")}>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.96rem" }}>Audit logging is protecting billing and publish actions.</strong>
+          <span style={mutedTextStyle()}>Review defaults before inviting external collaborators.</span>
+        </div>
+        <Badge tone="info">Protected</Badge>
+      </div>
+      <div style={dividedListStyle()}>
+        {rows.map((row, index) => (
+          <div key={row.title} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...inlineRowStyle(), alignItems: "center" }}>
+              <div style={stackStyle("0.15rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{row.title}</strong>
+                <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{row.description}</span>
+              </div>
+              <Switch checked={row.value} onChange={row.onChange} />
             </div>
-            <Switch checked={row.value} onChange={row.onChange} />
           </div>
         ))}
       </div>
@@ -1291,14 +2172,54 @@ export function LaunchProgressWidget({
         <Badge color="green" variant="lighter">76% overall</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.85rem")}>
-        {steps.map((step) => (
-          <div key={step.label} style={{ ...stackStyle("0.4rem"), padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{step.label}</strong>
-              <span style={mutedTextStyle()}>{step.progress}%</span>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) auto",
+          gap: "1rem",
+          alignItems: "center",
+          padding: "1rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        <div style={stackStyle("0.3rem")}>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1rem" }}>Billing QA is the last critical milestone before launch.</strong>
+          <span style={mutedTextStyle()}>Next checkpoint in 2 hours · customer comms blocked on QA signoff</span>
+        </div>
+        <div style={{ minWidth: 96, textAlign: "right" }}>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.45rem", lineHeight: 1 }}>3/4</strong>
+          <div style={mutedTextStyle()}>milestones complete</div>
+        </div>
+      </div>
+      <div style={dividedListStyle()}>
+        {steps.map((step, index) => (
+          <div key={step.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ display: "grid", gridTemplateColumns: "24px minmax(0, 1fr)", gap: "0.75rem", alignItems: "start" }}>
+              <div
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 999,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: step.progress === 100 ? "color-mix(in srgb, var(--z-color-success, #0a7d53) 14%, white)" : "var(--z-color-background100, #f4f6fa)",
+                  color: step.progress === 100 ? "var(--z-color-success, #0a7d53)" : "var(--muted)",
+                  fontSize: "0.72rem",
+                  fontWeight: 700
+                }}
+              >
+                {step.progress === 100 ? "✓" : index + 1}
+              </div>
+              <div style={{ ...stackStyle("0.4rem") }}>
+                <div style={inlineRowStyle()}>
+                  <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{step.label}</strong>
+                  <span style={mutedTextStyle()}>{step.progress}%</span>
+                </div>
+                <Progress value={step.progress} tone={step.tone} />
+              </div>
             </div>
-            <Progress value={step.progress} tone={step.tone} />
           </div>
         ))}
       </div>
@@ -1323,21 +2244,35 @@ export function NotificationFeedWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Inbox</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="blue" variant="lighter">Live feed</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {items.map((item) => (
-          <div key={item.label} style={{ ...stackStyle("0.35rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.label}</strong>
-              <Badge color={item.badge.color} variant="lighter">{item.badge.label}</Badge>
+      <div style={{ ...summaryBandStyle(), display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "1rem" }}>
+        {[
+          { label: "Unread", value: "5 items" },
+          { label: "Priority", value: "2 need action" },
+          { label: "Last update", value: "3 minutes ago" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {items.map((item, index) => (
+          <div key={item.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...stackStyle("0.35rem") }}>
+              <div style={inlineRowStyle()}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.label}</strong>
+                <Badge color={item.badge.color} variant="lighter">{item.badge.label}</Badge>
+              </div>
+              <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{item.detail}</p>
             </div>
-            <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{item.detail}</p>
           </div>
         ))}
       </div>
@@ -1372,15 +2307,31 @@ export function SecurityAccessWidget({
         <Badge color="purple" variant="lighter">Admin</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <Alert size="xs" variant="stroke" status="info" title="2FA is active for all owners." description="Review guest access before inviting external collaborators." />
-      <div style={stackStyle("0.8rem")}>
-        {rows.map((row) => (
-          <div key={row.title} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={stackStyle("0.15rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{row.title}</strong>
-              <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{row.detail}</span>
+      <div
+        style={{
+          ...dividedRowStyle({ paddingTop: "1rem" }),
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "1rem"
+        }}
+      >
+        <div style={stackStyle("0.15rem")}>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>2FA is active for all owners</strong>
+          <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>Review guest access before inviting external collaborators.</span>
+        </div>
+        <Badge tone="info">Protected</Badge>
+      </div>
+      <div style={dividedListStyle()}>
+        {rows.map((row, index) => (
+          <div key={row.title} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...inlineRowStyle(), alignItems: "center" }}>
+              <div style={stackStyle("0.15rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{row.title}</strong>
+                <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{row.detail}</span>
+              </div>
+              <Switch checked={row.value} onChange={row.setter} />
             </div>
-            <Switch checked={row.value} onChange={row.setter} />
           </div>
         ))}
       </div>
@@ -1412,14 +2363,16 @@ export function PaymentMethodsWidget({
         <Badge tone="neutral">3 methods</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.8rem")}>
+      <div style={dividedListStyle()}>
         {methods.map((method, index) => (
-          <div key={method.label} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={stackStyle("0.15rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{method.label}</strong>
-              <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{method.meta}</span>
+          <div key={method.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...inlineRowStyle(), alignItems: "center" }}>
+              <div style={stackStyle("0.15rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{method.label}</strong>
+                <span style={{ ...mutedTextStyle(), whiteSpace: "normal" }}>{method.meta}</span>
+              </div>
+              <Badge tone={method.tone} variant="lighter">{index === 0 ? "Default" : method.label.includes("invoice") ? "Invoice" : "Card"}</Badge>
             </div>
-            <Badge tone={method.tone} variant="lighter">{index === 0 ? "Default" : method.label.includes("invoice") ? "Invoice" : "Card"}</Badge>
           </div>
         ))}
       </div>
@@ -1495,14 +2448,16 @@ export function CommandPaletteWidget({
         <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       </div>
       <Input defaultValue="Search actions, pages, or team members…" />
-      <div style={stackStyle("0.7rem")}>
-        {commands.map((command) => (
-          <div key={command.label} style={{ ...inlineRowStyle(), padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={stackStyle("0.12rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{command.label}</strong>
-              <span style={mutedTextStyle()}>{command.meta}</span>
+      <div style={dividedListStyle()}>
+        {commands.map((command, index) => (
+          <div key={command.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...inlineRowStyle() }}>
+              <div style={stackStyle("0.12rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{command.label}</strong>
+                <span style={mutedTextStyle()}>{command.meta}</span>
+              </div>
+              <Badge color="gray" variant="stroke">{command.badge}</Badge>
             </div>
-            <Badge color="gray" variant="stroke">{command.badge}</Badge>
           </div>
         ))}
       </div>
@@ -1603,13 +2558,15 @@ export function CommentThreadWidget({
         <h3 style={titleStyle()}>{title}</h3>
         <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       </div>
-      <div style={stackStyle("0.8rem")}>
-        {comments.map((comment) => (
-          <div key={comment.name} style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "0.75rem", alignItems: "start", padding: "0.85rem 0.95rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <Avatar name={comment.name} size={34} status={comment.status} />
-            <div style={stackStyle("0.25rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{comment.name} · {comment.role}</strong>
-              <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{comment.note}</p>
+      <div style={dividedListStyle()}>
+        {comments.map((comment, index) => (
+          <div key={comment.name} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: "0.75rem", alignItems: "start" }}>
+              <Avatar name={comment.name} size={34} status={comment.status} />
+              <div style={stackStyle("0.25rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{comment.name} · {comment.role}</strong>
+                <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{comment.note}</p>
+              </div>
             </div>
           </div>
         ))}
@@ -1642,15 +2599,54 @@ export function PlanComparisonWidget({
         <h3 style={titleStyle()}>{title}</h3>
         <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.75rem" }}>
-        {plans.map((plan) => (
-          <div key={plan.name} style={{ ...stackStyle("0.45rem"), padding: "0.9rem 1rem", borderRadius: 12, border: `1px solid ${plan.featured ? "var(--z-color-primary, #121212)" : "var(--z-color-border, #ebebeb)"}`, background: "var(--z-color-surface, #ffffff)" }}>
+      <div
+        style={{
+          ...summaryBandStyle(),
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem"
+        }}
+      >
+        {plans.map((plan, index) => (
+          <div
+            key={plan.name}
+            style={{
+              ...stackStyle("0.25rem"),
+              paddingLeft: index === 0 ? 0 : "1rem",
+              borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+            }}
+          >
             <div style={inlineRowStyle()}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{plan.name}</strong>
+              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.95rem" }}>{plan.name}</strong>
               {plan.featured ? <Badge color="blue" variant="lighter">Popular</Badge> : null}
             </div>
-            <div style={{ color: "var(--z-color-text, #171717)", fontSize: "1.15rem", fontWeight: 700 }}>{plan.price}</div>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.2rem", lineHeight: 1.2 }}>{plan.price}</strong>
             <span style={mutedTextStyle()}>{plan.seats}</span>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {[
+          { label: "AI context files", individual: "Included", startup: "Included", enterprise: "Included" },
+          { label: "Premium widgets", individual: "Core set", startup: "Full access", enterprise: "Full + custom" },
+          { label: "Workspace seats", individual: "1", startup: "10", enterprise: "Unlimited" }
+        ].map((row, index) => (
+          <div
+            key={row.label}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)",
+                display: "grid",
+                gridTemplateColumns: "minmax(0, 1.2fr) repeat(3, minmax(0, 1fr))",
+                gap: "1rem",
+                alignItems: "center"
+              })
+            }}
+          >
+            <span style={{ color: "var(--z-color-text, #171717)", fontSize: "0.92rem", fontWeight: 600 }}>{row.label}</span>
+            <span style={mutedTextStyle()}>{row.individual}</span>
+            <span style={mutedTextStyle()}>{row.startup}</span>
+            <span style={mutedTextStyle()}>{row.enterprise}</span>
           </div>
         ))}
       </div>
@@ -1728,15 +2724,17 @@ export function ApiKeysWidget({
         <Badge tone="neutral">3 keys</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {keys.map((key) => (
-          <div key={key.label} style={{ ...stackStyle("0.28rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{key.label}</strong>
-              <Badge variant="lighter" color={key.status === "Active" ? "green" : key.status === "Staging" ? "blue" : "yellow"}>{key.status}</Badge>
+      <div style={dividedListStyle()}>
+        {keys.map((key, index) => (
+          <div key={key.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={{ ...stackStyle("0.28rem") }}>
+              <div style={inlineRowStyle()}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{key.label}</strong>
+                <Badge variant="lighter" color={key.status === "Active" ? "green" : key.status === "Staging" ? "blue" : "yellow"}>{key.status}</Badge>
+              </div>
+              <span style={mutedTextStyle()}>{key.scope}</span>
+              <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{key.lastRotated}</span>
             </div>
-            <span style={mutedTextStyle()}>{key.scope}</span>
-            <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{key.lastRotated}</span>
           </div>
         ))}
       </div>
@@ -1761,22 +2759,43 @@ export function SupportQueueWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.25rem")}>
           <div style={kickerStyle()}>Support</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="orange" variant="lighter">7 open</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {tickets.map((ticket) => (
-          <div key={ticket.customer + ticket.issue} style={{ ...stackStyle("0.35rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {[
+          { label: "Urgent", value: "1 ticket" },
+          { label: "Assigned", value: "3 owners" },
+          { label: "Avg. first reply", value: "11 minutes" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {tickets.map((ticket, index) => (
+          <div key={ticket.customer + ticket.issue} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
             <div style={inlineRowStyle()}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{ticket.customer}</strong>
               <Badge color={ticket.priority === "Urgent" ? "red" : ticket.priority === "High" ? "yellow" : "gray"} variant="lighter">{ticket.priority}</Badge>
             </div>
-            <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{ticket.issue}</p>
-            <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>Owner: {ticket.owner}</span>
+            <p style={{ ...mutedTextStyle(), margin: "0.3rem 0 0", lineHeight: 1.55 }}>{ticket.issue}</p>
+            <span style={{ ...mutedTextStyle(), fontSize: "0.82rem", display: "block", marginTop: "0.35rem" }}>Owner: {ticket.owner}</span>
           </div>
         ))}
       </div>
@@ -1810,7 +2829,7 @@ export function GoalTrackerWidget({
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       <div style={stackStyle("0.85rem")}>
         {goals.map((goal) => (
-          <div key={goal.label} style={{ ...stackStyle("0.38rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+          <div key={goal.label} style={{ ...stackStyle("0.38rem"), ...dividedRowStyle({ borderTop: "1px solid var(--z-color-border, #ebebeb)", padding: "0.9rem 0" }) }}>
             <div style={inlineRowStyle()}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{goal.label}</strong>
               <span style={mutedTextStyle()}>{goal.progress}%</span>
@@ -1849,9 +2868,9 @@ export function IntegrationStatusWidget({
         <Badge color="blue" variant="lighter">4 connected</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
+      <div style={dividedListStyle()}>
         {integrations.map((integration) => (
-          <div key={integration.name} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+          <div key={integration.name} style={dividedRowStyle({ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" })}>
             <div style={stackStyle("0.15rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{integration.name}</strong>
               <span style={mutedTextStyle()}>{integration.detail}</span>
@@ -1893,9 +2912,9 @@ export function AccessRequestsWidget({
         <Badge color="purple" variant="lighter">3 pending</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
+      <div style={dividedListStyle()}>
         {requests.map((request) => (
-          <div key={request.name + request.request} style={{ ...stackStyle("0.28rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+          <div key={request.name + request.request} style={{ ...stackStyle("0.28rem"), ...dividedRowStyle() }}>
             <div style={inlineRowStyle()}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{request.name}</strong>
               <Badge color={request.badge === "Admin" ? "red" : request.badge === "Guest" ? "yellow" : "gray"} variant="lighter">{request.badge}</Badge>
@@ -1933,15 +2952,47 @@ export function LicenseActivationsWidget({
         <Badge tone="neutral">3 accounts</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {workspaces.map((workspace) => (
-          <div key={workspace.name} style={{ ...stackStyle("0.3rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {[
+          { label: "Healthy", value: "2 accounts" },
+          { label: "At limit", value: "1 workspace" },
+          { label: "Resets pending", value: "1 request" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {workspaces.map((workspace, index) => (
+          <div
+            key={workspace.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "center"
+            }}
+          >
+            <div style={stackStyle("0.18rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{workspace.name}</strong>
-              <Badge color={workspace.status === "At limit" ? "yellow" : "green"} variant="lighter">{workspace.status}</Badge>
+              <span style={mutedTextStyle()}>{workspace.usage}</span>
+              <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{workspace.detail}</span>
             </div>
-            <span style={mutedTextStyle()}>{workspace.usage}</span>
-            <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{workspace.detail}</span>
+            <Badge color={workspace.status === "At limit" ? "yellow" : "green"} variant="lighter">{workspace.status}</Badge>
           </div>
         ))}
       </div>
@@ -1973,9 +3024,20 @@ export function ExperimentResultsWidget({
         <Badge color="green" variant="lighter">Winner found</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {variants.map((variant) => (
-          <div key={variant.name} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div style={dividedListStyle()}>
+        {variants.map((variant, index) => (
+          <div
+            key={variant.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "center"
+            }}
+          >
             <div style={stackStyle("0.15rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{variant.name}</strong>
               <span style={mutedTextStyle()}>{variant.confidence}</span>
@@ -2039,23 +3101,69 @@ export function AnalyticsOverviewWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
-          <div style={kickerStyle()}>Analytics</div>
+        <div style={stackStyle("0.2rem")}>
+          <Badge color="blue" variant="lighter">Analytics</Badge>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="blue" variant="lighter">Realtime</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.75rem" }}>
-        {stats.map((stat) => (
-          <div key={stat.label} style={{ ...stackStyle("0.25rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(0, 1fr)", gap: "1rem", padding: "1rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <div style={{ ...stackStyle("0.7rem"), justifyContent: "space-between" }}>
+          <div style={stackStyle("0.25rem")}>
+            <span style={mutedTextStyle()}>Weekly active workspaces</span>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap" }}>
+              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "2.2rem", lineHeight: 1 }}>1,284</strong>
+              <span style={{ color: "var(--z-color-success, #0a7d53)", fontWeight: 600 }}>+8.2% vs last week</span>
+            </div>
+          </div>
+          <div
+            style={{
+              height: 92,
+              borderRadius: 14,
+              background:
+                "radial-gradient(circle at 76% 12%, rgba(120, 119, 255, 0.18) 0%, rgba(120,119,255,0) 28%), linear-gradient(180deg, color-mix(in srgb, var(--z-color-background100, #f4f6fa) 72%, #ffffff 28%) 0%, rgba(255,255,255,0.96) 100%)",
+              border: "1px solid var(--z-color-border, #ebebeb)",
+              display: "grid",
+              gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+              alignItems: "end",
+              gap: "0.45rem",
+              padding: "1rem"
+            }}
+          >
+            {[42, 54, 48, 61, 68, 73, 79].map((height, index) => (
+              <span
+                key={`${height}-${index}`}
+                style={{
+                  display: "block",
+                  height: `${height}%`,
+                  borderRadius: 999,
+                  background: index === 5 ? "linear-gradient(180deg, rgba(64,132,255,0.95) 0%, rgba(145,173,255,0.62) 100%)" : "linear-gradient(180deg, rgba(64,132,255,0.22) 0%, rgba(145,173,255,0.08) 100%)"
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        {stats.map((stat, index) => (
+          <div
+            key={stat.label}
+            style={{
+              ...stackStyle("0.28rem"),
+              padding: "0.15rem 0 0.2rem 1rem",
+              borderTop: index > 1 ? "1px solid var(--z-color-border, #ebebeb)" : "none",
+              borderLeft: "1px solid var(--z-color-border, #ebebeb)",
+            }}
+          >
             <span style={mutedTextStyle()}>{stat.label}</span>
-            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.05rem" }}>{stat.value}</strong>
-            <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{stat.delta} vs last week</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.08rem" }}>{stat.value}</strong>
+            <span style={{ color: stat.delta.startsWith("+") ? "var(--z-color-success, #0a7d53)" : "var(--z-color-danger, #c43b2f)", fontSize: "0.82rem", fontWeight: 600 }}>{stat.delta} vs last week</span>
           </div>
         ))}
       </div>
-      <Alert size="xs" variant="stroke" status="info" title="Acquisition is trending up." description="Conversion from the new onboarding path is materially outperforming control." />
+      <div style={{ paddingTop: "0.95rem" }}>
+        <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.9rem", display: "block" }}>Acquisition is trending up.</strong>
+        <p style={{ ...mutedTextStyle(), margin: "0.25rem 0 0", lineHeight: 1.55 }}>Conversion from the new onboarding path is materially outperforming control.</p>
+      </div>
       {actionRow([{ label: "Open dashboard" }, { label: "Export snapshot", variant: "secondary" }])}
     </Card>
   );
@@ -2084,9 +3192,20 @@ export function DealsPipelineWidget({
         <Badge color="teal" variant="lighter">3 active</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {deals.map((deal) => (
-          <div key={deal.name} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div style={dividedListStyle()}>
+        {deals.map((deal, index) => (
+          <div
+            key={deal.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "center"
+            }}
+          >
             <div style={stackStyle("0.15rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{deal.name}</strong>
               <span style={mutedTextStyle()}>{deal.owner} · {deal.value}</span>
@@ -2123,15 +3242,40 @@ export function BillingRecoveryWidget({
         <Badge color="orange" variant="lighter">3 at risk</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <Progress value={64} tone="warning" />
-      <div style={stackStyle("0.75rem")}>
-        {invoices.map((invoice) => (
-          <div key={invoice.account} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={stackStyle("0.15rem")}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{invoice.account}</strong>
-              <span style={mutedTextStyle()}>{invoice.amount}</span>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) auto",
+          gap: "1rem",
+          alignItems: "center",
+          padding: "1rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        <div style={stackStyle("0.45rem")}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "0.55rem", flexWrap: "wrap" }}>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "2rem", lineHeight: 1 }}>64%</strong>
+            <span style={{ color: "var(--z-color-warning, #d97706)", fontWeight: 600 }}>Recovery rate</span>
+          </div>
+          <Progress value={64} tone="warning" />
+          <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>Most failed payments are recoverable with one more retry or direct outreach.</span>
+        </div>
+        <div style={stackStyle("0.15rem")}>
+          <span style={mutedTextStyle()}>Recovered this week</span>
+          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "1.15rem" }}>$9,840</strong>
+        </div>
+      </div>
+      <div style={dividedListStyle()}>
+        {invoices.map((invoice, index) => (
+          <div key={invoice.account} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+            <div style={inlineRowStyle()}>
+              <div style={stackStyle("0.15rem")}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{invoice.account}</strong>
+                <span style={mutedTextStyle()}>{invoice.amount}</span>
+              </div>
+              <Badge color={invoice.color} variant="lighter">{invoice.state}</Badge>
             </div>
-            <Badge color={invoice.color} variant="lighter">{invoice.state}</Badge>
           </div>
         ))}
       </div>
@@ -2163,9 +3307,41 @@ export function AutomationRunsWidget({
         <Badge color="purple" variant="lighter">3 jobs</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {runs.map((run) => (
-          <div key={run.name} style={{ ...inlineRowStyle(), alignItems: "center", padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {[
+          { label: "Healthy", value: "1 run" },
+          { label: "Delayed", value: "1 run" },
+          { label: "Queued", value: "1 run" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {runs.map((run, index) => (
+          <div
+            key={run.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "center"
+            }}
+          >
             <div style={stackStyle("0.15rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{run.name}</strong>
               <span style={mutedTextStyle()}>{run.meta}</span>
@@ -2202,15 +3378,28 @@ export function AuditTrailWidget({
         <Badge tone="neutral">Tracked</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {events.map((event) => (
-          <div key={`${event.actor}-${event.time}`} style={{ ...stackStyle("0.2rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
-              <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{event.actor}</strong>
-              <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{event.time}</span>
+      <div style={dividedListStyle()}>
+        {events.map((event, index) => (
+          <div
+            key={`${event.actor}-${event.time}`}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "start"
+            }}
+          >
+            <div style={stackStyle("0.2rem")}>
+              <div style={inlineRowStyle()}>
+                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{event.actor}</strong>
+                <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{event.time}</span>
+              </div>
+              <span style={mutedTextStyle()}>{event.action}</span>
             </div>
-            <span style={mutedTextStyle()}>{event.action}</span>
-            <div><Badge color="gray" variant="stroke">{event.status}</Badge></div>
+            <Badge color="gray" variant="stroke">{event.status}</Badge>
           </div>
         ))}
       </div>
@@ -2242,11 +3431,20 @@ export function ContentCalendarWidget({
         <Badge color="blue" variant="lighter">This week</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.75rem" }}>
-        {items.map((item) => (
-          <div key={item.label} style={{ ...stackStyle("0.25rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderTop: "1px solid var(--z-color-border, #ebebeb)",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {items.map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.2rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
             <span style={{ ...mutedTextStyle(), fontSize: "0.82rem" }}>{item.day}</span>
-            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.label}</strong>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem", lineHeight: 1.45 }}>{item.label}</strong>
             <span style={mutedTextStyle()}>{item.owner}</span>
           </div>
         ))}
@@ -2273,20 +3471,55 @@ export function IncidentResponseWidget({
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
       <div style={inlineRowStyle()}>
-        <div>
+        <div style={stackStyle("0.2rem")}>
           <div style={kickerStyle()}>Reliability</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
         <Badge color="red" variant="lighter">P1 active</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <Alert size="xs" variant="stroke" status="error" title="Webhook retries are degraded in eu-west." description="Customer-facing comms are live. Mitigation is in progress." />
-      <div style={stackStyle("0.7rem")}>
-        {tasks.map((task) => (
-          <div key={task.label} style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr) auto", gap: "0.75rem", alignItems: "center" }}>
+      <div style={{ padding: "0.1rem 0 0.2rem", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.9rem", display: "block" }}>Webhook retries are degraded in eu-west.</strong>
+        <p style={{ ...mutedTextStyle(), margin: "0.25rem 0 0", lineHeight: 1.55 }}>Customer-facing comms are live. Mitigation is in progress.</p>
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "1rem",
+          padding: "0.95rem 0",
+          borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+        }}
+      >
+        {[
+          { label: "Owner", value: "Maya Carter" },
+          { label: "Customers affected", value: "84 workspaces" },
+          { label: "Updated", value: "2 minutes ago" }
+        ].map((item, index) => (
+          <div key={item.label} style={{ ...stackStyle("0.2rem"), borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)", paddingLeft: index === 0 ? 0 : "1rem" }}>
+            <span style={mutedTextStyle()}>{item.label}</span>
+            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.96rem" }}>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+      <div style={dividedListStyle()}>
+        {tasks.map((task, index) => (
+          <div
+            key={task.label}
+            style={{
+              ...dividedRowStyle(),
+              borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)",
+              display: "grid",
+              gridTemplateColumns: "auto minmax(0, 1fr) auto",
+              gap: "0.75rem",
+              alignItems: "center"
+            }}
+          >
             <Checkbox checked={task.done} readOnly />
             <span style={mutedTextStyle()}>{task.label}</span>
-            <Badge color={task.done ? "green" : "orange"} variant="lighter">{task.done ? "Done" : "Active"}</Badge>
+            <span style={{ color: task.done ? "var(--z-color-success, #16a34a)" : "var(--z-color-warning, #d97706)", fontSize: "0.82rem", fontWeight: 600 }}>
+              {task.done ? "Done" : "Active"}
+            </span>
           </div>
         ))}
       </div>
@@ -2318,18 +3551,741 @@ export function FeedbackInboxWidget({
         <Badge color="teal" variant="lighter">3 themes</Badge>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={stackStyle("0.75rem")}>
-        {feedback.map((item) => (
-          <div key={item.note} style={{ ...stackStyle("0.2rem"), padding: "0.9rem 1rem", borderRadius: 12, border: "1px solid var(--z-color-border, #ebebeb)", background: "var(--z-color-surface, #ffffff)" }}>
-            <div style={inlineRowStyle()}>
+      <div style={dividedListStyle()}>
+        {feedback.map((item, index) => (
+          <div
+            key={item.note}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: "0.9rem",
+              alignItems: "start"
+            }}
+          >
+            <div style={stackStyle("0.2rem")}>
               <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.source}</strong>
-              <Badge color="blue" variant="lighter">{item.theme}</Badge>
+              <span style={mutedTextStyle()}>{item.note}</span>
             </div>
-            <span style={mutedTextStyle()}>{item.note}</span>
+            <Badge color="blue" variant="lighter">{item.theme}</Badge>
           </div>
         ))}
       </div>
       {actionRow([{ label: "Review feedback" }, { label: "Create insight", variant: "secondary" }])}
+    </Card>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/*  NEW PREMIUM WIDGETS — Stripe-level polish                                */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Data Table ─────────────────────────────────────────────────────────── */
+
+interface DataTableWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function DataTableWidget({
+  title = "Recent transactions",
+  subtitle = "A sortable overview of the latest entries.",
+  surface = "elevated",
+  className,
+  style
+}: DataTableWidgetProps) {
+  const columns = ["Name", "Amount", "Status", "Date"];
+  const rows = [
+    { name: "Acme Corp", amount: "$4,250.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 5, 2026" },
+    { name: "Globex Inc", amount: "$1,800.00", status: "Pending", statusColor: "yellow" as BadgeColor, date: "Mar 4, 2026" },
+    { name: "Initech Ltd", amount: "$12,000.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 3, 2026" },
+    { name: "Umbrella Co", amount: "$3,420.00", status: "Failed", statusColor: "red" as BadgeColor, date: "Mar 2, 2026" },
+    { name: "Stark Ind", amount: "$8,750.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 1, 2026" }
+  ];
+
+  const thStyle: CSSProperties = {
+    padding: "0.75rem 1rem",
+    fontSize: "0.73rem",
+    fontWeight: 600,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+    color: "var(--z-color-muted, #667085)",
+    textAlign: "left",
+    borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+  };
+
+  const tdStyle: CSSProperties = {
+    padding: "0.85rem 1rem",
+    fontSize: "0.92rem",
+    color: "var(--z-color-text, #171717)",
+    borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+  };
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div>
+          <div style={kickerStyle()}>Data</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Badge color="blue" variant="lighter">{rows.length} entries</Badge>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={{ borderRadius: 14, overflow: "hidden", border: "1px solid var(--z-color-border, #ebebeb)" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", background: "var(--z-color-surface, #ffffff)" }}>
+          <thead>
+            <tr style={{ background: "var(--z-color-background100, #f4f6fa)" }}>
+              {columns.map((col) => (
+                <th key={col} style={thStyle}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={row.name} style={{ borderBottom: i === rows.length - 1 ? "none" : undefined }}>
+                <td style={{ ...tdStyle, fontWeight: 500 }}>{row.name}</td>
+                <td style={{ ...tdStyle, fontFamily: "var(--z-type-family-mono, monospace)", fontSize: "0.88rem" }}>{row.amount}</td>
+                <td style={tdStyle}><Badge color={row.statusColor} variant="lighter">{row.status}</Badge></td>
+                <td style={{ ...tdStyle, color: "var(--z-color-muted, #667085)" }}>{row.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.85rem", color: "var(--z-color-muted, #667085)" }}>
+        <span>Showing 1–5 of 24</span>
+        <div style={{ display: "flex", gap: "0.4rem" }}>
+          <Button size="sm" variant="secondary">Previous</Button>
+          <Button size="sm" variant="secondary">Next</Button>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+/* ── Status Page ────────────────────────────────────────────────────────── */
+
+interface StatusPageWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function StatusPageWidget({
+  title = "System status",
+  subtitle = "All services are operating normally.",
+  surface = "elevated",
+  className,
+  style
+}: StatusPageWidgetProps) {
+  const services = [
+    { name: "API", status: "Operational", color: "green" as BadgeColor, uptime: "99.99%" },
+    { name: "Dashboard", status: "Operational", color: "green" as BadgeColor, uptime: "99.98%" },
+    { name: "Webhooks", status: "Degraded", color: "yellow" as BadgeColor, uptime: "99.42%" },
+    { name: "Storage", status: "Operational", color: "green" as BadgeColor, uptime: "99.97%" },
+    { name: "Auth", status: "Operational", color: "green" as BadgeColor, uptime: "100%" }
+  ];
+
+  const dotStyle = (color: string): CSSProperties => ({
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: color === "green"
+      ? "var(--z-color-success, #0a7d53)"
+      : color === "yellow"
+        ? "var(--z-color-warning, #d97706)"
+        : "var(--z-color-danger, #c43b2f)",
+    flexShrink: 0
+  });
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div>
+          <div style={kickerStyle()}>Status</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Badge color="green" variant="lighter">All systems go</Badge>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={dividedListStyle()}>
+        {services.map((svc, index) => (
+          <div
+            key={svc.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "auto 1fr auto auto",
+              gap: "0.85rem",
+              alignItems: "center"
+            }}
+          >
+            <div style={dotStyle(svc.color)} />
+            <strong style={{ fontSize: "0.93rem", color: "var(--z-color-text, #171717)" }}>{svc.name}</strong>
+            <span style={{ fontSize: "0.85rem", fontFamily: "var(--z-type-family-mono, monospace)", color: "var(--z-color-muted, #667085)" }}>{svc.uptime}</span>
+            <Badge color={svc.color} variant="lighter">{svc.status}</Badge>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontSize: "0.82rem", color: "var(--z-color-muted, #667085)" }}>Last checked 2 minutes ago</div>
+    </Card>
+  );
+}
+
+/* ── Navbar Preview ─────────────────────────────────────────────────────── */
+
+interface NavbarWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function NavbarWidget({
+  title = "Navigation bar",
+  subtitle = "Responsive top navigation with actions.",
+  surface = "elevated",
+  className,
+  style
+}: NavbarWidgetProps) {
+  const links = ["Dashboard", "Projects", "Team", "Settings"];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Navigation</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div
+        style={{
+          ...panelStyle(),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+          padding: "0.75rem 1.1rem"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          <strong style={{ fontSize: "0.95rem", color: "var(--z-color-text, #171717)", letterSpacing: "-0.02em" }}>Acme</strong>
+          <nav style={{ display: "flex", gap: "0.2rem" }}>
+            {links.map((link, i) => (
+              <span
+                key={link}
+                style={{
+                  padding: "0.35rem 0.7rem",
+                  borderRadius: 8,
+                  fontSize: "0.88rem",
+                  fontWeight: i === 0 ? 500 : 400,
+                  color: i === 0 ? "var(--z-color-text, #171717)" : "var(--z-color-muted, #667085)",
+                  background: i === 0 ? "var(--z-color-background100, #f4f6fa)" : "transparent",
+                  cursor: "pointer"
+                }}
+              >
+                {link}
+              </span>
+            ))}
+          </nav>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <Button size="sm" variant="secondary">Search</Button>
+          <Avatar name="AK" size={28} />
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+/* ── Dropdown Menu ──────────────────────────────────────────────────────── */
+
+interface DropdownMenuWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function DropdownMenuWidget({
+  title = "Dropdown menu",
+  subtitle = "Contextual action menus and selects.",
+  surface = "elevated",
+  className,
+  style
+}: DropdownMenuWidgetProps) {
+  const menuItems = [
+    { label: "Edit", shortcut: "⌘E", section: "actions" },
+    { label: "Duplicate", shortcut: "⌘D", section: "actions" },
+    { label: "Move to…", shortcut: "⌘M", section: "actions" },
+    { label: "Archive", shortcut: "", section: "danger" },
+    { label: "Delete", shortcut: "⌫", section: "danger" }
+  ];
+
+  const menuItemStyle = (isDanger: boolean): CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "0.55rem 0.85rem",
+    borderRadius: 8,
+    fontSize: "0.9rem",
+    color: isDanger ? "var(--z-color-danger, #c43b2f)" : "var(--z-color-text, #171717)",
+    cursor: "pointer"
+  });
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Menu</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div
+        style={{
+          borderRadius: 14,
+          border: "1px solid var(--z-color-border, #ebebeb)",
+          background: "var(--z-color-surface, #ffffff)",
+          padding: "0.4rem",
+          boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+          maxWidth: 260
+        }}
+      >
+        {menuItems.map((item, i) => (
+          <div key={item.label}>
+            {i === 3 && <Divider style={{ margin: "0.3rem 0" }} />}
+            <div style={menuItemStyle(item.section === "danger")}>
+              <span>{item.label}</span>
+              {item.shortcut && (
+                <span style={{ fontSize: "0.78rem", color: "var(--z-color-muted, #667085)", fontFamily: "var(--z-type-family-mono, monospace)" }}>
+                  {item.shortcut}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+/* ── Date Picker ────────────────────────────────────────────────────────── */
+
+interface DatePickerWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function DatePickerWidget({
+  title = "Date picker",
+  subtitle = "Calendar-based date selection.",
+  surface = "elevated",
+  className,
+  style
+}: DatePickerWidgetProps) {
+  const weekdays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+  const days = [
+    [24, 25, 26, 27, 28, 1, 2],
+    [3, 4, 5, 6, 7, 8, 9],
+    [10, 11, 12, 13, 14, 15, 16],
+    [17, 18, 19, 20, 21, 22, 23],
+    [24, 25, 26, 27, 28, 29, 30]
+  ];
+  const today = 8;
+  const selected = 14;
+
+  const dayCellStyle = (day: number, weekRow: number): CSSProperties => {
+    const isPrev = weekRow === 0 && day > 20;
+    const isSelected = day === selected && weekRow === 1;
+    const isToday = day === today && weekRow === 1;
+    return {
+      width: 36,
+      height: 36,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 10,
+      fontSize: "0.88rem",
+      fontWeight: isSelected || isToday ? 600 : 400,
+      cursor: "pointer",
+      color: isPrev
+        ? "var(--z-color-muted, #667085)"
+        : isSelected
+          ? "var(--z-color-primaryContrast, #fff)"
+          : "var(--z-color-text, #171717)",
+      background: isSelected
+        ? "var(--z-color-primary, #533afd)"
+        : isToday
+          ? "var(--z-color-background100, #f4f6fa)"
+          : "transparent"
+    };
+  };
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Picker</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div
+        style={{
+          borderRadius: 16,
+          border: "1px solid var(--z-color-border, #ebebeb)",
+          background: "var(--z-color-surface, #ffffff)",
+          padding: "1rem",
+          maxWidth: 300
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.85rem" }}>
+          <Button size="sm" variant="secondary">‹</Button>
+          <strong style={{ fontSize: "0.93rem", color: "var(--z-color-text, #171717)" }}>March 2026</strong>
+          <Button size="sm" variant="secondary">›</Button>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "0.15rem", justifyItems: "center" }}>
+          {weekdays.map((wd) => (
+            <div key={wd} style={{ fontSize: "0.73rem", fontWeight: 600, color: "var(--z-color-muted, #667085)", padding: "0.3rem 0", textAlign: "center" }}>
+              {wd}
+            </div>
+          ))}
+          {days.map((week, wi) =>
+            week.map((day) => (
+              <div key={`${wi}-${day}`} style={dayCellStyle(day, wi)}>
+                {day}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+/* ── File Manager ───────────────────────────────────────────────────────── */
+
+interface FileManagerWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function FileManagerWidget({
+  title = "File manager",
+  subtitle = "Browse and manage project files.",
+  surface = "elevated",
+  className,
+  style
+}: FileManagerWidgetProps) {
+  const files = [
+    { name: "design-system.fig", type: "Figma", size: "4.2 MB", modified: "2h ago", icon: "🎨" },
+    { name: "api-docs.md", type: "Markdown", size: "28 KB", modified: "5h ago", icon: "📄" },
+    { name: "components.zip", type: "Archive", size: "12.8 MB", modified: "1d ago", icon: "📦" },
+    { name: "brand-assets", type: "Folder", size: "—", modified: "3d ago", icon: "📁" },
+    { name: "onboarding-flow.mp4", type: "Video", size: "86 MB", modified: "1w ago", icon: "🎬" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div>
+          <div style={kickerStyle()}>Files</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Button size="sm" variant="primary">Upload</Button>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={dividedListStyle()}>
+        {files.map((file, index) => (
+          <div
+            key={file.name}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "auto 1fr auto auto",
+              gap: "0.85rem",
+              alignItems: "center"
+            }}
+          >
+            <span style={{ fontSize: "1.2rem", lineHeight: 1 }}>{file.icon}</span>
+            <div style={stackStyle("0.1rem")}>
+              <strong style={{ fontSize: "0.93rem", color: "var(--z-color-text, #171717)" }}>{file.name}</strong>
+              <span style={{ fontSize: "0.82rem", color: "var(--z-color-muted, #667085)" }}>{file.type}</span>
+            </div>
+            <span style={{ fontSize: "0.82rem", color: "var(--z-color-muted, #667085)", fontFamily: "var(--z-type-family-mono, monospace)" }}>{file.size}</span>
+            <span style={{ fontSize: "0.82rem", color: "var(--z-color-muted, #667085)" }}>{file.modified}</span>
+          </div>
+        ))}
+      </div>
+      {actionRow([{ label: "New folder", variant: "secondary" }, { label: "Download all", variant: "secondary" }])}
+    </Card>
+  );
+}
+
+/* ── Metrics Dashboard ──────────────────────────────────────────────────── */
+
+interface MetricsDashboardWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function MetricsDashboardWidget({
+  title = "Key metrics",
+  subtitle = "Real-time performance indicators.",
+  surface = "elevated",
+  className,
+  style
+}: MetricsDashboardWidgetProps) {
+  const metrics = [
+    { label: "Revenue", value: "$48.2K", delta: "+12.4%", positive: true },
+    { label: "Users", value: "2,847", delta: "+8.1%", positive: true },
+    { label: "Churn", value: "1.2%", delta: "-0.3%", positive: true },
+    { label: "NPS", value: "72", delta: "-2", positive: false }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Dashboard</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+        {metrics.map((m) => (
+          <div
+            key={m.label}
+            style={{
+              ...panelStyle(),
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.4rem"
+            }}
+          >
+            <span style={{ fontSize: "0.78rem", fontWeight: 500, color: "var(--z-color-muted, #667085)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              {m.label}
+            </span>
+            <strong style={{ fontSize: "1.35rem", letterSpacing: "-0.03em", color: "var(--z-color-text, #171717)" }}>
+              {m.value}
+            </strong>
+            <span
+              style={{
+                fontSize: "0.82rem",
+                fontWeight: 500,
+                color: m.positive
+                  ? "var(--z-color-success, #0a7d53)"
+                  : "var(--z-color-danger, #c43b2f)"
+              }}
+            >
+              {m.delta}
+            </span>
+          </div>
+        ))}
+      </div>
+      {actionRow([{ label: "View report" }, { label: "Export", variant: "secondary" }])}
+    </Card>
+  );
+}
+
+/* ── User Profile Card ──────────────────────────────────────────────────── */
+
+interface UserProfileCardWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function UserProfileCardWidget({
+  title = "Profile",
+  subtitle = "Manage your account details and preferences.",
+  surface = "elevated",
+  className,
+  style
+}: UserProfileCardWidgetProps) {
+  const details = [
+    { label: "Email", value: "alex@company.com" },
+    { label: "Role", value: "Admin" },
+    { label: "Team", value: "Engineering" },
+    { label: "Timezone", value: "UTC-8 (PST)" }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Account</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <div
+        style={{
+          ...panelStyle(),
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem"
+        }}
+      >
+        <Avatar name="Alex Chen" size={48} />
+        <div style={stackStyle("0.15rem")}>
+          <strong style={{ fontSize: "1.05rem", color: "var(--z-color-text, #171717)" }}>Alex Chen</strong>
+          <span style={{ fontSize: "0.88rem", color: "var(--z-color-muted, #667085)" }}>Product Engineer</span>
+          <Badge color="green" variant="lighter">Active</Badge>
+        </div>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6, fontSize: "0.92rem" }}>{subtitle}</p>
+      <div style={dividedListStyle()}>
+        {details.map((d, index) => (
+          <div
+            key={d.label}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            <span style={{ fontSize: "0.88rem", color: "var(--z-color-muted, #667085)" }}>{d.label}</span>
+            <span style={{ fontSize: "0.92rem", fontWeight: 500, color: "var(--z-color-text, #171717)" }}>{d.value}</span>
+          </div>
+        ))}
+      </div>
+      {actionRow([{ label: "Edit profile" }, { label: "Change password", variant: "secondary" }])}
+    </Card>
+  );
+}
+
+/* ── Pricing Tier ───────────────────────────────────────────────────────── */
+
+interface PricingTierWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function PricingTierWidget({
+  title = "Pro plan",
+  subtitle = "Everything you need to scale your product.",
+  surface = "elevated",
+  className,
+  style
+}: PricingTierWidgetProps) {
+  const features = [
+    "Unlimited projects",
+    "Advanced analytics",
+    "Priority support",
+    "Custom integrations",
+    "Team collaboration",
+    "API access"
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div>
+        <div style={kickerStyle()}>Pricing</div>
+        <h3 style={titleStyle()}>{title}</h3>
+      </div>
+      <div style={{ display: "flex", alignItems: "baseline", gap: "0.3rem" }}>
+        <span style={{ fontSize: "2.2rem", fontWeight: 700, letterSpacing: "-0.04em", color: "var(--z-color-text, #171717)" }}>$49</span>
+        <span style={{ fontSize: "0.92rem", color: "var(--z-color-muted, #667085)" }}>/ month</span>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6, fontSize: "0.92rem" }}>{subtitle}</p>
+      <Divider />
+      <div style={stackStyle("0.6rem")}>
+        {features.map((feat) => (
+          <div key={feat} style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
+            <span style={{ color: "var(--z-color-success, #0a7d53)", fontSize: "1rem", fontWeight: 700, lineHeight: 1 }}>✓</span>
+            <span style={{ fontSize: "0.92rem", color: "var(--z-color-text, #171717)" }}>{feat}</span>
+          </div>
+        ))}
+      </div>
+      <Divider />
+      {actionRow([{ label: "Get started" }, { label: "Compare plans", variant: "secondary" }])}
+    </Card>
+  );
+}
+
+/* ── Changelog Feed ─────────────────────────────────────────────────────── */
+
+interface ChangelogFeedWidgetProps {
+  title?: string;
+  subtitle?: string;
+  surface?: WidgetSurface;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export function ChangelogFeedWidget({
+  title = "Changelog",
+  subtitle = "Recent updates and improvements.",
+  surface = "elevated",
+  className,
+  style
+}: ChangelogFeedWidgetProps) {
+  const entries = [
+    { version: "v2.4.0", date: "Mar 5, 2026", label: "Feature", labelColor: "blue" as BadgeColor, description: "Added real-time collaboration for all project types." },
+    { version: "v2.3.2", date: "Feb 28, 2026", label: "Fix", labelColor: "green" as BadgeColor, description: "Resolved issue with webhook delivery retries." },
+    { version: "v2.3.1", date: "Feb 22, 2026", label: "Improvement", labelColor: "purple" as BadgeColor, description: "Dashboard load time reduced by 40% with new caching layer." },
+    { version: "v2.3.0", date: "Feb 15, 2026", label: "Feature", labelColor: "blue" as BadgeColor, description: "Introduced custom roles and granular permissions." }
+  ];
+
+  return (
+    <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
+      <div style={inlineRowStyle()}>
+        <div>
+          <div style={kickerStyle()}>Updates</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <Badge color="blue" variant="lighter">{entries.length} releases</Badge>
+      </div>
+      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
+      <div style={dividedListStyle()}>
+        {entries.map((entry, index) => (
+          <div
+            key={entry.version}
+            style={{
+              ...dividedRowStyle({
+                borderTop: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)"
+              }),
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "0.45rem"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+              <strong style={{ fontSize: "0.93rem", fontFamily: "var(--z-type-family-mono, monospace)", color: "var(--z-color-text, #171717)" }}>
+                {entry.version}
+              </strong>
+              <Badge color={entry.labelColor} variant="lighter">{entry.label}</Badge>
+              <span style={{ fontSize: "0.82rem", color: "var(--z-color-muted, #667085)", marginLeft: "auto" }}>{entry.date}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.55, color: "var(--z-color-text, #171717)" }}>
+              {entry.description}
+            </p>
+          </div>
+        ))}
+      </div>
+      {actionRow([{ label: "View all releases" }])}
     </Card>
   );
 }

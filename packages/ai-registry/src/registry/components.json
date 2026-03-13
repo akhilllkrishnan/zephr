@@ -55,18 +55,22 @@
     ],
     "aiHints": {
       "positive": [
-        "Use for primary and secondary actions.",
-        "Prefer `variant=secondary` for non-destructive secondary actions."
+        "Use for all interactive actions — primary CTA, secondary actions, ghost toolbar buttons.",
+        "variant='primary' (default) for the main action; 'secondary' for cancel/back; 'ghost' for toolbar icon rows; 'danger' for delete/destructive.",
+        "Set loading={true} while async actions are in-flight — it disables the button and shows a spinner automatically.",
+        "For icon-only toolbar buttons, use IconButton instead to get correct accessible touch targets."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephr component exists."
+        "Do not use raw <button> elements.",
+        "Do not pass a surface prop — Button uses variant, not surface.",
+        "Do not hardcode colors via style= — variant handles all visual states."
       ],
       "preferredImports": [
         "import { Button } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { Button } from '@zephrui/ui-react';\n<Button variant='primary'>Save</Button>"
+      "import { Button } from '@zephrui/ui-react';\n<Button variant='primary'>Save changes</Button>\n<Button variant='secondary'>Cancel</Button>\n<Button variant='danger' loading={saving}>Delete account</Button>"
     ]
   },
   {
@@ -2032,17 +2036,22 @@
     ],
     "aiHints": {
       "positive": [
-        "Pair with SearchBox and FiltersBar for interactive data screens."
+        "Pair with SearchBox and FiltersBar above the table for a complete data screen.",
+        "Pass columns as an array of { id, header, accessor?, render? } — use render for custom cell content like badges, avatars, or action menus.",
+        "Set rowKey to a function that returns a unique string per row, e.g. (row) => row.id.",
+        "Show Skeleton rows while loading by passing loading={true}.",
+        "Use emptyState prop to render a custom zero-state illustration or message."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephr component exists."
+        "Do not build custom <table> elements — DataTable handles sorting, row hover, and keyboard navigation.",
+        "Do not use the rows prop name — the correct prop is data."
       ],
       "preferredImports": [
         "import { DataTable } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { DataTable } from '@zephrui/ui-react';\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
+      "import { DataTable, Badge } from '@zephrui/ui-react';\nconst columns = [\n  { id: 'name', header: 'Name', accessor: 'name' },\n  { id: 'status', header: 'Status', render: (row) => <Badge color='green' variant='lighter' type='dot'>{row.status}</Badge> },\n];\n<DataTable data={rows} columns={columns} rowKey={(row) => row.id} />"
     ]
   },
   {
@@ -2110,17 +2119,22 @@
     ],
     "aiHints": {
       "positive": [
-        "Use for destructive confirmations and short multi-step flows."
+        "Use for destructive confirmations (delete, revoke, cancel subscription) — always pass variant='danger' to the confirm button.",
+        "For short multi-step flows (2–3 steps), manage step index in local state and render different children per step.",
+        "Set loading={true} on the dialog itself while the async action is running — it shows a spinner on the confirm button automatically.",
+        "Pass error= to show a red inline error inside the dialog footer."
       ],
       "negative": [
-        "Avoid raw HTML controls when a Zephr component exists."
+        "Do not use native <dialog> elements.",
+        "Do not put long forms inside ModalDialog — use Sheet (slide-over) for form-heavy flows.",
+        "Do not nest ModalDialog inside another ModalDialog."
       ],
       "preferredImports": [
         "import { ModalDialog } from \"@zephrui/ui-react\";"
       ]
     },
     "usageExamples": [
-      "import { ModalDialog } from '@zephrui/ui-react';\n<ModalDialog open={open} title='Delete item' onCancel={close} onConfirm={remove} />"
+      "import { ModalDialog } from '@zephrui/ui-react';\n<ModalDialog\n  open={open}\n  title='Delete workspace'\n  onCancel={() => setOpen(false)}\n  onConfirm={handleDelete}\n  loading={deleting}\n  error={deleteError}\n/>"
     ]
   },
   {

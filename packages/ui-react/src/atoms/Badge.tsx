@@ -213,7 +213,7 @@ export function Badge({
     frameStyle.borderColor = palette.stroke;
     frameStyle.color = palette.text;
   } else {
-    frameStyle.background = "#ffffff";
+    frameStyle.background = "var(--z-color-surface, #ffffff)";
     frameStyle.borderColor = "transparent";
     frameStyle.color = palette.text;
   }

@@ -37,7 +37,7 @@ export interface CloudLogoCatalogEntry {
     tags: string[];
 }
 export interface CloudBillingPlan {
-    id: "individual" | "startup" | "enterprise";
+    id: string;
     label: string;
     description: string;
     recommended?: boolean;

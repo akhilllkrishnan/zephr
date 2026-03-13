@@ -77,10 +77,10 @@ function ProductMockup() {
 
       {/* Stat cards */}
       {[
-        { x: 210, label: "Components", value: "200+", sub: "↑ 12 this week", color: "#335cff" },
-        { x: 380, label: "Style Packs", value: "6", sub: "2 new packs", color: "#8b5cf6" },
-        { x: 550, label: "AI Prompts", value: "48", sub: "↑ 8 today", color: "#06b6d4" },
-        { x: 720, label: "Saved Time", value: "3×", sub: "vs shadcn", color: "#10b981" },
+        { x: 210, label: "Components", value: "200+", sub: "foundation to pages", color: "#335cff" },
+        { x: 380, label: "Widgets", value: "40+", sub: "real product blocks", color: "#8b5cf6" },
+        { x: 550, label: "AI Prompts", value: "48", sub: "context-ready snippets", color: "#06b6d4" },
+        { x: 720, label: "Saved Time", value: "3×", sub: "faster first ship", color: "#10b981" },
       ].map(card => (
         <g key={card.x}>
           <rect x={card.x} y="100" width="150" height="78" rx="10" fill="#ffffff" />
@@ -118,32 +118,28 @@ function ProductMockup() {
         </g>
       ))}
 
-      {/* Style packs section */}
+      {/* Widget catalog section */}
       <rect x="544" y="194" width="316" height="250" rx="10" fill="#ffffff" />
       <rect x="544" y="194" width="316" height="250" rx="10" fill="none" stroke="#e2e8f0" strokeWidth="1" />
-      <text x="560" y="218" fill="#0f172a" fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif" letterSpacing="-0.3">Style Packs</text>
-      <text x="560" y="232" fill="#94a3b8" fontSize="10" fontFamily="-apple-system,sans-serif">1 free · 3 Pro</text>
+      <text x="560" y="218" fill="#0f172a" fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif" letterSpacing="-0.3">Premium widgets</text>
+      <text x="560" y="232" fill="#94a3b8" fontSize="10" fontFamily="-apple-system,sans-serif">workflows, forms, metrics, AI</text>
 
-      {/* Style pack cards */}
+      {/* Widget cards */}
       {[
-        { x: 560, y: 244, name: "notion", color1: "#121212", color2: "#f5f5f5", free: true },
-        { x: 680, y: 244, name: "stripe", color1: "#4f46e5", color2: "#6366f1", free: false },
-        { x: 560, y: 330, name: "linear", color1: "#245ef5", color2: "#3b82f6", free: false },
-        { x: 680, y: 330, name: "framer", color1: "#9333ea", color2: "#a855f7", free: false },
+        { x: 560, y: 244, name: "Approval", color1: "#f97316", color2: "#fdba74", badge: "Workflow" },
+        { x: 680, y: 244, name: "Composer", color1: "#7c3aed", color2: "#c4b5fd", badge: "AI" },
+        { x: 560, y: 330, name: "Insights", color1: "#06b6d4", color2: "#67e8f9", badge: "Metrics" },
+        { x: 680, y: 330, name: "Onboarding", color1: "#10b981", color2: "#86efac", badge: "Setup" },
       ].map(pack => (
         <g key={pack.name}>
           <rect x={pack.x} y={pack.y} width="106" height="72" rx="8" fill="#f8fafc" />
           <rect x={pack.x} y={pack.y} width="106" height="72" rx="8" fill="none" stroke="#e2e8f0" strokeWidth="1" />
           <circle cx={pack.x + 18} cy={pack.y + 26} r="10" fill={pack.color1} />
           <circle cx={pack.x + 34} cy={pack.y + 26} r="10" fill={pack.color2} />
-          <circle cx={pack.x + 50} cy={pack.y + 26} r="10" fill={pack.free ? "#10b981" : "#e2e8f0"} />
+          <circle cx={pack.x + 50} cy={pack.y + 26} r="10" fill="#ffffff" />
           <text x={pack.x + 10} y={pack.y + 52} fill="#0f172a" fontSize="11" fontWeight="600" fontFamily="-apple-system,sans-serif">{pack.name}</text>
-          {!pack.free && (
-            <>
-              <rect x={pack.x + 68} y={pack.y + 8} width="30" height="14" rx="4" fill="rgba(51,92,255,0.1)" />
-              <text x={pack.x + 83} y={pack.y + 18} textAnchor="middle" fill="#335cff" fontSize="8.5" fontWeight="700" fontFamily="-apple-system,sans-serif">PRO</text>
-            </>
-          )}
+          <rect x={pack.x + 58} y={pack.y + 8} width="40" height="14" rx="4" fill="rgba(51,92,255,0.1)" />
+          <text x={pack.x + 78} y={pack.y + 18} textAnchor="middle" fill="#335cff" fontSize="8.5" fontWeight="700" fontFamily="-apple-system,sans-serif">{pack.badge}</text>
         </g>
       ))}
 
@@ -313,40 +309,29 @@ export interface MarketingPageProps {
 const defaultFeatures: MarketingFeature[] = [
   { id: "f1", title: "Zero Config", description: "One install command, works immediately. No setup files, no config, no fighting with build tools.", icon: "⚡" },
   { id: "f2", title: "AI-Native", description: "Every component ships with an AI prompt. Claude, Cursor, and Copilot understand your UI out of the box.", icon: "🤖" },
-  { id: "f3", title: "4 Style Packs", description: "Switch between notion, stripe, linear, and framer in one line. Every project stays coherent.", icon: "🎨" },
+  { id: "f3", title: "Premium default theme", description: "One polished visual system with accent customization, premium spacing, and consistent surfaces across the whole product.", icon: "🎨" },
   { id: "f4", title: "Dark Mode Built-in", description: "Every token has a dark-mode variant. Light/dark switching works without extra code.", icon: "🌙" },
   { id: "f5", title: "No Utility Classes", description: "Components self-style via CSS variables. Zero Tailwind dependency, zero className pollution.", icon: "✂️" },
-  { id: "f6", title: "Free Forever Tier", description: "29 production-ready components, dark mode, and CLI tools — completely free, no account required.", icon: "🎁" }
+  { id: "f6", title: "Free to Start", description: "All 55 components, 4 style packs, and CLI tools — completely free, no account required. Pay once for premium page examples.", icon: "🎁" }
 ];
 
 const defaultPlans: MarketingPricingPlan[] = [
   {
-    id: "free",
-    name: "Free",
-    price: "$0",
-    description: "Everything you need to start shipping.",
-    features: ["29 free components", "notion style pack", "Dark mode", "CLI + MCP tools", "No account required"],
-    ctaLabel: "Get Started Free",
-  },
-  {
-    id: "pro",
-    name: "Pro",
+    id: "templates",
+    name: "Zephr Templates",
     price: "$49",
-    period: "/mo",
-    description: "Full creative control for serious builders.",
-    features: ["Everything in Free", "3 premium style packs", "29 Pro molecules & organisms", "Page templates", "Per-tool AI prompts"],
-    ctaLabel: "Upgrade to Pro",
+    period: "one-time",
+    description: "Lifetime access to all 20 premium page examples. All future examples included.",
+    features: [
+      "20 production-ready page examples",
+      "Ops Center, CRM, Analytics, Support Desk, and more",
+      "All future examples included",
+      "Use in unlimited projects",
+      "License key — instant delivery",
+    ],
+    ctaLabel: "Get Templates",
     highlighted: true,
   },
-  {
-    id: "team",
-    name: "Team",
-    price: "$149",
-    period: "/mo",
-    description: "Scale across your entire engineering org.",
-    features: ["Everything in Pro", "Unlimited seats", "Cloud API access", "Custom style packs", "Dedicated onboarding"],
-    ctaLabel: "Contact Sales",
-  }
 ];
 
 const defaultLogos = ["Vercel", "Supabase", "Stripe", "Linear", "Notion", "Planetscale"];
@@ -382,7 +367,7 @@ const defaultTestimonials: MarketingTestimonial[] = [
 export function MarketingPage({
   brand,
   heroTitle = "Build beautiful UIs — instantly.",
-  heroSubtitle = "The AI-native component system. 200+ components, 6 style packs, zero config. Ship production UI in minutes.",
+  heroSubtitle = "The AI-native component system. 200+ components, premium widgets, zero config, and a polished default visual system. Ship production UI in minutes.",
   heroBadge = "New in v0.4",
   features = defaultFeatures,
   pricingPlans = defaultPlans,
@@ -454,7 +439,7 @@ export function MarketingPage({
 
           {/* Nav links */}
           <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
-            {["Docs", "Components", "Style Packs", "Pricing"].map(link => (
+            {["Docs", "Components", "Widgets", "Pricing"].map(link => (
               <span key={link} className="mp-nav-link">{link}</span>
             ))}
           </div>
@@ -665,13 +650,13 @@ export function MarketingPage({
         <section style={{ padding: "clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)", maxWidth: "1120px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "52px" }}>
             <h2 style={{ margin: "0 0 12px", fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 800, color: "#0f172a", letterSpacing: "-0.04em" }}>
-              Simple, transparent pricing
+              One plan. One price.
             </h2>
             <p style={{ margin: 0, fontSize: "16px", color: "#64748b" }}>
-              Start free. Upgrade when you&apos;re ready.
+              All components are free. Pay once to unlock premium page examples.
             </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(pricingPlans.length, 3)}, minmax(0, 420px))`, gap: "16px", alignItems: "start", justifyContent: "center" }}>
             {pricingPlans.map((plan) => {
               const isPro = plan.highlighted;
               return (

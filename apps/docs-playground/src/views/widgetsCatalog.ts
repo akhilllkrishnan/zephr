@@ -3,6 +3,18 @@ export interface WidgetNavEntry {
   label: string;
 }
 
+export const widgetsV2CatalogIds = [
+  "widget-navbar",
+  "widget-command-palette",
+  "widget-data-table",
+  "widget-prompt-composer",
+  "widget-team-directory",
+  "widget-settings-panel",
+  "widget-support-queue",
+  "widget-api-keys",
+  "widget-analytics-overview",
+] as const;
+
 export const widgetCatalogMeta: WidgetNavEntry[] = [
   { id: "widget-approval-modal", label: "Approval modal" },
   { id: "widget-project-brief", label: "Project brief form" },
@@ -46,4 +58,12 @@ export const widgetCatalogMeta: WidgetNavEntry[] = [
   { id: "widget-incident-digest", label: "Incident digest" },
   { id: "widget-review-inbox", label: "Review inbox" },
   { id: "widget-quick-actions", label: "Quick actions" },
+  { id: "widget-welcome-profile", label: "Welcome profile" },
+  { id: "widget-referral-reward", label: "Referral reward" },
+  { id: "widget-setup-journey", label: "Setup journey" },
+  { id: "widget-delivery-timeline", label: "Delivery timeline" },
+  { id: "widget-travel-itinerary", label: "Travel itinerary" },
+  { id: "widget-prompt-composer", label: "Prompt composer" },
+  { id: "widget-conversion-score", label: "Conversion score" },
+  { id: "widget-marketing-insights", label: "Marketing insights" },
 ];

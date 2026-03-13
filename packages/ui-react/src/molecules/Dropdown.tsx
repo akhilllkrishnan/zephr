@@ -114,7 +114,7 @@ export function Dropdown({ label, items, align = "start", className, style, trig
                         : "var(--z-color-weak, var(--z-color-background, #f7f7f7))"
                       : "transparent",
                     color: item.disabled
-                      ? "#b5b5b5"
+                      ? "var(--z-color-text300, #a1a1aa)"
                       : item.danger
                         ? "var(--z-color-danger, #fb3748)"
                         : "var(--z-color-text, #171717)",
