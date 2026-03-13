@@ -3500,6 +3500,7 @@ export default function App() {
   );
   const [buttonSize, setButtonSize] = useState<"sm" | "md" | "lg">("md");
   const [previewState, setPreviewState] = useState<PreviewStateKey>("default");
+  const [previewProps, setPreviewProps] = useState<Record<string, string>>({});
 
   // Button variant grid filters
   const [btnFilterType, setBtnFilterType] = useState<"all" | "primary" | "secondary" | "ghost" | "danger">("all");
@@ -3579,7 +3580,7 @@ export default function App() {
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
   const leftRailRef = useRef<HTMLDivElement | null>(null);
-  const [sidebarIndicator, setSidebarIndicator] = useState({ top: 0, height: 0, opacity: 0 });
+  const [sidebarIndicator, setSidebarIndicator] = useState({ top: 0, height: 20, opacity: 0 });
   const setupTabsRef = useRef<HTMLDivElement | null>(null);
   const [setupIndicator, setSetupIndicator] = useState({ left: 0, width: 0, opacity: 0 });
   const rightRailRef = useRef<HTMLDivElement | null>(null);
@@ -3592,15 +3593,15 @@ export default function App() {
     let raf = 0;
     const updateIndicator = () => {
       if (!rail) return;
-      const active = rail.querySelector<HTMLElement>(".sidebar-link.is-active");
+      const active = rail.querySelector<HTMLElement>(".sidebar-link.is-active, .component-link.is-active");
       if (!active) {
         setSidebarIndicator((prev) => ({ ...prev, opacity: 0 }));
         return;
       }
       const railRect = rail.getBoundingClientRect();
       const activeRect = active.getBoundingClientRect();
-      const top = activeRect.top - railRect.top + rail.scrollTop;
-      const height = activeRect.height;
+      const height = Math.min(20, activeRect.height);
+      const top = activeRect.top - railRect.top + rail.scrollTop + (activeRect.height - height) / 2;
       setSidebarIndicator({ top, height, opacity: 1 });
     };
 
@@ -3896,6 +3897,7 @@ export default function App() {
     const config = previewStateConfig[activeRegistryId];
     const firstState = config?.options[0]?.value ?? "default";
     setPreviewState(firstState);
+    setPreviewProps({});
   }, [activeRegistryId]);
 
   useEffect(() => {
@@ -4318,6 +4320,18 @@ export default function App() {
   const selectedPreviewStateConfig = previewStateConfig[selectedEntry.id];
   const apiPropRows = useMemo(() => getComponentPropsTable(selectedEntry), [selectedEntry]);
 
+  const TOOLBAR_SPECIAL_CASED_IDS = new Set([
+    "button-group", "switch", "accordion", "tooltip", "alert", "badge",
+    "date-picker", "pagination", "progress", "rich-editor", "color-picker", "divider"
+  ]);
+  const genericEnumRows = useMemo(
+    () => !TOOLBAR_SPECIAL_CASED_IDS.has(selectedEntry.id) && !selectedPreviewStateConfig
+      ? apiPropRows.filter(row => row.type === "enum" && row.acceptedValues !== "See type union")
+      : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedEntry.id, apiPropRows, selectedPreviewStateConfig]
+  );
+
   const componentTemplate = useMemo(
     () => getComponentTemplate(selectedEntry, { packageManager: "pnpm" }),
     [selectedEntry]
@@ -4442,10 +4456,9 @@ export default function App() {
                     navigateToSearchResult(searchResults[searchActiveIndex] ?? searchResults[0]);
                   }
                 }}
-                placeholder="Search docs and components..."
-                aria-label="Search docs and components"
+                placeholder="Search..."
+                aria-label="Search"
               />
-              <kbd className="search-kbd">⌘K</kbd>
               {searchFocused && catalogSearch.trim() ? (
                 <div className="top-search-results" role="listbox" aria-label="Search results">
                   {searchResults.length ? (
@@ -4476,8 +4489,7 @@ export default function App() {
 
           <div className="top-actions">
             {topTab === "pages" ? (
-              <div className="top-version-control">
-                <span className="top-version-label">Library</span>
+              <div className="top-version-control" aria-label="Pages showcase version">
                 <Select
                   controlSize="xs"
                   className="top-version-select"
@@ -4490,31 +4502,6 @@ export default function App() {
                 </Select>
               </div>
             ) : null}
-            <Button
-              size="sm"
-              variant={userTier === "pro" ? "secondary" : "primary"}
-              onClick={() => setShowUpgradeModal(true)}
-            >
-              {userTier === "pro" ? "✓ Templates" : "Get Templates"}
-            </Button>
-            <span className="btn-hide-mobile">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => showToast("Support portal coming soon")}
-              >
-                Support
-              </Button>
-            </span>
-            <span className="btn-hide-mobile">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => showToast("Feature request portal coming soon")}
-              >
-                Feature Request
-              </Button>
-            </span>
             <button
               type="button"
               className="top-icon-action"
@@ -4599,7 +4586,6 @@ export default function App() {
           )}
           {topTab === "components" && (
             <div className="nav-group">
-              <p className="group-title">Components</p>
               {catalogSearch.trim() ? (
                 <div className="component-list">
                   {catalog.map((entry) => (
@@ -5026,15 +5012,16 @@ export default function App() {
             <>
               {/* ── HERO ──────────────────────────────────────────────────── */}
               <section id="setup-introduction" className="doc-section hero">
+                {/* Left column */}
                 <p className="breadcrumbs">Setup / Introduction</p>
                 <h1>
-                  A UI library built{" "}
-                  <span className="hero-accent-word">for the AI era.</span>
+                  A design system{" "}
+                  <span className="hero-accent-word">built for AI.</span>
                 </h1>
                 <p className="lead">
-                  Every token, component, and AI hint in Zephyr is engineered so
-                  that Claude, Cursor, Codex, and Lovable produce quality output
-                  by default. Install once. Vibe code forever.
+                  Every token, component, and AI hint in Zephr is engineered so
+                  Claude, Cursor, Codex, and Lovable produce quality UI on the
+                  first pass — no cleanup, no drift.
                 </p>
                 <div className="hero-cta-row">
                   <Button
@@ -5057,29 +5044,109 @@ export default function App() {
                   </Button>
                 </div>
 
-                {/* decorative mesh */}
-                <div className="hero-mesh-decoration" aria-hidden="true">
-                  <svg className="hero-mesh-svg" viewBox="0 0 240 226" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <radialGradient id="hm1" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="var(--accent,#121212)" stopOpacity="0.18" />
-                        <stop offset="100%" stopColor="var(--accent,#121212)" stopOpacity="0" />
-                      </radialGradient>
-                    </defs>
-                    <ellipse cx="120" cy="113" rx="120" ry="113" fill="url(#hm1)" />
-                    {[0,1,2,3,4,5,6,7,8].map((row) =>
-                      [0,1,2,3,4,5,6,7,8].map((col) => (
-                        <circle
-                          key={`${row}-${col}`}
-                          cx={col * 30}
-                          cy={row * 28}
-                          r="1.5"
-                          fill="var(--accent,#121212)"
-                          opacity={0.12}
-                        />
-                      ))
-                    )}
-                  </svg>
+                {/* Right column — terminal visual */}
+                <div className="hero-terminal-col" aria-hidden="true">
+                  <div className="hero-terminal">
+                    <div className="hero-terminal-chrome">
+                      <span className="hero-terminal-dot red" />
+                      <span className="hero-terminal-dot yellow" />
+                      <span className="hero-terminal-dot green" />
+                      <span className="hero-terminal-title">zsh — 80×24</span>
+                    </div>
+                    <div className="hero-terminal-body">
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-prompt">❯</span>
+                        <span className="hero-terminal-cmd">npx zephr init</span>
+                      </div>
+                      <div className="hero-terminal-spacer" />
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-check">✓</span>
+                        <span className="hero-terminal-text">Detected React + TypeScript</span>
+                      </div>
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-check">✓</span>
+                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>CLAUDE.md</span></span>
+                      </div>
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-check">✓</span>
+                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>AGENTS.md</span></span>
+                      </div>
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-check">✓</span>
+                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>llms.txt</span></span>
+                      </div>
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-check">✓</span>
+                        <span className="hero-terminal-text"><span style={{color:"#fbbf24"}}>49</span> components registered</span>
+                      </div>
+                      <div className="hero-terminal-divider" />
+                      <div className="hero-terminal-line" style={{animationDelay:"1.25s"}}>
+                        <span className="hero-terminal-success">✦ Your AI knows your design system.</span>
+                      </div>
+                      <div className="hero-terminal-line" style={{animationDelay:"1.35s"}}>
+                        <span className="hero-terminal-prompt">❯</span>
+                        <span className="hero-terminal-cursor" />
+                      </div>
+                    </div>
+                  </div>
+                  {/* Works-with brand logo row */}
+                  <div className="hero-tools-row">
+                    <span className="hero-tools-label">Works with</span>
+                    <div className="hero-tools-icons">
+
+                      {/* Claude — Anthropic asterisk mark, terracotta #CC785C */}
+                      <div className="hero-tool-icon" title="Claude">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path
+                            d="M13.827 2.7 12 6.944 10.173 2.7 6.827 3.573 8.654 7.817 4.41 6 3.537 9.346l4.244 1.827L3.537 13l.873 3.346 4.244-1.827L6.827 18.7l3.346.873L12 15.429l1.827 4.244 3.346-.873-1.827-4.244 4.244 1.827.873-3.346-4.244-1.827L22.463 9.346 21.59 6l-4.244 1.817 1.827-4.244z"
+                            fill="#CC785C"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Cursor — stylised cursor-arrow with stem */}
+                      <div className="hero-tool-icon" title="Cursor">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path
+                            d="M5 3.5 20.5 12 13.5 13.5 10.5 20.5Z"
+                            fill="#ffffff"
+                            stroke="rgba(255,255,255,0.25)"
+                            strokeWidth="0.5"
+                          />
+                          <path
+                            d="M13 13.5 16 20"
+                            stroke="#ffffff"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Codex / OpenAI — the official OpenAI swirl */}
+                      <div className="hero-tool-icon" title="Codex">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true">
+                          <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .511 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.805-3.387L15.15 7.2a.077.077 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.104v-5.678a.79.79 0 0 0-.407-.666zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
+                        </svg>
+                      </div>
+
+                      {/* Lovable — heart mark in brand coral/pink */}
+                      <div className="hero-tool-icon" title="Lovable">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path
+                            d="M12 20.5C12 20.5 3.5 15 3.5 8.5a4.5 4.5 0 0 1 8.5-2.1A4.5 4.5 0 0 1 20.5 8.5C20.5 15 12 20.5 12 20.5z"
+                            fill="#FF5C5C"
+                          />
+                          <path
+                            d="M12 9a2 2 0 0 1 2-2"
+                            stroke="rgba(255,255,255,0.5)"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               </section>
 
@@ -5087,7 +5154,12 @@ export default function App() {
               <section className="doc-section">
                 <div className="intro-features">
                   <div className="intro-feature">
-                    <strong>⚡ AI-native tokens</strong>
+                    <div className="intro-feature-icon">
+                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2L9.5 6.5H14L10.25 9.25L11.75 13.75L8 11L4.25 13.75L5.75 9.25L2 6.5H6.5L8 2Z" fill="currentColor" opacity="0.85"/>
+                      </svg>
+                    </div>
+                    <strong>AI-native tokens</strong>
                     <p>
                       Every <code>--z-*</code> variable is named for intent, not
                       implementation. AIs reason about them correctly the first
@@ -5095,26 +5167,44 @@ export default function App() {
                     </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>🧩 60+ SaaS components</strong>
+                    <div className="intro-feature-icon">
+                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.85"/>
+                        <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
+                        <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
+                        <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.85"/>
+                      </svg>
+                    </div>
+                    <strong>49 SaaS components</strong>
                     <p>
-                      Atoms to full-page templates. Every component ships with
-                      structured <code>aiHints</code> for context-aware
-                      generation.
+                      Atoms to organisms. Every component ships with structured{" "}
+                      <code>aiHints</code> for context-aware generation.
                     </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>🛠 MCP + CLI tooling</strong>
+                    <div className="intro-feature-icon">
+                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 4H14M2 8H10M2 12H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                    </div>
+                    <strong>21 slash commands</strong>
                     <p>
-                      <code>zephr init</code> seeds your project with{" "}
-                      <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and{" "}
-                      <code>llms.txt</code> in one command.
+                      <code>/polish</code>, <code>/audit</code>,{" "}
+                      <code>/scaffold</code> — designer vocabulary, no
+                      design experience needed.
                     </p>
                   </div>
                   <div className="intro-feature">
-                    <strong>🎨 One cohesive theme</strong>
+                    <div className="intro-feature-icon">
+                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M5.5 8L7 9.5L10.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <strong>One cohesive theme</strong>
                     <p>
-                      Token-driven, accent-customisable. No fighting generic
-                      variable names or overriding conflicting defaults.
+                      Token-driven, accent-customisable. No conflicting defaults,
+                      no fighting the system.
                     </p>
                   </div>
                 </div>
@@ -5122,11 +5212,11 @@ export default function App() {
 
               {/* ── HOW IT WORKS — 3-STEP FLOW ────────────────────────────── */}
               <section className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
                   <p className="section-eyebrow">How it works</p>
                   <h2>Zero config. AI-ready in one command.</h2>
                   <p>
-                    Zephyr wires your AI coding tool directly to the component
+                    Zephr wires your AI coding tool directly to the component
                     registry. The AI knows your design system before you write a
                     single prompt.
                   </p>
@@ -5149,7 +5239,7 @@ export default function App() {
                       tokens, and intent hints — and generates production-ready
                       code on the first pass.
                     </p>
-                    <code className="gs-flow-code">"Build a CRM table with Zephyr"</code>
+                    <code className="gs-flow-code">"Build a CRM table with Zephr"</code>
                   </div>
                   <div className="gs-flow-step">
                     <div className="gs-flow-num">3</div>
@@ -5167,7 +5257,7 @@ export default function App() {
               <section id="install" className="doc-section">
                 <div className="section-heading" style={{ marginBottom: "0.75rem" }}>
                   <h2>Install</h2>
-                  <p>Add Zephyr to any React project.</p>
+                  <p>Add Zephr to any React project.</p>
                 </div>
                 <div className="snippet-stack">
                   <SnippetItem
@@ -5200,10 +5290,12 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-label">Components →</span>
+                    <span className="intro-link-icon">🧩</span>
+                    <span className="intro-link-label">Components</span>
                     <span className="intro-link-desc">
                       49 components across atoms, molecules, and organisms
                     </span>
+                    <span className="intro-link-count">49 components</span>
                   </button>
                   <button
                     type="button"
@@ -5214,10 +5306,12 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-label">Pages →</span>
+                    <span className="intro-link-icon">📄</span>
+                    <span className="intro-link-label">Pages</span>
                     <span className="intro-link-desc">
-                      Full-page SaaS examples — CRM, ops, analytics, support
+                      Full-page SaaS templates — CRM, ops, analytics, support
                     </span>
+                    <span className="intro-link-count">Full templates</span>
                   </button>
                   <button
                     type="button"
@@ -5228,11 +5322,12 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-label">Widgets →</span>
+                    <span className="intro-link-icon">⚡</span>
+                    <span className="intro-link-label">Widgets</span>
                     <span className="intro-link-desc">
-                      60 SaaS-focused widgets with elevated &amp; outlined
-                      surface variants
+                      60+ SaaS-focused widgets — drop in fully wired
                     </span>
+                    <span className="intro-link-count">60 widgets</span>
                   </button>
                   <button
                     type="button"
@@ -5244,72 +5339,149 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-label">AI Setup →</span>
+                    <span className="intro-link-icon">🤖</span>
+                    <span className="intro-link-label">AI Setup</span>
                     <span className="intro-link-desc">
-                      Claude, Cursor, Codex, Lovable — pick your tool and get
-                      the exact prompt to use
+                      Claude, Cursor, Codex, Lovable — the exact prompt to use
                     </span>
+                    <span className="intro-link-count">4 tools</span>
                   </button>
                 </div>
               </section>
             </>
           ) : view === "getting-started" ? (
             <>
+              {/* ── Hero ── */}
               <section id="overview" className="doc-section hero">
                 <p className="breadcrumbs">Get Started</p>
-                <h1>Set up your visual system</h1>
+                <h1>Set up in three steps</h1>
                 <p className="lead">
-                  Fine-tune with an accent color, then copy the install snippet to get started.
+                  Pick your accent color, install the package, and start building with AI-ready components.
                 </p>
-              </section>
-
-              <section id="accent-selection" className="doc-section">
-                <div className="section-heading">
-                  <div className="section-heading-row">
-                    <div>
-                      <h2>Choose an accent color</h2>
-                      <p>Used for primary actions, links, focus rings, and component highlights. This choice persists across all previews until you change it.</p>
-                    </div>
-                    <Badge tone="neutral">{accentColor}</Badge>
+                {/* 3-step progress indicator */}
+                <div className="gs-steps-row" role="list">
+                  <div className="gs-step-item is-active" role="listitem">
+                    <div className="gs-step-badge" aria-label="Step 1">1</div>
+                    <span className="gs-step-label">Choose accent</span>
+                  </div>
+                  <div className="gs-step-line" aria-hidden="true" />
+                  <div className="gs-step-item" role="listitem">
+                    <div className="gs-step-badge" aria-label="Step 2">2</div>
+                    <span className="gs-step-label">Install</span>
+                  </div>
+                  <div className="gs-step-line" aria-hidden="true" />
+                  <div className="gs-step-item" role="listitem">
+                    <div className="gs-step-badge" aria-label="Step 3">3</div>
+                    <span className="gs-step-label">Build</span>
                   </div>
                 </div>
-                <div className="accent-swatches" role="radiogroup" aria-label="Accent presets">
-                  {accentPresets.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      role="radio"
-                      aria-label={`Set accent ${color}`}
-                      aria-checked={accentColor === color}
-                      className={`accent-dot ${accentColor === color ? "is-active" : ""}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setAccentColor(color)}
-                    />
-                  ))}
+              </section>
+
+              {/* ── Step 1 — Accent color ── */}
+              <section id="accent-selection" className="doc-section">
+                <div className="gs-section-step" aria-hidden="true">
+                  <div className="gs-section-step-num">1</div>
+                  Choose your accent color
                 </div>
-                <div className="accent-input-row accent-inline-row">
-                  <input
-                    type="color"
-                    value={accentColor}
-                    onChange={(event) => {
-                      setAccentColor(event.target.value);
-                      setAccentDraft(event.target.value);
-                    }}
-                    aria-label="Accent color picker"
-                  />
-                  <input
-                    type="text"
-                    value={accentDraft}
-                    onChange={(event) => setAccentIfValid(event.target.value)}
-                    onBlur={applyAccentDraft}
-                    onKeyDown={(event) => { if (event.key === "Enter") applyAccentDraft(); }}
-                    placeholder="#121212"
-                    aria-label="Accent color hex"
-                  />
+                <div className="gs-accent-layout">
+                  {/* Left — controls */}
+                  <div>
+                    <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                      <div className="section-heading-row">
+                        <div>
+                          <h2 style={{ marginBottom: "0.3rem" }}>Accent color</h2>
+                          <p>Powers every primary action, link, focus ring, and component highlight. Changes propagate instantly across all previews.</p>
+                        </div>
+                        <Badge tone="neutral">{accentColor}</Badge>
+                      </div>
+                    </div>
+                    <div className="accent-swatches" role="radiogroup" aria-label="Accent presets">
+                      {accentPresets.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          role="radio"
+                          aria-label={`Set accent ${color}`}
+                          aria-checked={accentColor === color}
+                          className={`accent-dot ${accentColor === color ? "is-active" : ""}`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setAccentColor(color)}
+                        />
+                      ))}
+                    </div>
+                    <div className="accent-input-row accent-inline-row">
+                      <input
+                        type="color"
+                        value={accentColor}
+                        onChange={(event) => {
+                          setAccentColor(event.target.value);
+                          setAccentDraft(event.target.value);
+                        }}
+                        aria-label="Accent color picker"
+                      />
+                      <input
+                        type="text"
+                        value={accentDraft}
+                        onChange={(event) => setAccentIfValid(event.target.value)}
+                        onBlur={applyAccentDraft}
+                        onKeyDown={(event) => { if (event.key === "Enter") applyAccentDraft(); }}
+                        placeholder="#121212"
+                        aria-label="Accent color hex"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right — live preview card */}
+                  <div className="gs-live-preview" aria-label="Live accent preview">
+                    <div className="gs-live-preview-bar">
+                      <div className="gs-live-preview-dot" />
+                      <div className="gs-live-preview-dot" />
+                      <div className="gs-live-preview-dot" />
+                      <span className="gs-live-preview-bar-label">Live preview</span>
+                    </div>
+                    <div className="gs-live-preview-body">
+                      <p className="gs-live-preview-title">Invite your team</p>
+                      <p className="gs-live-preview-desc">
+                        Add members to your workspace. They'll get access to all shared projects.
+                      </p>
+                      <div className="gs-live-preview-row">
+                        <button className="gs-preview-btn gs-preview-btn-ghost">Cancel</button>
+                        <button
+                          className="gs-preview-btn gs-preview-btn-primary"
+                          style={{ backgroundColor: accentColor }}
+                          tabIndex={-1}
+                          aria-hidden="true"
+                        >
+                          Send invites
+                        </button>
+                      </div>
+                    </div>
+                    <div className="gs-live-preview-tokens">
+                      <div className="gs-live-preview-token">
+                        <span
+                          className="gs-live-preview-token-dot"
+                          style={{ background: accentColor }}
+                        />
+                        <code>--z-color-primary</code>
+                      </div>
+                      <div className="gs-live-preview-token">
+                        <span
+                          className="gs-live-preview-token-dot"
+                          style={{ background: `${accentColor}28`, border: `1px solid ${accentColor}44` }}
+                        />
+                        <code>--z-color-info-lighter</code>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </section>
 
+              {/* ── Step 2 — Install ── */}
               <section id="setup" className="doc-section">
+                <div className="gs-section-step" aria-hidden="true">
+                  <div className="gs-section-step-num">2</div>
+                  Install in your project
+                </div>
                 <div className="section-heading">
                   <h2>Install in your project</h2>
                   <p>Pick your package manager or tool below.</p>
@@ -5437,8 +5609,15 @@ export default function App() {
                     </div>
                   )}
                 </div>
-                <div className="start-cta">
-                  <Button onClick={() => selectComponent("button")}>Browse components</Button>
+                {/* ── Step 3 — Build CTA ── */}
+                <div className="gs-cta-card">
+                  <div className="gs-cta-text">
+                    <h3>
+                      <span style={{ color: "var(--accent)" }}>Step 3</span> — Start building
+                    </h3>
+                    <p>Browse 58 AI-ready components, copy snippets, and ship faster.</p>
+                  </div>
+                  <Button onClick={() => selectComponent("button")}>Browse components →</Button>
                 </div>
               </section>
             </>
@@ -5808,87 +5987,201 @@ injectSpeedInsights();`}
                 </>
           ) : view === "foundations" ? (
             <>
+              {/* ── Hero ── */}
               <section id="foundations-overview" className="doc-section hero">
                 <p className="breadcrumbs">Foundations</p>
                 <h1>Design Tokens</h1>
                 <p className="lead">
-                  Every Zephr component is styled through CSS variables generated from design tokens.
-                  These tokens define your color palette, spacing, typography, and more — with one consistent premium baseline and customizable accents.
+                  Every Zephr component is built on CSS variables generated from a single token source — colors, spacing, typography, motion, and more. Change one token; everything updates.
                 </p>
+                {/* Stats row */}
+                <div className="foundations-hero-stats" aria-label="Token system stats">
+                  <div className="foundations-stat">
+                    <span className="foundations-stat-num">200+</span>
+                    <span className="foundations-stat-label">CSS tokens</span>
+                  </div>
+                  <div className="foundations-stat-divider" aria-hidden="true" />
+                  <div className="foundations-stat">
+                    <span className="foundations-stat-num">6</span>
+                    <span className="foundations-stat-label">Token categories</span>
+                  </div>
+                  <div className="foundations-stat-divider" aria-hidden="true" />
+                  <div className="foundations-stat">
+                    <span className="foundations-stat-num">2</span>
+                    <span className="foundations-stat-label">Built-in themes</span>
+                  </div>
+                  <div className="foundations-stat-divider" aria-hidden="true" />
+                  <div className="foundations-stat">
+                    <span className="foundations-stat-num">∞</span>
+                    <span className="foundations-stat-label">Accent variants</span>
+                  </div>
+                </div>
               </section>
 
-              {/* How tokens work */}
+              {/* ── How the token system works ── */}
               <section id="how-tokens-work" className="doc-section">
                 <div className="section-heading">
                   <h2>How the token system works</h2>
-                  <p>Three layers transform design tokens into production UI — with zero manual CSS.</p>
+                  <p>Three layers transform a single design decision into every component in your UI.</p>
                 </div>
-                <div className="token-flow">
-                  <div className="token-flow-step">
-                    <div className="token-flow-icon">
-                      <span className="ms" style={{ fontSize: 24 }}>grid_view</span>
+                <div className="token-flow-premium" role="list">
+                  {/* Step 1 */}
+                  <div className="token-flow-card" role="listitem">
+                    <div className="token-flow-card-header">
+                      <div className="token-flow-card-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                        </svg>
+                      </div>
+                      <div className="token-flow-card-num">1</div>
                     </div>
-                    <div className="token-flow-num">1</div>
                     <h3>Design tokens</h3>
-                    <p>A single source of truth defining colors, typography, spacing, radii, shadows, and motion.</p>
+                    <p>A single JSON/TS source of truth defines all colors, spacing, radii, shadows, and motion values.</p>
+                    <div className="token-flow-card-example">color.primary: "#533afd"</div>
                   </div>
-                  <div className="token-flow-arrow">→</div>
-                  <div className="token-flow-step">
-                    <div className="token-flow-icon">
-                      <span className="ms" style={{ fontSize: 24 }}>data_object</span>
+
+                  {/* Arrow */}
+                  <div className="token-flow-arrow-premium" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="token-flow-card" role="listitem">
+                    <div className="token-flow-card-header">
+                      <div className="token-flow-card-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                      </div>
+                      <div className="token-flow-card-num">2</div>
                     </div>
-                    <div className="token-flow-num">2</div>
                     <h3>CSS Variables</h3>
-                    <p>Tokens compile into <code>--z-color-*</code>, <code>--z-space-*</code>, <code>--z-type-*</code> variables injected at <code>:root</code>.</p>
+                    <p>Tokens compile into namespaced <code>--z-*</code> variables injected at <code>:root</code> — available to every rule on the page.</p>
+                    <div className="token-flow-card-example">--z-color-primary: #533afd</div>
                   </div>
-                  <div className="token-flow-arrow">→</div>
-                  <div className="token-flow-step">
-                    <div className="token-flow-icon">
-                      <span className="ms" style={{ fontSize: 24 }}>check_circle</span>
+
+                  {/* Arrow */}
+                  <div className="token-flow-arrow-premium" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="token-flow-card" role="listitem">
+                    <div className="token-flow-card-header">
+                      <div className="token-flow-card-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6"/><path d="M9 12h6"/><path d="M9 15h4"/>
+                        </svg>
+                      </div>
+                      <div className="token-flow-card-num">3</div>
                     </div>
-                    <div className="token-flow-num">3</div>
                     <h3>Components</h3>
-                    <p>Every component reads CSS variables at render time. Change the accent — UI updates instantly.</p>
+                    <p>Every component reads CSS variables at render time. Swap a theme, change the accent — the UI updates everywhere, instantly.</p>
+                    <div className="token-flow-card-example">background: var(--z-color-primary)</div>
                   </div>
                 </div>
               </section>
 
-              {/* Token naming */}
+              {/* ── Naming convention ── */}
               <section id="token-naming" className="doc-section">
                 <div className="section-heading">
                   <h2>Naming convention</h2>
-                  <p>All tokens follow a predictable pattern: <code>--z-{'{category}'}-{'{name}'}</code></p>
+                  <p>All tokens follow one predictable pattern: <code>--z-&#123;category&#125;-&#123;name&#125;</code></p>
                 </div>
-                <div className="token-naming-grid">
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-color-</code>
-                    <span className="token-naming-desc">Semantic color roles</span>
-                    <span className="token-naming-example">primary, surface, border, muted, danger</span>
+                <div className="token-naming-grid-premium">
+                  {/* Color */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-color-</code>
+                    <span className="token-naming-card-desc">Semantic color roles</span>
+                    <div className="token-naming-card-examples">
+                      {["primary", "surface", "muted", "danger", "success"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-space-</code>
-                    <span className="token-naming-desc">Spacing scale</span>
-                    <span className="token-naming-example">xs, sm, md, lg, xl, 2xl</span>
+                  {/* Space */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-space-</code>
+                    <span className="token-naming-card-desc">Spacing scale</span>
+                    <div className="token-naming-card-examples">
+                      {["1", "2", "3", "4", "6", "8", "12"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-radius-</code>
-                    <span className="token-naming-desc">Corner rounding</span>
-                    <span className="token-naming-example">sm, md, lg, full</span>
+                  {/* Radius */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="5"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-radius-</code>
+                    <span className="token-naming-card-desc">Corner rounding</span>
+                    <div className="token-naming-card-examples">
+                      {["none", "sm", "md", "lg", "xl", "pill"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-shadow-</code>
-                    <span className="token-naming-desc">Elevation levels</span>
-                    <span className="token-naming-example">sm, md, lg</span>
+                  {/* Shadow */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="2" width="16" height="16" rx="2"/><path d="M8 8h14v14H8z" strokeOpacity="0.4"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-shadow-</code>
+                    <span className="token-naming-card-desc">Elevation levels</span>
+                    <div className="token-naming-card-examples">
+                      {["none", "sm", "md", "lg"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-type-</code>
-                    <span className="token-naming-desc">Typography system</span>
-                    <span className="token-naming-example">family-sans, size-lg, weight-bold</span>
+                  {/* Type */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-type-</code>
+                    <span className="token-naming-card-desc">Typography system</span>
+                    <div className="token-naming-card-examples">
+                      {["size-sm", "size-lg", "weight-bold", "family-sans"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="token-naming-card">
-                    <code className="token-naming-prefix">--z-motion-</code>
-                    <span className="token-naming-desc">Animation timing</span>
-                    <span className="token-naming-example">duration-fast, easing-default</span>
+                  {/* Motion */}
+                  <div className="token-naming-card-premium">
+                    <div className="token-naming-card-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                    </div>
+                    <code className="token-naming-card-prefix">--z-motion-</code>
+                    <span className="token-naming-card-desc">Animation timing</span>
+                    <div className="token-naming-card-examples">
+                      {["duration-fast", "duration-slow", "easing-standard"].map(v => (
+                        <span key={v} className="token-naming-card-example-chip">{v}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>
@@ -6461,10 +6754,10 @@ injectSpeedInsights();`}
               )}
             >
               <TemplatesPage
-                userTier={userTier}
+                userTier="pro"
                 widgetSurface={widgetSurface}
                 showcaseVersion={showcaseVersion}
-                onOpenUpgrade={() => setShowUpgradeModal(true)}
+                onOpenUpgrade={() => {}}
                 onCopy={copyAndFlash}
               />
             </Suspense>
@@ -6529,18 +6822,6 @@ injectSpeedInsights();`}
                 </div>
               </section>
 
-              {selectedEntry.tier === "pro" && userTier === "free" && (
-                <div className="upgrade-inline-banner">
-                  <div className="upgrade-inline-content">
-                    <span className="upgrade-inline-badge">PRO</span>
-                    <div>
-                      <strong>{selectedEntry.name}</strong> is a Pro component.
-                      Unlock all Pro molecules, organisms, and page templates.
-                    </div>
-                  </div>
-                  <Button size="sm" onClick={() => setShowUpgradeModal(true)}>Unlock Pro</Button>
-                </div>
-              )}
 
               {isAssetLibraryComponent && (
                 <section id="cloud-assets" className="doc-section">
@@ -7477,6 +7758,26 @@ injectSpeedInsights();`}
                             </select>
                           </label>
                         </div>
+                      ) : genericEnumRows.length > 0 ? (
+                        <div className="variant-filters">
+                          {genericEnumRows.map(row => {
+                            const values = row.acceptedValues.split(", ");
+                            const currentVal = previewProps[row.name] ?? row.defaultValue ?? values[0] ?? "";
+                            return (
+                              <label key={row.name} className="variant-filter-dropdown">
+                                <span>{row.name.charAt(0).toUpperCase() + row.name.slice(1)}</span>
+                                <select
+                                  value={currentVal}
+                                  onChange={(e) => setPreviewProps(prev => ({ ...prev, [row.name]: e.target.value }))}
+                                >
+                                  {values.map(v => (
+                                    <option key={v} value={v}>{v.charAt(0).toUpperCase() + v.slice(1)}</option>
+                                  ))}
+                                </select>
+                              </label>
+                            );
+                          })}
+                        </div>
                       ) : undefined}
                     >
                       <PreviewSurface
@@ -7572,193 +7873,88 @@ injectSpeedInsights();`}
                   <h2>Use this component</h2>
                   <p>Choose prompt-first or code-first usage depending on your workflow.</p>
                 </div>
-                <div className="setup-inner-tabs component-use-tabs">
-                  <button
-                    type="button"
-                    className={`setup-inner-tab ${componentUseMode === "prompt" ? "is-active" : ""}`}
-                    onClick={() => setComponentUseMode("prompt")}
-                  >
-                    AI prompt
-                  </button>
-                  <button
-                    type="button"
-                    className={`setup-inner-tab ${componentUseMode === "code" ? "is-active" : ""}`}
-                    onClick={() => setComponentUseMode("code")}
-                  >
-                    Code
-                  </button>
-                </div>
-                {componentUseMode === "prompt" ? (
-                  <div className="component-use-panel">
-                    <label className="field">
-                      <span>Prompt to paste into Claude / Cursor</span>
-                      <Textarea value={blockPrompt} readOnly rows={12} />
-                    </label>
-                    <div className="inline-actions">
-                      <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
-                        Copy AI Prompt
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
+                <div className="component-use-shell">
+                  <div className="component-use-header">
+                    <div className="itb-tabrow component-use-tabrow" role="tablist" aria-label="Component usage mode">
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={componentUseMode === "prompt"}
+                        className={`itb-tab ${componentUseMode === "prompt" ? "active" : ""}`}
+                        onClick={() => setComponentUseMode("prompt")}
                       >
-                        Copy key token
-                      </Button>
+                        AI prompt
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={componentUseMode === "code"}
+                        className={`itb-tab ${componentUseMode === "code" ? "active" : ""}`}
+                        onClick={() => setComponentUseMode("code")}
+                      >
+                        Code
+                      </button>
                     </div>
                   </div>
-                ) : (
-                  <div className="snippet-stack">
-                    <SnippetItem
-                      label="Import"
-                      code={importSnippet}
-                      onCopy={() => copyAndFlash("Import snippet", importSnippet)}
-                    />
-                    <SnippetItem
-                      label="Usage"
-                      code={usageSnippet}
-                      onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
-                    />
-                  </div>
-                )}
+                  {componentUseMode === "prompt" ? (
+                    <div className="component-use-panel">
+                      <label className="field">
+                        <span>Prompt to paste into Claude / Cursor</span>
+                        <Textarea value={blockPrompt} readOnly rows={12} />
+                      </label>
+                      <div className="inline-actions">
+                        <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
+                          Copy AI Prompt
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
+                        >
+                          Copy key token
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="component-use-code">
+                      <div className="snippet-stack">
+                        <SnippetItem
+                          label="Import"
+                          code={importSnippet}
+                          onCopy={() => copyAndFlash("Import snippet", importSnippet)}
+                        />
+                        <SnippetItem
+                          label="Usage"
+                          code={usageSnippet}
+                          onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </section>
 
-              {(selectedEntry.id === "button" || selectedEntry.id === "input" || selectedEntry.id === "select") && (
+              {apiPropRows.length > 0 && (
                 <section id="customize" className="doc-section">
                   <div className="section-heading">
                     <h2>Edit the {selectedEntry.name.toLowerCase()}</h2>
-                    <p>Switch tone, size, and state without rewriting your UI.</p>
+                    <p>Switch states and variants without rewriting your UI.</p>
                   </div>
                   <div className="component-edit-grid">
-                    {selectedEntry.id === "button" ? (
-                      <>
-                        <div>
-                          <h3>Prompt edits</h3>
-                          <ul className="component-edit-list">
-                            <li>“Make the primary button secondary.”</li>
-                            <li>“Use a ghost button for the secondary action.”</li>
-                            <li>“Make the save button small and loading.”</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3>Code edits</h3>
-                          <pre className="component-edit-code">{`<Button variant="primary">Save</Button>
-<Button variant="secondary">Cancel</Button>
-<Button variant="ghost">Learn more</Button>
-<Button size="sm" loading>Saving…</Button>`}</pre>
-                        </div>
-                      </>
-                    ) : selectedEntry.id === "input" ? (
-                      <>
-                        <div>
-                          <h3>Prompt edits</h3>
-                          <ul className="component-edit-list">
-                            <li>“Add a placeholder like ‘name@company.com’.”</li>
-                            <li>“Show an error state with helper text.”</li>
-                            <li>“Make the input small and disabled.”</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3>Code edits</h3>
-                          <pre className="component-edit-code">{`<FormField label="Work email" hint="We'll only use this for updates.">
-  <Input placeholder="name@company.com" />
-</FormField>
-<FormField label="Backup email" error="Please enter a valid email.">
-  <Input defaultValue="invalid-email" aria-invalid />
-</FormField>
-<Input size="sm" disabled />`}</pre>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <h3>Prompt edits</h3>
-                          <ul className="component-edit-list">
-                            <li>“Make the select small and full width.”</li>
-                            <li>“Preselect the ‘Weekly’ option.”</li>
-                            <li>“Show a disabled select with helper text.”</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3>Code edits</h3>
-                          <pre className="component-edit-code">{`<FormField label="Frequency">
-  <Select defaultValue="weekly">
-    <option value="daily">Daily</option>
-    <option value="weekly">Weekly</option>
-  </Select>
-</FormField>
-<Select size="sm" disabled />`}</pre>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <div className="component-edit-table">
-                    <h3>{selectedEntry.id === "button" ? "Variants" : "States"}</h3>
-                    {selectedEntry.id === "button" ? (
-                      <table className="component-variant-table">
-                        <thead>
-                          <tr>
-                            <th scope="col">Variant</th>
-                            <th scope="col">Prompt</th>
-                            <th scope="col">Code</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Primary</td>
-                            <td>“Make the button primary.”</td>
-                            <td><code>variant="primary"</code></td>
-                          </tr>
-                          <tr>
-                            <td>Secondary</td>
-                            <td>“Use a secondary button.”</td>
-                            <td><code>variant="secondary"</code></td>
-                          </tr>
-                          <tr>
-                            <td>Ghost</td>
-                            <td>“Use a ghost button for the secondary action.”</td>
-                            <td><code>variant="ghost"</code></td>
-                          </tr>
-                          <tr>
-                            <td>Danger</td>
-                            <td>“Make the delete button destructive.”</td>
-                            <td><code>variant="danger"</code></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    ) : (
-                      <table className="component-variant-table">
-                        <thead>
-                          <tr>
-                            <th scope="col">State</th>
-                            <th scope="col">Prompt</th>
-                            <th scope="col">Code</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Default</td>
-                            <td>“Use the default {selectedEntry.name.toLowerCase()}.”</td>
-                            <td><code>{`<${selectedEntry.name} />`}</code></td>
-                          </tr>
-                          <tr>
-                            <td>Error</td>
-                            <td>“Show an error state with helper text.”</td>
-                            <td><code>aria-invalid</code></td>
-                          </tr>
-                          <tr>
-                            <td>Disabled</td>
-                            <td>“Make it disabled.”</td>
-                            <td><code>disabled</code></td>
-                          </tr>
-                          <tr>
-                            <td>Read-only</td>
-                            <td>“Make it read-only.”</td>
-                            <td><code>readOnly</code></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    )}
+                    <div>
+                      <h3>Prompt edits</h3>
+                      <ul className="component-edit-list">
+                        {selectedEntry.aiHints.positive.slice(0, 3).map((hint, i) => (
+                          <li key={i}>"{hint}"</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3>Code edits</h3>
+                      <pre className="component-edit-code">
+                        {selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />")}
+                      </pre>
+                    </div>
                   </div>
                   <div className="component-edit-table">
                     <h3>Core props</h3>
@@ -7771,28 +7967,13 @@ injectSpeedInsights();`}
                         </tr>
                       </thead>
                       <tbody>
-                        {selectedEntry.id === "button" ? (
-                          <tr>
-                            <td><code>variant</code></td>
-                            <td>primary, secondary, ghost, danger</td>
-                            <td>Sets visual tone.</td>
+                        {apiPropRows.map((row) => (
+                          <tr key={row.name}>
+                            <td><code>{row.name}</code></td>
+                            <td>{row.acceptedValues || row.type}</td>
+                            <td>{row.description}</td>
                           </tr>
-                        ) : null}
-                        <tr>
-                          <td><code>size</code></td>
-                          <td>{selectedEntry.id === "button" ? "xs, sm, md" : "sm, md"}</td>
-                          <td>Controls height and padding.</td>
-                        </tr>
-                        <tr>
-                          <td><code>{selectedEntry.id === "button" ? "loading" : "disabled"}</code></td>
-                          <td>true | false</td>
-                          <td>{selectedEntry.id === "button" ? "Shows spinner, disables clicks." : "Blocks interaction."}</td>
-                        </tr>
-                        <tr>
-                          <td><code>{selectedEntry.id === "button" ? "disabled" : "readOnly"}</code></td>
-                          <td>true | false</td>
-                          <td>{selectedEntry.id === "button" ? "Blocks interaction." : "Keeps value but locks edits."}</td>
-                        </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -7940,7 +8121,7 @@ injectSpeedInsights();`}
               {isAssetLibraryComponent ? <a className="toc-link" href="#cloud-assets">Cloud asset sync</a> : null}
               <a className="toc-link" href="#examples">Examples</a>
               <a className="toc-link" href="#use">Use this component</a>
-              {["button", "input", "select"].includes(selectedEntry.id) ? (
+              {apiPropRows.length > 0 ? (
                 <a className="toc-link" href="#customize">Edit the {selectedEntry.name.toLowerCase()}</a>
               ) : null}
               <a className="toc-link" href="#installation">Installation</a>
@@ -7958,58 +8139,6 @@ injectSpeedInsights();`}
         )}
       </div >
 
-      {
-        showUpgradeModal && (
-          <LicenseKeyModal
-            licenseKey={licenseKey}
-            plans={checkoutPlans}
-            onSubmit={async (key) => {
-              const validationClient = new ZephrCloudClient({
-                baseUrl: cloudBaseUrl
-              });
-              let result: Awaited<ReturnType<ZephrCloudClient["validateLicense"]>>;
-              try {
-                result = await validationClient.validateLicense({ licenseKey: key });
-              } catch (error) {
-                const message = error instanceof Error ? error.message : String(error);
-                throw new Error(
-                  message.toLowerCase().includes("failed to fetch")
-                    ? `License service unavailable at ${cloudBaseUrl}. Start @zephrui/cloud-api and retry.`
-                    : message
-                );
-              }
-              if (!result.valid || result.tier !== "pro") {
-                throw new Error(result.message || "Invalid license key.");
-              }
-
-              setLicenseKey(key);
-              setUserTier("pro");
-              sessionStorage.setItem("zephr-license-key", key);
-              setShowUpgradeModal(false);
-              showToast(result.message || "Pro access enabled");
-            }}
-            onGetKey={(planId) => {
-              const plan = checkoutPlans.find((entry) => entry.id === planId);
-              if (!plan?.checkoutUrl) {
-                showToast(
-                  "Set VITE_ZEPHR_CHECKOUT_TEMPLATES or configure cloud plan checkout links."
-                );
-                return;
-              }
-
-              window.open(plan.checkoutUrl, "_blank", "noopener,noreferrer");
-              showToast(`Opening ${plan.label} checkout...`);
-            }}
-            onRemove={() => {
-              setLicenseKey("");
-              setUserTier("free");
-              sessionStorage.removeItem("zephr-license-key");
-              setShowUpgradeModal(false);
-            }}
-            onClose={() => setShowUpgradeModal(false)}
-          />
-        )
-      }
     </div >
   );
 }

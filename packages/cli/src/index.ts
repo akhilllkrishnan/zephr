@@ -972,12 +972,187 @@ function commandWhoami(): void {
   console.log(`Since:   ${new Date(credentials.activatedAt).toLocaleDateString()}`);
 }
 
+// ---------------------------------------------------------------------------
+// add-skills
+// ---------------------------------------------------------------------------
+
+type SupportedEditor = "claude-code" | "cursor" | "codex" | "universal";
+
+const SKILL_FILES = [
+  "adapt",
+  "animate",
+  "annotate",
+  "audit",
+  "bolder",
+  "breathe",
+  "clarify",
+  "colorize",
+  "compose",
+  "critique",
+  "distill",
+  "focus",
+  "harden",
+  "normalize",
+  "polish",
+  "quieter",
+  "scaffold",
+  "teach-zephr",
+  "tighten",
+  "token-check",
+  "widget"
+] as const;
+
+function resolveSkillsSourceDir(): string {
+  // When installed via npm the skills directory sits next to src/ at package root
+  // __dirname resolves to dist/ after compilation, so go up one level
+  const candidates = [
+    path.resolve(__dirname, "..", "skills"),
+    path.resolve(__dirname, "skills")
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  throw new Error(
+    `Could not locate the Zephr skills directory. Expected one of:\n  ${candidates.join("\n  ")}`
+  );
+}
+
+function writeFileEnsureDir(filePath: string, content: string): void {
+  const dir = path.dirname(filePath);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, content, "utf8");
+}
+
+function buildCursorRules(skillsDir: string): string {
+  const lines: string[] = [
+    "# Zephr Commands — Cursor Rules",
+    "",
+    "These slash commands are part of the Zephr design system command vocabulary.",
+    "Use them in Cursor AI chat to apply designer-quality changes to your UI.",
+    ""
+  ];
+
+  for (const skill of SKILL_FILES) {
+    const skillPath = path.join(skillsDir, `${skill}.md`);
+    if (!fs.existsSync(skillPath)) continue;
+    const raw = fs.readFileSync(skillPath, "utf8");
+    // Extract the description from frontmatter
+    const descMatch = /^description:\s*(.+)$/m.exec(raw);
+    const desc = descMatch ? descMatch[1].trim() : skill;
+    lines.push(`## /${skill}`);
+    lines.push(`> ${desc}`);
+    lines.push("");
+    // Include skill body (strip frontmatter)
+    const body = raw.replace(/^---[\s\S]*?---\n?/, "").trim();
+    lines.push(body);
+    lines.push("");
+    lines.push("---");
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function buildAgentsDoc(skillsDir: string): string {
+  const lines: string[] = [
+    "# Zephr Command Reference — AGENTS.md",
+    "",
+    "Zephr slash commands are available in this project.",
+    "Use them in any AI coding session to apply design system conventions.",
+    ""
+  ];
+
+  for (const skill of SKILL_FILES) {
+    const skillPath = path.join(skillsDir, `${skill}.md`);
+    if (!fs.existsSync(skillPath)) continue;
+    const raw = fs.readFileSync(skillPath, "utf8");
+    const descMatch = /^description:\s*(.+)$/m.exec(raw);
+    const desc = descMatch ? descMatch[1].trim() : skill;
+    lines.push(`### /${skill}`);
+    lines.push(`${desc}`);
+    lines.push("");
+    const body = raw.replace(/^---[\s\S]*?---\n?/, "").trim();
+    lines.push(body);
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function commandAddSkills(input: ParsedInput): void {
+  const rawEditor = readFlag(input, "editor") ?? "claude-code";
+  const editor = rawEditor as SupportedEditor;
+  const validEditors: SupportedEditor[] = ["claude-code", "cursor", "codex", "universal"];
+
+  if (!validEditors.includes(editor)) {
+    console.error(
+      `Unknown editor "${editor}". Valid options: ${validEditors.join(", ")}`
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  let skillsDir: string;
+  try {
+    skillsDir = resolveSkillsSourceDir();
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+    return;
+  }
+
+  const cwd = process.cwd();
+
+  if (editor === "claude-code") {
+    const destDir = path.join(cwd, ".claude", "commands");
+    fs.mkdirSync(destDir, { recursive: true });
+    let written = 0;
+    for (const skill of SKILL_FILES) {
+      const src = path.join(skillsDir, `${skill}.md`);
+      if (!fs.existsSync(src)) {
+        console.warn(`  ⚠ Skill file not found, skipping: ${skill}.md`);
+        continue;
+      }
+      const dest = path.join(destDir, `${skill}.md`);
+      fs.copyFileSync(src, dest);
+      written += 1;
+    }
+    console.log(`✓ Installed ${written} Zephr commands to .claude/commands/`);
+    console.log("  Use them in any Claude Code conversation:");
+    console.log("    /polish    /audit    /bolder    /scaffold dashboard");
+  } else if (editor === "cursor") {
+    const destFile = path.join(cwd, ".cursor", "rules", "zephr.mdc");
+    const content = buildCursorRules(skillsDir);
+    writeFileEnsureDir(destFile, content);
+    console.log(`✓ Zephr commands written to .cursor/rules/zephr.mdc`);
+    console.log("  Use /slash commands in Cursor AI chat.");
+  } else if (editor === "codex") {
+    const destFile = path.join(cwd, "AGENTS.md");
+    const existing = fs.existsSync(destFile) ? fs.readFileSync(destFile, "utf8") : "";
+    const marker = "<!-- zephr-skills -->";
+    const block = `${marker}\n${buildAgentsDoc(skillsDir)}\n${marker}`;
+    const updated = existing.includes(marker)
+      ? existing.replace(new RegExp(`${marker}[\\s\\S]*?${marker}`), block)
+      : `${existing}\n\n${block}`.trimStart();
+    fs.writeFileSync(destFile, updated, "utf8");
+    console.log(`✓ Zephr commands appended to AGENTS.md`);
+  } else {
+    // universal
+    const destFile = path.join(cwd, "ZEPHR-COMMANDS.md");
+    const content = buildAgentsDoc(skillsDir);
+    fs.writeFileSync(destFile, content, "utf8");
+    console.log(`✓ Zephr commands written to ZEPHR-COMMANDS.md`);
+    console.log("  Reference this file from any AI editor's custom instructions.");
+  }
+}
+
 function printHelp(): void {
   console.log(`Zephr CLI
 
 Usage:
   zephr init [--style-pack <name>] [--accent <hex>] [--force]
   zephr add <component> [--tool Codex|Claude|Cursor] [--out <dir>] [--force]
+  zephr add-skills [--editor claude-code|cursor|codex|universal]
   zephr theme [<stylePack>] [--accent <hex>] [--list]
   zephr doctor [--strict]
   zephr list [--search <query>] [--category foundation|atom|molecule|organism]
@@ -987,10 +1162,22 @@ Usage:
 Examples:
   zephr init --style-pack notion --accent #335cff
   zephr add button --tool Codex
+  zephr add-skills --editor claude-code
+  zephr add-skills --editor cursor
   zephr theme stripe --accent #1d4ed8
   zephr doctor
   zephr upgrade --key ZEPHR-PRO-XXXX-XXXX
   zephr whoami
+
+Commands:
+  init         Set up Zephr in an existing project
+  add          Generate a component scaffold for your AI tool
+  add-skills   Install Zephr slash commands into your AI editor
+  theme        Switch the active style pack
+  doctor       Check your Zephr setup for issues
+  list         Browse available components
+  upgrade      Activate a Pro license key
+  whoami       Show current license status
 `);
 }
 
@@ -1019,6 +1206,9 @@ async function main(): Promise<void> {
       return;
     case "whoami":
       commandWhoami();
+      return;
+    case "add-skills":
+      commandAddSkills(input);
       return;
     case "help":
     case "--help":

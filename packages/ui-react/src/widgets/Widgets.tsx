@@ -2092,27 +2092,28 @@ export function SettingsPanelWidget({
   const [auditEnabled, setAuditEnabled] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(false);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
 
   const rows = [
-    {
-      title: "Audit logging",
-      description: "Track publish, billing, and access changes for the workspace.",
-      value: auditEnabled,
-      onChange: setAuditEnabled,
-    },
-    {
-      title: "Weekly digest",
-      description: "Send a Friday summary with usage, shipping progress, and incidents.",
-      value: weeklySummary,
-      onChange: setWeeklySummary,
-    },
-    {
-      title: "Maintenance mode",
-      description: "Show a maintenance notice before publishing risky migrations.",
-      value: maintenanceMode,
-      onChange: setMaintenanceMode,
-    }
+    { title: "Audit logging", description: "Track publish, billing, and access changes for the workspace.", value: auditEnabled, onChange: setAuditEnabled },
+    { title: "Weekly digest", description: "Send a Friday summary with usage, shipping progress, and incidents.", value: weeklySummary, onChange: setWeeklySummary },
+    { title: "Maintenance mode", description: "Show a maintenance notice before publishing risky migrations.", value: maintenanceMode, onChange: setMaintenanceMode }
   ];
+
+  const handleSave = () => {
+    setSaveState("saving");
+    setTimeout(() => {
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 2000);
+    }, 800);
+  };
+
+  const handleReset = () => {
+    setAuditEnabled(true);
+    setWeeklySummary(false);
+    setMaintenanceMode(false);
+    setSaveState("idle");
+  };
 
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
@@ -2121,7 +2122,10 @@ export function SettingsPanelWidget({
           <div style={kickerStyle()}>Settings</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
-        <Badge tone="neutral">3 controls</Badge>
+        {saveState === "saved"
+          ? <Badge color="green" variant="lighter">Saved</Badge>
+          : <Badge tone="neutral">3 controls</Badge>
+        }
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "1rem", alignItems: "center", padding: "0.95rem 0", borderTop: "1px solid var(--z-color-border, #ebebeb)", borderBottom: "1px solid var(--z-color-border, #ebebeb)" }}>
@@ -2144,7 +2148,10 @@ export function SettingsPanelWidget({
           </div>
         ))}
       </div>
-      {actionRow([{ label: "Save settings" }, { label: "Reset defaults", variant: "secondary" }])}
+      {actionRow([
+        { label: saveState === "saving" ? "Saving…" : saveState === "saved" ? "Saved ✓" : "Save settings", onClick: handleSave },
+        { label: "Reset defaults", variant: "secondary", onClick: handleReset }
+      ])}
     </Card>
   );
 }
@@ -2235,11 +2242,19 @@ export function NotificationFeedWidget({
   className,
   style
 }: NotificationFeedWidgetProps) {
-  const items = [
-    { label: "Pricing update approved", detail: "Maya approved the Q2 enterprise pricing change.", badge: { label: "Approved", color: "green" as BadgeColor } },
-    { label: "2 new support mentions", detail: "Customer ops mentioned billing retries in #launch-war-room.", badge: { label: "Unread", color: "blue" as BadgeColor } },
-    { label: "Scheduled publish in 30 min", detail: "Homepage hero and changelog copy are queued for publish.", badge: { label: "Scheduled", color: "orange" as BadgeColor } }
+  const allItems = [
+    { id: "1", label: "Pricing update approved", detail: "Maya approved the Q2 enterprise pricing change.", badge: { label: "Approved", color: "green" as BadgeColor }, group: "Today" },
+    { id: "2", label: "2 new support mentions", detail: "Customer ops mentioned billing retries in #launch-war-room.", badge: { label: "Unread", color: "blue" as BadgeColor }, group: "Today" },
+    { id: "3", label: "Scheduled publish in 30 min", detail: "Homepage hero and changelog copy are queued for publish.", badge: { label: "Scheduled", color: "orange" as BadgeColor }, group: "Today" },
+    { id: "4", label: "Release v2.4 deployed", detail: "Staging deploy succeeded. 3 new components shipped.", badge: { label: "Deploy", color: "purple" as BadgeColor }, group: "Yesterday" }
   ];
+  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+
+  const markRead = (id: string) => setReadIds(prev => new Set([...prev, id]));
+  const markAllRead = () => setReadIds(new Set(allItems.map(i => i.id)));
+  const unreadCount = allItems.filter(i => !readIds.has(i.id)).length;
+
+  const groups = ["Today", "Yesterday"];
 
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
@@ -2248,35 +2263,63 @@ export function NotificationFeedWidget({
           <div style={kickerStyle()}>Inbox</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
-        <Badge color="blue" variant="lighter">Live feed</Badge>
+        {unreadCount > 0
+          ? <Badge color="blue" variant="lighter">{unreadCount} unread</Badge>
+          : <Badge color="green" variant="lighter">All read</Badge>
+        }
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
-      <div style={{ ...summaryBandStyle(), display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "1rem" }}>
-        {[
-          { label: "Unread", value: "5 items" },
-          { label: "Priority", value: "2 need action" },
-          { label: "Last update", value: "3 minutes ago" }
-        ].map((item, index) => (
-          <div key={item.label} style={{ ...stackStyle("0.15rem"), paddingLeft: index === 0 ? 0 : "1rem", borderLeft: index === 0 ? "none" : "1px solid var(--z-color-border, #ebebeb)" }}>
-            <span style={mutedTextStyle()}>{item.label}</span>
-            <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.value}</strong>
-          </div>
-        ))}
-      </div>
       <div style={dividedListStyle()}>
-        {items.map((item, index) => (
-          <div key={item.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
-            <div style={{ ...stackStyle("0.35rem") }}>
-              <div style={inlineRowStyle()}>
-                <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.label}</strong>
-                <Badge color={item.badge.color} variant="lighter">{item.badge.label}</Badge>
+        {groups.map(group => {
+          const groupItems = allItems.filter(i => i.group === group);
+          if (!groupItems.length) return null;
+          return (
+            <div key={group}>
+              <div style={{ padding: "0.5rem 0 0.25rem", fontSize: "0.72rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--z-color-muted, #667085)" }}>
+                {group}
               </div>
-              <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{item.detail}</p>
+              {groupItems.map((item) => {
+                const isRead = readIds.has(item.id);
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      ...dividedRowStyle(),
+                      opacity: isRead ? 0.55 : 1,
+                      transition: "opacity 200ms"
+                    }}
+                  >
+                    <div style={{ ...stackStyle("0.35rem") }}>
+                      <div style={inlineRowStyle()}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          {!isRead && (
+                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--z-color-accent, #2563eb)", flexShrink: 0 }} />
+                          )}
+                          <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{item.label}</strong>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                          <Badge color={item.badge.color} variant="lighter">{item.badge.label}</Badge>
+                          {!isRead && (
+                            <button
+                              type="button"
+                              onClick={() => markRead(item.id)}
+                              style={{ fontSize: "0.75rem", color: "var(--z-color-muted, #667085)", background: "none", border: "none", cursor: "pointer", padding: "0 0.25rem", textDecoration: "underline" }}
+                            >
+                              Mark read
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.55 }}>{item.detail}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      {actionRow([{ label: "Open inbox" }, { label: "Mark all read", variant: "secondary" }])}
+      {actionRow([{ label: "Open inbox" }, { label: "Mark all read", variant: "secondary", onClick: markAllRead }])}
     </Card>
   );
 }
@@ -2434,11 +2477,21 @@ export function CommandPaletteWidget({
   className,
   style
 }: CommandPaletteWidgetProps) {
-  const commands = [
+  const allCommands = [
     { label: "Create release", meta: "Workflow · cmd+k", badge: "Action" },
     { label: "Open billing usage", meta: "Settings · b", badge: "Page" },
-    { label: "Invite team member", meta: "Team · i", badge: "Shortcut" }
+    { label: "Invite team member", meta: "Team · i", badge: "Shortcut" },
+    { label: "View audit trail", meta: "Security · a", badge: "Page" },
+    { label: "Export analytics report", meta: "Analytics · e", badge: "Action" }
   ];
+  const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const filtered = query.trim()
+    ? allCommands.filter(c =>
+        c.label.toLowerCase().includes(query.toLowerCase()) ||
+        c.meta.toLowerCase().includes(query.toLowerCase())
+      )
+    : allCommands.slice(0, 3);
 
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
@@ -2447,10 +2500,27 @@ export function CommandPaletteWidget({
         <h3 style={titleStyle()}>{title}</h3>
         <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       </div>
-      <Input defaultValue="Search actions, pages, or team members…" />
+      <Input
+        value={query}
+        onChange={(e) => { setQuery(e.target.value); setActiveIndex(0); }}
+        placeholder="Search actions, pages, or team members…"
+      />
       <div style={dividedListStyle()}>
-        {commands.map((command, index) => (
-          <div key={command.label} style={index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()}>
+        {filtered.length === 0 ? (
+          <div style={{ ...dividedRowStyle(), borderTop: "none", color: "var(--z-color-muted, #667085)", fontSize: "0.9rem" }}>
+            No results for &ldquo;{query}&rdquo;
+          </div>
+        ) : filtered.map((command, index) => (
+          <div
+            key={command.label}
+            onMouseEnter={() => setActiveIndex(index)}
+            style={{
+              ...(index === 0 ? { ...dividedRowStyle(), borderTop: "none" } : dividedRowStyle()),
+              borderRadius: 8,
+              background: index === activeIndex ? "var(--z-color-background100, #f4f6fa)" : "transparent",
+              cursor: "pointer"
+            }}
+          >
             <div style={{ ...inlineRowStyle() }}>
               <div style={stackStyle("0.12rem")}>
                 <strong style={{ color: "var(--z-color-text, #171717)", fontSize: "0.94rem" }}>{command.label}</strong>
@@ -3599,14 +3669,44 @@ export function DataTableWidget({
   className,
   style
 }: DataTableWidgetProps) {
-  const columns = ["Name", "Amount", "Status", "Date"];
-  const rows = [
-    { name: "Acme Corp", amount: "$4,250.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 5, 2026" },
-    { name: "Globex Inc", amount: "$1,800.00", status: "Pending", statusColor: "yellow" as BadgeColor, date: "Mar 4, 2026" },
-    { name: "Initech Ltd", amount: "$12,000.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 3, 2026" },
-    { name: "Umbrella Co", amount: "$3,420.00", status: "Failed", statusColor: "red" as BadgeColor, date: "Mar 2, 2026" },
-    { name: "Stark Ind", amount: "$8,750.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 1, 2026" }
+  type SortKey = "name" | "amount" | "status" | "date";
+  type SortDir = "asc" | "desc";
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const baseRows = [
+    { name: "Acme Corp", amount: 4250, amountDisplay: "$4,250.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 5, 2026", dateSort: 5 },
+    { name: "Globex Inc", amount: 1800, amountDisplay: "$1,800.00", status: "Pending", statusColor: "yellow" as BadgeColor, date: "Mar 4, 2026", dateSort: 4 },
+    { name: "Initech Ltd", amount: 12000, amountDisplay: "$12,000.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 3, 2026", dateSort: 3 },
+    { name: "Umbrella Co", amount: 3420, amountDisplay: "$3,420.00", status: "Failed", statusColor: "red" as BadgeColor, date: "Mar 2, 2026", dateSort: 2 },
+    { name: "Stark Ind", amount: 8750, amountDisplay: "$8,750.00", status: "Completed", statusColor: "green" as BadgeColor, date: "Mar 1, 2026", dateSort: 1 }
   ];
+
+  const rows = [...baseRows].sort((a, b) => {
+    let cmp = 0;
+    if (sortKey === "name") cmp = a.name.localeCompare(b.name);
+    else if (sortKey === "amount") cmp = a.amount - b.amount;
+    else if (sortKey === "status") cmp = a.status.localeCompare(b.status);
+    else cmp = a.dateSort - b.dateSort;
+    return sortDir === "asc" ? cmp : -cmp;
+  });
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  };
+  const toggleRow = (name: string) => setSelected(prev => {
+    const next = new Set(prev);
+    if (next.has(name)) next.delete(name); else next.add(name);
+    return next;
+  });
+  const allSelected = selected.size === rows.length;
+  const toggleAll = () => setSelected(allSelected ? new Set() : new Set(rows.map(r => r.name)));
+
+  const SortIcon = ({ k }: { k: SortKey }) => sortKey !== k ? null : (
+    <span style={{ marginLeft: 4, opacity: 0.7 }}>{sortDir === "asc" ? "↑" : "↓"}</span>
+  );
 
   const thStyle: CSSProperties = {
     padding: "0.75rem 1rem",
@@ -3616,7 +3716,10 @@ export function DataTableWidget({
     textTransform: "uppercase",
     color: "var(--z-color-muted, #667085)",
     textAlign: "left",
-    borderBottom: "1px solid var(--z-color-border, #ebebeb)"
+    borderBottom: "1px solid var(--z-color-border, #ebebeb)",
+    cursor: "pointer",
+    userSelect: "none",
+    whiteSpace: "nowrap"
   };
 
   const tdStyle: CSSProperties = {
@@ -3633,23 +3736,42 @@ export function DataTableWidget({
           <div style={kickerStyle()}>Data</div>
           <h3 style={titleStyle()}>{title}</h3>
         </div>
-        <Badge color="blue" variant="lighter">{rows.length} entries</Badge>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          {selected.size > 0 && <Badge color="blue" variant="lighter">{selected.size} selected</Badge>}
+          <Badge color="blue" variant="lighter">{rows.length} entries</Badge>
+        </div>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       <div style={{ borderRadius: 14, overflow: "hidden", border: "1px solid var(--z-color-border, #ebebeb)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", background: "var(--z-color-surface, #ffffff)" }}>
           <thead>
             <tr style={{ background: "var(--z-color-background100, #f4f6fa)" }}>
-              {columns.map((col) => (
-                <th key={col} style={thStyle}>{col}</th>
+              <th style={{ ...thStyle, width: 40, cursor: "default" }}>
+                <Checkbox checked={allSelected} indeterminate={selected.size > 0 && !allSelected} onChange={toggleAll} />
+              </th>
+              {(["name", "amount", "status", "date"] as SortKey[]).map(key => (
+                <th key={key} style={thStyle} onClick={() => toggleSort(key)}>
+                  {key.charAt(0).toUpperCase() + key.slice(1)}<SortIcon k={key} />
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.name} style={{ borderBottom: i === rows.length - 1 ? "none" : undefined }}>
+              <tr
+                key={row.name}
+                onClick={() => toggleRow(row.name)}
+                style={{
+                  borderBottom: i === rows.length - 1 ? "none" : undefined,
+                  background: selected.has(row.name) ? "color-mix(in srgb, var(--z-color-accent, #2563eb) 5%, transparent)" : "transparent",
+                  cursor: "pointer"
+                }}
+              >
+                <td style={{ ...tdStyle, width: 40 }}>
+                  <Checkbox checked={selected.has(row.name)} onChange={() => toggleRow(row.name)} />
+                </td>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{row.name}</td>
-                <td style={{ ...tdStyle, fontFamily: "var(--z-type-family-mono, monospace)", fontSize: "0.88rem" }}>{row.amount}</td>
+                <td style={{ ...tdStyle, fontFamily: "var(--z-type-family-mono, monospace)", fontSize: "0.88rem" }}>{row.amountDisplay}</td>
                 <td style={tdStyle}><Badge color={row.statusColor} variant="lighter">{row.status}</Badge></td>
                 <td style={{ ...tdStyle, color: "var(--z-color-muted, #667085)" }}>{row.date}</td>
               </tr>
@@ -4054,46 +4176,74 @@ export function MetricsDashboardWidget({
   className,
   style
 }: MetricsDashboardWidgetProps) {
-  const metrics = [
-    { label: "Revenue", value: "$48.2K", delta: "+12.4%", positive: true },
-    { label: "Users", value: "2,847", delta: "+8.1%", positive: true },
-    { label: "Churn", value: "1.2%", delta: "-0.3%", positive: true },
-    { label: "NPS", value: "72", delta: "-2", positive: false }
-  ];
+  type Period = "7d" | "30d" | "90d";
+  const [period, setPeriod] = useState<Period>("30d");
+
+  const metricsByPeriod: Record<Period, Array<{ label: string; value: string; delta: string; positive: boolean }>> = {
+    "7d": [
+      { label: "Revenue", value: "$11.4K", delta: "+3.2%", positive: true },
+      { label: "Users", value: "2,847", delta: "+1.8%", positive: true },
+      { label: "Churn", value: "0.4%", delta: "-0.1%", positive: true },
+      { label: "NPS", value: "72", delta: "—", positive: true }
+    ],
+    "30d": [
+      { label: "Revenue", value: "$48.2K", delta: "+12.4%", positive: true },
+      { label: "Users", value: "2,847", delta: "+8.1%", positive: true },
+      { label: "Churn", value: "1.2%", delta: "-0.3%", positive: true },
+      { label: "NPS", value: "72", delta: "-2", positive: false }
+    ],
+    "90d": [
+      { label: "Revenue", value: "$142K", delta: "+28.7%", positive: true },
+      { label: "Users", value: "2,847", delta: "+21.5%", positive: true },
+      { label: "Churn", value: "3.8%", delta: "+0.6%", positive: false },
+      { label: "NPS", value: "72", delta: "+5", positive: true }
+    ]
+  };
+
+  const metrics = metricsByPeriod[period];
 
   return (
     <Card {...surfaceProps(surface)} padding="lg" className={className} style={cardStyle(style)}>
-      <div>
-        <div style={kickerStyle()}>Dashboard</div>
-        <h3 style={titleStyle()}>{title}</h3>
+      <div style={inlineRowStyle()}>
+        <div>
+          <div style={kickerStyle()}>Dashboard</div>
+          <h3 style={titleStyle()}>{title}</h3>
+        </div>
+        <div style={{ display: "flex", gap: "0.25rem", background: "var(--z-color-background100, #f4f6fa)", borderRadius: 8, padding: "0.2rem" }}>
+          {(["7d", "30d", "90d"] as Period[]).map(p => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPeriod(p)}
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                padding: "0.2rem 0.6rem",
+                borderRadius: 6,
+                border: "none",
+                cursor: "pointer",
+                background: period === p ? "var(--z-color-surface, #ffffff)" : "transparent",
+                color: period === p ? "var(--z-color-text, #171717)" : "var(--z-color-muted, #667085)",
+                boxShadow: period === p ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                transition: "all 120ms"
+              }}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
       </div>
       <p style={{ ...mutedTextStyle(), margin: 0, lineHeight: 1.6 }}>{subtitle}</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
         {metrics.map((m) => (
-          <div
-            key={m.label}
-            style={{
-              ...panelStyle(),
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.4rem"
-            }}
-          >
+          <div key={m.label} style={{ ...panelStyle(), display: "flex", flexDirection: "column", gap: "0.4rem" }}>
             <span style={{ fontSize: "0.78rem", fontWeight: 500, color: "var(--z-color-muted, #667085)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               {m.label}
             </span>
             <strong style={{ fontSize: "1.35rem", letterSpacing: "-0.03em", color: "var(--z-color-text, #171717)" }}>
               {m.value}
             </strong>
-            <span
-              style={{
-                fontSize: "0.82rem",
-                fontWeight: 500,
-                color: m.positive
-                  ? "var(--z-color-success, #0a7d53)"
-                  : "var(--z-color-danger, #c43b2f)"
-              }}
-            >
+            <span style={{ fontSize: "0.82rem", fontWeight: 500, color: m.positive ? "var(--z-color-success, #0a7d53)" : "var(--z-color-danger, #c43b2f)" }}>
               {m.delta}
             </span>
           </div>

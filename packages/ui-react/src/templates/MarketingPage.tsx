@@ -1,5 +1,5 @@
 "use client";
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode, useState } from "react";
 
 /* ─────────────────────────────────────────────
    SVG helpers
@@ -265,6 +265,12 @@ export interface MarketingPricingPlan {
   name: string;
   price: string;
   period?: string;
+  /** Optional: price shown when billing period is "annual" */
+  priceAnnual?: string;
+  /** Optional: period label shown when billing period is "annual" */
+  periodAnnual?: string;
+  /** Optional: percentage savings label shown in annual mode e.g. "Save 20%" */
+  savingsLabel?: string;
   description: string;
   features: string[];
   ctaLabel: string;
@@ -380,6 +386,9 @@ export function MarketingPage({
   className,
   style,
 }: MarketingPageProps) {
+  const hasAnnualPricing = pricingPlans.some(p => p.priceAnnual);
+  const [billingAnnual, setBillingAnnual] = useState(false);
+
   return (
     <div
       className={`mp-root${className ? ` ${className}` : ""}`}
@@ -652,13 +661,45 @@ export function MarketingPage({
             <h2 style={{ margin: "0 0 12px", fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 800, color: "#0f172a", letterSpacing: "-0.04em" }}>
               One plan. One price.
             </h2>
-            <p style={{ margin: 0, fontSize: "16px", color: "#64748b" }}>
+            <p style={{ margin: "0 0 20px", fontSize: "16px", color: "#64748b" }}>
               All components are free. Pay once to unlock premium page examples.
             </p>
+            {hasAnnualPricing && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "#f1f5f9", borderRadius: "99px", padding: "5px 6px 5px 16px", fontSize: "13.5px" }}>
+                <span style={{ color: billingAnnual ? "#94a3b8" : "#0f172a", fontWeight: billingAnnual ? 400 : 600, transition: "color 150ms" }}>Monthly</span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={billingAnnual}
+                  onClick={() => setBillingAnnual(a => !a)}
+                  style={{
+                    width: "36px", height: "20px", borderRadius: "99px", border: "none", cursor: "pointer",
+                    background: billingAnnual ? "#335cff" : "#cbd5e1",
+                    position: "relative", transition: "background 200ms", flexShrink: 0,
+                    outline: "none"
+                  }}
+                >
+                  <span style={{
+                    position: "absolute", top: "2px",
+                    left: billingAnnual ? "18px" : "2px",
+                    width: "16px", height: "16px", borderRadius: "50%", background: "#ffffff",
+                    transition: "left 200ms", boxShadow: "0 1px 3px rgba(0,0,0,0.15)"
+                  }} />
+                </button>
+                <span style={{ color: billingAnnual ? "#0f172a" : "#94a3b8", fontWeight: billingAnnual ? 600 : 400, transition: "color 150ms" }}>Annual</span>
+                {billingAnnual && (
+                  <span style={{ background: "#dcfce7", color: "#166534", fontSize: "11px", fontWeight: 700, padding: "2px 8px", borderRadius: "99px", letterSpacing: "0.02em" }}>
+                    Save up to 20%
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(pricingPlans.length, 3)}, minmax(0, 420px))`, gap: "16px", alignItems: "start", justifyContent: "center" }}>
             {pricingPlans.map((plan) => {
               const isPro = plan.highlighted;
+              const displayPrice = (billingAnnual && plan.priceAnnual) ? plan.priceAnnual : plan.price;
+              const displayPeriod = (billingAnnual && plan.periodAnnual) ? plan.periodAnnual : plan.period;
               return (
                 <div key={plan.id} className={`mp-plan-card${isPro ? " is-pro" : ""}`}>
                   {isPro && (
@@ -677,13 +718,18 @@ export function MarketingPage({
                     <h3 style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: 700, color: isPro ? "rgba(255,255,255,0.9)" : "#0f172a", letterSpacing: "-0.02em" }}>
                       {plan.name}
                     </h3>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "4px", margin: "12px 0 8px" }}>
-                      <span style={{ fontSize: "36px", fontWeight: 800, color: isPro ? "#ffffff" : "#0f172a", letterSpacing: "-0.04em", lineHeight: 1 }}>
-                        {plan.price}
+                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px", margin: "12px 0 8px" }}>
+                      <span style={{ fontSize: "36px", fontWeight: 800, color: isPro ? "#ffffff" : "#0f172a", letterSpacing: "-0.04em", lineHeight: 1, transition: "all 150ms" }}>
+                        {displayPrice}
                       </span>
-                      {plan.period && (
+                      {displayPeriod && (
                         <span style={{ fontSize: "14px", color: isPro ? "rgba(255,255,255,0.4)" : "#94a3b8" }}>
-                          {plan.period}
+                          {displayPeriod}
+                        </span>
+                      )}
+                      {billingAnnual && plan.savingsLabel && (
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#166534", background: "#dcfce7", padding: "2px 7px", borderRadius: "99px" }}>
+                          {plan.savingsLabel}
                         </span>
                       )}
                     </div>

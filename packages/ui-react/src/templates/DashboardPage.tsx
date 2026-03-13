@@ -550,12 +550,15 @@ export function DashboardPage({
             ))}
           </div>
 
-          {/* Stat cards */}
+          {/* Stat cards — overview + analytics only */}
+          {activeTab !== "reports" && (
           <div className="dp-stats">
             {stats.map((s, i) => <StatCard key={s.id} stat={s} delay={`${i * 50}ms`} />)}
           </div>
+          )}
 
-          {/* Chart row */}
+          {/* Chart row — overview + analytics only */}
+          {activeTab !== "reports" && (
           <div className="dp-charts">
 
             {/* Revenue area chart */}
@@ -616,6 +619,24 @@ export function DashboardPage({
               </div>
             </div>
           </div>
+          )}
+
+          {/* Analytics tab: show key metric callouts */}
+          {activeTab === "analytics" && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: "12px", marginBottom: "16px" }}>
+              {[
+                { label: "Conversion rate", value: "3.4%", trend: "↑ 0.4pp", color: "#22c55e" },
+                { label: "Avg. session", value: "4m 12s", trend: "↑ 18s", color: "#22c55e" },
+                { label: "Bounce rate", value: "38%", trend: "↓ 2%", color: "#22c55e" }
+              ].map(m => (
+                <div key={m.label} className="dp-card" style={{ padding: "16px 18px" }}>
+                  <div className="dp-card-sub" style={{ marginBottom: "4px" }}>{m.label}</div>
+                  <div style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.03em" }}>{m.value}</div>
+                  <div style={{ fontSize: "12px", color: m.color, fontWeight: 500, marginTop: "2px" }}>{m.trend} this week</div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Bottom: table + activity */}
           <div className="dp-bottom">
@@ -679,7 +700,8 @@ export function DashboardPage({
               </table>
             </div>
 
-            {/* Activity feed */}
+            {/* Activity feed — overview only */}
+            {activeTab === "overview" && (
             <div className="dp-card dp-activity" style={{ animationDelay: "360ms" }}>
               <div className="dp-activity-head">
                 <div className="dp-card-title">Activity</div>
@@ -711,6 +733,36 @@ export function DashboardPage({
                 })}
               </div>
             </div>
+            )}
+
+            {/* Reports summary — reports tab only */}
+            {activeTab === "reports" && (
+              <div className="dp-card" style={{ padding: "20px" }}>
+                <div className="dp-card-head" style={{ marginBottom: "16px" }}>
+                  <div>
+                    <div className="dp-card-title">Monthly summary</div>
+                    <div className="dp-card-sub">March 2026</div>
+                  </div>
+                  <button type="button" className="dp-sec-btn" style={{ fontSize: "12px", padding: "4px 10px" }}>
+                    Export CSV <Icon d={Icons.download} size={12} />
+                  </button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: "10px" }}>
+                  {[
+                    { label: "Total revenue", value: "$48,210", change: "+12.5%" },
+                    { label: "New customers", value: "142", change: "+8.3%" },
+                    { label: "Support tickets", value: "38", change: "-4.2%" },
+                    { label: "Avg. response time", value: "2.1h", change: "-11%" }
+                  ].map(r => (
+                    <div key={r.label} style={{ padding: "14px 16px", borderRadius: "10px", background: "#f8fafc", border: "1px solid #f1f5f9" }}>
+                      <div style={{ fontSize: "11.5px", color: "#94a3b8", fontWeight: 500, marginBottom: "4px" }}>{r.label}</div>
+                      <div style={{ fontSize: "18px", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.03em" }}>{r.value}</div>
+                      <div style={{ fontSize: "11.5px", color: "#22c55e", fontWeight: 500, marginTop: "2px" }}>{r.change} vs last month</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
