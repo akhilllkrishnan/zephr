@@ -212,15 +212,17 @@ function createPack(
     colorDark: {
       ...composeColorTokens(dark),
       // Dark-mode aliases use dark surfaces instead of static white backgrounds.
-      surface: dark.background["800"],
+      // Note: dark palettes use an inverted scale (950=lightest, 0=darkest),
+      // so "100" is the appropriate subtle-elevated surface, not "800".
+      surface: dark.background["100"],
       background: dark.background["0"],
-      weak: dark.background["800"],
+      weak: dark.background["200"],
       sub: dark.background["600"],
       text: dark.text["950"],
       muted: dark.text["500"],
       border: dark.stroke["300"],
-      "info-lighter": dark.background["800"],
-      "warning-lighter": dark.background["800"],
+      "info-lighter": dark.background["200"],
+      "warning-lighter": dark.background["200"],
       strong: dark.text["950"]
     },
     type: { ...baseTypography },

@@ -144,15 +144,17 @@ function createPack(light, dark, overrides) {
         colorDark: {
             ...composeColorTokens(dark),
             // Dark-mode aliases use dark surfaces instead of static white backgrounds.
-            surface: dark.background["800"],
+            // Note: dark palettes use an inverted scale (950=lightest, 0=darkest),
+            // so "100" is the appropriate subtle-elevated surface, not "800".
+            surface: dark.background["100"],
             background: dark.background["0"],
-            weak: dark.background["800"],
+            weak: dark.background["200"],
             sub: dark.background["600"],
             text: dark.text["950"],
             muted: dark.text["500"],
             border: dark.stroke["300"],
-            "info-lighter": dark.background["800"],
-            "warning-lighter": dark.background["800"],
+            "info-lighter": dark.background["200"],
+            "warning-lighter": dark.background["200"],
             strong: dark.text["950"]
         },
         type: { ...baseTypography },
@@ -173,7 +175,7 @@ exports.stylePacks = {
             "600": "#666666",
             "400": "#a3a3a3",
             "200": "#e5e5e5",
-            "100": "#f5f5f5",
+            "100": "#f7f7f7",
             "0": "#ffffff"
         },
         text: {
@@ -186,7 +188,7 @@ exports.stylePacks = {
             "400": "#bdbdbd",
             "300": "#d4d4d8",
             "200": "#e5e7eb",
-            "100": "#f3f4f6"
+            "100": "#ebebeb"
         },
         accent: {
             "900": "#1d4ed8",
@@ -295,7 +297,7 @@ exports.stylePacks = {
             "400": "#8898aa",
             "300": "#d4dce8",
             "200": "#e6ebf1",
-            "100": "#f6f9fc"
+            "100": "#f2f1f1"
         },
         accent: {
             "900": "#3d22d6",

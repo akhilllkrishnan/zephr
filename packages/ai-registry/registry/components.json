@@ -1955,5 +1955,566 @@
     "usageExamples": [
       "import { LogoLibrary } from '@zephrui/ui-react';\n<LogoLibrary initialQuery='developer' onCopy={(domain) => console.log(domain)} />"
     ]
+  },
+  {
+    "id": "card",
+    "name": "Card",
+    "category": "atom",
+    "description": "Surface container with optional elevation, border, and padding presets.",
+    "propsSchema": {
+      "padding": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md", "required": false, "deprecated": false },
+      "radius": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md", "required": false, "deprecated": false },
+      "shadow": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "none", "required": false, "deprecated": false },
+      "bordered": { "type": "boolean", "default": true, "required": false, "deprecated": false },
+      "asChild": { "type": "boolean", "default": false, "required": false, "deprecated": false, "description": "Render as a child element instead of a div." }
+    },
+    "a11yNotes": ["If the card is interactive, use a button or anchor as the root element via asChild."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use Card to group related content in dashboards, list items, and detail panels.", "Combine with Stack for vertical content layout inside the card."],
+      "negative": ["Avoid nesting Cards more than one level deep."],
+      "preferredImports": ["import { Card } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Card } from '@zephrui/ui-react';\n<Card padding='md' shadow='sm'><p>Content</p></Card>"]
+  },
+  {
+    "id": "divider",
+    "name": "Divider",
+    "category": "atom",
+    "description": "Horizontal or vertical separator line for visual sectioning.",
+    "propsSchema": {
+      "orientation": { "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal", "required": false, "deprecated": false },
+      "spacing": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md", "required": false, "deprecated": false },
+      "label": { "type": "string", "default": null, "required": false, "deprecated": false, "description": "Optional centered label text." }
+    },
+    "a11yNotes": ["Use role='separator' for decorative dividers; hide from screen readers with aria-hidden='true' when purely visual."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use to separate form sections, list groups, or navigation items."],
+      "negative": ["Avoid using as a layout spacer — use Spacer instead."],
+      "preferredImports": ["import { Divider } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Divider } from '@zephrui/ui-react';\n<Divider />\n<Divider label='or' />"]
+  },
+  {
+    "id": "progress",
+    "name": "Progress",
+    "category": "atom",
+    "description": "Linear progress bar showing completion percentage or indeterminate state.",
+    "propsSchema": {
+      "value": { "type": "number", "description": "Current value (0–100). Omit for indeterminate.", "required": false, "default": null, "deprecated": false },
+      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md", "required": false, "deprecated": false },
+      "tone": { "type": "enum", "values": ["primary", "success", "warning", "danger"], "default": "primary", "required": false, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Always include a descriptive label or aria-label. Set role='progressbar' with aria-valuenow, aria-valuemin, aria-valuemax."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use in file upload flows, onboarding steps, and task completion screens."],
+      "negative": ["Avoid animating to 100% without a subsequent success state."],
+      "preferredImports": ["import { Progress } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Progress } from '@zephrui/ui-react';\n<Progress value={72} label='Uploading…' />"]
+  },
+  {
+    "id": "skeleton",
+    "name": "Skeleton",
+    "category": "atom",
+    "description": "Loading placeholder that mimics content shape while data is fetching.",
+    "propsSchema": {
+      "width": { "type": "string | number", "required": false, "default": "100%", "deprecated": false },
+      "height": { "type": "string | number", "required": false, "default": "1rem", "deprecated": false },
+      "radius": { "type": "enum", "values": ["none", "sm", "md", "lg", "pill"], "default": "sm", "required": false, "deprecated": false },
+      "animate": { "type": "boolean", "default": true, "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Wrap skeleton groups in a container with aria-busy='true' and aria-label='Loading'."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Match skeleton dimensions to the real content to prevent layout shift.", "Compose multiple skeletons to mirror complex card or list layouts."],
+      "negative": ["Don't show skeletons for instant operations under 200ms."],
+      "preferredImports": ["import { Skeleton } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Skeleton } from '@zephrui/ui-react';\n<Skeleton width={200} height={16} radius='sm' />\n<Skeleton width='100%' height={80} radius='md' />"]
+  },
+  {
+    "id": "slider",
+    "name": "Slider",
+    "category": "atom",
+    "description": "Range input for selecting a numeric value within a min–max interval.",
+    "propsSchema": {
+      "value": { "type": "number", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "number", "required": false, "default": 0, "deprecated": false },
+      "min": { "type": "number", "default": 0, "required": false, "deprecated": false },
+      "max": { "type": "number", "default": 100, "required": false, "deprecated": false },
+      "step": { "type": "number", "default": 1, "required": false, "deprecated": false },
+      "disabled": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "onChange": { "type": "(value: number) => void", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Always provide a label. The slider renders a native range input with aria-valuemin, aria-valuemax, aria-valuenow."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for volume controls, price range filters, opacity settings, and numeric configuration."],
+      "negative": ["Avoid for precise numeric entry — use NumberInput instead."],
+      "preferredImports": ["import { Slider } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Slider } from '@zephrui/ui-react';\n<Slider label='Volume' min={0} max={100} defaultValue={50} onChange={(v) => setVolume(v)} />"]
+  },
+  {
+    "id": "tooltip",
+    "name": "Tooltip",
+    "category": "atom",
+    "description": "Short contextual hint that appears on hover or focus near a trigger element.",
+    "propsSchema": {
+      "content": { "type": "string | ReactNode", "required": true, "default": null, "deprecated": false },
+      "side": { "type": "enum", "values": ["top", "right", "bottom", "left"], "default": "top", "required": false, "deprecated": false },
+      "delay": { "type": "number", "default": 300, "required": false, "deprecated": false, "description": "Delay in ms before showing." }
+    },
+    "a11yNotes": ["Tooltip content must not be the sole means of conveying critical information. Trigger must be focusable."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Wrap icon-only buttons with Tooltip to expose the action label.", "Use side='bottom' for toolbar items to avoid clipping the viewport top."],
+      "negative": ["Don't put interactive content (links, buttons) inside a Tooltip — use Popover instead."],
+      "preferredImports": ["import { Tooltip } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Tooltip } from '@zephrui/ui-react';\n<Tooltip content='Delete item'><IconButton icon='delete' aria-label='Delete' /></Tooltip>"]
+  },
+  {
+    "id": "popover",
+    "name": "Popover",
+    "category": "molecule",
+    "description": "Floating panel anchored to a trigger, used for menus, pickers, and rich contextual UI.",
+    "propsSchema": {
+      "open": { "type": "boolean", "required": false, "default": null, "deprecated": false },
+      "defaultOpen": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "onOpenChange": { "type": "(open: boolean) => void", "required": false, "default": null, "deprecated": false },
+      "side": { "type": "enum", "values": ["top", "right", "bottom", "left"], "default": "bottom", "required": false, "deprecated": false },
+      "align": { "type": "enum", "values": ["start", "center", "end"], "default": "start", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Popover traps focus when open. Press Escape to close. The trigger should have aria-expanded and aria-controls."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for color pickers, date pickers, filter panels, and rich dropdowns.", "Compose Popover with a form for inline editing flows."],
+      "negative": ["Avoid deeply nested popovers — prefer a modal for complex interactions."],
+      "preferredImports": ["import { Popover } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Popover } from '@zephrui/ui-react';\n<Popover trigger={<Button>Open</Button>}><div>Popover content</div></Popover>"]
+  },
+  {
+    "id": "combo-box",
+    "name": "ComboBox",
+    "category": "molecule",
+    "description": "Searchable select with async option loading, custom rendering, and free-text support.",
+    "propsSchema": {
+      "options": { "type": "Array<{ value, label, disabled? }>", "required": true, "default": null, "deprecated": false },
+      "value": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "placeholder": { "type": "string", "default": "Search…", "required": false, "deprecated": false },
+      "allowCustomValue": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "loading": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "disabled": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "onChange": { "type": "(value: string) => void", "required": false, "default": null, "deprecated": false },
+      "onInputChange": { "type": "(input: string) => void", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Uses combobox ARIA pattern with listbox. Keyboard: type to filter, arrow keys to navigate, Enter to select, Escape to close."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use ComboBox when options exceed 10 items or require async search.", "Set onInputChange to debounce API calls for remote search."],
+      "negative": ["Prefer Select for short static option lists under 10 items."],
+      "preferredImports": ["import { ComboBox } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { ComboBox } from '@zephrui/ui-react';\n<ComboBox options={users} value={selected} onChange={setSelected} placeholder='Search users…' />"]
+  },
+  {
+    "id": "button-group",
+    "name": "ButtonGroup",
+    "category": "molecule",
+    "description": "Visually connected set of buttons sharing a single border, used for segmented controls.",
+    "propsSchema": {
+      "size": { "type": "enum", "values": ["sm", "md", "lg"], "default": "md", "required": false, "deprecated": false },
+      "variant": { "type": "enum", "values": ["primary", "secondary", "ghost"], "default": "secondary", "required": false, "deprecated": false },
+      "attached": { "type": "boolean", "default": true, "required": false, "deprecated": false, "description": "Merge borders between adjacent buttons." }
+    },
+    "a11yNotes": ["Wrap in a div with role='group' and aria-label describing the group purpose."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for view switchers (List / Grid), text alignment controls, and time range selectors.", "Mark the active button with aria-pressed='true'."],
+      "negative": ["Avoid more than 5 buttons in a group — use Tabs instead."],
+      "preferredImports": ["import { ButtonGroup } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { ButtonGroup } from '@zephrui/ui-react';\n<ButtonGroup>\n  <Button>Day</Button>\n  <Button>Week</Button>\n  <Button>Month</Button>\n</ButtonGroup>"]
+  },
+  {
+    "id": "date-picker",
+    "name": "DatePicker",
+    "category": "molecule",
+    "description": "Calendar-based date or date-range selection with input trigger.",
+    "propsSchema": {
+      "value": { "type": "Date | null", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "Date | null", "required": false, "default": null, "deprecated": false },
+      "onChange": { "type": "(date: Date | null) => void", "required": false, "default": null, "deprecated": false },
+      "minDate": { "type": "Date", "required": false, "default": null, "deprecated": false },
+      "maxDate": { "type": "Date", "required": false, "default": null, "deprecated": false },
+      "disabled": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "placeholder": { "type": "string", "default": "Pick a date", "required": false, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Calendar grid uses aria-grid. Each day cell has aria-label with full date. Keyboard: arrow keys to navigate days, Enter to select."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Wrap in FormField for consistent label and error display.", "Use minDate/maxDate to restrict selection to valid business windows."],
+      "negative": ["Don't use for year-only or time-only selection — use a dedicated input."],
+      "preferredImports": ["import { DatePicker } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { DatePicker } from '@zephrui/ui-react';\n<DatePicker label='Due date' value={date} onChange={setDate} />"]
+  },
+  {
+    "id": "color-picker",
+    "name": "ColorPicker",
+    "category": "molecule",
+    "description": "Inline or popover color picker with hex input, hue slider, and preset swatches.",
+    "propsSchema": {
+      "value": { "type": "string", "description": "Hex color string.", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "string", "default": "#000000", "required": false, "deprecated": false },
+      "onChange": { "type": "(hex: string) => void", "required": false, "default": null, "deprecated": false },
+      "presets": { "type": "string[]", "description": "Array of hex preset colors.", "required": false, "default": null, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Provide an aria-label on the swatch trigger. Hex input is keyboard accessible. Ensure sufficient contrast on the selected color preview."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for theme pickers, avatar background selection, and annotation tools.", "Provide presets matching the active style pack accent palette."],
+      "negative": ["Avoid inline color pickers in dense forms — use a popover trigger instead."],
+      "preferredImports": ["import { ColorPicker } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { ColorPicker } from '@zephrui/ui-react';\n<ColorPicker label='Accent' value={color} onChange={setColor} presets={['#2563eb', '#16a34a', '#dc2626']} />"]
+  },
+  {
+    "id": "number-input",
+    "name": "NumberInput",
+    "category": "molecule",
+    "description": "Numeric input with increment/decrement stepper buttons, min/max clamping, and format support.",
+    "propsSchema": {
+      "value": { "type": "number", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "number", "required": false, "default": 0, "deprecated": false },
+      "min": { "type": "number", "required": false, "default": null, "deprecated": false },
+      "max": { "type": "number", "required": false, "default": null, "deprecated": false },
+      "step": { "type": "number", "default": 1, "required": false, "deprecated": false },
+      "disabled": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "formatValue": { "type": "(n: number) => string", "required": false, "default": null, "deprecated": false },
+      "onChange": { "type": "(value: number) => void", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Stepper buttons have aria-label 'Increment' and 'Decrement'. Wrap in FormField for a visible label."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for quantity selectors, pagination page sizes, and port/timeout config fields.", "Use formatValue to display units (e.g. '50px', '$12.00')."],
+      "negative": ["Avoid for unconstrained large numbers — use a plain Input with type='number'."],
+      "preferredImports": ["import { NumberInput } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { NumberInput } from '@zephrui/ui-react';\n<NumberInput label='Quantity' min={1} max={99} defaultValue={1} onChange={setQty} />"]
+  },
+  {
+    "id": "tag-input",
+    "name": "TagInput",
+    "category": "molecule",
+    "description": "Multi-value input that converts typed text into removable tag chips on Enter.",
+    "propsSchema": {
+      "value": { "type": "string[]", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "string[]", "required": false, "default": [], "deprecated": false },
+      "placeholder": { "type": "string", "default": "Add tag…", "required": false, "deprecated": false },
+      "disabled": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "maxTags": { "type": "number", "required": false, "default": null, "deprecated": false },
+      "validate": { "type": "(tag: string) => boolean", "required": false, "default": null, "deprecated": false },
+      "label": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "onChange": { "type": "(tags: string[]) => void", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Each tag chip has an accessible remove button with aria-label. The input has role='textbox' with aria-label matching the field label."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for email CC fields, category labels, and keyword/skills tagging.", "Use validate to prevent duplicates or enforce format constraints."],
+      "negative": ["Avoid for single-value selection — use Select or ComboBox instead."],
+      "preferredImports": ["import { TagInput } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { TagInput } from '@zephrui/ui-react';\n<TagInput label='Tags' defaultValue={['design', 'react']} onChange={setTags} />"]
+  },
+  {
+    "id": "sheet",
+    "name": "Sheet",
+    "category": "molecule",
+    "description": "Slide-over panel that appears from the edge of the screen, typically for settings and detail views.",
+    "propsSchema": {
+      "open": { "type": "boolean", "required": false, "default": null, "deprecated": false },
+      "onClose": { "type": "() => void", "required": false, "default": null, "deprecated": false },
+      "side": { "type": "enum", "values": ["left", "right", "top", "bottom"], "default": "right", "required": false, "deprecated": false },
+      "title": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "width": { "type": "string | number", "default": "400px", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Sheet traps focus when open. Has role='dialog' with aria-label. Escape key closes it. Backdrop click also closes by default."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for detail editing, filter panels, and step-through flows where context from the main view should remain visible.", "Prefer right-side sheets for detail views and left-side for navigation."],
+      "negative": ["Avoid using Sheet for confirmation dialogs — use AlertDialog instead."],
+      "preferredImports": ["import { Sheet } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Sheet } from '@zephrui/ui-react';\n<Sheet open={open} onClose={() => setOpen(false)} title='Edit profile' side='right'><form>…</form></Sheet>"]
+  },
+  {
+    "id": "alert-dialog",
+    "name": "AlertDialog",
+    "category": "molecule",
+    "description": "Blocking confirmation dialog for destructive or irreversible actions requiring explicit user consent.",
+    "propsSchema": {
+      "open": { "type": "boolean", "required": false, "default": null, "deprecated": false },
+      "onConfirm": { "type": "() => void | Promise<void>", "required": true, "default": null, "deprecated": false },
+      "onCancel": { "type": "() => void", "required": true, "default": null, "deprecated": false },
+      "title": { "type": "string", "required": true, "default": null, "deprecated": false },
+      "description": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "confirmLabel": { "type": "string", "default": "Confirm", "required": false, "deprecated": false },
+      "cancelLabel": { "type": "string", "default": "Cancel", "required": false, "deprecated": false },
+      "tone": { "type": "enum", "values": ["danger", "warning", "neutral"], "default": "danger", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Has role='alertdialog'. Focus moves to the Cancel button on open. Escape key triggers onCancel. Backdrop click is blocked to prevent accidental dismissal."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for delete, archive, and revoke operations.", "Set tone='danger' for irreversible destructive actions."],
+      "negative": ["Don't use AlertDialog for informational messages — use Alert or Toast instead.", "Don't add complex forms inside AlertDialog — use a Sheet or ModalDialog."],
+      "preferredImports": ["import { AlertDialog } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { AlertDialog } from '@zephrui/ui-react';\n<AlertDialog open={open} title='Delete project?' description='This cannot be undone.' tone='danger' onConfirm={handleDelete} onCancel={() => setOpen(false)} />"]
+  },
+  {
+    "id": "rich-editor",
+    "name": "RichEditor",
+    "tier": "pro",
+    "category": "organism",
+    "description": "Full-featured rich text editor with toolbar, markdown shortcuts, and slash commands.",
+    "propsSchema": {
+      "value": { "type": "string", "description": "HTML or markdown content string.", "required": false, "default": null, "deprecated": false },
+      "defaultValue": { "type": "string", "required": false, "default": "", "deprecated": false },
+      "onChange": { "type": "(html: string) => void", "required": false, "default": null, "deprecated": false },
+      "placeholder": { "type": "string", "default": "Start writing…", "required": false, "deprecated": false },
+      "readOnly": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "toolbar": { "type": "boolean", "default": true, "required": false, "deprecated": false },
+      "minHeight": { "type": "string | number", "default": "200px", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Editor area has role='textbox' and aria-multiline='true'. Toolbar buttons have descriptive aria-labels. Keyboard shortcuts follow common editor conventions (Ctrl+B, Ctrl+I)."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for note-taking, blog post editors, email composers, and documentation fields.", "Wrap in FormField to include a label and validation error."],
+      "negative": ["Avoid for single-line or plain-text inputs — use Input or Textarea instead."],
+      "preferredImports": ["import { RichEditor } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { RichEditor } from '@zephrui/ui-react';\n<RichEditor placeholder='Write your post…' defaultValue={draft} onChange={setDraft} />"]
+  },
+  {
+    "id": "stack",
+    "name": "Stack",
+    "category": "atom",
+    "description": "Flex layout primitive for stacking children vertically or horizontally with uniform gap.",
+    "propsSchema": {
+      "direction": { "type": "enum", "values": ["vertical", "horizontal"], "default": "vertical", "required": false, "deprecated": false },
+      "gap": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8", "10", "12"], "default": "4", "required": false, "deprecated": false },
+      "align": { "type": "enum", "values": ["start", "center", "end", "stretch"], "default": "stretch", "required": false, "deprecated": false },
+      "justify": { "type": "enum", "values": ["start", "center", "end", "between", "around"], "default": "start", "required": false, "deprecated": false },
+      "wrap": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "asChild": { "type": "boolean", "default": false, "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Stack renders a div by default. Use asChild to merge onto a semantic element like section or nav."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use Stack as the primary layout primitive inside Cards, form sections, and page columns.", "Prefer Stack over ad-hoc flex CSS for consistent spacing with design tokens."],
+      "negative": ["Don't use Stack for complex 2D grid layouts — use Grid instead."],
+      "preferredImports": ["import { Stack } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Stack } from '@zephrui/ui-react';\n<Stack direction='vertical' gap='4'><Header /><Content /><Footer /></Stack>"]
+  },
+  {
+    "id": "grid",
+    "name": "Grid",
+    "category": "atom",
+    "description": "CSS grid layout primitive with responsive column configuration and token-based gaps.",
+    "propsSchema": {
+      "columns": { "type": "number | string", "description": "Number of columns or CSS grid-template-columns value.", "default": 2, "required": false, "deprecated": false },
+      "gap": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "default": "4", "required": false, "deprecated": false },
+      "rowGap": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "required": false, "default": null, "deprecated": false },
+      "colGap": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "required": false, "default": null, "deprecated": false },
+      "asChild": { "type": "boolean", "default": false, "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Grid renders a div. Ensure grid children use semantic HTML where appropriate."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use Grid for card galleries, stat grids, feature lists, and multi-column forms.", "Set columns='repeat(auto-fill, minmax(240px, 1fr))' for responsive grids."],
+      "negative": ["Don't use Grid for simple single-axis layouts — use Stack instead."],
+      "preferredImports": ["import { Grid } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Grid } from '@zephrui/ui-react';\n<Grid columns={3} gap='6'>{items.map(item => <Card key={item.id}>{item.name}</Card>)}</Grid>"]
+  },
+  {
+    "id": "box",
+    "name": "Box",
+    "category": "atom",
+    "description": "Base layout block for applying spacing, background, radius, and border via design tokens.",
+    "propsSchema": {
+      "padding": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "required": false, "default": null, "deprecated": false },
+      "paddingX": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "required": false, "default": null, "deprecated": false },
+      "paddingY": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8"], "required": false, "default": null, "deprecated": false },
+      "background": { "type": "string", "description": "Token key or CSS value.", "required": false, "default": null, "deprecated": false },
+      "radius": { "type": "enum", "values": ["none", "sm", "md", "lg", "xl", "pill"], "required": false, "default": null, "deprecated": false },
+      "border": { "type": "boolean", "default": false, "required": false, "deprecated": false },
+      "asChild": { "type": "boolean", "default": false, "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Box renders a div. Use asChild to merge onto semantic elements."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use Box for quick one-off spacing, backgrounds, or border wrappers without creating a new component.", "Combine with Stack for padded flex sections."],
+      "negative": ["Don't overuse Box for complex layouts — prefer dedicated layout components."],
+      "preferredImports": ["import { Box } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Box } from '@zephrui/ui-react';\n<Box padding='4' radius='md' border background='surface'><p>Content</p></Box>"]
+  },
+  {
+    "id": "spacer",
+    "name": "Spacer",
+    "category": "atom",
+    "description": "Flexible spacer that expands to fill available space or adds a fixed gap between elements.",
+    "propsSchema": {
+      "size": { "type": "enum", "values": ["0", "1", "2", "3", "4", "5", "6", "8", "10", "12"], "description": "Fixed size token. Omit for flex: 1 expansion.", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Spacer renders an aria-hidden div and has no semantic meaning."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use inside Stack to push trailing actions to the end of a row (e.g. title on left, button on right).", "Use a fixed size Spacer between sections as an alternative to margin-top."],
+      "negative": ["Don't use Spacer for fine-grained padding — adjust the parent Stack gap instead."],
+      "preferredImports": ["import { Spacer } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { Stack, Spacer, Button } from '@zephrui/ui-react';\n<Stack direction='horizontal'><h2>Title</h2><Spacer /><Button>Action</Button></Stack>"]
+  },
+  {
+    "id": "dashboard-page",
+    "name": "DashboardPage",
+    "tier": "pro",
+    "category": "template",
+    "description": "Full-page analytics dashboard with metric cards, data table, and chart placeholders.",
+    "propsSchema": {
+      "title": { "type": "string", "default": "Dashboard", "required": false, "deprecated": false },
+      "metrics": { "type": "Array<{ label, value, delta? }>", "required": false, "default": null, "deprecated": false },
+      "accentColor": { "type": "string", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["All metric cards have aria-label with label and value. Chart placeholders include a data table fallback for screen readers."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use as the root page for SaaS product home screens, analytics portals, and admin panels.", "Customize metric labels and chart sections for the specific product domain."],
+      "negative": ["Don't use as a sub-page layout — use LayoutShell for nested views."],
+      "preferredImports": ["import { DashboardPage } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { DashboardPage } from '@zephrui/ui-react';\n<DashboardPage title='Analytics' metrics={[{ label: 'MRR', value: '$42,800', delta: '+12%' }]} />"]
+  },
+  {
+    "id": "auth-page",
+    "name": "AuthPage",
+    "tier": "pro",
+    "category": "template",
+    "description": "Authentication page with login, signup, and password reset flows in a centered card layout.",
+    "propsSchema": {
+      "mode": { "type": "enum", "values": ["login", "signup", "reset"], "default": "login", "required": false, "deprecated": false },
+      "logo": { "type": "ReactNode", "required": false, "default": null, "deprecated": false },
+      "onSubmit": { "type": "(data: AuthFormData) => Promise<void>", "required": false, "default": null, "deprecated": false },
+      "oauthProviders": { "type": "Array<'google' | 'github' | 'microsoft'>", "required": false, "default": [], "deprecated": false }
+    },
+    "a11yNotes": ["Form has a unique aria-label per mode. Error messages are announced via aria-live. Social auth buttons have descriptive aria-labels."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use mode='signup' for registration, mode='login' for returning users.", "Pass oauthProviders to show social login buttons above the form."],
+      "negative": ["Don't add custom fields directly — extend via the children slot inside the form card."],
+      "preferredImports": ["import { AuthPage } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { AuthPage } from '@zephrui/ui-react';\n<AuthPage mode='login' oauthProviders={['google', 'github']} onSubmit={handleLogin} />"]
+  },
+  {
+    "id": "settings-page",
+    "name": "SettingsPage",
+    "tier": "pro",
+    "category": "template",
+    "description": "Tabbed settings page with sections for profile, account, notifications, billing, and security.",
+    "propsSchema": {
+      "tabs": { "type": "Array<{ id, label, content }>", "required": false, "default": null, "deprecated": false },
+      "defaultTab": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "title": { "type": "string", "default": "Settings", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Tab panel uses ARIA tablist/tab/tabpanel pattern. Keyboard: arrow keys to switch tabs, Tab to move into panel content."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for user preferences, workspace configuration, and billing management pages.", "Pass custom tabs to restrict which settings sections are visible per user role."],
+      "negative": ["Don't put critical account actions (delete, downgrade) in a top-level tab — nest them inside a Danger Zone section."],
+      "preferredImports": ["import { SettingsPage } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { SettingsPage } from '@zephrui/ui-react';\n<SettingsPage defaultTab='profile' tabs={[{ id: 'profile', label: 'Profile', content: <ProfileForm /> }]} />"]
+  },
+  {
+    "id": "onboarding-page",
+    "name": "OnboardingPage",
+    "tier": "pro",
+    "category": "template",
+    "description": "Multi-step onboarding wizard with progress indicator, step validation, and completion state.",
+    "propsSchema": {
+      "steps": { "type": "Array<{ id, title, description?, content }>", "required": true, "default": null, "deprecated": false },
+      "onComplete": { "type": "() => void", "required": false, "default": null, "deprecated": false },
+      "title": { "type": "string", "default": "Get started", "required": false, "deprecated": false }
+    },
+    "a11yNotes": ["Step progress is announced via aria-live. Each step panel has a unique aria-labelledby. Back/Next buttons are always visible and keyboard accessible."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for new user setup, workspace configuration wizards, and feature activation flows.", "Keep steps focused — 3–5 steps is ideal. Use onComplete to navigate to the dashboard."],
+      "negative": ["Avoid using OnboardingPage for re-occurring tasks — use a modal or sheet for repeated actions."],
+      "preferredImports": ["import { OnboardingPage } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { OnboardingPage } from '@zephrui/ui-react';\n<OnboardingPage title='Set up your workspace' steps={steps} onComplete={() => router.push('/dashboard')} />"]
+  },
+  {
+    "id": "marketing-page",
+    "name": "MarketingPage",
+    "tier": "pro",
+    "category": "template",
+    "description": "Public-facing marketing landing page with hero, features, pricing, and CTA sections.",
+    "propsSchema": {
+      "headline": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "subheadline": { "type": "string", "required": false, "default": null, "deprecated": false },
+      "ctaLabel": { "type": "string", "default": "Get started", "required": false, "deprecated": false },
+      "onCta": { "type": "() => void", "required": false, "default": null, "deprecated": false },
+      "features": { "type": "Array<{ icon, title, description }>", "required": false, "default": null, "deprecated": false }
+    },
+    "a11yNotes": ["Landmark regions: header, main, footer. Section headings follow a logical h1→h2→h3 hierarchy. CTA button has a descriptive aria-label."],
+    "dependencies": ["@zephrui/ui-react"],
+    "stylePackSupport": ["notion", "stripe", "linear", "framer"],
+    "aiHints": {
+      "positive": ["Use for product landing pages, feature announcement pages, and waitlist signups.", "Customize headline and features array to match the product domain."],
+      "negative": ["Don't use inside an authenticated shell — MarketingPage includes its own Navbar and footer."],
+      "preferredImports": ["import { MarketingPage } from \"@zephrui/ui-react\";"]
+    },
+    "usageExamples": ["import { MarketingPage } from '@zephrui/ui-react';\n<MarketingPage headline='Ship faster' subheadline='Token-driven UI for vibe coders.' ctaLabel='Start building' onCta={() => router.push('/signup')} />"]
   }
 ]

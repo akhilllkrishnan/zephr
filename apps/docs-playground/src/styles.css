@@ -24,8 +24,7 @@
   --bg: var(--z-color-background0);
   --fg: var(--z-color-text950);
   --page: var(--z-color-background0);
-  /* FIX: --z-color-surface = #e6ebf1 (light!) in dark; use background100 = #16304a instead */
-  --panel: var(--z-color-background100);
+  --panel: var(--z-color-surface);
   --panel-soft: var(--z-color-background200);
   --line: var(--z-color-stroke200);
   --line-strong: var(--z-color-stroke300);
@@ -4873,7 +4872,21 @@ h1 {
 }
 
 .gallery-card.is-locked {
-  opacity: 0.55;
+  opacity: 0.7;
+}
+
+.gallery-card-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--panel-soft) 70%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  color: var(--muted);
+  font-size: 1.125rem;
+  pointer-events: none;
 }
 
 /* Preview */
@@ -4887,6 +4900,7 @@ h1 {
   overflow: hidden;
   padding: 0 1rem;
   flex-shrink: 0;
+  position: relative;
 }
 
 .gallery-card-preview svg {

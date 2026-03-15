@@ -2447,7 +2447,7 @@ function InstallTabBlock({
             <Badge size="md" variant="stroke" color="yellow" style={{ marginRight: "0.5rem" }}>
               Private Beta
             </Badge>
-            @zephrui/ui-react is not yet published to npm — install command coming soon.
+            Run this command in your project directory to install Zephr.
           </div>
         )}
       </div>
@@ -3817,12 +3817,9 @@ export default function App() {
       `Set up Zephr UI in this ${aiProjectLabels[aiProject]} project.`,
       `Assistant target: ${assistantLabel}`,
       "",
-      "Note: @zephrui/ui-react is in private beta and not yet published to npm.",
-      "Skip the install step for now — import paths will work once the package is published.",
-      "",
       "Steps:",
       `1. Create app: ${aiProjectInitCommand}`,
-      `2. Install Zephr (coming soon): ${aiInstallCommand}`,
+      `2. Install Zephr: ${aiInstallCommand}`,
       "3. Import components from `@zephrui/ui-react`.",
       `4. Set accent to "${accentColor}".`,
       "5. Keep generated code accessible and production-ready."
@@ -5272,7 +5269,6 @@ export default function App() {
                     code="pnpm add @zephrui/ui-react"
                     onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")}
                   />
-                  <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
                 </div>
               </section>
 
@@ -5514,15 +5510,13 @@ export default function App() {
                 <div className="setup-tab-body">
                   {setupTab === "npm" && (
                     <div className="snippet-stack">
-                      <SnippetItem beta label="Install" code={`npm install @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")} />
-                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
+                      <SnippetItem label="Install" code={`npm install @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")} />
                       <SnippetItem label="zephr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
                     </div>
                   )}
                   {setupTab === "pnpm" && (
                     <div className="snippet-stack">
-                      <SnippetItem beta label="Install" code={`pnpm add @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")} />
-                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
+                      <SnippetItem label="Install" code={`pnpm add @zephrui/ui-react`} onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")} />
                       <SnippetItem label="zephr.config.ts" code={configSnippet} onCopy={() => copyAndFlash("Config", configSnippet)} />
                     </div>
                   )}
@@ -5530,7 +5524,6 @@ export default function App() {
                     <div className="snippet-stack">
                       <SnippetItem label="Init" code={`npx zephr init --accent ${accentColor}`} onCopy={() => copyAndFlash("CLI", `npx zephr init --accent ${accentColor}`)} />
                       <SnippetItem label="Add a component" code={`npx zephr add button`} onCopy={() => copyAndFlash("Add", "npx zephr add button")} />
-                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
                     </div>
                   )}
                   {setupTab === "ai" && (
@@ -5602,7 +5595,6 @@ export default function App() {
                         code={aiContextSnippet}
                         onCopy={() => copyAndFlash(`${aiContextPath} snippet`, aiContextSnippet)}
                       />
-                      <p className="beta-notice">Zephr is in private beta — not yet published to npm.</p>
                       <SnippetItem
                         label={`${aiToolLabels[aiTool]} prompt`}
                         code={aiPromptSnippet}
@@ -6862,10 +6854,13 @@ injectSpeedInsights();`}
                   return (
                     <section className="doc-section">
                       <div className="gallery-grid">
-                        {filtered.map((entry) => (
-                          <button key={entry.id} type="button" className="gallery-card" onClick={() => selectComponent(entry.id)}>
+                        {filtered.map((entry) => {
+                          const isLocked = entry.tier === "pro" && userTier === "free";
+                          return (
+                          <button key={entry.id} type="button" className={`gallery-card${isLocked ? " is-locked" : ""}`} onClick={() => isLocked ? setShowUpgradeModal(true) : selectComponent(entry.id)}>
                             <div className="gallery-card-preview">
                               <ComponentThumbnail name={entry.name} />
+                              {isLocked && <div className="gallery-card-lock"><span className="ms">lock</span></div>}
                             </div>
                             <div className="gallery-card-body">
                               <div className="gallery-card-row">
@@ -6875,7 +6870,7 @@ injectSpeedInsights();`}
                               <p className="gallery-card-desc">{entry.description}</p>
                             </div>
                           </button>
-                        ))}
+                        );})}
                       </div>
                     </section>
                   );
@@ -6900,10 +6895,13 @@ injectSpeedInsights();`}
                         <span className="gallery-cat-count" aria-label={`${entries.length} components`}>{entries.length}</span>
                       </div>
                       <div className="gallery-grid">
-                        {entries.map((entry) => (
-                          <button key={entry.id} type="button" className="gallery-card" onClick={() => selectComponent(entry.id)}>
+                        {entries.map((entry) => {
+                          const isLocked = entry.tier === "pro" && userTier === "free";
+                          return (
+                          <button key={entry.id} type="button" className={`gallery-card${isLocked ? " is-locked" : ""}`} onClick={() => isLocked ? setShowUpgradeModal(true) : selectComponent(entry.id)}>
                             <div className="gallery-card-preview">
                               <ComponentThumbnail name={entry.name} />
+                              {isLocked && <div className="gallery-card-lock"><span className="ms">lock</span></div>}
                             </div>
                             <div className="gallery-card-body">
                               <div className="gallery-card-row">
@@ -6913,7 +6911,7 @@ injectSpeedInsights();`}
                               <p className="gallery-card-desc">{entry.description}</p>
                             </div>
                           </button>
-                        ))}
+                        );})}
                       </div>
                     </section>
                   );

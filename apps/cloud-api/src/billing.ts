@@ -2,7 +2,7 @@ import { ensureCloudEnvLoaded } from "./env";
 
 ensureCloudEnvLoaded();
 
-export type LicensePlan = "pro" | "free";
+export type LicensePlan = "free" | "pro" | "individual" | "startup" | "team" | "enterprise";
 
 export interface PlanResolutionInput {
   variantId?: number;
