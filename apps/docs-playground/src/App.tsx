@@ -6711,6 +6711,18 @@ injectSpeedInsights();`}
                 <p className="breadcrumbs">Components / {selectedEntry.category.charAt(0).toUpperCase() + selectedEntry.category.slice(1)} / {selectedEntry.name}</p>
                 <h1>{selectedEntry.name}</h1>
                 <p className="lead">{selectedEntry.description}</p>
+                <div className="comp-hero-meta">
+                  <span className="comp-hero-chip comp-hero-chip--cat">
+                    {selectedEntry.category.charAt(0).toUpperCase() + selectedEntry.category.slice(1)}
+                  </span>
+                  <span className="comp-hero-chip comp-hero-chip--pkg">@zephrui/ui-react</span>
+                  <span className="comp-hero-chip comp-hero-chip--free">Free</span>
+                  {selectedEntry.dependencies.length > 0 && (
+                    <span className="comp-hero-chip comp-hero-chip--deps">
+                      {selectedEntry.dependencies.length} dep{selectedEntry.dependencies.length !== 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
                 <div className="hero-actions">
                   <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
                     Copy AI Prompt
@@ -7841,18 +7853,29 @@ injectSpeedInsights();`}
                   </div>
                   <div className="component-edit-grid">
                     <div>
-                      <h3>Prompt edits</h3>
+                      <h3>Try these prompts</h3>
                       <ul className="component-edit-list">
                         {selectedEntry.aiHints.positive.slice(0, 3).map((hint, i) => (
-                          <li key={i}>"{hint}"</li>
+                          <li key={i}>
+                            <button
+                              type="button"
+                              className="component-hint-chip"
+                              onClick={() => copyAndFlash("Prompt hint", `"${hint}"`)}
+                              title="Click to copy"
+                            >
+                              "{hint}"
+                            </button>
+                          </li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <h3>Code edits</h3>
-                      <pre className="component-edit-code">
-                        {selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />")}
-                      </pre>
+                      <h3>Usage example</h3>
+                      <SnippetItem
+                        label={selectedEntry.name}
+                        code={selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />")}
+                        onCopy={() => copyAndFlash("Usage example", selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />"))}
+                      />
                     </div>
                   </div>
                   <div className="component-edit-table">
@@ -7861,16 +7884,29 @@ injectSpeedInsights();`}
                       <thead>
                         <tr>
                           <th scope="col">Prop</th>
-                          <th scope="col">Options</th>
-                          <th scope="col">Notes</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Default</th>
+                          <th scope="col">Description</th>
                         </tr>
                       </thead>
                       <tbody>
                         {apiPropRows.map((row) => (
-                          <tr key={row.name}>
-                            <td><code>{row.name}</code></td>
-                            <td>{row.acceptedValues || row.type}</td>
-                            <td>{row.description}</td>
+                          <tr key={row.name} className={row.deprecated ? "is-deprecated" : ""}>
+                            <td>
+                              <span className="prop-name-cell">
+                                <code>{row.name}</code>
+                                {row.required && <span className="prop-required" title="Required">*</span>}
+                              </span>
+                            </td>
+                            <td>
+                              <span className={`prop-type-badge prop-type-badge--${row.type}`}>
+                                {row.acceptedValues && row.acceptedValues !== "See type union" ? row.acceptedValues : row.type}
+                              </span>
+                            </td>
+                            <td className="prop-default-cell">
+                              {row.defaultValue ? <code>{row.defaultValue}</code> : <span className="prop-no-default">—</span>}
+                            </td>
+                            <td className="prop-desc-cell">{row.description}</td>
                           </tr>
                         ))}
                       </tbody>
