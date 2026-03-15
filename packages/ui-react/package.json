@@ -1,6 +1,6 @@
 {
   "name": "@zephrui/ui-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React-first Zephr component library",
   "license": "MIT",
   "main": "dist/index.js",
