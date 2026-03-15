@@ -179,7 +179,7 @@ function WidgetSpotlightCard({ widget }: { widget: WidgetEntry }) {
   return (
     <a className="showcase-v2-card" href={`#${widget.id}`}>
       <div className="showcase-v2-card-stage">
-        <span className="showcase-v2-card-eyebrow">{WIDGET_CATEGORY_LABELS[widget.category]}</span>
+        <span className="showcase-v2-card-eyebrow">{WIDGET_CATEGORY_LABELS[widget.category as keyof typeof WIDGET_CATEGORY_LABELS]}</span>
         <div className="showcase-v2-card-preview">
           <WidgetPreviewArt widget={widget} />
         </div>
@@ -1003,7 +1003,7 @@ export default function WidgetsPage({ widgetSurface, showcaseVersion, onCopy }: 
   ), [activeCategory, queryFilteredEntries]);
 
   const curatedVisibleEntries = useMemo(() => {
-    const order = new Map(widgetsV2CatalogIds.map((id, index) => [id, index]));
+    const order = new Map<string, number>(widgetsV2CatalogIds.map((id, index) => [id, index]));
     return visibleEntries
       .filter((entry) => order.has(entry.id))
       .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));

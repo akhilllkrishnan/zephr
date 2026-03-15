@@ -8162,21 +8162,21 @@ injectSpeedInsights();`}
             }}
           />
           <span className="rail-title">On this page</span>
-          {topTab !== "changelog" && view === "introduction" && (
+          {view === "introduction" && (
             <>
               <a className="toc-link" href="#setup-introduction">Overview</a>
               <a className="toc-link" href="#install">Install</a>
               <a className="toc-link" href="#explore">Explore</a>
             </>
           )}
-          {topTab !== "changelog" && view === "getting-started" && (
+          {view === "getting-started" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
               <a className="toc-link" href="#accent-selection">Accent color</a>
               <a className="toc-link" href="#setup">Install</a>
             </>
           )}
-          {topTab !== "changelog" && view === "speed-insights" && (
+          {view === "speed-insights" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
               <a className="toc-link" href="#prerequisites">Prerequisites</a>
@@ -8188,7 +8188,7 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#next-steps">Next Steps</a>
             </>
           )}
-          {topTab !== "changelog" && view === "foundations" && (
+          {view === "foundations" && (
             <>
               <a className="toc-link" href="#foundations-overview">Overview</a>
               <a className="toc-link" href="#color-palette">Color palette</a>
@@ -8196,21 +8196,21 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#typography">Typography</a>
             </>
           )}
-          {topTab !== "changelog" && view === "mission" && (
+          {view === "mission" && (
             <>
               <a className="toc-link" href="#mission-overview">Overview</a>
               <a className="toc-link" href="#mission-pillars">Mission pillars</a>
               <a className="toc-link" href="#vision-principles">Vision</a>
             </>
           )}
-          {topTab !== "changelog" && view === "team" && (
+          {view === "team" && (
             <>
               <a className="toc-link" href="#team-overview">Overview</a>
               <a className="toc-link" href="#team-directory">Core team</a>
               <a className="toc-link" href="#team-process">How we ship</a>
             </>
           )}
-          {topTab !== "changelog" && view === "widgets" && (
+          {view === "widgets" && (
             <>
               <a className="toc-link" href="#widgets-overview">Overview</a>
               {pageWidgetNavItems.map((widget) => (
@@ -8218,7 +8218,7 @@ injectSpeedInsights();`}
               ))}
             </>
           )}
-          {topTab !== "changelog" && view === "templates" && (
+          {view === "templates" && (
             <>
               <a className="toc-link" href="#templates-overview">Overview</a>
               {pageTemplateNavItems.map((template) => (
@@ -8226,12 +8226,12 @@ injectSpeedInsights();`}
               ))}
             </>
           )}
-          {topTab !== "changelog" && view === "component-gallery" && (
+          {view === "component-gallery" && (
             <>
               <a className="toc-link" href="#gallery-overview">Overview</a>
             </>
           )}
-          {topTab !== "changelog" && view === "components" && (
+          {view === "components" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
               {isAssetLibraryComponent ? <a className="toc-link" href="#cloud-assets">Cloud asset sync</a> : null}
@@ -8243,7 +8243,7 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#installation">Installation</a>
             </>
           )}
-          {topTab !== "changelog" && view === "api-reference" && (
+          {view === "api-reference" && (
             <>
               <a className="toc-link" href="#api-overview">Overview</a>
               <a className="toc-link" href="#api-props">Props</a>
