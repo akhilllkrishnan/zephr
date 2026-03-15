@@ -2068,6 +2068,72 @@ h1 {
     font-size: 0.76rem;
     padding: 0 0.5rem;
   }
+
+  /* Component hero meta chips — slightly smaller on mobile */
+  .comp-hero-chip {
+    font-size: 0.65rem;
+    height: 20px;
+    padding: 0 0.4rem;
+  }
+
+  /* Props table — enable horizontal scroll on narrow screens */
+  .component-edit-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .component-props-table {
+    min-width: 480px;
+  }
+
+  /* Preview canvas — tighter padding on mobile */
+  .preview-canvas {
+    padding: 1.25rem;
+  }
+
+  /* Variant grid — 2-col max on phones */
+  .variant-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Section heading h2 — slightly smaller */
+  .section-heading h2 {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Spotlight grid — 1-col on phones */
+  .showcase-v2-spotlight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Showcase toolbar — stack search + filters vertically */
+  .showcase-v2-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+  }
+
+  .showcase-v2-search {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Variant grid — 1-col on very narrow */
+  .variant-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide install connector line on small screens to avoid clipping */
+  .install-step-number::after {
+    display: none;
+  }
+
+  /* Doc section — reduce vertical padding */
+  .doc-section {
+    padding: 1.75rem 0;
+  }
 }
 
 /* ─── Collapsible nav group ───────────────────────────────────── */
@@ -2373,7 +2439,7 @@ h1 {
   color: var(--muted);
   font-size: 0.825rem;
   line-height: 1.5;
-  min-width: 12rem;
+  min-width: 8rem;
 }
 
 /* ─── Component hero meta chips ──────────────────────────────── */
