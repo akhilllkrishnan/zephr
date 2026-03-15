@@ -4550,6 +4550,18 @@ export default function App() {
                 </Select>
               </div>
             ) : null}
+            <a
+              href="https://github.com/akhilllkrishnan/zephr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="top-icon-action"
+              aria-label="View Zephr on GitHub"
+              title="View on GitHub"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+            </a>
             <button
               type="button"
               className="top-icon-action"
@@ -5187,38 +5199,34 @@ export default function App() {
                 </div>
               </section>
 
-              {/* ── 4-FEATURE AI-NATIVE GRID ──────────────────────────────── */}
+              {/* ── 3-FEATURE GRID ────────────────────────────────────────── */}
               <section className="doc-section">
-                <div className="intro-features">
+                <div className="intro-features intro-features--3col">
+
+                  {/* 1 — AI-native tokens */}
                   <div className="intro-feature">
                     <div className="intro-feature-icon">
                       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8 2L9.5 6.5H14L10.25 9.25L11.75 13.75L8 11L4.25 13.75L5.75 9.25L2 6.5H6.5L8 2Z" fill="currentColor" opacity="0.85"/>
                       </svg>
                     </div>
-                    <strong>AI-native tokens</strong>
+                    <strong>AI-native design tokens</strong>
                     <p>
-                      Every <code>--z-*</code> variable is named for intent, not
-                      implementation. AIs reason about them correctly the first
-                      time.
+                      Every <code>--z-*</code> CSS variable is named for design
+                      intent, not implementation detail — <code>--z-color-text</code>,
+                      not <code>--gray-900</code>. AIs reason about them correctly
+                      the first time, without correction.
+                    </p>
+                    <p className="intro-feature-sub">
+                      49 production-ready SaaS components — atoms to full page
+                      templates — each ship with a structured <code>aiHints</code> block
+                      and four battle-tested style packs: Notion, Stripe, Linear, Framer.
+                      One accent color swap themes everything.
                     </p>
                   </div>
-                  <div className="intro-feature">
-                    <div className="intro-feature-icon">
-                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.85"/>
-                        <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-                        <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/>
-                        <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.85"/>
-                      </svg>
-                    </div>
-                    <strong>49 SaaS components</strong>
-                    <p>
-                      Atoms to organisms. Every component ships with structured{" "}
-                      <code>aiHints</code> for context-aware generation.
-                    </p>
-                  </div>
-                  <div className="intro-feature">
+
+                  {/* 2 — 21 slash commands */}
+                  <div className="intro-feature intro-feature--highlight">
                     <div className="intro-feature-icon">
                       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2 4H14M2 8H10M2 12H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -5226,24 +5234,52 @@ export default function App() {
                     </div>
                     <strong>21 slash commands</strong>
                     <p>
-                      <code>/polish</code>, <code>/audit</code>,{" "}
-                      <code>/scaffold</code> — designer vocabulary, no
-                      design experience needed.
+                      A full designer vocabulary built into your AI editor.{" "}
+                      <code>/polish</code> tightens spacing and fixes token
+                      violations. <code>/audit</code> flags every hardcoded hex
+                      and missing state. <code>/scaffold</code> drops a complete
+                      page system in seconds.
+                    </p>
+                    <div className="intro-feature-chips">
+                      <span className="intro-chip">/polish</span>
+                      <span className="intro-chip">/audit</span>
+                      <span className="intro-chip">/scaffold</span>
+                      <span className="intro-chip">/bolder</span>
+                      <span className="intro-chip">/harden</span>
+                      <span className="intro-chip">/tighten</span>
+                      <span className="intro-chip intro-chip--more">+15 more</span>
+                    </div>
+                    <p className="intro-feature-sub">
+                      Works in Claude Code, Cursor, and Codex. Install once with{" "}
+                      <code>zephr add-skills</code> — no config required.
                     </p>
                   </div>
-                  <div className="intro-feature">
+
+                  {/* 3 — Zephr Render */}
+                  <div className="intro-feature intro-feature--render">
                     <div className="intro-feature-icon">
                       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
-                        <path d="M5.5 8L7 9.5L10.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <rect x="1" y="2" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M5 14H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M8 12V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                        <circle cx="8" cy="7" r="2" fill="currentColor" opacity="0.6"/>
                       </svg>
                     </div>
-                    <strong>One cohesive theme</strong>
+                    <div className="intro-feature-badge">MCP Tool</div>
+                    <strong>Zephr Render</strong>
                     <p>
-                      Token-driven, accent-customisable. No conflicting defaults,
-                      no fighting the system.
+                      The AI sees exactly what you see. Pass any JSX snippet to
+                      the <code>zephr_render</code> MCP tool and get back a
+                      pixel-accurate screenshot — light and dark — before a
+                      single line lands in your codebase.
+                    </p>
+                    <p className="intro-feature-sub">
+                      Powered by a headless Playwright renderer bundled inside
+                      the MCP server. No browser setup. No external service. Just{" "}
+                      <code>npx @zephrui/mcp@latest</code>.
                     </p>
                   </div>
+
                 </div>
               </section>
 
