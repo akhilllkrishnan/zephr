@@ -2,38 +2,55 @@ import { CSSProperties, FormEvent, ReactNode, Suspense, lazy, useEffect, useMemo
 import {
   Accordion,
   Alert,
+  AlertDialog,
+  AuthPage,
   Avatar,
   Badge,
+  Box,
   Breadcrumbs,
   Button,
   ButtonGroup,
   Card,
   Checkbox,
+  ColorPicker,
+  ComboBox,
   CommandBar,
+  DashboardPage,
   DataTable,
   DatePicker,
-  ColorPicker,
   Divider,
   Dropdown,
   FiltersBar,
   FormField,
+  Grid,
   Header,
   IconButton,
   Input,
   InputGroup,
   LayoutShell,
   Logo,
+  MarketingPage,
   ModalDialog,
   Navbar,
+  NumberInput,
+  OnboardingPage,
   Pagination,
+  Popover,
   Progress,
   Radio,
   RichEditor,
   SearchBox,
   SearchResultsPanel,
   Select,
+  SettingsPage,
+  Sheet,
   SidebarNav,
+  Skeleton,
+  Slider,
+  Spacer,
+  Stack,
   Switch,
+  TagInput,
   Tabs,
   Toast,
   Tooltip,
@@ -1043,6 +1060,12 @@ function PreviewSurface({
   const [radioValue, setRadioValue] = useState("Design");
   const [dropdownLabel, setDropdownLabel] = useState("No action selected");
   const [resultMessage, setResultMessage] = useState("");
+  const [sliderValue, setSliderValue] = useState(42);
+  const [numberInputValue, setNumberInputValue] = useState(5);
+  const [tagInputValue, setTagInputValue] = useState<string[]>(["React", "TypeScript"]);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [comboValue, setComboValue] = useState("");
 
   if (entry.id === "button") {
     const allVariants: Array<"primary" | "secondary" | "ghost" | "danger"> = ["primary", "secondary", "ghost", "danger"];
@@ -2281,6 +2304,241 @@ function PreviewSurface({
         >
           <p className="preview-note">Use this block in confirmation and short workflows.</p>
         </ModalDialog>
+      </div>
+    );
+  }
+
+  if (entry.id === "card") {
+    return (
+      <div className="preview-stack">
+        <Card shadow="sm" padding="md">
+          <p style={{ margin: 0, fontSize: 13 }}>Default card — small shadow, medium padding.</p>
+        </Card>
+        <Card shadow="md" padding="lg">
+          <strong style={{ display: "block", marginBottom: 4, fontSize: 13 }}>Elevated card</strong>
+          <p style={{ margin: 0, fontSize: 12, color: "var(--z-color-text500)" }}>Stronger shadow for floating surfaces like panels and drawers.</p>
+        </Card>
+      </div>
+    );
+  }
+
+  if (entry.id === "skeleton") {
+    return (
+      <div className="preview-stack">
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Skeleton width={44} height={44} radius="full" />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <Skeleton width="65%" height={12} />
+            <Skeleton width="45%" height={10} />
+          </div>
+        </div>
+        <Skeleton lines={3} height={11} />
+        <Skeleton width={120} height={32} radius="md" />
+      </div>
+    );
+  }
+
+  if (entry.id === "slider") {
+    return (
+      <div className="preview-stack">
+        <Slider value={sliderValue} min={0} max={100} step={1} onChange={setSliderValue} label="Volume" />
+        <p className="preview-note">Current value: {sliderValue}</p>
+        <Slider value={30} min={0} max={100} step={10} disabled label="Disabled" />
+      </div>
+    );
+  }
+
+  if (entry.id === "number-input") {
+    return (
+      <div className="preview-stack">
+        <NumberInput value={numberInputValue} min={0} max={99} step={1} onChange={setNumberInputValue} label="Quantity" />
+        <NumberInput value={1.5} min={0} max={10} step={0.5} label="Step 0.5" />
+        <NumberInput value={0} min={0} max={100} disabled label="Disabled" />
+      </div>
+    );
+  }
+
+  if (entry.id === "tag-input") {
+    return (
+      <div className="preview-stack">
+        <TagInput value={tagInputValue} onChange={setTagInputValue} placeholder="Add a tag and press Enter…" />
+        <p className="preview-note">{tagInputValue.length} tag{tagInputValue.length !== 1 ? "s" : ""} added</p>
+      </div>
+    );
+  }
+
+  if (entry.id === "combo-box") {
+    const comboOptions = [
+      { value: "react", label: "React" },
+      { value: "vue", label: "Vue" },
+      { value: "svelte", label: "Svelte" },
+      { value: "angular", label: "Angular" },
+      { value: "solid", label: "SolidJS" },
+    ];
+    return (
+      <div className="preview-stack">
+        <ComboBox options={comboOptions} value={comboValue} onChange={setComboValue} placeholder="Search frameworks…" />
+        {comboValue && <p className="preview-note">Selected: {comboOptions.find(o => o.value === comboValue)?.label}</p>}
+      </div>
+    );
+  }
+
+  if (entry.id === "popover") {
+    return (
+      <div className="preview-stack" style={{ alignItems: "center", minHeight: 200, justifyContent: "center" }}>
+        <Popover
+          trigger={<Button size="sm">Open popover</Button>}
+          side="bottom"
+          align="center"
+        >
+          <div style={{ padding: "0.75rem 1rem" }}>
+            <strong style={{ fontSize: 13 }}>Popover content</strong>
+            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--z-color-text500)" }}>Anchored to its trigger element.</p>
+          </div>
+        </Popover>
+      </div>
+    );
+  }
+
+  if (entry.id === "sheet") {
+    return (
+      <div className="preview-stack">
+        <Button size="sm" onClick={() => setSheetOpen(true)}>Open sheet</Button>
+        <Sheet open={sheetOpen} onClose={() => setSheetOpen(false)} title="Sheet panel" side="right">
+          <p style={{ margin: 0, fontSize: 13 }}>Sheet content slides in from the edge of the viewport. Use for forms, filters, and detail panels.</p>
+        </Sheet>
+        <p className="preview-note">Slides in from the right edge. Set <code>side</code> to change direction.</p>
+      </div>
+    );
+  }
+
+  if (entry.id === "alert-dialog") {
+    return (
+      <div className="preview-stack">
+        <Button size="sm" variant="danger" onClick={() => setAlertDialogOpen(true)}>Delete item</Button>
+        <AlertDialog
+          open={alertDialogOpen}
+          onClose={() => setAlertDialogOpen(false)}
+          title="Delete this item?"
+          description="This action cannot be undone. The item will be permanently removed from your workspace."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          onConfirm={() => setAlertDialogOpen(false)}
+        />
+        <p className="preview-note">Blocks interaction until the user confirms or cancels.</p>
+      </div>
+    );
+  }
+
+  if (entry.id === "stack") {
+    return (
+      <div className="preview-stack">
+        <p className="preview-note">Horizontal</p>
+        <Stack direction="horizontal" gap={2} align="center">
+          <Button size="sm" variant="primary">One</Button>
+          <Button size="sm" variant="secondary">Two</Button>
+          <Button size="sm" variant="ghost">Three</Button>
+        </Stack>
+        <p className="preview-note">Vertical</p>
+        <Stack direction="vertical" gap={2}>
+          <Input placeholder="First name" />
+          <Input placeholder="Last name" />
+        </Stack>
+      </div>
+    );
+  }
+
+  if (entry.id === "grid") {
+    return (
+      <div className="preview-stack">
+        <Grid columns={3} gap={2}>
+          {[1, 2, 3, 4, 5, 6].map(n => (
+            <div key={n} style={{ padding: "0.75rem", background: "var(--z-color-background100)", borderRadius: 8, border: "1px solid var(--z-color-stroke200)", textAlign: "center", fontSize: 12, color: "var(--z-color-text500)" }}>
+              Cell {n}
+            </div>
+          ))}
+        </Grid>
+      </div>
+    );
+  }
+
+  if (entry.id === "box") {
+    return (
+      <div className="preview-stack">
+        <Box padding={4} style={{ border: "1px solid var(--z-color-stroke200)", borderRadius: 10, background: "var(--z-color-background100)" }}>
+          <p style={{ margin: 0, fontSize: 13 }}><code>Box</code> with <code>padding=4</code> (1rem).</p>
+        </Box>
+        <Box paddingX={6} paddingY={2} style={{ border: "1px dashed var(--z-color-stroke200)", borderRadius: 8 }}>
+          <p style={{ margin: 0, fontSize: 13 }}>Asymmetric padding via <code>paddingX</code> and <code>paddingY</code>.</p>
+        </Box>
+      </div>
+    );
+  }
+
+  if (entry.id === "spacer") {
+    return (
+      <div className="preview-stack">
+        <p className="preview-note">Spacer pushes content to opposite ends of a flex row</p>
+        <Stack direction="horizontal" align="center" style={{ border: "1px dashed var(--z-color-stroke300)", borderRadius: 8, padding: "0.5rem 0.75rem" }}>
+          <span style={{ fontSize: 13 }}>Left</span>
+          <Spacer />
+          <Button size="sm">Action</Button>
+        </Stack>
+        <Stack direction="horizontal" align="center" style={{ border: "1px dashed var(--z-color-stroke300)", borderRadius: 8, padding: "0.5rem 0.75rem" }}>
+          <Badge tone="success">Status</Badge>
+          <Spacer />
+          <span style={{ fontSize: 12, color: "var(--z-color-text500)" }}>12 items</span>
+        </Stack>
+      </div>
+    );
+  }
+
+  if (entry.id === "dashboard-page") {
+    return (
+      <div className="page-template-preview-wrap">
+        <div className="page-template-preview-scale">
+          <DashboardPage />
+        </div>
+      </div>
+    );
+  }
+
+  if (entry.id === "auth-page") {
+    return (
+      <div className="page-template-preview-wrap">
+        <div className="page-template-preview-scale">
+          <AuthPage />
+        </div>
+      </div>
+    );
+  }
+
+  if (entry.id === "settings-page") {
+    return (
+      <div className="page-template-preview-wrap">
+        <div className="page-template-preview-scale">
+          <SettingsPage />
+        </div>
+      </div>
+    );
+  }
+
+  if (entry.id === "onboarding-page") {
+    return (
+      <div className="page-template-preview-wrap">
+        <div className="page-template-preview-scale">
+          <OnboardingPage />
+        </div>
+      </div>
+    );
+  }
+
+  if (entry.id === "marketing-page") {
+    return (
+      <div className="page-template-preview-wrap">
+        <div className="page-template-preview-scale">
+          <MarketingPage />
+        </div>
       </div>
     );
   }
