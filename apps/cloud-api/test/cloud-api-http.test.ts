@@ -94,7 +94,7 @@ describe("Cloud API — HTTP integration", () => {
     const res = await get("/v1/licenses/plans", false);
     expect(res.status).toBe(200);
     const json = await res.json() as { plans: Array<{ id: string }> };
-    expect(json.plans.map((plan) => plan.id)).toEqual(["individual", "startup", "enterprise"]);
+    expect(json.plans.map((plan) => plan.id)).toEqual(["templates"]);
   });
 
   it("POST /v1/licenses/validate -> returns validation payload", async () => {
