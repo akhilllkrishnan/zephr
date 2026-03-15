@@ -20,3 +20,4 @@ figma/variables.generated.json
 .vercel
 apps/cloud-api/data/license-store.json
 apps/cloud-api/apps/
+.claude/worktrees/
