@@ -21,6 +21,52 @@ import {
 } from "@zephrui/core";
 
 type AssistantTool = "Codex" | "Claude" | "Cursor";
+
+// ---------------------------------------------------------------------------
+// Banner
+// ---------------------------------------------------------------------------
+
+function supportsAnsi(): boolean {
+  return process.stdout.isTTY === true && !process.env.NO_COLOR;
+}
+
+function printBanner(): void {
+  if (!supportsAnsi()) {
+    console.log("Zephr — Token-native React UI for AI-assisted product development.\n");
+    return;
+  }
+
+  // Indigo brand color
+  const I = "\x1b[38;2;99;102;241m";
+  const D = "\x1b[2m";
+  const R = "\x1b[0m";
+  const B = "\x1b[1m";
+
+  // ZEPHR in 6-row pixel block art (7-wide letters, 2-space gaps)
+  const art = [
+    " ███████  ███████  ██████   ██   ██  ██████ ",
+    "      ██  ██       ██   ██  ██   ██  ██   ██",
+    "    ███   █████    ██████   ███████  ██████ ",
+    "  ███     ██       ██       ██   ██  ████   ",
+    " ██       ██       ██       ██   ██  ██  ██ ",
+    " ███████  ███████  ██       ██   ██  ██   ██",
+  ];
+
+  const label = " ✦  Welcome to Zephr ";
+  const pad = "─".repeat(label.length);
+
+  process.stdout.write("\n");
+  process.stdout.write(`${D}  ╭${pad}╮${R}\n`);
+  process.stdout.write(`${D}  │${R}${B}${label}${R}${D}│${R}\n`);
+  process.stdout.write(`${D}  ╰${pad}╯${R}\n`);
+  process.stdout.write("\n");
+  for (const line of art) {
+    process.stdout.write(`  ${I}${B}${line}${R}\n`);
+  }
+  process.stdout.write("\n");
+  process.stdout.write(`  ${D}Token-native React UI · AI-assisted product development.${R}\n`);
+  process.stdout.write("\n");
+}
 type DoctorStatus = "PASS" | "WARN" | "FAIL";
 
 interface ParsedInput {
@@ -578,6 +624,7 @@ async function promptAccent(defaultAccent: string): Promise<string> {
 }
 
 async function commandInit(input: ParsedInput): Promise<void> {
+  printBanner();
   const cwd = process.cwd();
   const requestedPack = readFlag(input, "style-pack");
   const force = hasFlag(input, "force");
@@ -1080,6 +1127,7 @@ function buildAgentsDoc(skillsDir: string): string {
 }
 
 function commandAddSkills(input: ParsedInput): void {
+  printBanner();
   const rawEditor = readFlag(input, "editor") ?? "claude-code";
   const editor = rawEditor as SupportedEditor;
   const validEditors: SupportedEditor[] = ["claude-code", "cursor", "codex", "universal"];
