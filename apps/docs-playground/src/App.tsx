@@ -820,7 +820,7 @@ function fromSearchParams(): {
                   viewParam === "team" ? "team" :
                     viewParam === "widgets" ? "widgets" :
                     viewParam === "templates" ? "templates" :
-                      "component-gallery";
+                      "introduction";
 
   return {
     stylePack: DEFAULT_STYLE_PACK,
