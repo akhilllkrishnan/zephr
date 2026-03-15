@@ -14,13 +14,15 @@
     "./themes/*": "./dist/themes/*"
   },
   "files": [
-    "dist"
+    "dist",
+    "postinstall.mjs"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node ./scripts/copy-theme-assets.mjs",
+    "build": "tsc -p tsconfig.json && node ./scripts/copy-theme-assets.mjs && node ./scripts/copy-postinstall.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "postinstall": "node postinstall.mjs || true"
   },
   "dependencies": {
     "@zephrui/core": "workspace:*",
