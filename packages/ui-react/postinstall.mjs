@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 // Zephr welcome banner — runs once after `npm install @zephrui/ui-react`
 
-const isTTY = process.stdout.isTTY === true;
 const noColor = !!process.env.NO_COLOR;
 const isCI = !!(process.env.CI || process.env.CONTINUOUS_INTEGRATION);
 
-if (!isTTY || noColor || isCI) {
-  // Silent in CI and non-interactive contexts
+// npm pipes stdout when running lifecycle scripts, so isTTY is always false —
+// skip only explicit CI environments and NO_COLOR requests.
+if (isCI) {
   process.exit(0);
 }
 
-const I = "\x1b[38;2;99;102;241m"; // indigo
-const D = "\x1b[2m";               // dim
-const R = "\x1b[0m";               // reset
-const B = "\x1b[1m";               // bold
-const G = "\x1b[38;2;134;239;172m"; // green for success tick
+const I = noColor ? "" : "\x1b[38;2;99;102;241m"; // indigo
+const D = noColor ? "" : "\x1b[2m";               // dim
+const R = noColor ? "" : "\x1b[0m";               // reset
+const B = noColor ? "" : "\x1b[1m";               // bold
+const G = noColor ? "" : "\x1b[38;2;134;239;172m"; // green for success tick
 
 // ZEPHR in 6-row pixel block art (7-wide letters, 2-space gaps)
 const art = [
