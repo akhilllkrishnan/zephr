@@ -789,7 +789,7 @@ function fromSearchParams(): {
   );
   const showcaseVersionParam = params.get("showcase");
   const showcaseVersion: ShowcaseVersion =
-    showcaseVersionParam === "v2" || storedShowcaseVersion === "v2" ? "v2" : "v1";
+    showcaseVersionParam === "v1" || storedShowcaseVersion === "v1" ? "v1" : "v2";
   const viewParam = params.get("view");
   const view: WorkspaceView =
     viewParam === "introduction" ? "introduction" :
@@ -4879,60 +4879,49 @@ export default function App() {
                       </div>
                     </div>
                   </div>
-                  {/* Works-with brand logo row */}
+                  {/* Works-with brand row */}
                   <div className="hero-tools-row">
                     <span className="hero-tools-label">Works with</span>
-                    <div className="hero-tools-icons">
+                    <div className="hero-tools-pills">
 
-                      {/* Claude — Anthropic asterisk mark, terracotta #CC785C */}
-                      <div className="hero-tool-icon" title="Claude">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      {/* Claude Code */}
+                      <div className="hero-tool-pill hero-tool-pill--claude">
+                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <path
                             d="M13.827 2.7 12 6.944 10.173 2.7 6.827 3.573 8.654 7.817 4.41 6 3.537 9.346l4.244 1.827L3.537 13l.873 3.346 4.244-1.827L6.827 18.7l3.346.873L12 15.429l1.827 4.244 3.346-.873-1.827-4.244 4.244 1.827.873-3.346-4.244-1.827L22.463 9.346 21.59 6l-4.244 1.817 1.827-4.244z"
-                            fill="#CC785C"
+                            fill="currentColor"
                           />
                         </svg>
+                        <span>Claude</span>
                       </div>
 
-                      {/* Cursor — stylised cursor-arrow with stem */}
-                      <div className="hero-tool-icon" title="Cursor">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path
-                            d="M5 3.5 20.5 12 13.5 13.5 10.5 20.5Z"
-                            fill="#ffffff"
-                            stroke="rgba(255,255,255,0.25)"
-                            strokeWidth="0.5"
-                          />
-                          <path
-                            d="M13 13.5 16 20"
-                            stroke="#ffffff"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                          />
+                      {/* Cursor */}
+                      <div className="hero-tool-pill hero-tool-pill--cursor">
+                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M4 3L20 12L13 13.8L9.5 21L4 3Z" fill="currentColor" />
+                          <path d="M13 13.8L16.5 20.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
                         </svg>
+                        <span>Cursor</span>
                       </div>
 
-                      {/* Codex / OpenAI — the official OpenAI swirl */}
-                      <div className="hero-tool-icon" title="Codex">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true">
+                      {/* Codex / OpenAI */}
+                      <div className="hero-tool-pill hero-tool-pill--codex">
+                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                           <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .511 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.805-3.387L15.15 7.2a.077.077 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.104v-5.678a.79.79 0 0 0-.407-.666zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
                         </svg>
+                        <span>Codex</span>
                       </div>
 
-                      {/* Lovable — heart mark in brand coral/pink */}
-                      <div className="hero-tool-icon" title="Lovable">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      {/* Lovable */}
+                      <div className="hero-tool-pill hero-tool-pill--lovable">
+                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <path
-                            d="M12 20.5C12 20.5 3.5 15 3.5 8.5a4.5 4.5 0 0 1 8.5-2.1A4.5 4.5 0 0 1 20.5 8.5C20.5 15 12 20.5 12 20.5z"
-                            fill="#FF5C5C"
+                            d="M12 21C12 21 3 15.5 3 8.5A5 5 0 0 1 12 5.93 5 5 0 0 1 21 8.5C21 15.5 12 21 12 21z"
+                            fill="currentColor"
                           />
-                          <path
-                            d="M12 9a2 2 0 0 1 2-2"
-                            stroke="rgba(255,255,255,0.5)"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
+                          <path d="M9.5 9a2.5 2.5 0 0 1 2.5-2" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round"/>
                         </svg>
+                        <span>Lovable</span>
                       </div>
 
                     </div>

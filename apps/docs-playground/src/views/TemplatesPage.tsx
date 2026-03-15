@@ -1714,10 +1714,21 @@ export default function TemplatesPage({
           <section id="templates-overview" className="doc-section showcase-v2-hero">
             <div className="showcase-v2-hero-grid">
               <div className="showcase-v2-copy">
+                <p className="breadcrumbs">Pages</p>
                 <h1>Page systems with product-level polish.</h1>
                 <p className="lead">
                   SaaS-native dashboards, settings, team, support, and developer surfaces designed to feel production-ready before you customize anything.
                 </p>
+                <div className="showcase-v2-hero-stats">
+                  <div className="showcase-v2-hero-stat">
+                    <strong>{templateEntries.filter(e => e.category === "template").length}</strong>
+                    <span>page templates</span>
+                  </div>
+                  <div className="showcase-v2-hero-stat">
+                    <strong>{templateEntries.filter(e => e.category === "example").length}</strong>
+                    <span>assembled examples</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -1769,9 +1780,9 @@ export default function TemplatesPage({
                   <div className="showcase-v2-section-head">
                     <h2>Library selection</h2>
                   </div>
-                  <div className="template-teaser-grid showcase-v2-template-grid">
+                  <div className="showcase-v2-template-grid">
                     {catalogTemplateEntries.map((entry) => (
-                      <a key={entry.id} className="template-teaser-card showcase-v2-template-card" href={`#${entry.id}`}>
+                      <a key={entry.id} className="showcase-v2-template-card" href={`#${entry.id}`}>
                         <div className="template-teaser-preview">
                           <TemplatePreviewArt entry={entry} />
                         </div>
