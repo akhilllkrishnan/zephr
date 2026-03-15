@@ -2300,7 +2300,6 @@
   {
     "id": "rich-editor",
     "name": "RichEditor",
-    "tier": "pro",
     "category": "organism",
     "description": "Full-featured rich text editor with toolbar, markdown shortcuts, and slash commands.",
     "propsSchema": {
@@ -2412,7 +2411,6 @@
   {
     "id": "dashboard-page",
     "name": "DashboardPage",
-    "tier": "pro",
     "category": "template",
     "description": "Full-page analytics dashboard with metric cards, data table, and chart placeholders.",
     "propsSchema": {
@@ -2433,7 +2431,6 @@
   {
     "id": "auth-page",
     "name": "AuthPage",
-    "tier": "pro",
     "category": "template",
     "description": "Authentication page with login, signup, and password reset flows in a centered card layout.",
     "propsSchema": {
@@ -2455,7 +2452,6 @@
   {
     "id": "settings-page",
     "name": "SettingsPage",
-    "tier": "pro",
     "category": "template",
     "description": "Tabbed settings page with sections for profile, account, notifications, billing, and security.",
     "propsSchema": {
@@ -2476,7 +2472,6 @@
   {
     "id": "onboarding-page",
     "name": "OnboardingPage",
-    "tier": "pro",
     "category": "template",
     "description": "Multi-step onboarding wizard with progress indicator, step validation, and completion state.",
     "propsSchema": {
@@ -2497,7 +2492,6 @@
   {
     "id": "marketing-page",
     "name": "MarketingPage",
-    "tier": "pro",
     "category": "template",
     "description": "Public-facing marketing landing page with hero, features, pricing, and CTA sections.",
     "propsSchema": {

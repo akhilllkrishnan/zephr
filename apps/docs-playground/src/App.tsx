@@ -56,7 +56,7 @@ import {
   type RegistryEntry
 } from "@zephrui/ai-registry";
 import registryData from "@zephrui/ai-registry/registry/components.json";
-import { ZephrCloudClient, type CloudBillingPlan } from "@zephrui/cloud-sdk";
+import { ZephrCloudClient } from "@zephrui/cloud-sdk";
 import type { AvatarStyleDefinition } from "@zephrui/avatars";
 import type { MaterialIconDefinition, MaterialIconStyle } from "@zephrui/icons-material";
 import type { LogoCatalogEntry } from "@zephrui/logos";
@@ -168,42 +168,10 @@ type BadgeColorOption =
   | "pink"
   | "teal";
 type SurfaceStyleOption = "shadow" | "flat";
-type CheckoutPlanId = "templates";
-
-interface CheckoutPlanOption {
-  id: CheckoutPlanId;
-  label: string;
-  description: string;
-  recommended?: boolean;
-  checkoutUrl?: string;
-  available: boolean;
-}
-
 interface CloudAssetState {
   source: CloudAssetSource;
   loading: boolean;
   message: string;
-}
-
-const CHECKOUT_PLAN_META: Record<CheckoutPlanId, { label: string; description: string; recommended?: boolean }> = {
-  templates: {
-    label: "Templates",
-    description: "Lifetime access to all 20 premium page templates.",
-    recommended: true
-  }
-};
-
-function normalizeCheckoutPlans(plans: CloudBillingPlan[]): CheckoutPlanOption[] {
-  return plans
-    .filter((plan) => plan.id === "templates")
-    .map((plan) => ({
-      id: "templates" as CheckoutPlanId,
-      label: plan.label || CHECKOUT_PLAN_META.templates.label,
-      description: plan.description || CHECKOUT_PLAN_META.templates.description,
-      recommended: plan.recommended ?? CHECKOUT_PLAN_META.templates.recommended,
-      checkoutUrl: plan.checkoutUrl,
-      available: Boolean(plan.available && plan.checkoutUrl)
-    }));
 }
 
 const tableRows: TeamMember[] = [
@@ -2411,11 +2379,9 @@ const PKG_INSTALL: Record<PkgManager, string> = {
 function InstallTabBlock({
   packageName,
   onCopy,
-  beta,
 }: {
   packageName: string;
   onCopy: (cmd: string) => void;
-  beta?: boolean;
 }) {
   const [pm, setPm] = useState<PkgManager>("npm");
   const verb = PKG_INSTALL[pm];
@@ -2442,129 +2408,6 @@ function InstallTabBlock({
           {" "}
           <span className="itb-cmd-pkg">{packageName}</span>
         </pre>
-        {beta && (
-          <div className="itb-beta-note">
-            <Badge size="md" variant="stroke" color="yellow" style={{ marginRight: "0.5rem" }}>
-              Private Beta
-            </Badge>
-            Run this command in your project directory to install Zephr.
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function LicenseKeyModal({
-  licenseKey,
-  plans,
-  onSubmit,
-  onGetKey,
-  onRemove,
-  onClose
-}: {
-  licenseKey: string;
-  plans: CheckoutPlanOption[];
-  onSubmit: (key: string) => Promise<void> | void;
-  onGetKey: (planId: CheckoutPlanId) => void;
-  onRemove: () => void;
-  onClose: () => void;
-}) {
-  const [draft, setDraft] = useState(licenseKey);
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isPro = licenseKey.length >= 8;
-
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (draft.trim().length < 8) {
-      setError("License key must be at least 8 characters.");
-      return;
-    }
-    try {
-      setIsSubmitting(true);
-      await onSubmit(draft.trim());
-      setError("");
-    } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Unable to validate license key.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  return (
-    <div
-      className="upgrade-modal-backdrop"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Zephr Templates"
-    >
-      <div className="upgrade-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="upgrade-modal-header">
-          <span>Zephr Templates</span>
-          <button type="button" className="upgrade-modal-close" onClick={onClose} aria-label="Close"><span className="ms">close</span></button>
-        </div>
-        <div className="upgrade-modal-body">
-          {isPro ? (
-            <>
-              <p className="upgrade-modal-note upgrade-modal-note--success">✓ Templates active</p>
-              <p className="upgrade-modal-note">Current key: <code>{licenseKey.slice(0, 4)}••••••••</code></p>
-              <div className="upgrade-modal-actions">
-                <button type="button" className="upgrade-modal-remove" onClick={onRemove}>Remove key &amp; deactivate</button>
-              </div>
-            </>
-          ) : (
-            <form className="upgrade-modal-form" onSubmit={handleSubmit}>
-              <div className="upgrade-modal-feature-card">
-                <div className="upgrade-modal-feature-price">
-                  <span className="upgrade-modal-price-amount">$49</span>
-                  <span className="upgrade-modal-price-period">one-time</span>
-                </div>
-                <ul className="upgrade-modal-feature-list">
-                  <li>20 production-ready page templates</li>
-                  <li>Ops Center, CRM, Analytics, Dashboard variants</li>
-                  <li>All future templates included</li>
-                  <li>Use in unlimited projects</li>
-                </ul>
-                <Button
-                  type="button"
-                  size="sm"
-                  disabled={isSubmitting}
-                  onClick={() => onGetKey("templates")}
-                >
-                  Get Templates — $49
-                </Button>
-              </div>
-              <p className="upgrade-modal-note" style={{ marginTop: 20 }}>Already purchased? Enter your license key below.</p>
-              <input
-                className="upgrade-modal-input"
-                type="text"
-                value={draft}
-                onChange={(e) => { setDraft(e.target.value); setError(""); }}
-                placeholder="zephr-xxxxxxxxxxxxxxxx"
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
-                spellCheck={false}
-                disabled={isSubmitting}
-              />
-              {error && <p className="upgrade-modal-error">{error}</p>}
-              <div className="upgrade-modal-actions">
-                <Button type="submit" size="sm" variant="secondary" loading={isSubmitting} disabled={isSubmitting}>
-                  Activate
-                </Button>
-              </div>
-            </form>
-          )}
-        </div>
       </div>
     </div>
   );
@@ -3571,13 +3414,6 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [gallerySearch, setGallerySearch] = useState('');
   const [galleryCat, setGalleryCat] = useState<'all' | 'atom' | 'molecule' | 'organism'>('all');
-  const [licenseKey, setLicenseKey] = useState<string>(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem("zephr-license-key") ?? "" : ""
-  );
-  const [userTier, setUserTier] = useState<"free" | "pro">(() =>
-    typeof window !== "undefined" && sessionStorage.getItem("zephr-license-key") ? "pro" : "free"
-  );
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
@@ -3730,15 +3566,6 @@ export default function App() {
     ].join("\n");
   }, [accentColor]);
   const cloudBaseUrl = (import.meta.env.VITE_ZEPHR_CLOUD_URL as string | undefined)?.trim() || "http://localhost:8787";
-  const checkoutTemplatesUrl = (import.meta.env.VITE_ZEPHR_CHECKOUT_TEMPLATES as string | undefined)?.trim() || "";
-  const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlanOption[]>(() => [
-    {
-      id: "templates",
-      ...CHECKOUT_PLAN_META.templates,
-      checkoutUrl: checkoutTemplatesUrl || undefined,
-      available: Boolean(checkoutTemplatesUrl)
-    }
-  ]);
   const cloudClient = useMemo(() => {
     const key = cloudApiKey.trim();
     if (!key) {
@@ -3749,42 +3576,6 @@ export default function App() {
       apiKey: key
     });
   }, [cloudApiKey, cloudBaseUrl]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const client = new ZephrCloudClient({ baseUrl: cloudBaseUrl });
-    client
-      .getLicensePlans()
-      .then((plans) => {
-        if (cancelled) return;
-        const normalized = normalizeCheckoutPlans(plans);
-        if (normalized.length > 0) {
-          setCheckoutPlans(
-            normalized.map((plan) => ({
-              ...plan,
-              checkoutUrl: plan.checkoutUrl || checkoutTemplatesUrl || undefined,
-              available: Boolean(plan.checkoutUrl || checkoutTemplatesUrl)
-            }))
-          );
-          return;
-        }
-        throw new Error("No billing plans returned.");
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setCheckoutPlans([
-          {
-            id: "templates",
-            ...CHECKOUT_PLAN_META.templates,
-            checkoutUrl: checkoutTemplatesUrl || undefined,
-            available: Boolean(checkoutTemplatesUrl)
-          }
-        ]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [cloudBaseUrl, checkoutTemplatesUrl]);
 
   const aiProjectInitCommand = useMemo(
     () => managerProjectInitCommand(aiProject, aiPackageManager),
@@ -6748,10 +6539,8 @@ injectSpeedInsights();`}
               )}
             >
               <TemplatesPage
-                userTier="pro"
                 widgetSurface={widgetSurface}
                 showcaseVersion={showcaseVersion}
-                onOpenUpgrade={() => {}}
                 onCopy={copyAndFlash}
               />
             </Suspense>
@@ -6854,13 +6643,10 @@ injectSpeedInsights();`}
                   return (
                     <section className="doc-section">
                       <div className="gallery-grid">
-                        {filtered.map((entry) => {
-                          const isLocked = entry.tier === "pro" && userTier === "free";
-                          return (
-                          <button key={entry.id} type="button" className={`gallery-card${isLocked ? " is-locked" : ""}`} onClick={() => isLocked ? setShowUpgradeModal(true) : selectComponent(entry.id)}>
+                        {filtered.map((entry) => (
+                          <button key={entry.id} type="button" className="gallery-card" onClick={() => selectComponent(entry.id)}>
                             <div className="gallery-card-preview">
                               <ComponentThumbnail name={entry.name} />
-                              {isLocked && <div className="gallery-card-lock"><span className="ms">lock</span></div>}
                             </div>
                             <div className="gallery-card-body">
                               <div className="gallery-card-row">
@@ -6870,7 +6656,7 @@ injectSpeedInsights();`}
                               <p className="gallery-card-desc">{entry.description}</p>
                             </div>
                           </button>
-                        );})}
+                        ))}
                       </div>
                     </section>
                   );
@@ -6895,13 +6681,10 @@ injectSpeedInsights();`}
                         <span className="gallery-cat-count" aria-label={`${entries.length} components`}>{entries.length}</span>
                       </div>
                       <div className="gallery-grid">
-                        {entries.map((entry) => {
-                          const isLocked = entry.tier === "pro" && userTier === "free";
-                          return (
-                          <button key={entry.id} type="button" className={`gallery-card${isLocked ? " is-locked" : ""}`} onClick={() => isLocked ? setShowUpgradeModal(true) : selectComponent(entry.id)}>
+                        {entries.map((entry) => (
+                          <button key={entry.id} type="button" className="gallery-card" onClick={() => selectComponent(entry.id)}>
                             <div className="gallery-card-preview">
                               <ComponentThumbnail name={entry.name} />
-                              {isLocked && <div className="gallery-card-lock"><span className="ms">lock</span></div>}
                             </div>
                             <div className="gallery-card-body">
                               <div className="gallery-card-row">
@@ -6911,7 +6694,7 @@ injectSpeedInsights();`}
                               <p className="gallery-card-desc">{entry.description}</p>
                             </div>
                           </button>
-                        );})}
+                        ))}
                       </div>
                     </section>
                   );
@@ -8110,7 +7893,6 @@ injectSpeedInsights();`}
                       <InstallTabBlock
                         packageName="@zephrui/ui-react"
                         onCopy={(cmd) => copyAndFlash("Install command", cmd)}
-                        beta
                       />
                     </div>
                   </li>

@@ -55,17 +55,14 @@ import {
   DeliveryTimelineWidget,
   type WidgetSurface,
 } from "@zephrui/ui-react";
-import { templateCatalogMeta, templatesV2CatalogIds } from "./templatesCatalog";
+import { templatesV2CatalogIds } from "./templatesCatalog";
 
-type UserTier = "free" | "pro";
 type TemplateCategory = "all" | "template" | "example";
 type ShowcaseVersion = "v1" | "v2";
 
 interface TemplatesPageProps {
-  userTier: UserTier;
   widgetSurface: WidgetSurface;
   showcaseVersion: ShowcaseVersion;
-  onOpenUpgrade: () => void;
   onCopy: (label: string, value: string) => void;
 }
 
@@ -1430,10 +1427,8 @@ function ExampleCRMContacts() {
 }
 
 export default function TemplatesPage({
-  userTier,
   widgetSurface,
   showcaseVersion,
-  onOpenUpgrade,
   onCopy,
 }: TemplatesPageProps) {
   const [activeCategory, setActiveCategory] = useState<TemplateCategory>("all");
@@ -1689,10 +1684,9 @@ export default function TemplatesPage({
   const visibleTemplateIds = useMemo(
     () => new Set(
       visibleTemplateEntries
-        .filter((entry) => entry.category === "template" || userTier === "pro" || entry.id === "template-crm-contacts")
         .map((entry) => entry.id)
     ),
-    [visibleTemplateEntries, userTier]
+    [visibleTemplateEntries]
   );
 
   const curatedTemplateEntries = useMemo(() => {
@@ -1948,34 +1942,6 @@ export default function TemplatesPage({
           </section>
         </>
       )}
-
-      {userTier !== "pro" ? (
-        <section className="doc-section">
-          <div className="section-heading">
-            <h2>Premium page examples</h2>
-            <p>20 assembled page examples — Ops Center, CRM, Analytics, Support Desk, and more. One-time purchase, all future examples included.</p>
-          </div>
-          <div className="template-teaser-grid">
-            {templateCatalogMeta.filter((entry) => entry.category === "example").map((entry) => (
-              <div key={entry.id} className="template-teaser-card">
-                <div className="template-teaser-preview">
-                  <span className="ms template-teaser-lock">lock</span>
-                </div>
-                <div className="template-teaser-info">
-                  <div className="template-teaser-head">
-                    <span className="template-teaser-name">{entry.label}</span>
-                    <Badge size="sm" tone="neutral">Paid</Badge>
-                  </div>
-                  <span className="template-teaser-desc">Composed page example</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: "1.5rem" }}>
-            <Button onClick={onOpenUpgrade}>Get Templates — $49</Button>
-          </div>
-        </section>
-      ) : null}
 
       {visibleTemplateIds.has("template-dashboard") ? <section id="template-dashboard" className="doc-section">
         <div className="section-heading">
