@@ -10,6 +10,7 @@ import {
   searchComponents
 } from "@zephrui/ai-registry";
 import type { AssistantTool, PackageManager } from "@zephrui/ai-registry";
+import { renderJsx } from "./renderer/index";
 
 export type McpToolName =
   | "search_components"
@@ -21,7 +22,8 @@ export type McpToolName =
   | "list_templates"
   | "scaffold_page"
   | "apply_theme"
-  | "install_plan";
+  | "install_plan"
+  | "zephr_render";
 
 const STYLE_PACKS = ["notion", "stripe", "linear", "framer"] as const;
 const LEGACY_STYLE_PACK_MAP: Record<string, (typeof STYLE_PACKS)[number]> = {
@@ -211,6 +213,33 @@ export function listTools() {
           }
         },
         required: []
+      }
+    },
+    {
+      name: "zephr_render",
+      description: "Render a JSX snippet using real Zephr components in a headless browser and return a screenshot plus token compliance report. Use this to visually verify UI before writing code to disk.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          jsx: {
+            type: "string",
+            description: "Raw JSX string to render, e.g. '<Button variant=\"primary\">Save</Button>'. Can be a single component or a small composition of Zephr components."
+          },
+          theme: {
+            type: "string",
+            enum: ["light", "dark", "both"],
+            description: "Which theme to render. 'both' returns two screenshots. Defaults to 'light'."
+          },
+          width: {
+            type: "number",
+            description: "Viewport width in pixels. Defaults to 800."
+          },
+          accentColor: {
+            type: "string",
+            description: "Override the --z-color-primary accent token, e.g. '#533afd'. Defaults to '#533afd'."
+          }
+        },
+        required: ["jsx"]
       }
     }
   ];
@@ -540,7 +569,7 @@ function handleInstallPlan(args: Record<string, unknown>): unknown {
 // Main dispatcher
 // ---------------------------------------------------------------------------
 
-export function callTool(call: McpToolCall): unknown {
+export async function callTool(call: McpToolCall): Promise<unknown> {
   const args = call.arguments ?? {};
   const id = str(args.id);
 
@@ -573,6 +602,14 @@ export function callTool(call: McpToolCall): unknown {
       return handleApplyTheme(args);
     case "install_plan":
       return handleInstallPlan(args);
+
+    case "zephr_render":
+      return await renderJsx({
+        jsx: str(args.jsx),
+        theme: (args.theme as "light" | "dark" | "both") ?? "light",
+        width: typeof args.width === "number" ? args.width : 800,
+        accentColor: str(args.accentColor, "#533afd"),
+      });
 
     default:
       throw new Error(`Unsupported tool: ${call.name}`);
