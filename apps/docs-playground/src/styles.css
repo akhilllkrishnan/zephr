@@ -2702,6 +2702,174 @@ h1 {
   border-color: var(--line);
 }
 
+/* ─── When to use ────────────────────────────────────────────── */
+
+.wtu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.wtu-card {
+  border: 1px solid var(--line);
+  border-radius: var(--z-radius-md, 10px);
+  padding: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.wtu-card--do {
+  border-color: hsl(148 45% 80%);
+  background: hsl(148 55% 97%);
+}
+.wtu-card--avoid {
+  border-color: hsl(0 50% 82%);
+  background: hsl(0 55% 97%);
+}
+.wtu-card--a11y {
+  border-color: hsl(218 50% 82%);
+  background: hsl(218 55% 97%);
+}
+
+[data-theme="dark"] .wtu-card--do    { border-color: hsl(148 30% 22%); background: hsl(148 22% 11%); }
+[data-theme="dark"] .wtu-card--avoid { border-color: hsl(0 30% 22%);   background: hsl(0 22% 11%); }
+[data-theme="dark"] .wtu-card--a11y  { border-color: hsl(218 30% 22%); background: hsl(218 22% 11%); }
+
+.wtu-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wtu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.wtu-icon--do    { background: hsl(148 55% 88%); color: hsl(148 60% 28%); }
+.wtu-icon--avoid { background: hsl(0 55% 90%);   color: hsl(0 65% 40%); }
+.wtu-icon--a11y  { background: hsl(218 55% 88%); color: hsl(218 65% 38%); }
+
+[data-theme="dark"] .wtu-icon--do    { background: hsl(148 28% 20%); color: hsl(148 55% 58%); }
+[data-theme="dark"] .wtu-icon--avoid { background: hsl(0 28% 20%);   color: hsl(0 60% 62%); }
+[data-theme="dark"] .wtu-icon--a11y  { background: hsl(218 28% 20%); color: hsl(218 65% 65%); }
+
+.wtu-card-header span:last-child {
+  color: var(--text);
+}
+
+.wtu-list {
+  margin: 0;
+  padding: 0 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.wtu-list li {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+  list-style: disc;
+}
+
+/* ─── Related components ──────────────────────────────────────── */
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.related-card {
+  border: 1px solid var(--line);
+  border-radius: var(--z-radius-md, 10px);
+  padding: 1rem;
+  background: var(--panel);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.related-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  transform: translateY(-1px);
+}
+
+.related-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.related-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.related-card-cat {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.related-card-desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ─── Props table enum chips ──────────────────────────────────── */
+
+.prop-type-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.prop-enum-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.prop-enum-chip {
+  font-family: var(--z-font-mono, "IBM Plex Mono", monospace);
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: hsl(270 55% 95%);
+  color: hsl(270 55% 38%);
+  border: 1px solid hsl(270 35% 84%);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .prop-enum-chip {
+  background: hsl(270 25% 18%);
+  color: hsl(270 70% 72%);
+  border-color: hsl(270 22% 27%);
+}
+
 /* ─── Install steps connector line ───────────────────────────── */
 
 .install-steps {

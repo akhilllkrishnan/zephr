@@ -4405,6 +4405,77 @@ export default function App() {
     selectedEntry.id === "icon-library" ||
     selectedEntry.id === "avatar-library" ||
     selectedEntry.id === "logo-library";
+
+  const RELATED_MAP: Record<string, string[]> = {
+    "button": ["icon-button", "button-group", "form-field"],
+    "icon-button": ["button", "button-group", "tooltip"],
+    "button-group": ["button", "tabs"],
+    "input": ["textarea", "form-field", "input-group", "search-box"],
+    "textarea": ["input", "form-field", "rich-editor"],
+    "input-group": ["input", "form-field", "search-box"],
+    "select": ["dropdown", "combo-box", "form-field"],
+    "checkbox": ["radio", "switch", "form-field"],
+    "radio": ["checkbox", "switch", "form-field"],
+    "switch": ["checkbox", "radio", "form-field"],
+    "form-field": ["input", "select", "checkbox", "radio"],
+    "badge": ["alert", "toast", "progress"],
+    "alert": ["badge", "toast", "modal-dialog"],
+    "toast": ["alert", "badge"],
+    "modal-dialog": ["sheet", "alert-dialog", "popover"],
+    "alert-dialog": ["modal-dialog", "sheet"],
+    "sheet": ["modal-dialog", "popover"],
+    "popover": ["tooltip", "dropdown", "modal-dialog"],
+    "tooltip": ["popover", "icon-button", "badge"],
+    "dropdown": ["select", "popover", "combo-box"],
+    "combo-box": ["select", "tag-input", "search-box"],
+    "tag-input": ["input", "form-field", "combo-box"],
+    "search-box": ["command-bar", "search-results-panel", "combo-box"],
+    "command-bar": ["search-box", "search-results-panel"],
+    "search-results-panel": ["search-box", "command-bar"],
+    "data-table": ["pagination", "filters-bar", "search-box"],
+    "pagination": ["data-table", "search-results-panel"],
+    "filters-bar": ["search-box", "data-table"],
+    "tabs": ["sidebar-nav", "navbar", "accordion"],
+    "accordion": ["tabs", "card"],
+    "navbar": ["sidebar-nav", "header", "breadcrumbs"],
+    "header": ["navbar", "sidebar-nav"],
+    "sidebar-nav": ["navbar", "header", "tabs"],
+    "breadcrumbs": ["navbar", "header"],
+    "card": ["modal-dialog", "sheet", "accordion"],
+    "avatar": ["avatar-library", "badge"],
+    "logo": ["logo-library"],
+    "icon-library": ["avatar-library", "logo-library"],
+    "avatar-library": ["icon-library", "logo-library"],
+    "logo-library": ["icon-library", "avatar-library"],
+    "progress": ["skeleton", "badge"],
+    "skeleton": ["progress", "card"],
+    "slider": ["number-input", "form-field"],
+    "number-input": ["slider", "input", "form-field"],
+    "date-picker": ["form-field", "input"],
+    "color-picker": ["form-field"],
+    "rich-editor": ["textarea", "form-field"],
+    "layout-shell": ["sidebar-nav", "header", "navbar"],
+    "grid": ["stack", "box"],
+    "stack": ["grid", "box"],
+    "box": ["stack", "grid"],
+    "spacer": ["stack", "grid"],
+    "divider": ["stack", "card"],
+  };
+
+  const relatedComponents = useMemo(() => {
+    const ids = RELATED_MAP[selectedEntry.id] ?? [];
+    const fromMap = ids
+      .map(id => registry.find(e => e.id === id))
+      .filter((e): e is RegistryEntry => !!e)
+      .slice(0, 4);
+    if (fromMap.length >= 2) return fromMap;
+    // fallback: same category
+    return registry
+      .filter(e => e.id !== selectedEntry.id && e.category === selectedEntry.category &&
+        (e.category === "atom" || e.category === "molecule" || e.category === "organism"))
+      .slice(0, 4);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEntry.id]);
   const activeAssetCloudState = selectedEntry.id === "icon-library"
     ? iconCloudState
     : selectedEntry.id === "avatar-library"
@@ -7105,6 +7176,57 @@ injectSpeedInsights();`}
               </section>
 
 
+              {/* ── When to use ───────────────────────────────────────── */}
+              <section id="when-to-use" className="doc-section">
+                <div className="section-heading">
+                  <h2>When to use</h2>
+                  <p>Design guidance for using {selectedEntry.name} correctly in your product.</p>
+                </div>
+                <div className="wtu-grid">
+                  <div className="wtu-card wtu-card--do">
+                    <div className="wtu-card-header">
+                      <span className="wtu-icon wtu-icon--do" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+                      </span>
+                      <span>Do</span>
+                    </div>
+                    <ul className="wtu-list">
+                      {selectedEntry.aiHints.positive.map((hint, i) => (
+                        <li key={i}>{hint}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="wtu-card wtu-card--avoid">
+                    <div className="wtu-card-header">
+                      <span className="wtu-icon wtu-icon--avoid" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                      </span>
+                      <span>Avoid</span>
+                    </div>
+                    <ul className="wtu-list">
+                      {selectedEntry.aiHints.negative.map((hint, i) => (
+                        <li key={i}>{hint}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {selectedEntry.a11yNotes.length > 0 && (
+                    <div className="wtu-card wtu-card--a11y">
+                      <div className="wtu-card-header">
+                        <span className="wtu-icon wtu-icon--a11y" aria-hidden="true">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a9.75 9.75 0 110 19.5 9.75 9.75 0 010-19.5zm0 5.25a.75.75 0 00-.75.75v4.5a.75.75 0 001.5 0v-4.5A.75.75 0 0012 7.5zm0 9a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>
+                        </span>
+                        <span>Accessibility</span>
+                      </div>
+                      <ul className="wtu-list">
+                        {selectedEntry.a11yNotes.map((note, i) => (
+                          <li key={i}>{note}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </section>
+
               {isAssetLibraryComponent && (
                 <section id="cloud-assets" className="doc-section">
                   <div className="section-heading">
@@ -8270,9 +8392,20 @@ injectSpeedInsights();`}
                               </span>
                             </td>
                             <td>
-                              <span className={`prop-type-badge prop-type-badge--${row.type}`}>
-                                {row.acceptedValues && row.acceptedValues !== "See type union" ? row.acceptedValues : row.type}
-                              </span>
+                              {row.type === "enum" && row.acceptedValues && row.acceptedValues !== "See type union" ? (
+                                <div className="prop-type-col">
+                                  <span className="prop-type-badge prop-type-badge--enum">enum</span>
+                                  <div className="prop-enum-chips">
+                                    {row.acceptedValues.split(", ").map(v => (
+                                      <code key={v} className="prop-enum-chip">{v}</code>
+                                    ))}
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className={`prop-type-badge prop-type-badge--${row.type}`}>
+                                  {row.type}
+                                </span>
+                              )}
                             </td>
                             <td className="prop-default-cell">
                               {row.defaultValue ? <code>{row.defaultValue}</code> : <span className="prop-no-default">—</span>}
@@ -8282,6 +8415,32 @@ injectSpeedInsights();`}
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </section>
+              )}
+
+              {/* ── Related components ────────────────────────────────── */}
+              {relatedComponents.length > 0 && (
+                <section id="related" className="doc-section">
+                  <div className="section-heading">
+                    <h2>Related components</h2>
+                    <p>Components that pair well with {selectedEntry.name}.</p>
+                  </div>
+                  <div className="related-grid">
+                    {relatedComponents.map(entry => (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        className="related-card"
+                        onClick={() => selectComponent(entry.id)}
+                      >
+                        <div className="related-card-header">
+                          <span className="related-card-name">{entry.name}</span>
+                          <span className="related-card-cat">{entry.category}</span>
+                        </div>
+                        <p className="related-card-desc">{entry.description}</p>
+                      </button>
+                    ))}
                   </div>
                 </section>
               )}
@@ -8423,11 +8582,15 @@ injectSpeedInsights();`}
           {view === "components" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
+              <a className="toc-link" href="#when-to-use">When to use</a>
               {isAssetLibraryComponent ? <a className="toc-link" href="#cloud-assets">Cloud asset sync</a> : null}
               <a className="toc-link" href="#examples">Examples</a>
               <a className="toc-link" href="#use">Use this component</a>
               {apiPropRows.length > 0 ? (
-                <a className="toc-link" href="#customize">Edit the {selectedEntry.name.toLowerCase()}</a>
+                <a className="toc-link" href="#customize">Props</a>
+              ) : null}
+              {relatedComponents.length > 0 ? (
+                <a className="toc-link" href="#related">Related</a>
               ) : null}
               <a className="toc-link" href="#installation">Installation</a>
             </>

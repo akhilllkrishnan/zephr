@@ -1,4 +1,5 @@
 import { LogoCatalogEntry } from "./types";
+import { getBrandSvg } from "./svgs";
 
 function hash(input: string): number {
   let value = 0;
@@ -26,9 +27,20 @@ function defaultPalette(seed: string): { base: string; accent: string } {
 }
 
 export function createCatalogLogoDataUri(entry: LogoCatalogEntry, size = 128): string {
-  const mark = initials(entry.name);
   const radius = Math.floor(size * 0.16);
+  const brandSvg = getBrandSvg(entry.domain);
 
+  if (brandSvg) {
+    const pad = Math.floor(size * 0.17);
+    const inner = size - pad * 2;
+    const pathsMarkup = brandSvg.paths
+      .map(p => `<path d='${p.d}' fill='${p.fill}'${p.fillRule ? ` fill-rule='${p.fillRule}'` : ""}/>`)
+      .join("");
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><rect width='${size}' height='${size}' rx='${radius}' fill='${brandSvg.bg}'/><svg x='${pad}' y='${pad}' width='${inner}' height='${inner}' viewBox='${brandSvg.viewBox}'>${pathsMarkup}</svg></svg>`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  }
+
+  const mark = initials(entry.name);
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'>
     <defs>
       <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
