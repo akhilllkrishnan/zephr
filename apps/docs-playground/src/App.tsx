@@ -82,6 +82,7 @@ import zephrLogoDark from "../../../logo/zephr-dark.png";
 import zephrLogoLight from "../../../logo/zephr-light.png";
 import { widgetCatalogMeta, widgetsV2CatalogIds } from "./views/widgetsCatalog";
 import { templateCatalogMeta, templatesV2CatalogIds } from "./views/templatesCatalog";
+import { FeedbackWidget } from "./FeedbackWidget";
 // Theme CSS is injected dynamically via <style> tag — no static import needed
 
 const registry = registryData as unknown as RegistryEntry[];
@@ -8659,6 +8660,7 @@ injectSpeedInsights();`}
         )}
       </div >
 
+      <FeedbackWidget />
     </div >
   );
 }
