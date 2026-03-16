@@ -15,6 +15,8 @@
     "test:unit": "vitest run",
     "docs:dev": "pnpm --filter @zephrui/docs-playground dev",
     "docs:build": "pnpm --filter @zephrui/docs-playground build",
+    "sandbox:dev": "pnpm --filter @zephrui/sandbox dev",
+    "sandbox:build": "pnpm --filter @zephrui/sandbox build",
     "release:check": "bash scripts/release-check.sh",
     "release:dry": "bash scripts/publish.sh",
     "release": "bash scripts/publish.sh --no-dry-run",

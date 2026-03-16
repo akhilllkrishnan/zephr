@@ -1,0 +1,22 @@
+{
+  "name": "@zephrui/sandbox",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Interactive Zephr component sandbox powered by Ladle",
+  "scripts": {
+    "dev": "ladle serve",
+    "build": "ladle build",
+    "preview": "ladle preview"
+  },
+  "dependencies": {
+    "@zephrui/ui-react": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@ladle/react": "^5.1.1",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.3"
+  }
+}
