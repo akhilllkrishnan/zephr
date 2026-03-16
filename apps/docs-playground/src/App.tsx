@@ -1102,7 +1102,7 @@ function PreviewSurface({
       return undefined;
     };
 
-    const iconPlaceholder = <span className="ms" style={{ fontSize: 16 }}>star</span>;
+    const iconPlaceholder = <span className="ms">star</span>;
 
     return (
       <div className="variant-grid" style={{ gridTemplateColumns: `repeat(${Math.min(cells.length, 3)}, 1fr)` }}>
@@ -4785,7 +4785,7 @@ export default function App() {
                       rel="noopener noreferrer"
                       style={{ marginTop: 4 }}
                     >
-                      <span className="ms" style={{ fontSize: "0.85rem", verticalAlign: "-2px" }}>arrow_forward</span> @zephrui/blocks
+                      <span className="ms">arrow_forward</span> @zephrui/blocks
                     </a>
                   </div>
                 )}
@@ -5190,7 +5190,7 @@ export default function App() {
                       setSetupTab("ai");
                     }}
                   >
-                    AI quick start <span className="ms" style={{ fontSize: "1rem", verticalAlign: "-2px" }}>arrow_forward</span>
+                    AI quick start <span className="ms">arrow_forward</span>
                   </Button>
                 </div>
 
@@ -5558,7 +5558,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="render-demo-compliance">
-                      <Badge color="green" variant="lighter" type="left-icon" icon={<span className="ms" style={{ fontSize: "0.85rem" }}>check</span>}>Token compliant</Badge>
+                      <Badge color="green" variant="lighter" type="left-icon" icon={<span className="ms">check</span>}>Token compliant</Badge>
                       <span className="render-demo-compliance-note">No hardcoded values · 3 tokens used · 0 violations</span>
                     </div>
                   </div>
@@ -5975,7 +5975,7 @@ export default function App() {
                     </h3>
                     <p>Browse 58 AI-ready components, copy snippets, and ship faster.</p>
                   </div>
-                  <Button onClick={() => selectComponent("button")}>Browse components <span className="ms" style={{ fontSize: "1rem", verticalAlign: "-2px" }}>arrow_forward</span></Button>
+                  <Button onClick={() => selectComponent("button")}>Browse components <span className="ms">arrow_forward</span></Button>
                 </div>
               </section>
             </>
@@ -7157,7 +7157,7 @@ injectSpeedInsights();`}
                       onClick={() => setGallerySearch("")}
                       aria-label="Clear search"
                     >
-                      <span className="ms" style={{ fontSize: "1rem" }}>close</span>
+                      <span className="ms">close</span>
                     </button>
                   )}
                 </div>
