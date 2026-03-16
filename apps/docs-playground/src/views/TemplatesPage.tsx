@@ -521,7 +521,7 @@ function ExampleTeamWorkspace({ widgetSurface }: { widgetSurface: WidgetSurface 
           <p style={{ margin: 0, color: "var(--z-color-muted, #667085)" }}>Invite teammates, review ownership, and handle live support context in one place.</p>
         </div>
         <div style={{ display: "flex", gap: "0.65rem", alignItems: "center", flexWrap: "wrap" }}>
-          <Input controlSize="sm" placeholder="Search people or channels" style={{ minWidth: "240px" }} />
+          <Input controlSize="sm" placeholder="Search people or channels" className="example-page-search-input" />
           <Button size="sm" variant="secondary">Export roster</Button>
         </div>
       </div>

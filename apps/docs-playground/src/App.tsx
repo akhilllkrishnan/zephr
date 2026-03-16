@@ -90,6 +90,7 @@ const DEFAULT_STYLE_PACK: StylePackName = "notion";
 const WidgetsPage = lazy(() => import("./views/WidgetsPage"));
 const TemplatesPage = lazy(() => import("./views/TemplatesPage"));
 const SlashCommandsPage = lazy(() => import("./views/SlashCommandsPage"));
+const IconsPage = lazy(() => import("./views/IconsPage").then((m) => ({ default: m.IconsPage })));
 
 type WorkspaceView =
   "introduction" |
@@ -97,6 +98,7 @@ type WorkspaceView =
   "slash-commands" |
   "speed-insights" |
   "foundations" |
+  "icons" |
   "mission" |
   "team" |
   "component-gallery" |
@@ -827,6 +829,7 @@ function fromSearchParams(): {
                   viewParam === "team" ? "team" :
                     viewParam === "widgets" ? "widgets" :
                     viewParam === "templates" ? "templates" :
+                    viewParam === "icons" ? "icons" :
                       "introduction";
 
   return {
@@ -4685,6 +4688,17 @@ export default function App() {
               >
                 Foundations
               </button>
+              <button
+                type="button"
+                className={`sidebar-link ${view === "icons" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("setup");
+                  setView("icons");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Icons
+              </button>
             </div>
           )}
           {topTab === "components" && (
@@ -5212,8 +5226,8 @@ export default function App() {
                       <div className="hero-terminal-spacer" />
                       {/* Progress */}
                       <div className="hero-terminal-line">
-                        <span className="hero-terminal-text" style={{color:"#9ca3af"}}>Packages: </span>
-                        <span className="hero-terminal-text" style={{color:"#fbbf24"}}>+53</span>
+                        <span className="hero-terminal-muted">Packages: </span>
+                        <span className="hero-terminal-warn">+53</span>
                         <span className="hero-terminal-text"> </span>
                         <span className="hero-terminal-progress-bar">████████████████████</span>
                         <span className="hero-terminal-check"> Done</span>
@@ -5233,7 +5247,7 @@ export default function App() {
                       <div className="hero-terminal-spacer" />
                       <div className="hero-terminal-line hero-terminal-line--indent">
                         <span className="hero-terminal-check">Done</span>
-                        <span className="hero-terminal-text" style={{color:"#6b7280"}}> in 2.4s</span>
+                        <span className="hero-terminal-dim-gray"> in 2.4s</span>
                       </div>
                       {/* Zephr welcome banner — pixel art style */}
                       <div className="hero-terminal-spacer" />
@@ -5459,7 +5473,7 @@ export default function App() {
 
               {/* ── MCP SERVER SETUP ──────────────────────────────────────── */}
               <section id="mcp-section" className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
+                <div className="section-heading">
                   <p className="section-eyebrow">MCP Integration</p>
                   <h2>Give your AI direct access to the full registry.</h2>
                   <p>
@@ -5520,7 +5534,7 @@ export default function App() {
 
               {/* ── ZEPHR RENDER DEMO ─────────────────────────────────────── */}
               <section id="render-demo" className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "1.25rem" }}>
+                <div className="section-heading">
                   <p className="section-eyebrow">zephr_render</p>
                   <h2>Visual verification before code hits your repo.</h2>
                   <p>Pass any JSX string to the <code>zephr_render</code> MCP tool. The AI gets back a pixel-accurate screenshot in light and dark — so it can verify the output before writing a single file.</p>
@@ -5567,7 +5581,7 @@ export default function App() {
 
               {/* ── HOW IT WORKS — 3-STEP FLOW ────────────────────────────── */}
               <section className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
+                <div className="section-heading">
                   <p className="section-eyebrow">How it works</p>
                   <h2>Zero config. AI-ready in one command.</h2>
                   <p>
@@ -5609,7 +5623,7 @@ export default function App() {
 
               {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
               <section id="install" className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                <div className="section-heading">
                   <h2>Quickstart</h2>
                   <p>Three steps from zero to AI-ready components in your React project.</p>
                 </div>
@@ -5634,7 +5648,7 @@ export default function App() {
 
               {/* ── EXPLORE ───────────────────────────────────────────────── */}
               <section id="explore" className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "0.75rem" }}>
+                <div className="section-heading">
                   <h2>Explore</h2>
                   <p>Everything you need to build a complete SaaS product.</p>
                 </div>
@@ -5748,10 +5762,10 @@ export default function App() {
                 <div className="gs-accent-layout">
                   {/* Left — controls */}
                   <div>
-                    <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                    <div className="section-heading">
                       <div className="section-heading-row">
                         <div>
-                          <h2 style={{ marginBottom: "0.3rem" }}>Accent color</h2>
+                          <h2>Accent color</h2>
                           <p>Powers every primary action, link, focus ring, and component highlight. Changes propagate instantly across all previews.</p>
                         </div>
                         <Badge tone="neutral">{accentColor}</Badge>
@@ -7120,6 +7134,19 @@ injectSpeedInsights();`}
                 showcaseVersion={showcaseVersion}
                 onCopy={copyAndFlash}
               />
+            </Suspense>
+          ) : view === "icons" ? (
+            <Suspense
+              fallback={(
+                <section className="doc-section">
+                  <div className="widget-empty-state">
+                    <strong>Loading icons…</strong>
+                    <p>Preparing the icon library.</p>
+                  </div>
+                </section>
+              )}
+            >
+              <IconsPage />
             </Suspense>
           ) : view === "component-gallery" ? (
             <>

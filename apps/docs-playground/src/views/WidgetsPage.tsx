@@ -1175,7 +1175,7 @@ export default function WidgetsPage({ widgetSurface, showcaseVersion, onCopy }: 
           placeholder="Search widgets, forms, modals, team..."
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          style={{ maxWidth: "var(--z-breakpoint-sm, 640px)" }}
+          className="widget-search-input"
         />
         <Tabs
           className="widget-tabs"
