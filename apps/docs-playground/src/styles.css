@@ -3948,6 +3948,11 @@ h1 {
   color: var(--text);
 }
 
+/* Install tab block — dark mode syntax color adjustments */
+[data-theme="dark"] .itb-cmd-npm  { color: #f472b6; }
+[data-theme="dark"] .itb-cmd-yarn { color: #60a5fa; }
+[data-theme="dark"] .itb-cmd-verb { color: #818cf8; }
+
 /* ── Dark mode component corrections ─────────────────────────────────────── */
 
 /* Snippets / code blocks */

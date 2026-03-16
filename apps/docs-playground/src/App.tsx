@@ -1,4 +1,5 @@
 import { CSSProperties, FormEvent, ReactNode, Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
+import Fuse from "fuse.js";
 import {
   Accordion,
   Alert,
@@ -110,6 +111,8 @@ interface SearchResultItem {
   kind: "doc" | "component";
   label: string;
   detail: string;
+  /** Extra terms Fuse indexes but never displays */
+  keywords?: string;
   tab: TopTab;
   view: WorkspaceView;
   anchor?: string;
@@ -4157,71 +4160,72 @@ export default function App() {
     );
   }, [catalogSearch]);
 
-  const searchResults = useMemo<SearchResultItem[]>(() => {
-    const normalized = catalogSearch.trim().toLowerCase();
-    if (!normalized) {
-      return [];
-    }
-
-    const docTargets: SearchResultItem[] = [
-      { id: "doc-setup-introduction", kind: "doc", label: "Introduction", detail: "Setup", tab: "setup", view: "introduction", anchor: "setup-introduction" },
-      { id: "doc-setup-start", kind: "doc", label: "Get Started", detail: "Setup · AI quick start", tab: "setup", view: "getting-started", anchor: "overview" },
-      { id: "doc-setup-foundations", kind: "doc", label: "Foundations", detail: "Setup · Tokens & primitives", tab: "setup", view: "foundations", anchor: "foundations-overview" },
-      { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 21 AI editor commands", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
-      { id: "doc-setup-mission", kind: "doc", label: "Mission & Vision", detail: "Setup", tab: "setup", view: "mission", anchor: "mission-overview" },
-      { id: "doc-setup-team", kind: "doc", label: "Team", detail: "Setup", tab: "setup", view: "team", anchor: "team-overview" },
-      { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Pages · Dashboards, auth, settings", tab: "pages", view: "templates", anchor: "templates-overview" },
-      { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Pages · Assembled widget examples", tab: "pages", view: "widgets", anchor: "widgets-overview" },
-      { id: "doc-components-api", kind: "doc", label: "API Reference", detail: "Components · Props, types, defaults", tab: "components", view: "api-reference", anchor: "api-overview" },
-      { id: "doc-changelog", kind: "doc", label: "Release notes", detail: "Changelog", tab: "changelog", view: "introduction", anchor: "changelog-overview" },
-      { id: "doc-changelog-roadmap", kind: "doc", label: "Roadmap", detail: "Changelog · Upcoming milestones", tab: "changelog", view: "introduction", anchor: "release-upcoming" },
-      { id: "doc-mcp-server", kind: "doc", label: "MCP Server", detail: "Setup · Claude Code, Cursor, Windsurf", tab: "setup", view: "getting-started", anchor: "mcp-section" },
-      { id: "doc-render-tool", kind: "doc", label: "zephr_render", detail: "Setup · Visual verification tool", tab: "setup", view: "getting-started", anchor: "mcp-section" },
+  // Full search corpus — rebuilt only when registry/templates change (not on every keystroke)
+  const searchCorpus = useMemo<SearchResultItem[]>(() => {
+    const docs: SearchResultItem[] = [
+      { id: "doc-setup-introduction", kind: "doc", label: "Introduction", detail: "Setup", keywords: "overview welcome start", tab: "setup", view: "introduction", anchor: "setup-introduction" },
+      { id: "doc-setup-start", kind: "doc", label: "Get Started", detail: "Setup · AI quick start", keywords: "install setup quickstart", tab: "setup", view: "getting-started", anchor: "overview" },
+      { id: "doc-setup-foundations", kind: "doc", label: "Foundations", detail: "Setup · Tokens & primitives", keywords: "design tokens colors spacing typography", tab: "setup", view: "foundations", anchor: "foundations-overview" },
+      { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 21 AI editor commands", keywords: "ai commands editor shortcuts", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
+      { id: "doc-setup-mission", kind: "doc", label: "Mission & Vision", detail: "Setup", keywords: "about goals principles", tab: "setup", view: "mission", anchor: "mission-overview" },
+      { id: "doc-setup-team", kind: "doc", label: "Team", detail: "Setup", keywords: "contributors authors people", tab: "setup", view: "team", anchor: "team-overview" },
+      { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Pages · Dashboards, auth, settings", keywords: "layouts pages scaffolds", tab: "pages", view: "templates", anchor: "templates-overview" },
+      { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Pages · Assembled widget examples", keywords: "assembled examples compositions", tab: "pages", view: "widgets", anchor: "widgets-overview" },
+      { id: "doc-components-api", kind: "doc", label: "API Reference", detail: "Components · Props, types, defaults", keywords: "props api types documentation", tab: "components", view: "api-reference", anchor: "api-overview" },
+      { id: "doc-changelog", kind: "doc", label: "Release Notes", detail: "Changelog", keywords: "updates releases versions history", tab: "changelog", view: "introduction", anchor: "changelog-overview" },
+      { id: "doc-changelog-roadmap", kind: "doc", label: "Roadmap", detail: "Changelog · Upcoming milestones", keywords: "future planned upcoming features", tab: "changelog", view: "introduction", anchor: "release-upcoming" },
+      { id: "doc-mcp-server", kind: "doc", label: "MCP Server", detail: "Setup · Claude Code, Cursor, Windsurf", keywords: "mcp tools ai integration cursor windsurf codex", tab: "setup", view: "getting-started", anchor: "mcp-section" },
+      { id: "doc-render-tool", kind: "doc", label: "zephr_render", detail: "Setup · Visual verification tool", keywords: "render preview screenshot playwright visual", tab: "setup", view: "getting-started", anchor: "mcp-section" },
     ];
 
-    const docMatches = docTargets.filter((item) =>
-      `${item.label} ${item.detail}`.toLowerCase().includes(normalized)
-    );
-
-    // Component matches — search id, name, description, category
-    const componentMatches = registry
+    const components: SearchResultItem[] = registry
       .filter((entry) => entry.category !== "template")
-      .filter((entry) =>
-        entry.id.toLowerCase().includes(normalized) ||
-        entry.name.toLowerCase().includes(normalized) ||
-        (entry.description ?? "").toLowerCase().includes(normalized) ||
-        (entry.category ?? "").toLowerCase().includes(normalized)
-      )
-      .slice(0, 8)
-      .map<SearchResultItem>((entry) => ({
+      .map((entry) => ({
         id: `component-${entry.id}`,
-        kind: "component",
+        kind: "component" as const,
         label: entry.name,
         detail: entry.category ? `${entry.category[0].toUpperCase()}${entry.category.slice(1)}` : "Component",
-        tab: "components",
-        view: "components",
-        componentId: entry.id
+        keywords: [entry.id, entry.description ?? "", entry.category ?? "", ...entry.aiHints.positive, ...entry.aiHints.negative].join(" "),
+        tab: "components" as const,
+        view: "components" as const,
+        componentId: entry.id,
       }));
 
-    // Template/example page matches
-    const templateMatches = templateCatalogMeta
-      .filter((t) =>
-        t.label.toLowerCase().includes(normalized) ||
-        t.category.toLowerCase().includes(normalized)
-      )
-      .slice(0, 4)
-      .map<SearchResultItem>((t) => ({
-        id: `template-${t.id}`,
-        kind: "doc",
-        label: t.label,
-        detail: t.category === "template" ? "Pages · Template" : "Pages · Example",
-        tab: "pages",
-        view: "templates",
-        anchor: t.id
-      }));
+    const templates: SearchResultItem[] = templateCatalogMeta.map((t) => ({
+      id: `template-${t.id}`,
+      kind: "doc" as const,
+      label: t.label,
+      detail: t.category === "template" ? "Pages · Template" : "Pages · Example",
+      keywords: t.id,
+      tab: "pages" as const,
+      view: "templates" as const,
+      anchor: t.id,
+    }));
 
-    return [...docMatches, ...componentMatches, ...templateMatches].slice(0, 12);
-  }, [catalogSearch]);
+    return [...docs, ...components, ...templates];
+  }, []);
+
+  const searchFuse = useMemo(
+    () =>
+      new Fuse(searchCorpus, {
+        keys: [
+          { name: "label", weight: 0.5 },
+          { name: "detail", weight: 0.3 },
+          { name: "keywords", weight: 0.2 },
+        ],
+        threshold: 0.35,
+        includeScore: true,
+        ignoreLocation: true,
+        minMatchCharLength: 2,
+      }),
+    [searchCorpus]
+  );
+
+  const searchResults = useMemo<SearchResultItem[]>(() => {
+    const q = catalogSearch.trim();
+    if (!q) return [];
+    return searchFuse.search(q, { limit: 12 }).map((r) => r.item);
+  }, [catalogSearch, searchFuse]);
 
   useEffect(() => {
     setSearchActiveIndex(0);
