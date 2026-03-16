@@ -4716,7 +4716,7 @@ export default function App() {
                         aria-expanded={isOpen}
                       >
                         <span>{label}</span>
-                        <span className={`nav-collapse-chevron ${isOpen ? "is-open" : ""}`}>›</span>
+                        <span className={`nav-collapse-chevron ms ${isOpen ? "is-open" : ""}`}>chevron_right</span>
                       </button>
                       {isOpen && (
                         <div className="nav-collapse-inner">
@@ -4746,7 +4746,7 @@ export default function App() {
                   aria-expanded={expandedGroups.has("block")}
                 >
                   <span>Blocks</span>
-                  <span className={`nav-collapse-chevron ${expandedGroups.has("block") ? "is-open" : ""}`}>›</span>
+                  <span className={`nav-collapse-chevron ms ${expandedGroups.has("block") ? "is-open" : ""}`}>chevron_right</span>
                 </button>
                 {expandedGroups.has("block") && (
                   <div className="nav-collapse-inner">
@@ -4785,7 +4785,7 @@ export default function App() {
                       rel="noopener noreferrer"
                       style={{ marginTop: 4 }}
                     >
-                      → @zephrui/blocks
+                      <span className="ms" style={{ fontSize: "0.85rem", verticalAlign: "-2px" }}>arrow_forward</span> @zephrui/blocks
                     </a>
                   </div>
                 )}
@@ -4939,7 +4939,7 @@ export default function App() {
                         </ul>
                       </div>
                       <div>
-                        <p className="cl-category-label">⚡ Improvements</p>
+                        <p className="cl-category-label"><span className="ms cl-category-icon">bolt</span> Improvements</p>
                         <ul className="cl-list">
                           <li>Slash commands chip row in the feature card shows <code>/polish</code>, <code>/audit</code>, <code>/scaffold</code>, <code>/bolder</code>, <code>/harden</code>, <code>/tighten</code>, and a "+15 more" overflow pill.</li>
                           <li>58 component pages polished — better prop tables, sticky thead, code block AI prompts, consistent section headings.</li>
@@ -4969,7 +4969,7 @@ export default function App() {
                         </ul>
                       </div>
                       <div>
-                        <p className="cl-category-label">⚡ Improvements</p>
+                        <p className="cl-category-label"><span className="ms cl-category-icon">bolt</span> Improvements</p>
                         <ul className="cl-list">
                           <li>Template previews wrapped in <code>BrowserPreviewFrame</code> with address bar chrome.</li>
                           <li>Dashboard template: sparkline SVGs, stat variance indicators, activity timeline.</li>
@@ -5024,7 +5024,7 @@ export default function App() {
                         </ul>
                       </div>
                       <div>
-                        <p className="cl-category-label">⚡ Improvements</p>
+                        <p className="cl-category-label"><span className="ms cl-category-icon">bolt</span> Improvements</p>
                         <ul className="cl-list">
                           <li>Expanded page templates navigation with deep links and section TOC.</li>
                           <li>Component search filters flat when active, restores grouped tree when cleared.</li>
@@ -5190,7 +5190,7 @@ export default function App() {
                       setSetupTab("ai");
                     }}
                   >
-                    AI quick start →
+                    AI quick start <span className="ms" style={{ fontSize: "1rem", verticalAlign: "-2px" }}>arrow_forward</span>
                   </Button>
                 </div>
 
@@ -5551,7 +5551,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="render-demo-compliance">
-                      <Badge color="green" variant="lighter">✓ Token compliant</Badge>
+                      <Badge color="green" variant="lighter" type="left-icon" icon={<span className="ms" style={{ fontSize: "0.85rem" }}>check</span>}>Token compliant</Badge>
                       <span className="render-demo-compliance-note">No hardcoded values · 3 tokens used · 0 violations</span>
                     </div>
                   </div>
@@ -5641,12 +5641,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon">🧩</span>
+                    <span className="intro-link-icon ms">widgets</span>
                     <span className="intro-link-label">Components</span>
                     <span className="intro-link-desc">
                       49 components across atoms, molecules, and organisms
                     </span>
                     <span className="intro-link-count">49 components</span>
+                    <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
                     type="button"
@@ -5657,12 +5658,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon">📄</span>
+                    <span className="intro-link-icon ms">description</span>
                     <span className="intro-link-label">Pages</span>
                     <span className="intro-link-desc">
                       Full-page SaaS templates — CRM, ops, analytics, support
                     </span>
                     <span className="intro-link-count">Full templates</span>
+                    <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
                     type="button"
@@ -5673,12 +5675,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon">⚡</span>
+                    <span className="intro-link-icon ms">bolt</span>
                     <span className="intro-link-label">Widgets</span>
                     <span className="intro-link-desc">
                       60+ SaaS-focused widgets — drop in fully wired
                     </span>
                     <span className="intro-link-count">60 widgets</span>
+                    <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
                     type="button"
@@ -5690,12 +5693,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon">🤖</span>
+                    <span className="intro-link-icon ms">smart_toy</span>
                     <span className="intro-link-label">AI Setup</span>
                     <span className="intro-link-desc">
                       Claude, Cursor, Codex, Lovable — the exact prompt to use
                     </span>
                     <span className="intro-link-count">4 tools</span>
+                    <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                 </div>
               </section>
@@ -5964,7 +5968,7 @@ export default function App() {
                     </h3>
                     <p>Browse 58 AI-ready components, copy snippets, and ship faster.</p>
                   </div>
-                  <Button onClick={() => selectComponent("button")}>Browse components →</Button>
+                  <Button onClick={() => selectComponent("button")}>Browse components <span className="ms" style={{ fontSize: "1rem", verticalAlign: "-2px" }}>arrow_forward</span></Button>
                 </div>
               </section>
             </>
@@ -7146,7 +7150,7 @@ injectSpeedInsights();`}
                       onClick={() => setGallerySearch("")}
                       aria-label="Clear search"
                     >
-                      ✕
+                      <span className="ms" style={{ fontSize: "1rem" }}>close</span>
                     </button>
                   )}
                 </div>

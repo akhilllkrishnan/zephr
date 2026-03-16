@@ -1809,12 +1809,21 @@ h1 {
 }
 
 .cl-category-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.67rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--accent);
   margin-bottom: 0.35rem;
+}
+
+.cl-category-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+  font-variation-settings: 'wght' 600;
 }
 
 .cl-list {
@@ -7951,8 +7960,7 @@ h1 {
   overflow: hidden;
 }
 
-.intro-link-card::after {
-  content: '→';
+.intro-link-card-arrow {
   position: absolute;
   top: 1.25rem;
   right: 1.375rem;
@@ -7970,7 +7978,7 @@ h1 {
   box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 8%, transparent) !important;
 }
 
-.intro-link-card:hover::after {
+.intro-link-card:hover .intro-link-card-arrow {
   opacity: 1;
   transform: translateX(0);
 }
@@ -7984,7 +7992,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 18px;
+  color: var(--accent);
   margin-bottom: 0.125rem;
   flex-shrink: 0;
 }
