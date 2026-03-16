@@ -87,10 +87,12 @@ const registry = registryData as unknown as RegistryEntry[];
 const DEFAULT_STYLE_PACK: StylePackName = "notion";
 const WidgetsPage = lazy(() => import("./views/WidgetsPage"));
 const TemplatesPage = lazy(() => import("./views/TemplatesPage"));
+const SlashCommandsPage = lazy(() => import("./views/SlashCommandsPage"));
 
 type WorkspaceView =
   "introduction" |
   "getting-started" |
+  "slash-commands" |
   "speed-insights" |
   "foundations" |
   "mission" |
@@ -814,6 +816,7 @@ function fromSearchParams(): {
       viewParam === "components" ? "components" :
         viewParam === "api-reference" ? "api-reference" :
           viewParam === "getting-started" ? "getting-started" :
+            viewParam === "slash-commands" ? "slash-commands" :
             viewParam === "foundations" ? "foundations" :
               viewParam === "speed-insights" ? "speed-insights" :
                 viewParam === "mission" ? "mission" :
@@ -3555,7 +3558,6 @@ export default function App() {
   const [framework, setFramework] = useState<"nextjs" | "nextjs-app" | "react" | "remix" | "sveltekit" | "vue" | "nuxt" | "astro" | "html" | "other">("nextjs");
   const [packageManager, setPackageManager] = useState<"npm" | "pnpm" | "yarn" | "bun">("pnpm");
   const [aiPackageManager, setAiPackageManager] = useState<AiPackageManager>("npm");
-  const [componentUseMode, setComponentUseMode] = useState<"prompt" | "code">("prompt");
 
   const [cloudApiKey, setCloudApiKey] = useState<string>(() =>
     typeof window !== "undefined" ? sessionStorage.getItem("zephr-cloud-api-key") ?? "" : ""
@@ -3680,6 +3682,7 @@ export default function App() {
   const setupTabsRef = useRef<HTMLDivElement | null>(null);
   const [setupIndicator, setSetupIndicator] = useState({ left: 0, width: 0, opacity: 0 });
   const rightRailRef = useRef<HTMLDivElement | null>(null);
+  const mainColRef = useRef<HTMLElement | null>(null);
   const [tocIndicator, setTocIndicator] = useState({ top: 0, height: 0, opacity: 0 });
 
   useEffect(() => {
@@ -3744,6 +3747,11 @@ export default function App() {
       window.removeEventListener("resize", schedule);
     };
   }, [setupTab]);
+
+  // ── Scroll to top on navigation ──────────────────────────────
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [view]);
 
   // ── TOC active link tracker ──────────────────────────────────
   useEffect(() => {
@@ -3948,9 +3956,6 @@ export default function App() {
     setPreviewProps({});
   }, [activeRegistryId]);
 
-  useEffect(() => {
-    setComponentUseMode("prompt");
-  }, [activeRegistryId, view]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
@@ -4159,112 +4164,63 @@ export default function App() {
     }
 
     const docTargets: SearchResultItem[] = [
-      {
-        id: "doc-setup-introduction",
-        kind: "doc",
-        label: "Introduction",
-        detail: "Setup",
-        tab: "setup",
-        view: "introduction",
-        anchor: "setup-introduction"
-      },
-      {
-        id: "doc-setup-start",
-        kind: "doc",
-        label: "Get Started",
-        detail: "Setup",
-        tab: "setup",
-        view: "getting-started",
-        anchor: "overview"
-      },
-      {
-        id: "doc-setup-speed-insights",
-        kind: "doc",
-        label: "Speed Insights",
-        detail: "Setup",
-        tab: "setup",
-        view: "speed-insights",
-        anchor: "overview"
-      },
-      {
-        id: "doc-setup-foundations",
-        kind: "doc",
-        label: "Foundations",
-        detail: "Setup",
-        tab: "setup",
-        view: "foundations",
-        anchor: "foundations-overview"
-      },
-      {
-        id: "doc-pages-templates",
-        kind: "doc",
-        label: "Page Templates",
-        detail: "Pages",
-        tab: "pages",
-        view: "templates",
-        anchor: "templates-overview"
-      },
-      {
-        id: "doc-pages-widgets",
-        kind: "doc",
-        label: "Widgets",
-        detail: "Pages",
-        tab: "pages",
-        view: "widgets",
-        anchor: "widgets-overview"
-      },
-      {
-        id: "doc-components-api",
-        kind: "doc",
-        label: "API Reference",
-        detail: "Components",
-        tab: "components",
-        view: "api-reference",
-        anchor: "api-overview"
-      },
-      {
-        id: "doc-changelog",
-        kind: "doc",
-        label: "Release notes",
-        detail: "Change Log",
-        tab: "changelog",
-        view: "introduction",
-        anchor: "changelog-overview"
-      },
-      {
-        id: "doc-changelog-migration",
-        kind: "doc",
-        label: "Migration 0.1 to 0.2",
-        detail: "Change Log",
-        tab: "changelog",
-        view: "introduction",
-        anchor: "migration-0-1-to-0-2"
-      }
+      { id: "doc-setup-introduction", kind: "doc", label: "Introduction", detail: "Setup", tab: "setup", view: "introduction", anchor: "setup-introduction" },
+      { id: "doc-setup-start", kind: "doc", label: "Get Started", detail: "Setup · AI quick start", tab: "setup", view: "getting-started", anchor: "overview" },
+      { id: "doc-setup-foundations", kind: "doc", label: "Foundations", detail: "Setup · Tokens & primitives", tab: "setup", view: "foundations", anchor: "foundations-overview" },
+      { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 21 AI editor commands", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
+      { id: "doc-setup-mission", kind: "doc", label: "Mission & Vision", detail: "Setup", tab: "setup", view: "mission", anchor: "mission-overview" },
+      { id: "doc-setup-team", kind: "doc", label: "Team", detail: "Setup", tab: "setup", view: "team", anchor: "team-overview" },
+      { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Pages · Dashboards, auth, settings", tab: "pages", view: "templates", anchor: "templates-overview" },
+      { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Pages · Assembled widget examples", tab: "pages", view: "widgets", anchor: "widgets-overview" },
+      { id: "doc-components-api", kind: "doc", label: "API Reference", detail: "Components · Props, types, defaults", tab: "components", view: "api-reference", anchor: "api-overview" },
+      { id: "doc-changelog", kind: "doc", label: "Release notes", detail: "Changelog", tab: "changelog", view: "introduction", anchor: "changelog-overview" },
+      { id: "doc-changelog-roadmap", kind: "doc", label: "Roadmap", detail: "Changelog · Upcoming milestones", tab: "changelog", view: "introduction", anchor: "release-upcoming" },
+      { id: "doc-mcp-server", kind: "doc", label: "MCP Server", detail: "Setup · Claude Code, Cursor, Windsurf", tab: "setup", view: "getting-started", anchor: "mcp-section" },
+      { id: "doc-render-tool", kind: "doc", label: "zephr_render", detail: "Setup · Visual verification tool", tab: "setup", view: "getting-started", anchor: "mcp-section" },
     ];
 
     const docMatches = docTargets.filter((item) =>
       `${item.label} ${item.detail}`.toLowerCase().includes(normalized)
     );
 
+    // Component matches — search id, name, description, category
     const componentMatches = registry
       .filter((entry) => entry.category !== "template")
       .filter((entry) =>
         entry.id.toLowerCase().includes(normalized) ||
         entry.name.toLowerCase().includes(normalized) ||
-        entry.description.toLowerCase().includes(normalized)
+        (entry.description ?? "").toLowerCase().includes(normalized) ||
+        (entry.category ?? "").toLowerCase().includes(normalized)
       )
-      .slice(0, 10)
+      .slice(0, 8)
       .map<SearchResultItem>((entry) => ({
         id: `component-${entry.id}`,
         kind: "component",
         label: entry.name,
-        detail: `${entry.category} component`,
+        detail: entry.category ? `${entry.category[0].toUpperCase()}${entry.category.slice(1)}` : "Component",
         tab: "components",
         view: "components",
         componentId: entry.id
       }));
 
-    return [...docMatches, ...componentMatches].slice(0, 10);
+    // Template/example page matches
+    const templateMatches = templateCatalogMeta
+      .filter((t) =>
+        t.label.toLowerCase().includes(normalized) ||
+        t.category.toLowerCase().includes(normalized)
+      )
+      .slice(0, 4)
+      .map<SearchResultItem>((t) => ({
+        id: `template-${t.id}`,
+        kind: "doc",
+        label: t.label,
+        detail: t.category === "template" ? "Pages · Template" : "Pages · Example",
+        tab: "pages",
+        view: "templates",
+        anchor: t.id
+      }));
+
+    return [...docMatches, ...componentMatches, ...templateMatches].slice(0, 12);
   }, [catalogSearch]);
 
   useEffect(() => {
@@ -4693,6 +4649,17 @@ export default function App() {
               </button>
               <button
                 type="button"
+                className={`sidebar-link ${view === "slash-commands" ? "is-active" : ""}`}
+                onClick={() => {
+                  setTopTab("setup");
+                  setView("slash-commands");
+                  setMobileNavOpen(false);
+                }}
+              >
+                Slash Commands
+              </button>
+              <button
+                type="button"
                 className={`sidebar-link ${view === "speed-insights" ? "is-active" : ""}`}
                 onClick={() => {
                   setTopTab("setup");
@@ -4915,7 +4882,7 @@ export default function App() {
           )
         }
 
-        <main className="content-column">
+        <main ref={mainColRef} className="content-column">
           {topTab === "changelog" ? (
             <>
               <section id="changelog-overview" className="doc-section hero">
@@ -4924,6 +4891,20 @@ export default function App() {
                 <p className="lead">
                   Every meaningful change to Zephr — component APIs, AI tooling, CLI, MCP server, and docs — tracked in one place.
                 </p>
+                <div className="cl-hero-stats">
+                  <div className="cl-hero-stat">
+                    <strong>5</strong>
+                    <span>releases</span>
+                  </div>
+                  <div className="cl-hero-stat">
+                    <strong>v0.5.0</strong>
+                    <span>latest · March 16, 2026</span>
+                  </div>
+                  <div className="cl-hero-stat">
+                    <strong>v1.0.0</strong>
+                    <span>production GA · planned</span>
+                  </div>
+                </div>
               </section>
 
               <section className="doc-section">
@@ -4937,16 +4918,17 @@ export default function App() {
                       <span className="cl-badge">Latest</span>
                     </div>
                     <p className="cl-summary">
-                      Welcome banners, redesigned landing page, Introduction as homepage, Zephr Render highlighted, GitHub open-source icon.
+                      MCP action tools, <code>zephr_render</code>, welcome banners, docs polish, open-source release.
                     </p>
                     <div className="cl-changes">
                       <div>
                         <p className="cl-category-label">✦ New features</p>
                         <ul className="cl-list">
+                          <li><strong>MCP action tools</strong> — <code>generate_component</code>, <code>scaffold_page</code>, <code>apply_theme</code>, <code>install_plan</code> added to <code>@zephrui/mcp-server</code>. AI editors can now write code, not just look things up.</li>
+                          <li><strong><code>zephr_render</code> MCP tool</strong> — renders JSX in a headless Playwright browser and returns a screenshot + token compliance report. Visual verification before writing to disk.</li>
                           <li>Branded ZEPHR pixel-block welcome banner on <code>npm install @zephrui/ui-react</code> — indigo block art, version number, next-step hints. Silent in CI/non-TTY.</li>
                           <li>Same banner on <code>zephr init</code> and <code>zephr add-skills</code> — fires when connecting to Claude Code, Cursor, or Codex.</li>
-                          <li>Redesigned Introduction feature grid: 3 columns replacing 4, with expanded copy — AI-native tokens, 21 slash commands (with chip row), and Zephr Render MCP tool (new).</li>
-                          <li>Zephr Render highlighted on the landing page with an "MCP Tool" badge and Playwright renderer explanation.</li>
+                          <li>Redesigned Introduction feature grid: 3 columns, expanded copy for AI-native tokens, 21 slash commands, and Zephr Render.</li>
                           <li>GitHub icon link added to the header — signals open-source status at a glance.</li>
                           <li>Introduction page set as the default homepage — no <code>?view=</code> param required.</li>
                         </ul>
@@ -4954,8 +4936,9 @@ export default function App() {
                       <div>
                         <p className="cl-category-label">⚡ Improvements</p>
                         <ul className="cl-list">
-                          <li>Feature cards now carry a primary description and a secondary sub-paragraph with a hairline separator — more detail without visual clutter.</li>
                           <li>Slash commands chip row in the feature card shows <code>/polish</code>, <code>/audit</code>, <code>/scaffold</code>, <code>/bolder</code>, <code>/harden</code>, <code>/tighten</code>, and a "+15 more" overflow pill.</li>
+                          <li>58 component pages polished — better prop tables, sticky thead, code block AI prompts, consistent section headings.</li>
+                          <li>Templates gallery shows all 25 entries (5 templates + 20 examples) instead of 5.</li>
                           <li><code>@zephrui/ui-react</code> bumped to 0.1.2, <code>@zephrui/cli</code> republished — both live on npm.</li>
                         </ul>
                       </div>
@@ -5122,14 +5105,14 @@ export default function App() {
                     <div className="roadmap-content">
                       <div className="roadmap-label">
                         <span className="roadmap-status in-progress">In progress</span>
-                        <span className="roadmap-version">v0.5.0</span>
+                        <span className="roadmap-version">v0.6.0</span>
                       </div>
-                      <h4>npm publish &amp; MCP action tools</h4>
+                      <h4>Cloud features &amp; Figma sync</h4>
                       <ul className="release-list">
-                        <li>Publish <code>@zephrui/ui-react</code> to npm as a public package.</li>
-                        <li>MCP action tools for page scaffolding, accent application, and component generation.</li>
-                        <li>Loading / empty / error states on all organisms.</li>
-                        <li>Per-tool AI prompt variants (Claude Code, Cursor, Codex, Lovable).</li>
+                        <li>Cloud API key flows for logo / avatar / icon providers.</li>
+                        <li>Figma token import via Variables API.</li>
+                        <li>Design-to-code sync: push Figma changes into core design tokens.</li>
+                        <li>Team workspace with shared accent presets and visual defaults.</li>
                       </ul>
                     </div>
                   </div>
@@ -5139,14 +5122,14 @@ export default function App() {
                     <div className="roadmap-content">
                       <div className="roadmap-label">
                         <span className="roadmap-status planned">Planned</span>
-                        <span className="roadmap-version">v0.6.0</span>
+                        <span className="roadmap-version">v0.7.0</span>
                       </div>
-                      <h4>Cloud features &amp; Figma sync</h4>
+                      <h4>Animation primitives &amp; test coverage</h4>
                       <ul className="release-list">
-                        <li>Cloud API key flows for logo / avatar / icon providers.</li>
-                        <li>Figma token import via Variables API.</li>
-                        <li>Design-to-code sync: push Figma changes into core design tokens.</li>
-                        <li>Team workspace with shared accent presets and visual defaults.</li>
+                        <li>Enter / exit / layout transition tokens baked into all interactive components.</li>
+                        <li>Staggered list animations and skeleton loading states.</li>
+                        <li>Visual regression test suite with Playwright snapshots.</li>
+                        <li>Accessibility audit pass — WCAG 2.2 AA target across all components.</li>
                       </ul>
                     </div>
                   </div>
@@ -5216,36 +5199,63 @@ export default function App() {
                       <span className="hero-terminal-title">zsh — 80×24</span>
                     </div>
                     <div className="hero-terminal-body">
+                      {/* Command */}
                       <div className="hero-terminal-line">
                         <span className="hero-terminal-prompt">❯</span>
-                        <span className="hero-terminal-cmd">npx zephr init</span>
+                        <span className="hero-terminal-cmd">pnpm add @zephrui/ui-react</span>
+                      </div>
+                      <div className="hero-terminal-spacer" />
+                      {/* Progress */}
+                      <div className="hero-terminal-line">
+                        <span className="hero-terminal-text" style={{color:"#9ca3af"}}>Packages: </span>
+                        <span className="hero-terminal-text" style={{color:"#fbbf24"}}>+53</span>
+                        <span className="hero-terminal-text"> </span>
+                        <span className="hero-terminal-progress-bar">████████████████████</span>
+                        <span className="hero-terminal-check"> Done</span>
+                      </div>
+                      <div className="hero-terminal-spacer" />
+                      {/* Packages */}
+                      <div className="hero-terminal-line hero-terminal-line--indent">
+                        <span className="hero-terminal-check">+</span>
+                        <span className="hero-terminal-pkg">@zephrui/core</span>
+                        <span className="hero-terminal-ver">0.1.2</span>
+                      </div>
+                      <div className="hero-terminal-line hero-terminal-line--indent">
+                        <span className="hero-terminal-check">+</span>
+                        <span className="hero-terminal-pkg">@zephrui/ui-react</span>
+                        <span className="hero-terminal-ver">0.1.2</span>
+                      </div>
+                      <div className="hero-terminal-spacer" />
+                      <div className="hero-terminal-line hero-terminal-line--indent">
+                        <span className="hero-terminal-check">Done</span>
+                        <span className="hero-terminal-text" style={{color:"#6b7280"}}> in 2.4s</span>
+                      </div>
+                      {/* Zephr welcome banner — pixel art style */}
+                      <div className="hero-terminal-spacer" />
+                      <div className="hero-terminal-banner-v2" aria-label="Zephr welcome banner">
+                        {/* Welcome pill */}
+                        <div className="hero-terminal-welcome-pill">
+                          <span className="hero-terminal-welcome-star">✦</span>
+                          <span>Welcome to Zephr</span>
+                        </div>
+                        {/* Pixel-art ZEPHR */}
+                        <div className="hero-terminal-pixel-wrap">
+                          <pre className="hero-terminal-pixel-art" aria-label="ZEPHR">{
+`████████  ████████  ████████  ██    ██  ████████
+      ██  ██        ██    ██  ██    ██  ██    ██
+    ██    ██████    ████████  ████████  ██████
+  ██      ██        ██        ██    ██  ██  ██
+████████  ████████  ██        ██    ██  ██    ██`
+                          }</pre>
+                          <span className="hero-terminal-pixel-note">← indigo, bold</span>
+                        </div>
+                        {/* Tagline */}
+                        <div className="hero-terminal-tagline-v2">
+                          Token-native React UI&nbsp;·&nbsp;AI-assisted product development.
+                        </div>
                       </div>
                       <div className="hero-terminal-spacer" />
                       <div className="hero-terminal-line">
-                        <span className="hero-terminal-check">✓</span>
-                        <span className="hero-terminal-text">Detected React + TypeScript</span>
-                      </div>
-                      <div className="hero-terminal-line">
-                        <span className="hero-terminal-check">✓</span>
-                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>CLAUDE.md</span></span>
-                      </div>
-                      <div className="hero-terminal-line">
-                        <span className="hero-terminal-check">✓</span>
-                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>AGENTS.md</span></span>
-                      </div>
-                      <div className="hero-terminal-line">
-                        <span className="hero-terminal-check">✓</span>
-                        <span className="hero-terminal-text">Writing <span style={{color:"#93c5fd"}}>llms.txt</span></span>
-                      </div>
-                      <div className="hero-terminal-line">
-                        <span className="hero-terminal-check">✓</span>
-                        <span className="hero-terminal-text"><span style={{color:"#fbbf24"}}>49</span> components registered</span>
-                      </div>
-                      <div className="hero-terminal-divider" />
-                      <div className="hero-terminal-line" style={{animationDelay:"1.25s"}}>
-                        <span className="hero-terminal-success">✦ Your AI knows your design system.</span>
-                      </div>
-                      <div className="hero-terminal-line" style={{animationDelay:"1.35s"}}>
                         <span className="hero-terminal-prompt">❯</span>
                         <span className="hero-terminal-cursor" />
                       </div>
@@ -5256,44 +5266,94 @@ export default function App() {
                     <span className="hero-tools-label">Works with</span>
                     <div className="hero-tools-pills">
 
-                      {/* Claude Code */}
+                      {/* Claude */}
                       <div className="hero-tool-pill hero-tool-pill--claude">
-                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path
-                            d="M13.827 2.7 12 6.944 10.173 2.7 6.827 3.573 8.654 7.817 4.41 6 3.537 9.346l4.244 1.827L3.537 13l.873 3.346 4.244-1.827L6.827 18.7l3.346.873L12 15.429l1.827 4.244 3.346-.873-1.827-4.244 4.244 1.827.873-3.346-4.244-1.827L22.463 9.346 21.59 6l-4.244 1.817 1.827-4.244z"
-                            fill="currentColor"
-                          />
-                        </svg>
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Anthropic Claude mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.304 3.541 12.836 15.99h-1.72L15.583 3.54h1.72ZM7.092 3.541l4.08 10.88.536 1.568H9.987L5.372 3.541h1.72Zm5.252 0-1.315 3.758L9.71 10.62 8.217 3.541h4.127Zm.515 8.914-.002.005h-1.716l-.002-.005 .86-2.456.86 2.456Zm5.445 4.042-4.08-10.88L13.69 4.05l1.315 3.467 1.314 3.412 1.44 5.568h-1.72Zm2.59-12.956H4.106L2.5 20.459h19L19.894 3.54Z"/>
+                          </svg>
+                        </span>
                         <span>Claude</span>
                       </div>
 
                       {/* Cursor */}
                       <div className="hero-tool-pill hero-tool-pill--cursor">
-                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M4 3L20 12L13 13.8L9.5 21L4 3Z" fill="currentColor" />
-                          <path d="M13 13.8L16.5 20.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-                        </svg>
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Cursor IDE mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M4 2h16v4H4V2zm0 8h8v4H4v-4zm0 8h6v4H4v-4zM14 10h6v12h-4v-8h-2v-4z"/>
+                          </svg>
+                        </span>
                         <span>Cursor</span>
+                      </div>
+
+                      {/* GitHub Copilot */}
+                      <div className="hero-tool-pill hero-tool-pill--copilot">
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* GitHub mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                          </svg>
+                        </span>
+                        <span>Copilot</span>
                       </div>
 
                       {/* Codex / OpenAI */}
                       <div className="hero-tool-pill hero-tool-pill--codex">
-                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                          <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .511 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.805-3.387L15.15 7.2a.077.077 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.104v-5.678a.79.79 0 0 0-.407-.666zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
-                        </svg>
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* OpenAI mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 004.981 4.18a5.985 5.985 0 00-3.998 2.9 6.046 6.046 0 00.743 7.097 5.98 5.98 0 00.511 4.911 6.051 6.051 0 006.515 2.9A5.985 5.985 0 0013.26 24a6.056 6.056 0 005.772-4.206 5.99 5.99 0 003.997-2.9 6.056 6.056 0 00-.747-7.073zm-9.022 12.609a4.476 4.476 0 01-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 00.392-.681v-6.737l2.02 1.168a.071.071 0 01.038.052v5.583a4.504 4.504 0 01-4.494 4.494zm-9.66-4.126a4.47 4.47 0 01-.535-3.014l.142.085 4.783 2.759a.771.771 0 00.78 0l5.843-3.369v2.332a.08.08 0 01-.033.062L9.74 19.95a4.5 4.5 0 01-6.14-1.646zM2.34 7.896a4.485 4.485 0 012.366-1.973V11.6a.766.766 0 00.388.676l5.815 3.355-2.02 1.168a.076.076 0 01-.071 0l-4.83-2.786A4.504 4.504 0 012.34 7.872zm16.597 3.855l-5.805-3.387 2.018-1.165a.077.077 0 01.071 0l4.83 2.791a4.494 4.494 0 01-.676 8.104v-5.678a.79.79 0 00-.438-.665zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 00-.785 0L9.409 9.23V6.897a.066.066 0 01.028-.061l4.83-2.787a4.5 4.5 0 016.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 01-.038-.057V6.075a4.5 4.5 0 017.375-3.453l-.142.08-4.778 2.758a.795.795 0 00-.393.681l-.004 6.737zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5-.005-3z"/>
+                          </svg>
+                        </span>
                         <span>Codex</span>
                       </div>
 
                       {/* Lovable */}
                       <div className="hero-tool-pill hero-tool-pill--lovable">
-                        <svg className="hero-tool-pill-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path
-                            d="M12 21C12 21 3 15.5 3 8.5A5 5 0 0 1 12 5.93 5 5 0 0 1 21 8.5C21 15.5 12 21 12 21z"
-                            fill="currentColor"
-                          />
-                          <path d="M9.5 9a2.5 2.5 0 0 1 2.5-2" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        </svg>
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Lovable heart mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 21.593c-.425-.439-8.993-9.371-8.993-13.36C3.007 4.548 5.37 2 8.25 2c1.862 0 3.507.956 4.5 2.338A5.493 5.493 0 0117.25 2c2.88 0 5.243 2.548 5.243 6.233 0 3.989-8.568 12.921-8.993 13.36L12 22l-.75-.407z"/>
+                          </svg>
+                        </span>
                         <span>Lovable</span>
+                      </div>
+
+                      {/* Bolt.new */}
+                      <div className="hero-tool-pill hero-tool-pill--bolt">
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Bolt lightning mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14.5 2.1L5 13.5h6.5L9 21.9 19 10.5h-6.5L14.5 2.1z"/>
+                          </svg>
+                        </span>
+                        <span>Bolt</span>
+                      </div>
+
+                      {/* v0 by Vercel */}
+                      <div className="hero-tool-pill hero-tool-pill--v0">
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Vercel triangle mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 22.525H0L12 1.475 24 22.525z"/>
+                          </svg>
+                        </span>
+                        <span>v0</span>
+                      </div>
+
+                      {/* Windsurf */}
+                      <div className="hero-tool-pill hero-tool-pill--windsurf">
+                        <span className="hero-tool-pill-logo" aria-hidden="true">
+                          {/* Windsurf / Codeium wave mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                            <path d="M3 8.5c1.5-2.5 4-4 7-4s5.5 1.5 7 4"/>
+                            <path d="M3 13.5c1.5-2 4-3.5 7-3.5s5.5 1.5 7 3.5"/>
+                            <path d="M3 18.5c1.5-1.5 4-2.5 7-2.5s5.5 1 7 2.5"/>
+                          </svg>
+                        </span>
+                        <span>Windsurf</span>
                       </div>
 
                     </div>
@@ -5386,7 +5446,7 @@ export default function App() {
               </section>
 
               {/* ── MCP SERVER SETUP ──────────────────────────────────────── */}
-              <section id="mcp-setup" className="doc-section">
+              <section id="mcp-section" className="doc-section">
                 <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
                   <p className="section-eyebrow">MCP Integration</p>
                   <h2>Give your AI direct access to the full registry.</h2>
@@ -5400,40 +5460,95 @@ export default function App() {
                 {/* Tool cards */}
                 <div className="mcp-section-grid">
                   <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">zephr_search</code>
-                    <p className="mcp-tool-desc">Find components by keyword. Returns name, category, tier, and AI hints for every match.</p>
+                    <code className="mcp-tool-name">search_components</code>
+                    <p className="mcp-tool-desc">Find components by keyword. Returns name, category, and AI hints for every match.</p>
                   </div>
                   <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">zephr_spec</code>
+                    <code className="mcp-tool-name">get_component_spec</code>
                     <p className="mcp-tool-desc">Full prop schema for any component — types, defaults, accepted values, accessibility notes.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">generate_component</code>
+                    <p className="mcp-tool-desc">Generate a ready-to-paste component snippet + AI prompt tailored to your editor and style pack.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">scaffold_page</code>
+                    <p className="mcp-tool-desc">Compose a full page from a list of component IDs — returns source, config, and install command.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">install_plan</code>
+                    <p className="mcp-tool-desc">Step-by-step install guide tailored to your framework (Vite, Next.js, Remix) and package manager.</p>
                   </div>
                   <div className="mcp-tool-card">
                     <code className="mcp-tool-name">zephr_render</code>
                     <p className="mcp-tool-desc">Pass JSX, get a pixel-accurate screenshot back in light and dark mode — before any code lands in your repo.</p>
-                  </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">zephr_scaffold_page</code>
-                    <p className="mcp-tool-desc">Scaffold a complete page template — Dashboard, Auth, Settings, Onboarding, or Marketing — wired to real props.</p>
                   </div>
                 </div>
 
                 {/* Config snippets */}
                 <div className="mcp-config-grid">
                   <div>
-                    <p className="mcp-config-label">Claude Code / Claude Desktop</p>
+                    <p className="mcp-config-label">Claude Code · Claude Desktop</p>
                     <SnippetItem
-                      label="claude_desktop_config.json"
-                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`}
-                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`)}
+                      label=".claude/settings.json"
+                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["-y", "@zephrui/mcp-server"]\n    }\n  }\n}`}
+                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["-y", "@zephrui/mcp-server"]\n    }\n  }\n}`)}
                     />
                   </div>
                   <div>
-                    <p className="mcp-config-label">Cursor</p>
+                    <p className="mcp-config-label">Cursor · Windsurf</p>
                     <SnippetItem
                       label=".cursor/mcp.json"
-                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`}
-                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`)}
+                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["-y", "@zephrui/mcp-server"]\n    }\n  }\n}`}
+                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["-y", "@zephrui/mcp-server"]\n    }\n  }\n}`)}
                     />
+                  </div>
+                </div>
+              </section>
+
+              {/* ── ZEPHR RENDER DEMO ─────────────────────────────────────── */}
+              <section id="render-demo" className="doc-section">
+                <div className="section-heading" style={{ marginBottom: "1.25rem" }}>
+                  <p className="section-eyebrow">zephr_render</p>
+                  <h2>Visual verification before code hits your repo.</h2>
+                  <p>Pass any JSX string to the <code>zephr_render</code> MCP tool. The AI gets back a pixel-accurate screenshot in light and dark — so it can verify the output before writing a single file.</p>
+                </div>
+
+                {/* Simulated MCP exchange */}
+                <div className="render-demo-shell">
+                  <div className="render-demo-prompt">
+                    <span className="render-demo-role">You</span>
+                    <p>Use <code>zephr_render</code> to preview this before writing it to disk.</p>
+                  </div>
+                  <div className="render-demo-call">
+                    <span className="render-demo-role render-demo-role--tool">zephr_render</span>
+                    <pre className="render-demo-code">{`{
+  jsx: '<Button variant="primary">Save changes</Button>',
+  theme: "both"
+}`}</pre>
+                  </div>
+                  <div className="render-demo-output">
+                    <span className="render-demo-role render-demo-role--result">Screenshot</span>
+                    <div className="render-demo-screens">
+                      {/* Light mode simulation */}
+                      <div className="render-demo-screen render-demo-screen--light">
+                        <div className="render-demo-screen-label">light</div>
+                        <div className="render-demo-screen-content">
+                          <Button>Save changes</Button>
+                        </div>
+                      </div>
+                      {/* Dark mode simulation */}
+                      <div className="render-demo-screen render-demo-screen--dark" data-theme="dark">
+                        <div className="render-demo-screen-label">dark</div>
+                        <div className="render-demo-screen-content">
+                          <Button>Save changes</Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="render-demo-compliance">
+                      <Badge color="green" variant="lighter">✓ Token compliant</Badge>
+                      <span className="render-demo-compliance-note">No hardcoded values · 3 tokens used · 0 violations</span>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -5848,7 +5963,11 @@ export default function App() {
                 </div>
               </section>
             </>
-                ) : view === "speed-insights" ? (
+          ) : view === "slash-commands" ? (
+            <Suspense fallback={<div className="doc-section" style={{ color: "var(--muted)" }}>Loading…</div>}>
+              <SlashCommandsPage onCopy={copyAndFlash} />
+            </Suspense>
+          ) : view === "speed-insights" ? (
                 <>
                   <section id="overview" className="doc-section hero">
                     <p className="breadcrumbs">Get Started</p>
@@ -7167,9 +7286,11 @@ injectSpeedInsights();`}
                 </div>
                 <div className="hero-actions">
                   <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{marginRight:"0.35rem"}}><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
                     Copy AI Prompt
                   </Button>
                   <Button variant="secondary" onClick={() => copyAndFlash("Install command", installCommand)}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{marginRight:"0.35rem"}}><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
                     Copy Install
                   </Button>
                 </div>
@@ -7267,10 +7388,8 @@ injectSpeedInsights();`}
 
               <section id="examples" className="doc-section">
                 <div className="section-heading">
-                  <div>
-                    <h2>Examples</h2>
-                    <p>Live preview of all component states and variants.</p>
-                  </div>
+                  <h2>Examples</h2>
+                  <p>Live preview of all component states and variants.</p>
                 </div>
 
                 {selectedPreviewStateConfig && selectedEntry.id !== "alert" && selectedEntry.id !== "accordion" && selectedEntry.id !== "tooltip" ? (
@@ -8272,107 +8391,13 @@ injectSpeedInsights();`}
                     </BrowserPreviewFrame>
               </section>
 
-              <section id="use" className="doc-section">
-                <div className="section-heading">
-                  <h2>Use this component</h2>
-                  <p>Choose prompt-first or code-first usage depending on your workflow.</p>
-                </div>
-                <div className="component-use-shell">
-                  <div className="component-use-header">
-                    <div className="itb-tabrow component-use-tabrow" role="tablist" aria-label="Component usage mode">
-                      <button
-                        type="button"
-                        role="tab"
-                        aria-selected={componentUseMode === "prompt"}
-                        className={`itb-tab ${componentUseMode === "prompt" ? "active" : ""}`}
-                        onClick={() => setComponentUseMode("prompt")}
-                      >
-                        AI prompt
-                      </button>
-                      <button
-                        type="button"
-                        role="tab"
-                        aria-selected={componentUseMode === "code"}
-                        className={`itb-tab ${componentUseMode === "code" ? "active" : ""}`}
-                        onClick={() => setComponentUseMode("code")}
-                      >
-                        Code
-                      </button>
-                    </div>
-                  </div>
-                  {componentUseMode === "prompt" ? (
-                    <div className="component-use-panel">
-                      <label className="field">
-                        <span>Prompt to paste into Claude / Cursor</span>
-                        <Textarea value={blockPrompt} readOnly rows={12} />
-                      </label>
-                      <div className="inline-actions">
-                        <Button onClick={() => copyAndFlash("AI block prompt", blockPrompt)}>
-                          Copy AI Prompt
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => copyAndFlash("API key placeholder", "ZEPHR_API_KEY=replace_me")}
-                        >
-                          Copy key token
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="component-use-code">
-                      <div className="snippet-stack">
-                        <SnippetItem
-                          label="Import"
-                          code={importSnippet}
-                          onCopy={() => copyAndFlash("Import snippet", importSnippet)}
-                        />
-                        <SnippetItem
-                          label="Usage"
-                          code={usageSnippet}
-                          onCopy={() => copyAndFlash("Usage snippet", usageSnippet)}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-
               {apiPropRows.length > 0 && (
                 <section id="customize" className="doc-section">
                   <div className="section-heading">
-                    <h2>Edit the {selectedEntry.name.toLowerCase()}</h2>
-                    <p>Switch states and variants without rewriting your UI.</p>
-                  </div>
-                  <div className="component-edit-grid">
-                    <div>
-                      <h3>Try these prompts</h3>
-                      <ul className="component-edit-list">
-                        {selectedEntry.aiHints.positive.slice(0, 3).map((hint, i) => (
-                          <li key={i}>
-                            <button
-                              type="button"
-                              className="component-hint-chip"
-                              onClick={() => copyAndFlash("Prompt hint", `"${hint}"`)}
-                              title="Click to copy"
-                            >
-                              "{hint}"
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h3>Usage example</h3>
-                      <SnippetItem
-                        label={selectedEntry.name}
-                        code={selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />")}
-                        onCopy={() => copyAndFlash("Usage example", selectedEntry.usageExamples?.[0] ?? ("<" + selectedEntry.name + " />"))}
-                      />
-                    </div>
+                    <h2>Props</h2>
+                    <p>Full prop reference for {selectedEntry.name}.</p>
                   </div>
                   <div className="component-edit-table">
-                    <h3>Core props</h3>
                     <table className="component-props-table">
                       <thead>
                         <tr>
@@ -8418,6 +8443,18 @@ injectSpeedInsights();`}
                   </div>
                 </section>
               )}
+
+              <section id="use" className="doc-section">
+                <div className="section-heading">
+                  <h2>AI Prompt</h2>
+                  <p>Paste into Claude, Cursor, Codex, or any AI coding assistant to generate a production-ready {selectedEntry.name}.</p>
+                </div>
+                <SnippetItem
+                  label={`prompt · ${selectedEntry.name}`}
+                  code={blockPrompt}
+                  onCopy={() => copyAndFlash("AI block prompt", blockPrompt)}
+                />
+              </section>
 
               {/* ── Related components ────────────────────────────────── */}
               {relatedComponents.length > 0 && (
@@ -8524,6 +8561,17 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#setup">Install</a>
             </>
           )}
+          {view === "slash-commands" && (
+            <>
+              <a className="toc-link" href="#slash-overview">Overview</a>
+              <a className="toc-link" href="#sc-cat-build">Build</a>
+              <a className="toc-link" href="#sc-cat-refine">Refine</a>
+              <a className="toc-link" href="#sc-cat-quality">Quality</a>
+              <a className="toc-link" href="#sc-cat-adapt">Adapt</a>
+              <a className="toc-link" href="#sc-cat-context">Context</a>
+              <a className="toc-link" href="#sc-how-to-use">How to use</a>
+            </>
+          )}
           {view === "speed-insights" && (
             <>
               <a className="toc-link" href="#overview">Overview</a>
@@ -8585,10 +8633,10 @@ injectSpeedInsights();`}
               <a className="toc-link" href="#when-to-use">When to use</a>
               {isAssetLibraryComponent ? <a className="toc-link" href="#cloud-assets">Cloud asset sync</a> : null}
               <a className="toc-link" href="#examples">Examples</a>
-              <a className="toc-link" href="#use">Use this component</a>
               {apiPropRows.length > 0 ? (
                 <a className="toc-link" href="#customize">Props</a>
               ) : null}
+              <a className="toc-link" href="#use">AI Prompt</a>
               {relatedComponents.length > 0 ? (
                 <a className="toc-link" href="#related">Related</a>
               ) : null}

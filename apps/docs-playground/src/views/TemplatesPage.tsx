@@ -176,9 +176,29 @@ function TemplateSpotlightCard({
   );
 }
 
+function TemplateMiniature({ children }: { children: ReactNode }) {
+  return (
+    <div className="template-miniature-wrap" aria-hidden="true">
+      <div className="template-miniature-inner">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function TemplatePreviewArt({ entry }: { entry: TemplateEntry }) {
   switch (entry.id) {
     case "template-dashboard":
+      return <TemplateMiniature><DashboardPage /></TemplateMiniature>;
+    case "template-auth":
+      return <TemplateMiniature><AuthPage /></TemplateMiniature>;
+    case "template-settings":
+      return <TemplateMiniature><SettingsPage /></TemplateMiniature>;
+    case "template-onboarding":
+      return <TemplateMiniature><OnboardingPage /></TemplateMiniature>;
+    case "template-marketing":
+      return <TemplateMiniature><MarketingPage /></TemplateMiniature>;
+    case "template-dashboard-legacy":
       return (
         <div className="template-preview-art template-preview-art--dashboard" aria-hidden="true">
           <div className="template-preview-app-topbar">
@@ -1760,28 +1780,43 @@ export default function TemplatesPage({
             </div>
           </section>
 
-          {curatedTemplateEntries.length > 0 ? (
+          {visibleTemplateEntries.length === 0 ? (
+            <section className="doc-section">
+              <div className="widget-empty-state">
+                <strong>No templates match this search.</strong>
+                <p>Clear the search or switch categories to see the full library.</p>
+              </div>
+            </section>
+          ) : (
             <>
-              {featuredTemplateEntries.length > 0 ? (
+              {/* ── Page templates (5 first-party) ── */}
+              {visibleTemplateEntries.filter(e => e.category === "template").length > 0 && (
                 <section className="doc-section showcase-v2-section">
                   <div className="showcase-v2-section-head">
-                    <h2>Spotlight</h2>
+                    <div>
+                      <h2>Page templates</h2>
+                      <p>Drop-in page layouts for common SaaS surfaces — wire to real data in minutes.</p>
+                    </div>
                   </div>
-                  <div className="showcase-v2-spotlight-grid showcase-v2-spotlight-grid--templates">
-                    {featuredTemplateEntries.map((entry) => (
+                  <div className="showcase-v2-templates-grid">
+                    {visibleTemplateEntries.filter(e => e.category === "template").map((entry) => (
                       <TemplateSpotlightCard key={entry.id} entry={entry} />
                     ))}
                   </div>
                 </section>
-              ) : null}
+              )}
 
-              {catalogTemplateEntries.length > 0 ? (
+              {/* ── Assembled examples ── */}
+              {visibleTemplateEntries.filter(e => e.category === "example").length > 0 && (
                 <section className="doc-section showcase-v2-section">
                   <div className="showcase-v2-section-head">
-                    <h2>Library selection</h2>
+                    <div>
+                      <h2>Assembled examples</h2>
+                      <p>Domain-specific pages built from Zephr widgets. Click through for the full-size preview and implementation snippet.</p>
+                    </div>
                   </div>
-                  <div className="showcase-v2-template-grid">
-                    {catalogTemplateEntries.map((entry) => (
+                  <div className="showcase-v2-examples-grid">
+                    {visibleTemplateEntries.filter(e => e.category === "example").map((entry) => (
                       <a key={entry.id} className="showcase-v2-template-card" href={`#${entry.id}`}>
                         <div className="template-teaser-preview">
                           <TemplatePreviewArt entry={entry} />
@@ -1789,6 +1824,7 @@ export default function TemplatesPage({
                         <div className="template-teaser-info">
                           <div className="template-teaser-head">
                             <span className="template-teaser-name">{entry.title}</span>
+                            {entry.badge}
                           </div>
                           <span className="template-teaser-desc">{entry.description}</span>
                         </div>
@@ -1796,15 +1832,8 @@ export default function TemplatesPage({
                     ))}
                   </div>
                 </section>
-              ) : null}
+              )}
             </>
-          ) : (
-            <section className="doc-section">
-              <div className="widget-empty-state">
-                <strong>No templates match this search.</strong>
-                <p>Clear the search or switch categories to see the curated pages again.</p>
-              </div>
-            </section>
           )}
         </>
       ) : (
