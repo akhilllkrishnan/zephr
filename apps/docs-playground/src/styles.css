@@ -7652,14 +7652,14 @@ h1 {
 }
 
 /* Per-brand logo bubble colors */
-.hero-tool-pill--claude   .hero-tool-pill-logo { background: #cc785c; }
-.hero-tool-pill--cursor   .hero-tool-pill-logo { background: #171717; }
-.hero-tool-pill--copilot  .hero-tool-pill-logo { background: #24292f; }
-.hero-tool-pill--codex    .hero-tool-pill-logo { background: #171717; }
-.hero-tool-pill--lovable  .hero-tool-pill-logo { background: #e8344a; }
-.hero-tool-pill--bolt     .hero-tool-pill-logo { background: #171717; }
-.hero-tool-pill--v0       .hero-tool-pill-logo { background: #171717; }
-.hero-tool-pill--windsurf .hero-tool-pill-logo { background: #1aa7c4; }
+.hero-tool-pill--claude   .hero-tool-pill-logo { background: #d4795a; }
+.hero-tool-pill--cursor   .hero-tool-pill-logo { background: #111111; }
+.hero-tool-pill--copilot  .hero-tool-pill-logo { background: #111111; }
+.hero-tool-pill--codex    .hero-tool-pill-logo { background: #111111; }
+.hero-tool-pill--lovable  .hero-tool-pill-logo { background: #0d0007; }
+.hero-tool-pill--bolt     .hero-tool-pill-logo { background: #111111; }
+.hero-tool-pill--v0       .hero-tool-pill-logo { background: #111111; }
+.hero-tool-pill--windsurf .hero-tool-pill-logo { background: #111111; }
 
 [data-theme="dark"] .hero-tool-pill--cursor   .hero-tool-pill-logo { background: #2e2e2e; }
 [data-theme="dark"] .hero-tool-pill--copilot  .hero-tool-pill-logo { background: #2e2e2e; }

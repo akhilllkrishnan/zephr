@@ -5274,9 +5274,9 @@ export default function App() {
                       {/* Claude */}
                       <div className="hero-tool-pill hero-tool-pill--claude">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Anthropic Claude mark */}
+                          {/* Anthropic asterisk mark */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.304 3.541 12.836 15.99h-1.72L15.583 3.54h1.72ZM7.092 3.541l4.08 10.88.536 1.568H9.987L5.372 3.541h1.72Zm5.252 0-1.315 3.758L9.71 10.62 8.217 3.541h4.127Zm.515 8.914-.002.005h-1.716l-.002-.005 .86-2.456.86 2.456Zm5.445 4.042-4.08-10.88L13.69 4.05l1.315 3.467 1.314 3.412 1.44 5.568h-1.72Zm2.59-12.956H4.106L2.5 20.459h19L19.894 3.54Z"/>
+                            <path d="M13.827 3.678c-.406-1.026-1.248-1.678-2.162-1.678-.915 0-1.757.652-2.163 1.678L3.84 17.54H6.97l1.243-3.229h5.574l1.243 3.229h3.13L13.827 3.678zm-4.71 8.476 1.894-4.924 1.893 4.924H9.117z"/>
                           </svg>
                         </span>
                         <span>Claude</span>
@@ -5285,9 +5285,10 @@ export default function App() {
                       {/* Cursor */}
                       <div className="hero-tool-pill hero-tool-pill--cursor">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Cursor IDE mark */}
+                          {/* Cursor 3D diamond mark */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M4 2h16v4H4V2zm0 8h8v4H4v-4zm0 8h6v4H4v-4zM14 10h6v12h-4v-8h-2v-4z"/>
+                            <path d="M12 2L2 9l10 13L22 9 12 2z" fillOpacity="0.9"/>
+                            <path d="M12 2L22 9l-10 4L2 9l10-7z" fillOpacity="0.5"/>
                           </svg>
                         </span>
                         <span>Cursor</span>
@@ -5318,9 +5319,16 @@ export default function App() {
                       {/* Lovable */}
                       <div className="hero-tool-pill hero-tool-pill--lovable">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Lovable heart mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 21.593c-.425-.439-8.993-9.371-8.993-13.36C3.007 4.548 5.37 2 8.25 2c1.862 0 3.507.956 4.5 2.338A5.493 5.493 0 0117.25 2c2.88 0 5.243 2.548 5.243 6.233 0 3.989-8.568 12.921-8.993 13.36L12 22l-.75-.407z"/>
+                          {/* Lovable gradient heart mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24">
+                            <defs>
+                              <linearGradient id="lovable-g" x1="1" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#ff3d3d"/>
+                                <stop offset="50%" stopColor="#ff6b35"/>
+                                <stop offset="100%" stopColor="#7c3aed"/>
+                              </linearGradient>
+                            </defs>
+                            <path fill="url(#lovable-g)" d="M12 21.593c-.425-.439-8.993-9.371-8.993-13.36C3.007 4.548 5.37 2 8.25 2c1.862 0 3.507.956 4.5 2.338A5.493 5.493 0 0117.25 2c2.88 0 5.243 2.548 5.243 6.233 0 3.989-8.568 12.921-8.993 13.36z"/>
                           </svg>
                         </span>
                         <span>Lovable</span>
@@ -5329,9 +5337,9 @@ export default function App() {
                       {/* Bolt.new */}
                       <div className="hero-tool-pill hero-tool-pill--bolt">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Bolt lightning mark */}
+                          {/* Bolt "b" lettermark */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14.5 2.1L5 13.5h6.5L9 21.9 19 10.5h-6.5L14.5 2.1z"/>
+                            <text x="5" y="19" fontFamily="Arial Black, sans-serif" fontSize="20" fontWeight="900" fontStyle="italic">b</text>
                           </svg>
                         </span>
                         <span>Bolt</span>
@@ -5340,9 +5348,9 @@ export default function App() {
                       {/* v0 by Vercel */}
                       <div className="hero-tool-pill hero-tool-pill--v0">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Vercel triangle mark */}
+                          {/* v0 lettermark */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M24 22.525H0L12 1.475 24 22.525z"/>
+                            <text x="2" y="18" fontFamily="Arial Black, sans-serif" fontSize="13" fontWeight="900" letterSpacing="-1">v0</text>
                           </svg>
                         </span>
                         <span>v0</span>
@@ -5351,11 +5359,10 @@ export default function App() {
                       {/* Windsurf */}
                       <div className="hero-tool-pill hero-tool-pill--windsurf">
                         <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Windsurf / Codeium wave mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <path d="M3 8.5c1.5-2.5 4-4 7-4s5.5 1.5 7 4"/>
-                            <path d="M3 13.5c1.5-2 4-3.5 7-3.5s5.5 1.5 7 3.5"/>
-                            <path d="M3 18.5c1.5-1.5 4-2.5 7-2.5s5.5 1 7 2.5"/>
+                          {/* Windsurf wave mark */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 17c2-4 5-7 9-7s7 3 9 7"/>
+                            <path d="M3 11c2-3 5-5 7-5 3 0 5 2 5 5s-2 5-5 5c-2 0-4-1-5-3"/>
                           </svg>
                         </span>
                         <span>Windsurf</span>
