@@ -1416,11 +1416,11 @@ function ExampleCRMContacts() {
             <div style={{ padding: "1.5rem 1.5rem 1rem" }}>
               <div style={{
                 width: 40, height: 40, borderRadius: "50%",
-                background: "#fef2f2",
+                background: "var(--z-color-danger-lighter, #fef2f2)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 marginBottom: "1rem",
               }}>
-                <span className="ms" style={{ fontSize: "1.25rem", color: "#ef4444" }}>delete_forever</span>
+                <span className="ms" style={{ fontSize: "1.25rem", color: "var(--z-color-danger, #ef4444)" }}>delete_forever</span>
               </div>
               <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.05rem", fontWeight: 700, color: "var(--z-color-text, #111827)" }}>
                 Delete contact

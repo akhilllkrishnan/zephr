@@ -149,8 +149,8 @@ export function LiveCodeEditor({
                         role="alert"
                         style={{
                             padding: "var(--z-space-3, 0.75rem)",
-                            background: "#fef2f2",
-                            border: "1px solid #fecaca",
+                            background: "var(--z-color-danger-lighter, #fef2f2)",
+                            border: "1px solid var(--z-color-danger-light, #fecaca)",
                             borderRadius: "var(--z-radius-md, 8px)",
                             color: "var(--z-color-danger, #ef4444)",
                             fontSize: 13,
