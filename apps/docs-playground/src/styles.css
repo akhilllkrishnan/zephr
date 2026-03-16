@@ -1670,6 +1670,204 @@ h1 {
   line-height: 1.5;
 }
 
+/* ── Changelog timeline ─────────────────────────────────────────────────── */
+
+.cl-timeline {
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.cl-timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.cl-entry {
+  position: relative;
+  padding-bottom: 2.75rem;
+}
+
+.cl-entry:last-child {
+  padding-bottom: 0;
+}
+
+.cl-entry::before {
+  content: "";
+  position: absolute;
+  left: -1.75rem;
+  top: 9px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  box-sizing: border-box;
+}
+
+.cl-entry--latest::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.cl-entry-head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.cl-version {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.cl-date {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-left: 0.125rem;
+}
+
+.cl-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.15em 0.6em;
+  border-radius: 100px;
+  background: var(--accent);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.cl-summary {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.cl-changes {
+  display: grid;
+  gap: 1rem;
+}
+
+.cl-category-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.cl-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.cl-list li {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.cl-list li code {
+  font-size: 0.75rem;
+  font-family: "JetBrains Mono", monospace;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+  color: var(--accent);
+}
+
+/* ── MCP tools grid ─────────────────────────────────────────────────────── */
+
+.mcp-section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.mcp-tool-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.mcp-tool-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 2%, var(--panel));
+}
+
+.mcp-tool-name {
+  font-size: 0.78rem;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+  border-radius: 5px;
+  padding: 0.2em 0.55em;
+  width: fit-content;
+}
+
+.mcp-tool-desc {
+  font-size: 0.81rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.mcp-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.mcp-config-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 700px) {
+  .mcp-section-grid,
+  .mcp-config-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Enhanced How it works steps ────────────────────────────────────────── */
+
+.gs-flow-hint {
+  font-size: 0.73rem;
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
+  line-height: 1.5;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
 .release-changes {
   display: grid;
   gap: 1rem;

@@ -4814,8 +4814,11 @@ export default function App() {
               <a className="sidebar-link" href="#changelog-overview" onClick={() => setMobileNavOpen(false)}>
                 Overview
               </a>
+              <a className="sidebar-link changelog-version-link" href="#release-0-5-0" onClick={() => setMobileNavOpen(false)}>
+                v0.5.0 — Latest
+              </a>
               <a className="sidebar-link changelog-version-link" href="#release-0-4-0" onClick={() => setMobileNavOpen(false)}>
-                v0.4.0 · Latest
+                v0.4.0
               </a>
               <a className="sidebar-link changelog-version-link" href="#release-0-3-0" onClick={() => setMobileNavOpen(false)}>
                 v0.3.0
@@ -4847,122 +4850,150 @@ export default function App() {
               <section id="changelog-overview" className="doc-section hero">
                 <p className="breadcrumbs">Product / Changelog</p>
                 <h1>Release notes</h1>
-                <p className="lead">Track updates across docs UX, component APIs, and AI integration tooling.</p>
+                <p className="lead">
+                  Every meaningful change to Zephr — component APIs, AI tooling, CLI, MCP server, and docs — tracked in one place.
+                </p>
               </section>
 
-              <section id="release-0-4-0" className="doc-section">
-                <div className="release-header">
-                  <div className="release-version-tags">
-                    <Tag tone="neutral">v0.4.0</Tag>
-                    <Tag tone="info">Latest</Tag>
-                  </div>
-                  <div className="release-meta">
-                    <span className="release-date">March 4, 2026</span>
-                  </div>
-                </div>
-                <p className="release-summary">Premium visual refinement, PRO gating, premium page templates, and docs narrative pages.</p>
-                <div className="release-changes">
-                  <div className="release-category">
-                    <h4>✦ New features</h4>
-                    <ul className="release-list">
-                      <li>Premium docs shell with accent-driven previews and a single default Zephr theme.</li>
-                      <li>PRO component and page gating — free-tier users see locked overlay and upgrade modal.</li>
-                      <li>5 premium page templates: Dashboard, Auth, Settings, Onboarding, Marketing.</li>
-                      <li>Foundations page with "How tokens work" visual flow and naming convention reference.</li>
-                      <li>Team page with Avatar components and process grid.</li>
-                    </ul>
-                  </div>
-                  <div className="release-category">
-                    <h4>⚡ Improvements</h4>
-                    <ul className="release-list">
-                      <li>Template previews wrapped in <code>BrowserPreviewFrame</code> with address bar chrome.</li>
-                      <li>Dashboard template: sparkline SVGs, stat variance indicators, activity timeline.</li>
-                      <li>Auth template: social auth buttons, testimonial quote, split-panel layout.</li>
-                      <li>Marketing template: gradient hero, 3-tier pricing cards, testimonial carousel.</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
+              <section className="doc-section">
+                <div className="cl-timeline">
 
-              <section id="release-0-3-0" className="doc-section">
-                <div className="release-header">
-                  <div className="release-version-tags">
-                    <Tag tone="neutral">v0.3.0</Tag>
+                  {/* v0.5.0 */}
+                  <div id="release-0-5-0" className="cl-entry cl-entry--latest">
+                    <div className="cl-entry-head">
+                      <span className="cl-version">v0.5.0</span>
+                      <span className="cl-date">March 16, 2026</span>
+                      <span className="cl-badge">Latest</span>
+                    </div>
+                    <p className="cl-summary">
+                      Welcome banners, redesigned landing page, Introduction as homepage, Zephr Render highlighted, GitHub open-source icon.
+                    </p>
+                    <div className="cl-changes">
+                      <div>
+                        <p className="cl-category-label">✦ New features</p>
+                        <ul className="cl-list">
+                          <li>Branded ZEPHR pixel-block welcome banner on <code>npm install @zephrui/ui-react</code> — indigo block art, version number, next-step hints. Silent in CI/non-TTY.</li>
+                          <li>Same banner on <code>zephr init</code> and <code>zephr add-skills</code> — fires when connecting to Claude Code, Cursor, or Codex.</li>
+                          <li>Redesigned Introduction feature grid: 3 columns replacing 4, with expanded copy — AI-native tokens, 21 slash commands (with chip row), and Zephr Render MCP tool (new).</li>
+                          <li>Zephr Render highlighted on the landing page with an "MCP Tool" badge and Playwright renderer explanation.</li>
+                          <li>GitHub icon link added to the header — signals open-source status at a glance.</li>
+                          <li>Introduction page set as the default homepage — no <code>?view=</code> param required.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="cl-category-label">⚡ Improvements</p>
+                        <ul className="cl-list">
+                          <li>Feature cards now carry a primary description and a secondary sub-paragraph with a hairline separator — more detail without visual clutter.</li>
+                          <li>Slash commands chip row in the feature card shows <code>/polish</code>, <code>/audit</code>, <code>/scaffold</code>, <code>/bolder</code>, <code>/harden</code>, <code>/tighten</code>, and a "+15 more" overflow pill.</li>
+                          <li><code>@zephrui/ui-react</code> bumped to 0.1.2, <code>@zephrui/cli</code> republished — both live on npm.</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <div className="release-meta">
-                    <span className="release-date">March 3, 2026</span>
-                  </div>
-                </div>
-                <p className="release-summary">P0 sprint: dark mode, layout primitives, tier system, utility compiler removal.</p>
-                <div className="release-changes">
-                  <div className="release-category">
-                    <h4>✦ New features</h4>
-                    <ul className="release-list">
-                      <li>Dark mode with <code>[data-theme="dark"]</code> + <code>prefers-color-scheme</code> support.</li>
-                      <li>Layout primitives: Stack, Grid, Box, Spacer — free tier.</li>
-                      <li>License key tier system: <code>zephr upgrade --key</code> + <code>zephr whoami</code>.</li>
-                      <li>Docs playground: dark mode toggle, tier simulator, PRO badges on components.</li>
-                    </ul>
-                  </div>
-                  <div className="release-category">
-                    <h4>💥 Breaking changes</h4>
-                    <ul className="release-list">
-                      <li>Removed utility class compiler — all <code>z-*</code> classes eliminated.</li>
-                      <li>Components now self-style via CSS variables only (no external utility output).</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
 
-              <section id="release-0-2-0" className="doc-section">
-                <div className="release-header">
-                  <div className="release-version-tags">
-                    <Tag tone="neutral">v0.2.0</Tag>
+                  {/* v0.4.0 */}
+                  <div id="release-0-4-0" className="cl-entry">
+                    <div className="cl-entry-head">
+                      <span className="cl-version">v0.4.0</span>
+                      <span className="cl-date">March 4, 2026</span>
+                    </div>
+                    <p className="cl-summary">Premium visual refinement, PRO gating, premium page templates, and docs narrative pages.</p>
+                    <div className="cl-changes">
+                      <div>
+                        <p className="cl-category-label">✦ New features</p>
+                        <ul className="cl-list">
+                          <li>Premium docs shell with accent-driven previews and a single default Zephr theme.</li>
+                          <li>PRO component and page gating — free-tier users see locked overlay and upgrade modal.</li>
+                          <li>5 premium page templates: Dashboard, Auth, Settings, Onboarding, Marketing.</li>
+                          <li>Foundations page with "How tokens work" visual flow and naming convention reference.</li>
+                          <li>Team page with Avatar components and process grid.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="cl-category-label">⚡ Improvements</p>
+                        <ul className="cl-list">
+                          <li>Template previews wrapped in <code>BrowserPreviewFrame</code> with address bar chrome.</li>
+                          <li>Dashboard template: sparkline SVGs, stat variance indicators, activity timeline.</li>
+                          <li>Auth template: social auth buttons, testimonial quote, split-panel layout.</li>
+                          <li>Marketing template: gradient hero, 3-tier pricing cards, testimonial carousel.</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <div className="release-meta">
-                    <span className="release-date">March 2, 2026</span>
-                  </div>
-                </div>
-                <p className="release-summary">Docs parity upgrade: API reference mode, narrative pages, and command-style search.</p>
-                <div className="release-changes">
-                  <div className="release-category">
-                    <h4>✦ New features</h4>
-                    <ul className="release-list">
-                      <li>Metadata-driven API Reference mode for every component.</li>
-                      <li>Setup narrative pages: Mission &amp; Vision, Team operating model.</li>
-                      <li>Keyboard-driven search with up/down/enter and Cmd/Ctrl+K focus.</li>
-                    </ul>
-                  </div>
-                  <div className="release-category">
-                    <h4>⚡ Improvements</h4>
-                    <ul className="release-list">
-                      <li>Expanded page templates navigation with deep links and section TOC.</li>
-                      <li>Component search filters flat when active, restores grouped tree when cleared.</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
 
-              <section id="release-0-1-0" className="doc-section">
-                <div className="release-header">
-                  <div className="release-version-tags">
-                    <Tag tone="neutral">v0.1.0</Tag>
+                  {/* v0.3.0 */}
+                  <div id="release-0-3-0" className="cl-entry">
+                    <div className="cl-entry-head">
+                      <span className="cl-version">v0.3.0</span>
+                      <span className="cl-date">March 3, 2026</span>
+                    </div>
+                    <p className="cl-summary">P0 sprint: dark mode, layout primitives, tier system, utility compiler removal.</p>
+                    <div className="cl-changes">
+                      <div>
+                        <p className="cl-category-label">✦ New features</p>
+                        <ul className="cl-list">
+                          <li>Dark mode with <code>[data-theme="dark"]</code> + <code>prefers-color-scheme</code> support.</li>
+                          <li>Layout primitives: Stack, Grid, Box, Spacer — free tier.</li>
+                          <li>License key tier system: <code>zephr upgrade --key</code> + <code>zephr whoami</code>.</li>
+                          <li>Docs playground: dark mode toggle, tier simulator, PRO badges on components.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="cl-category-label">💥 Breaking changes</p>
+                        <ul className="cl-list">
+                          <li>Removed utility class compiler — all <code>z-*</code> classes eliminated.</li>
+                          <li>Components now self-style via CSS variables only (no external utility output).</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <div className="release-meta">
-                    <span className="release-date">March 1, 2026</span>
+
+                  {/* v0.2.0 */}
+                  <div id="release-0-2-0" className="cl-entry">
+                    <div className="cl-entry-head">
+                      <span className="cl-version">v0.2.0</span>
+                      <span className="cl-date">March 2, 2026</span>
+                    </div>
+                    <p className="cl-summary">Docs parity upgrade: API reference mode, narrative pages, and command-style search.</p>
+                    <div className="cl-changes">
+                      <div>
+                        <p className="cl-category-label">✦ New features</p>
+                        <ul className="cl-list">
+                          <li>Metadata-driven API Reference mode for every component.</li>
+                          <li>Setup narrative pages: Mission &amp; Vision, Team operating model.</li>
+                          <li>Keyboard-driven search with up/down/enter and Cmd/Ctrl+K focus.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="cl-category-label">⚡ Improvements</p>
+                        <ul className="cl-list">
+                          <li>Expanded page templates navigation with deep links and section TOC.</li>
+                          <li>Component search filters flat when active, restores grouped tree when cleared.</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <p className="release-summary">Initial release: component previews, accent system, and AI block prompts.</p>
-                <div className="release-changes">
-                  <div className="release-category">
-                    <h4>✦ New features</h4>
-                    <ul className="release-list">
-                      <li>30 components across atoms, molecules, and organisms.</li>
-                      <li>Accent switcher with persistent state via sessionStorage.</li>
-                      <li>AI block prompts with one-click copy for Claude, Cursor, and Codex.</li>
-                      <li>Install snippets (npm / pnpm / CLI) per component.</li>
-                    </ul>
+
+                  {/* v0.1.0 */}
+                  <div id="release-0-1-0" className="cl-entry">
+                    <div className="cl-entry-head">
+                      <span className="cl-version">v0.1.0</span>
+                      <span className="cl-date">March 1, 2026</span>
+                    </div>
+                    <p className="cl-summary">Initial release: component previews, accent system, and AI block prompts.</p>
+                    <div className="cl-changes">
+                      <div>
+                        <p className="cl-category-label">✦ New features</p>
+                        <ul className="cl-list">
+                          <li>30 components across atoms, molecules, and organisms.</li>
+                          <li>Accent switcher with persistent state via sessionStorage.</li>
+                          <li>AI block prompts with one-click copy for Claude, Cursor, and Codex.</li>
+                          <li>Install snippets (npm / pnpm / CLI) per component.</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
               </section>
 
@@ -5283,6 +5314,59 @@ export default function App() {
                 </div>
               </section>
 
+              {/* ── MCP SERVER SETUP ──────────────────────────────────────── */}
+              <section id="mcp-setup" className="doc-section">
+                <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
+                  <p className="section-eyebrow">MCP Integration</p>
+                  <h2>Give your AI direct access to the full registry.</h2>
+                  <p>
+                    The Zephr MCP server connects Claude, Cursor, and Codex to live component
+                    specs, prop schemas, and a visual renderer — so the AI reads the design
+                    system before it writes a single line.
+                  </p>
+                </div>
+
+                {/* Tool cards */}
+                <div className="mcp-section-grid">
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">zephr_search</code>
+                    <p className="mcp-tool-desc">Find components by keyword. Returns name, category, tier, and AI hints for every match.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">zephr_spec</code>
+                    <p className="mcp-tool-desc">Full prop schema for any component — types, defaults, accepted values, accessibility notes.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">zephr_render</code>
+                    <p className="mcp-tool-desc">Pass JSX, get a pixel-accurate screenshot back in light and dark mode — before any code lands in your repo.</p>
+                  </div>
+                  <div className="mcp-tool-card">
+                    <code className="mcp-tool-name">zephr_scaffold_page</code>
+                    <p className="mcp-tool-desc">Scaffold a complete page template — Dashboard, Auth, Settings, Onboarding, or Marketing — wired to real props.</p>
+                  </div>
+                </div>
+
+                {/* Config snippets */}
+                <div className="mcp-config-grid">
+                  <div>
+                    <p className="mcp-config-label">Claude Code / Claude Desktop</p>
+                    <SnippetItem
+                      label="claude_desktop_config.json"
+                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`}
+                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`)}
+                    />
+                  </div>
+                  <div>
+                    <p className="mcp-config-label">Cursor</p>
+                    <SnippetItem
+                      label=".cursor/mcp.json"
+                      code={`{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`}
+                      onCopy={() => copyAndFlash("MCP config", `{\n  "mcpServers": {\n    "zephr": {\n      "command": "npx",\n      "args": ["@zephrui/mcp@latest"]\n    }\n  }\n}`)}
+                    />
+                  </div>
+                </div>
+              </section>
+
               {/* ── HOW IT WORKS — 3-STEP FLOW ────────────────────────────── */}
               <section className="doc-section">
                 <div className="section-heading" style={{ marginBottom: "1.5rem" }}>
@@ -5299,49 +5383,53 @@ export default function App() {
                     <div className="gs-flow-num">1</div>
                     <p className="gs-flow-title">Initialise your project</p>
                     <p className="gs-flow-desc">
-                      One command seeds context files that AI tools read
-                      automatically every session. No copy-paste required.
+                      One command writes <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and <code>llms.txt</code> — context files that AI tools read automatically every session. Also generates your <code>zephr.css</code> token file.
                     </p>
                     <code className="gs-flow-code">npx zephr init</code>
+                    <p className="gs-flow-hint">Then run <strong>zephr add-skills</strong> to install all 21 slash commands into Claude Code, Cursor, or Codex.</p>
                   </div>
                   <div className="gs-flow-step">
                     <div className="gs-flow-num">2</div>
                     <p className="gs-flow-title">Describe what you want</p>
                     <p className="gs-flow-desc">
-                      Your AI reads the registry — every component{"'"}s props,
-                      tokens, and intent hints — and generates production-ready
-                      code on the first pass.
+                      Your AI reads the full registry — every component{"'"}s prop schema, design tokens, and <code>aiHints</code> — and generates production-ready code on the first pass. No prompt engineering required.
                     </p>
-                    <code className="gs-flow-code">"Build a CRM table with Zephr"</code>
+                    <code className="gs-flow-code">"Build a CRM table with filters and a slide-over detail panel"</code>
+                    <p className="gs-flow-hint">The AI knows to use <strong>DataTable</strong> + <strong>FiltersBar</strong> + <strong>Sheet</strong> — because the registry told it to.</p>
                   </div>
                   <div className="gs-flow-step">
                     <div className="gs-flow-num">3</div>
                     <p className="gs-flow-title">Ship with confidence</p>
                     <p className="gs-flow-desc">
-                      No token overrides. No style drift. No cleanup pass.
-                      Consistent design quality across every AI-generated screen.
+                      Every component self-styles via <code>--z-*</code> CSS variables. No token overrides, no style drift, no cleanup pass. Run <code>/audit</code> to catch violations before they ship.
                     </p>
                     <code className="gs-flow-code">npm run build → deploy</code>
+                    <p className="gs-flow-hint">Use <strong>zephr_render</strong> via MCP to visually verify your output before it ever hits your codebase.</p>
                   </div>
                 </div>
               </section>
 
               {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
               <section id="install" className="doc-section">
-                <div className="section-heading" style={{ marginBottom: "0.75rem" }}>
-                  <h2>Install</h2>
-                  <p>Add Zephr to any React project.</p>
+                <div className="section-heading" style={{ marginBottom: "1rem" }}>
+                  <h2>Quickstart</h2>
+                  <p>Three steps from zero to AI-ready components in your React project.</p>
                 </div>
                 <div className="snippet-stack">
                   <SnippetItem
-                    label="npm"
+                    label="1 — Install the package"
                     code="npm install @zephrui/ui-react"
                     onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")}
                   />
                   <SnippetItem
-                    label="pnpm"
-                    code="pnpm add @zephrui/ui-react"
-                    onCopy={() => copyAndFlash("Install", "pnpm add @zephrui/ui-react")}
+                    label="2 — Initialise Zephr (writes AI context + CSS tokens)"
+                    code="npx zephr init"
+                    onCopy={() => copyAndFlash("Init", "npx zephr init")}
+                  />
+                  <SnippetItem
+                    label="3 — Import tokens in your root layout"
+                    code={`import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';\n\nexport default function App() {\n  return <Button variant="primary">Get started</Button>;\n}`}
+                    onCopy={() => copyAndFlash("Import snippet", `import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';`)}
                   />
                 </div>
               </section>
