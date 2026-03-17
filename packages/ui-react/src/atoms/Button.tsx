@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, CSSProperties, FocusEvent, KeyboardEvent, Pointer
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   fullWidth?: boolean;
@@ -12,23 +12,33 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const sizeStyles: Record<NonNullable<ButtonProps["size"]>, CSSProperties> = {
+  xs: {
+    minHeight: "28px",
+    padding: "4px 10px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    gap: "2px"
+  },
   sm: {
     minHeight: "32px",
     padding: "6px 10px",
     borderRadius: "8px",
-    fontSize: "14px"
+    fontSize: "14px",
+    gap: "2px"
   },
   md: {
     minHeight: "36px",
     padding: "8px 12px",
     borderRadius: "8px",
-    fontSize: "14px"
+    fontSize: "14px",
+    gap: "4px"
   },
   lg: {
     minHeight: "40px",
     padding: "10px 14px",
     borderRadius: "10px",
-    fontSize: "14px"
+    fontSize: "14px",
+    gap: "4px"
   }
 };
 
@@ -105,14 +115,15 @@ function getVariantStyles(
   }
 
   return {
-    background:
-      "linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%), var(--z-color-staticBlack, #121212)",
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    background: hovered
+      ? "var(--z-color-primary700, var(--z-color-primary, #335cff))"
+      : "var(--z-color-primary, #335cff)",
+    borderColor: "transparent",
     boxShadow: focused
-      ? "0 0 0 2px var(--z-color-surface, #ffffff), 0 0 0 4px rgba(153, 160, 174, 0.22)"
+      ? "0 0 0 2px var(--z-color-surface, #ffffff), 0 0 0 4px color-mix(in srgb, var(--z-color-primary, #335cff) 30%, transparent)"
       : hovered
-        ? "0 3px 10px rgba(14, 18, 27, 0.18), inset 0 0 0 1px var(--z-color-staticBlack, #121212)"
-        : "inset 0 0 0 1px var(--z-color-staticBlack, #121212)",
+        ? "0 3px 10px rgba(14, 18, 27, 0.18)"
+        : "none",
     color: "var(--z-color-staticWhite, #ffffff)"
   };
 }
@@ -201,7 +212,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "var(--z-space-2, 0.5rem)",
     borderWidth: "1px",
     borderStyle: "solid",
     transform: isPressed ? "scale(0.97)" : isHovered ? "translateY(-1px)" : "translateY(0)",

@@ -91,11 +91,11 @@ export function ButtonGroup({
       className={className}
       style={{
         display: "inline-flex",
-        alignItems: "stretch",
-        border: "1px solid var(--z-color-border, #ebebeb)",
-        borderRadius: tokens.borderRadius,
-        overflow: "hidden",
-        background: "var(--z-color-surface, #ffffff)",
+        alignItems: "center",
+        background: "var(--z-color-weak, #f7f7f7)",
+        borderRadius: "10px",
+        padding: "4px",
+        gap: "4px",
         ...style
       }}
     >
@@ -112,22 +112,23 @@ export function ButtonGroup({
               minHeight: tokens.minHeight,
               padding: tokens.padding,
               border: "none",
-              borderRight:
-                index === items.length - 1 ? "none" : "1px solid var(--z-color-border, #ebebeb)",
-              background: isActive
-                ? "var(--z-color-weak, var(--z-color-background, #f7f7f7))"
-                : "var(--z-color-surface, #ffffff)",
-              color: isActive
-                ? "var(--z-color-text, #171717)"
-                : "var(--z-color-muted, #5c5c5c)",
+              borderRadius: "6px",
+              background: isActive ? "var(--z-color-surface, #ffffff)" : "transparent",
+              boxShadow: isActive
+                ? "0px 6px 10px rgba(14, 18, 27, 0.06), 0px 2px 4px rgba(14, 18, 27, 0.03)"
+                : "none",
+              color: disabled
+                ? "var(--z-color-border, #d1d1d1)"
+                : isActive
+                  ? "var(--z-color-text, #171717)"
+                  : "var(--z-color-text300, #a3a3a3)",
               fontSize: tokens.fontSize,
               lineHeight: tokens.lineHeight,
               fontWeight: 500,
               letterSpacing: size === "2xs" ? "0" : "-0.006em",
               whiteSpace: "nowrap",
               cursor: disabled ? "not-allowed" : "pointer",
-              opacity: disabled ? 0.5 : 1,
-              transition: "background-color 140ms ease, color 140ms ease"
+              transition: "background-color 140ms ease, color 140ms ease, box-shadow 140ms ease"
             }}
           >
             {labels ? label : "Button"}

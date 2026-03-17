@@ -48,22 +48,17 @@ export function Switch({ checked, onChange, disabled, visualState, className, la
     border: "1px solid",
     borderColor: focused
       ? "var(--z-color-text, #171717)"
-      : checked
-        ? "var(--z-color-primary, #335cff)"
-        : computedHovered && !computedDisabled
-          ? "var(--z-color-muted, #5c5c5c)"
-          : computedDisabled
-            ? "var(--z-color-border, #ebebeb)"
-            : "transparent",
+      : computedDisabled
+        ? "var(--z-color-border, #ebebeb)"
+        : "transparent",
     background: checked
       ? "var(--z-color-primary, #335cff)"
-      : computedHovered
+      : computedHovered && !computedDisabled
         ? "var(--z-color-sub, #d1d1d1)"
         : computedDisabled
           ? "var(--z-color-surface, #ffffff)"
           : "var(--z-color-weak, #ebebeb)",
     cursor: computedDisabled ? "not-allowed" : "pointer",
-    opacity: computedDisabled ? 0.72 : 1,
     transition: "background 160ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 80ms ease",
     outline: "none",
     boxShadow: focused

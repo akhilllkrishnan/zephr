@@ -49,36 +49,29 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
     gap: "0.5rem",
     cursor: disabled ? "not-allowed" : "pointer",
     userSelect: "none",
-    opacity: disabled ? 0.5 : 1,
     ...style
   };
 
   const boxStyle: CSSProperties = {
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
     flexShrink: 0,
     borderRadius: "var(--z-radius-sm, 4px)",
-    borderWidth: "1.5px",
-    borderStyle: "solid",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "border-color 140ms ease, background 140ms ease, box-shadow 140ms ease",
-    background:
-      isChecked || showIndeterminate
+    transition: "background 140ms ease, box-shadow 140ms ease",
+    background: disabled
+      ? "var(--z-color-weak, #ebebeb)"
+      : isChecked || showIndeterminate
         ? "var(--z-color-primary, #335cff)"
-        : "var(--z-color-surface, #ffffff)",
-    borderColor:
-      focused
-        ? "var(--z-color-text, #171717)"
-        : isChecked || showIndeterminate
-          ? "var(--z-color-primary, #335cff)"
-          : hovered
-            ? "var(--z-color-muted, #5c5c5c)"
-            : "var(--z-color-border, #ebebeb)",
+        : hovered
+          ? "var(--z-color-sub, #d1d1d1)"
+          : "var(--z-color-weak, #ebebeb)",
     boxShadow: focused
       ? "0 0 0 2px var(--z-color-surface, #ffffff), 0 0 0 4px rgba(153, 160, 174, 0.18)"
-      : "none"
+      : "none",
+    opacity: disabled ? 0.6 : 1
   };
 
   return (

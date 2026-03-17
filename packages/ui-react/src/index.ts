@@ -7,6 +7,7 @@ export * from "./atoms/Checkbox";
 export * from "./atoms/Radio";
 export * from "./atoms/Switch";
 export * from "./atoms/Badge";
+export * from "./atoms/Tag";
 export * from "./atoms/Avatar";
 export * from "./atoms/Logo";
 // Sprint 1 atoms

@@ -6347,8 +6347,8 @@ h1 {
 }
 
 .template-preview-button--dark {
-  background: var(--z-color-staticBlack, #121212);
-  border-color: var(--z-color-staticBlack, #121212);
+  background: var(--z-color-primary, #335cff);
+  border-color: var(--z-color-primary, #335cff);
 }
 
 .template-preview-button--icon {
@@ -6951,8 +6951,8 @@ h1 {
 }
 
 .widget-preview-button--dark {
-  background: var(--z-color-staticBlack, #121212);
-  border-color: var(--z-color-staticBlack, #121212);
+  background: var(--z-color-primary, #335cff);
+  border-color: var(--z-color-primary, #335cff);
 }
 
 .widget-preview-button--icon {

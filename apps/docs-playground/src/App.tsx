@@ -51,6 +51,7 @@ import {
   Spacer,
   Stack,
   Switch,
+  Tag,
   TagInput,
   Tabs,
   Toast,
@@ -979,7 +980,7 @@ function PreviewSurface({
   previewState: PreviewStateKey;
   buttonLabel: string;
   buttonVariant: "primary" | "secondary" | "ghost" | "danger";
-  buttonSize: "sm" | "md" | "lg";
+  buttonSize: "xs" | "sm" | "md" | "lg";
   buttonGroupQuantity: ButtonGroupQuantityOption;
   buttonGroupSize: ButtonGroupSizeOption;
   buttonGroupActiveIndex: number;
@@ -993,7 +994,7 @@ function PreviewSurface({
   switchShowSublabel: boolean;
   switchShowBadge: boolean;
   btnFilterType: "all" | "primary" | "secondary" | "ghost" | "danger";
-  btnFilterSize: "all" | "sm" | "md" | "lg";
+  btnFilterSize: "all" | "xs" | "sm" | "md" | "lg";
   btnFilterState: "all" | "default" | "hover" | "pressed" | "loading" | "disabled";
   btnOnlyIcon: boolean;
   accordionState: AccordionStateOption;
@@ -1079,14 +1080,14 @@ function PreviewSurface({
 
   if (entry.id === "button") {
     const allVariants: Array<"primary" | "secondary" | "ghost" | "danger"> = ["primary", "secondary", "ghost", "danger"];
-    const allSizes: Array<"sm" | "md" | "lg"> = ["sm", "md", "lg"];
+    const allSizes: Array<"xs" | "sm" | "md" | "lg"> = ["xs", "sm", "md", "lg"];
     const allStates: Array<"default" | "hover" | "pressed" | "loading" | "disabled"> = ["default", "hover", "pressed", "loading", "disabled"];
 
     const activeVariants = btnFilterType === "all" ? allVariants : [btnFilterType];
     const activeSizes = btnFilterSize === "all" ? ["md" as const] : [btnFilterSize];
     const activeStates = btnFilterState === "all" ? ["default" as const] : [btnFilterState];
 
-    const cells: Array<{ variant: "primary" | "secondary" | "ghost" | "danger"; size: "sm" | "md" | "lg"; state: "default" | "hover" | "pressed" | "loading" | "disabled"; label: string }> = [];
+    const cells: Array<{ variant: "primary" | "secondary" | "ghost" | "danger"; size: "xs" | "sm" | "md" | "lg"; state: "default" | "hover" | "pressed" | "loading" | "disabled"; label: string }> = [];
 
     for (const variant of activeVariants) {
       for (const size of activeSizes) {
@@ -1228,10 +1229,17 @@ function PreviewSurface({
     return (
       <div className="preview-stack">
         <p>Checkbox block</p>
-        <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
-          <Checkbox checked={checkboxChecked} onChange={(event) => setCheckboxChecked(event.target.checked)} />
-          Enable release notifications
-        </label>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <Checkbox
+            label="Enable release notifications"
+            checked={checkboxChecked}
+            onChange={(event) => setCheckboxChecked(event.target.checked)}
+          />
+          <Checkbox label="Send weekly digest" />
+          <Checkbox label="Indeterminate selection" indeterminate />
+          <Checkbox label="Disabled option" disabled />
+          <Checkbox label="Disabled and checked" checked disabled />
+        </div>
       </div>
     );
   }
@@ -1265,7 +1273,7 @@ function PreviewSurface({
       width: "min(520px, 100%)",
       borderRadius: "12px",
       border: switchActive && !isDisabled
-        ? "1px solid var(--z-color-primary, #121212)"
+        ? "1px solid var(--z-color-primary, #335cff)"
         : "1px solid var(--z-color-border, #ebebeb)",
       background: isHover || isPressed ? "var(--z-color-weak, #f7f7f7)" : "var(--z-color-surface, #ffffff)",
       padding: "16px",
@@ -1424,6 +1432,34 @@ function PreviewSurface({
             Type: {badgeType.replace("-", " ")} · Style: {badgeStyle} · Color: {badgeColor}
           </p>
         </div>
+      </div>
+    );
+  }
+
+  if (entry.id === "tag") {
+    const [tagItems, setTagItems] = useState(["React", "TypeScript", "Design System"]);
+    return (
+      <div className="preview-stack">
+        <p>Tag block</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" }}>
+            {tagItems.map((item) => (
+              <Tag key={item} tagStyle="stroke" onDismiss={() => setTagItems(tagItems.filter(t => t !== item))}>
+                {item}
+              </Tag>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" }}>
+            {["Design", "Engineering", "Product"].map((item) => (
+              <Tag key={item} tagStyle="gray">{item}</Tag>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" }}>
+            <Tag tagStyle="stroke" icon={<span className="ms" style={{ fontSize: "12px" }}>bolt</span>}>With icon</Tag>
+            <Tag tagStyle="gray" disabled>Disabled</Tag>
+          </div>
+        </div>
+        <p className="preview-note">Stroke: bordered white · Gray: filled · Dismiss: removes item from list</p>
       </div>
     );
   }
@@ -3608,13 +3644,13 @@ export default function App() {
   const [buttonVariant, setButtonVariant] = useState<"primary" | "secondary" | "ghost" | "danger">(
     "primary"
   );
-  const [buttonSize, setButtonSize] = useState<"sm" | "md" | "lg">("md");
+  const [buttonSize, setButtonSize] = useState<"xs" | "sm" | "md" | "lg">("md");
   const [previewState, setPreviewState] = useState<PreviewStateKey>("default");
   const [previewProps, setPreviewProps] = useState<Record<string, string>>({});
 
   // Button variant grid filters
   const [btnFilterType, setBtnFilterType] = useState<"all" | "primary" | "secondary" | "ghost" | "danger">("all");
-  const [btnFilterSize, setBtnFilterSize] = useState<"all" | "sm" | "md" | "lg">("all");
+  const [btnFilterSize, setBtnFilterSize] = useState<"all" | "xs" | "sm" | "md" | "lg">("all");
   const [btnFilterState, setBtnFilterState] = useState<"all" | "default" | "hover" | "pressed" | "loading" | "disabled">("all");
   const [btnOnlyIcon, setBtnOnlyIcon] = useState(false);
   const [buttonGroupQuantity, setButtonGroupQuantity] = useState<ButtonGroupQuantityOption>(6);

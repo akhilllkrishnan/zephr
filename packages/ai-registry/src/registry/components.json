@@ -22,6 +22,7 @@
       "size": {
         "type": "enum",
         "values": [
+          "xs",
           "sm",
           "md",
           "lg"
@@ -106,6 +107,21 @@
         "description": "Called whenever input value changes.",
         "required": false,
         "default": null,
+        "deprecated": false
+      },
+      "controlSize": {
+        "type": "enum",
+        "values": ["xs", "sm", "md"],
+        "description": "Height/density preset. xs=32px, sm=36px, md=40px.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "aria-invalid": {
+        "type": "boolean",
+        "description": "Marks the field as invalid — applies error border and styling.",
+        "required": false,
+        "default": false,
         "deprecated": false
       }
     },
@@ -348,6 +364,20 @@
         "required": false,
         "default": null,
         "deprecated": false
+      },
+      "label": {
+        "type": "ReactNode",
+        "description": "Visual label rendered next to the checkbox.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "indeterminate": {
+        "type": "boolean",
+        "description": "Shows a dash (−) instead of checkmark for partial selection states.",
+        "required": false,
+        "default": false,
+        "deprecated": false
       }
     },
     "a11yNotes": [
@@ -459,6 +489,21 @@
       "disabled": {
         "type": "boolean",
         "description": "Toggles disabled behavior.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "size": {
+        "type": "enum",
+        "values": ["sm", "md"],
+        "description": "Track size — sm is 32×20px, md is 40×24px.",
+        "required": false,
+        "default": "md",
+        "deprecated": false
+      },
+      "label": {
+        "type": "string",
+        "description": "Accessible aria-label applied to the switch button.",
         "required": false,
         "default": null,
         "deprecated": false
@@ -618,6 +663,81 @@
     },
     "usageExamples": [
       "import { Badge } from '@zephrui/ui-react';\n<Badge type='dot' variant='lighter' color='green'>Live</Badge>"
+    ]
+  },
+  {
+    "id": "tag",
+    "name": "Tag",
+    "category": "atom",
+    "tier": "free",
+    "description": "Compact 24px label chip for categorizing and filtering content, with stroke and gray styles.",
+    "propsSchema": {
+      "tagStyle": {
+        "type": "enum",
+        "values": ["stroke", "gray"],
+        "description": "Stroke shows a bordered white chip; gray shows a filled #f7f7f7 chip.",
+        "required": false,
+        "default": "stroke",
+        "deprecated": false
+      },
+      "icon": {
+        "type": "ReactNode",
+        "description": "Icon rendered before the label text.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "onDismiss": {
+        "type": "() => void",
+        "description": "When provided, renders a dismiss × button at the end of the tag.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Applies disabled visual treatment and disables the dismiss button.",
+        "required": false,
+        "default": false,
+        "deprecated": false
+      },
+      "children": {
+        "type": "ReactNode",
+        "description": "Label text rendered inside the tag.",
+        "required": false,
+        "default": null,
+        "deprecated": false
+      }
+    },
+    "a11yNotes": [
+      "Use meaningful label text — color alone does not convey category.",
+      "The dismiss button receives a visible aria-label='Dismiss'."
+    ],
+    "dependencies": [
+      "@zephrui/ui-react"
+    ],
+    "stylePackSupport": [
+      "notion",
+      "stripe",
+      "linear",
+      "framer"
+    ],
+    "aiHints": {
+      "positive": [
+        "Use for filter chips, category labels, and dismissible selections.",
+        "Prefer `tagStyle='gray'` for read-only labels and `stroke` for interactive or selectable tags."
+      ],
+      "negative": [
+        "Use Badge for status indicators — Tag is for categorization/filtering.",
+        "Avoid raw HTML controls when a Zephr component exists."
+      ],
+      "preferredImports": [
+        "import { Tag } from \"@zephrui/ui-react\";"
+      ]
+    },
+    "usageExamples": [
+      "import { Tag } from '@zephrui/ui-react';\n<Tag>Design</Tag>",
+      "import { Tag } from '@zephrui/ui-react';\n<Tag tagStyle='gray' onDismiss={() => remove(id)}>React</Tag>"
     ]
   },
   {

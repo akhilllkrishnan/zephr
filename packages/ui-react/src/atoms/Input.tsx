@@ -8,17 +8,17 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 const sizeStyles: Record<NonNullable<InputProps["controlSize"]>, CSSProperties> = {
   xs: {
     minHeight: "32px",
-    padding: "6px 10px",
+    padding: "6px 6px 6px 8px",
     borderRadius: "8px"
   },
   sm: {
     minHeight: "36px",
-    padding: "8px 12px",
+    padding: "8px 8px 8px 10px",
     borderRadius: "8px"
   },
   md: {
     minHeight: "40px",
-    padding: "10px 12px",
+    padding: "10px 10px 10px 12px",
     borderRadius: "10px"
   }
 };
