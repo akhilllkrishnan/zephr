@@ -43,10 +43,13 @@ export function Divider({
                 />
                 <span
                     style={{
-                        fontSize: "var(--z-type-size-sm, 0.875rem)",
-                        color: "var(--z-color-muted, #737373)",
+                        fontSize: "11px",
+                        lineHeight: "16px",
+                        color: "var(--z-color-text400, #a3a3a3)",
                         whiteSpace: "nowrap",
-                        fontWeight: "var(--z-type-weight-medium, 500)" as CSSProperties["fontWeight"]
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.22px"
                     }}
                 >
                     {label}

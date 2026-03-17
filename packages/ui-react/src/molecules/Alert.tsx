@@ -84,9 +84,9 @@ function paletteForStatus(status: AlertStatus): AlertPalette {
   }
 
   return {
-    base: "var(--z-color-info, var(--z-color-verified, #3b82f6))",
-    light: "var(--z-color-info-light, #dbeafe)",
-    lighter: "var(--z-color-info-lighter, #eff6ff)",
+    base: "var(--z-color-primary, #335cff)",
+    light: "#ccd6ff",
+    lighter: "#eef1ff",
     onBase: "#ffffff",
     onLight: "var(--z-color-text, #171717)",
     icon: "i"

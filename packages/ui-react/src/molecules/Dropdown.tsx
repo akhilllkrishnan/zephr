@@ -105,7 +105,8 @@ export function Dropdown({ label, items, align = "start", className, style, trig
                     display: "flex",
                     alignItems: "center",
                     gap: "var(--z-space-2, 0.5rem)",
-                    padding: "var(--z-space-2, 0.5rem) var(--z-space-3, 0.75rem)",
+                    minHeight: "36px",
+                    padding: "var(--z-space-2, 0.5rem)",
                     borderRadius: "8px",
                     border: 0,
                     background: isHovered
@@ -114,7 +115,7 @@ export function Dropdown({ label, items, align = "start", className, style, trig
                         : "var(--z-color-weak, var(--z-color-background, #f7f7f7))"
                       : "transparent",
                     color: item.disabled
-                      ? "var(--z-color-text300, #a1a1aa)"
+                      ? "var(--z-color-sub, #d1d1d1)"
                       : item.danger
                         ? "var(--z-color-danger, #fb3748)"
                         : "var(--z-color-text, #171717)",

@@ -3793,8 +3793,13 @@ export default function App() {
 
   // ── Scroll to top on navigation ──────────────────────────────
   useEffect(() => {
-    window.scrollTo({ top: 0 });
+    mainColRef.current?.scrollTo({ top: 0 });
+    rightRailRef.current?.scrollTo({ top: 0 });
   }, [view]);
+
+  useEffect(() => {
+    rightRailRef.current?.scrollTo({ top: 0 });
+  }, [activeRegistryId]);
 
   // ── TOC active link tracker ──────────────────────────────────
   useEffect(() => {
@@ -5225,12 +5230,13 @@ export default function App() {
                 </p>
                 <div className="hero-cta-row">
                   <Button
+                    style={{ background: "#262626", borderColor: "#262626", color: "#ffffff" }}
                     onClick={() => {
                       setTopTab("components");
                       setView("component-gallery");
                     }}
                   >
-                    Browse components
+                    Browse Components
                   </Button>
                   <Button
                     variant="secondary"
@@ -5240,7 +5246,7 @@ export default function App() {
                       setSetupTab("ai");
                     }}
                   >
-                    AI quick start <span className="ms">arrow_forward</span>
+                    AI Quick Start
                   </Button>
                 </div>
 
@@ -5316,192 +5322,166 @@ export default function App() {
                       </div>
                     </div>
                   </div>
-                  {/* Works-with brand row */}
-                  <div className="hero-tools-row">
-                    <span className="hero-tools-label">Works with</span>
-                    <div className="hero-tools-pills">
-
-                      {/* Claude */}
-                      <div className="hero-tool-pill hero-tool-pill--claude">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Anthropic asterisk mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M13.827 3.678c-.406-1.026-1.248-1.678-2.162-1.678-.915 0-1.757.652-2.163 1.678L3.84 17.54H6.97l1.243-3.229h5.574l1.243 3.229h3.13L13.827 3.678zm-4.71 8.476 1.894-4.924 1.893 4.924H9.117z"/>
-                          </svg>
-                        </span>
-                        <span>Claude</span>
-                      </div>
-
-                      {/* Cursor */}
-                      <div className="hero-tool-pill hero-tool-pill--cursor">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Cursor 3D diamond mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 9l10 13L22 9 12 2z" fillOpacity="0.9"/>
-                            <path d="M12 2L22 9l-10 4L2 9l10-7z" fillOpacity="0.5"/>
-                          </svg>
-                        </span>
-                        <span>Cursor</span>
-                      </div>
-
-                      {/* GitHub Copilot */}
-                      <div className="hero-tool-pill hero-tool-pill--copilot">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* GitHub mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-                          </svg>
-                        </span>
-                        <span>Copilot</span>
-                      </div>
-
-                      {/* Codex / OpenAI */}
-                      <div className="hero-tool-pill hero-tool-pill--codex">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* OpenAI mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 004.981 4.18a5.985 5.985 0 00-3.998 2.9 6.046 6.046 0 00.743 7.097 5.98 5.98 0 00.511 4.911 6.051 6.051 0 006.515 2.9A5.985 5.985 0 0013.26 24a6.056 6.056 0 005.772-4.206 5.99 5.99 0 003.997-2.9 6.056 6.056 0 00-.747-7.073zm-9.022 12.609a4.476 4.476 0 01-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 00.392-.681v-6.737l2.02 1.168a.071.071 0 01.038.052v5.583a4.504 4.504 0 01-4.494 4.494zm-9.66-4.126a4.47 4.47 0 01-.535-3.014l.142.085 4.783 2.759a.771.771 0 00.78 0l5.843-3.369v2.332a.08.08 0 01-.033.062L9.74 19.95a4.5 4.5 0 01-6.14-1.646zM2.34 7.896a4.485 4.485 0 012.366-1.973V11.6a.766.766 0 00.388.676l5.815 3.355-2.02 1.168a.076.076 0 01-.071 0l-4.83-2.786A4.504 4.504 0 012.34 7.872zm16.597 3.855l-5.805-3.387 2.018-1.165a.077.077 0 01.071 0l4.83 2.791a4.494 4.494 0 01-.676 8.104v-5.678a.79.79 0 00-.438-.665zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 00-.785 0L9.409 9.23V6.897a.066.066 0 01.028-.061l4.83-2.787a4.5 4.5 0 016.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 01-.038-.057V6.075a4.5 4.5 0 017.375-3.453l-.142.08-4.778 2.758a.795.795 0 00-.393.681l-.004 6.737zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5-.005-3z"/>
-                          </svg>
-                        </span>
-                        <span>Codex</span>
-                      </div>
-
-                      {/* Lovable */}
-                      <div className="hero-tool-pill hero-tool-pill--lovable">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Lovable gradient heart mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24">
-                            <defs>
-                              <linearGradient id="lovable-g" x1="1" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#ff3d3d"/>
-                                <stop offset="50%" stopColor="#ff6b35"/>
-                                <stop offset="100%" stopColor="#7c3aed"/>
-                              </linearGradient>
-                            </defs>
-                            <path fill="url(#lovable-g)" d="M12 21.593c-.425-.439-8.993-9.371-8.993-13.36C3.007 4.548 5.37 2 8.25 2c1.862 0 3.507.956 4.5 2.338A5.493 5.493 0 0117.25 2c2.88 0 5.243 2.548 5.243 6.233 0 3.989-8.568 12.921-8.993 13.36z"/>
-                          </svg>
-                        </span>
-                        <span>Lovable</span>
-                      </div>
-
-                      {/* Bolt.new */}
-                      <div className="hero-tool-pill hero-tool-pill--bolt">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Bolt "b" lettermark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <text x="5" y="19" fontFamily="Arial Black, sans-serif" fontSize="20" fontWeight="900" fontStyle="italic">b</text>
-                          </svg>
-                        </span>
-                        <span>Bolt</span>
-                      </div>
-
-                      {/* v0 by Vercel */}
-                      <div className="hero-tool-pill hero-tool-pill--v0">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* v0 lettermark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <text x="2" y="18" fontFamily="Arial Black, sans-serif" fontSize="13" fontWeight="900" letterSpacing="-1">v0</text>
-                          </svg>
-                        </span>
-                        <span>v0</span>
-                      </div>
-
-                      {/* Windsurf */}
-                      <div className="hero-tool-pill hero-tool-pill--windsurf">
-                        <span className="hero-tool-pill-logo" aria-hidden="true">
-                          {/* Windsurf wave mark */}
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 17c2-4 5-7 9-7s7 3 9 7"/>
-                            <path d="M3 11c2-3 5-5 7-5 3 0 5 2 5 5s-2 5-5 5c-2 0-4-1-5-3"/>
-                          </svg>
-                        </span>
-                        <span>Windsurf</span>
-                      </div>
-
-                    </div>
                   </div>
-                </div>
               </section>
 
-              {/* ── 3-FEATURE GRID ────────────────────────────────────────── */}
+              {/* ── WORKS WITH ROW ────────────────────────────────────────── */}
+              <div className="hero-tools-row hero-tools-row--standalone">
+                <span className="hero-tools-label">Works with</span>
+                <div className="hero-tools-pills">
+
+                  {/* Claude */}
+                  <div className="hero-tool-pill hero-tool-pill--claude">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13.827 3.678c-.406-1.026-1.248-1.678-2.162-1.678-.915 0-1.757.652-2.163 1.678L3.84 17.54H6.97l1.243-3.229h5.574l1.243 3.229h3.13L13.827 3.678zm-4.71 8.476 1.894-4.924 1.893 4.924H9.117z"/>
+                      </svg>
+                    </span>
+                    <span>Claude</span>
+                  </div>
+
+                  {/* Cursor */}
+                  <div className="hero-tool-pill hero-tool-pill--cursor">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 9l10 13L22 9 12 2z" fillOpacity="0.9"/>
+                        <path d="M12 2L22 9l-10 4L2 9l10-7z" fillOpacity="0.5"/>
+                      </svg>
+                    </span>
+                    <span>Cursor</span>
+                  </div>
+
+                  {/* GitHub Copilot */}
+                  <div className="hero-tool-pill hero-tool-pill--copilot">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </span>
+                    <span>Copilot</span>
+                  </div>
+
+                  {/* Codex / OpenAI */}
+                  <div className="hero-tool-pill hero-tool-pill--codex">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 004.981 4.18a5.985 5.985 0 00-3.998 2.9 6.046 6.046 0 00.743 7.097 5.98 5.98 0 00.511 4.911 6.051 6.051 0 006.515 2.9A5.985 5.985 0 0013.26 24a6.056 6.056 0 005.772-4.206 5.99 5.99 0 003.997-2.9 6.056 6.056 0 00-.747-7.073zm-9.022 12.609a4.476 4.476 0 01-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 00.392-.681v-6.737l2.02 1.168a.071.071 0 01.038.052v5.583a4.504 4.504 0 01-4.494 4.494zm-9.66-4.126a4.47 4.47 0 01-.535-3.014l.142.085 4.783 2.759a.771.771 0 00.78 0l5.843-3.369v2.332a.08.08 0 01-.033.062L9.74 19.95a4.5 4.5 0 01-6.14-1.646zM2.34 7.896a4.485 4.485 0 012.366-1.973V11.6a.766.766 0 00.388.676l5.815 3.355-2.02 1.168a.076.076 0 01-.071 0l-4.83-2.786A4.504 4.504 0 012.34 7.872zm16.597 3.855l-5.805-3.387 2.018-1.165a.077.077 0 01.071 0l4.83 2.791a4.494 4.494 0 01-.676 8.104v-5.678a.79.79 0 00-.438-.665zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 00-.785 0L9.409 9.23V6.897a.066.066 0 01.028-.061l4.83-2.787a4.5 4.5 0 016.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 01-.038-.057V6.075a4.5 4.5 0 017.375-3.453l-.142.08-4.778 2.758a.795.795 0 00-.393.681l-.004 6.737zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5-.005-3z"/>
+                      </svg>
+                    </span>
+                    <span>Codex</span>
+                  </div>
+
+                  {/* Lovable */}
+                  <div className="hero-tool-pill hero-tool-pill--lovable">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24">
+                        <defs>
+                          <linearGradient id="lovable-g" x1="1" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#ff3d3d"/>
+                            <stop offset="50%" stopColor="#ff6b35"/>
+                            <stop offset="100%" stopColor="#7c3aed"/>
+                          </linearGradient>
+                        </defs>
+                        <path fill="url(#lovable-g)" d="M12 21.593c-.425-.439-8.993-9.371-8.993-13.36C3.007 4.548 5.37 2 8.25 2c1.862 0 3.507.956 4.5 2.338A5.493 5.493 0 0117.25 2c2.88 0 5.243 2.548 5.243 6.233 0 3.989-8.568 12.921-8.993 13.36z"/>
+                      </svg>
+                    </span>
+                    <span>Lovable</span>
+                  </div>
+
+                  {/* Bolt.new */}
+                  <div className="hero-tool-pill hero-tool-pill--bolt">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <text x="5" y="19" fontFamily="Arial Black, sans-serif" fontSize="20" fontWeight="900" fontStyle="italic">b</text>
+                      </svg>
+                    </span>
+                    <span>Bolt</span>
+                  </div>
+
+                  {/* v0 by Vercel */}
+                  <div className="hero-tool-pill hero-tool-pill--v0">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <text x="2" y="18" fontFamily="Arial Black, sans-serif" fontSize="13" fontWeight="900" letterSpacing="-1">v0</text>
+                      </svg>
+                    </span>
+                    <span>v0</span>
+                  </div>
+
+                  {/* Windsurf */}
+                  <div className="hero-tool-pill hero-tool-pill--windsurf">
+                    <span className="hero-tool-pill-logo" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 17c2-4 5-7 9-7s7 3 9 7"/>
+                        <path d="M3 11c2-3 5-5 7-5 3 0 5 2 5 5s-2 5-5 5c-2 0-4-1-5-3"/>
+                      </svg>
+                    </span>
+                    <span>Windsurf</span>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* ── 2-FEATURE CARDS ────────────────────────────────────────── */}
               <section className="doc-section">
-                <div className="intro-features intro-features--3col">
+                <div className="intro-feature-cards">
 
-                  {/* 1 — AI-native tokens */}
-                  <div className="intro-feature">
-                    <div className="intro-feature-icon">
-                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 2L9.5 6.5H14L10.25 9.25L11.75 13.75L8 11L4.25 13.75L5.75 9.25L2 6.5H6.5L8 2Z" fill="currentColor" opacity="0.85"/>
-                      </svg>
+                  {/* Card 1 — AI-native tokens */}
+                  <div className="intro-feature-card">
+                    <div className="intro-feature-card-inner">
+                      <div className="intro-feature-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7 14l4 4 10-10" stroke="#171717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="14" cy="14" r="9" stroke="#171717" strokeWidth="1.5"/>
+                        </svg>
+                      </div>
+                      <div className="intro-feature-card-text">
+                        <p className="intro-feature-card-title">AI-native design tokens</p>
+                        <p className="intro-feature-card-body">
+                          Every{" "}
+                          <code className="intro-feature-code">--z-*</code>
+                          {" "}CSS variable is named for design intent, not implementation detail —{" "}
+                          <code className="intro-feature-code">--z-color-text</code>
+                          {" "}not{" "}
+                          <code className="intro-feature-code">--gray-900</code>.
+                          {" "}AIs reason about them correctly the first time, without correction.
+                        </p>
+                      </div>
                     </div>
-                    <strong>AI-native design tokens</strong>
-                    <p>
-                      Every <code>--z-*</code> CSS variable is named for design
-                      intent, not implementation detail — <code>--z-color-text</code>,
-                      not <code>--gray-900</code>. AIs reason about them correctly
-                      the first time, without correction.
-                    </p>
-                    <p className="intro-feature-sub">
-                      49 production-ready SaaS components — atoms to full page
-                      templates — each ship with a structured <code>aiHints</code> block
-                      and four battle-tested style packs: Notion, Stripe, Linear, Framer.
-                      One accent color swap themes everything.
-                    </p>
                   </div>
 
-                  {/* 2 — 21 slash commands */}
-                  <div className="intro-feature intro-feature--highlight">
-                    <div className="intro-feature-icon">
-                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2 4H14M2 8H10M2 12H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
+                  {/* Card 2 — 21 slash commands */}
+                  <div className="intro-feature-card">
+                    <div className="intro-feature-card-inner">
+                      <div className="intro-feature-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4 8h20M4 14h14M4 20h17" stroke="#171717" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+                      <div className="intro-feature-card-text">
+                        <p className="intro-feature-card-title">21 slash commands</p>
+                        <p className="intro-feature-card-body">
+                          A full designer vocabulary built into your AI editor.{" "}
+                          <code className="intro-feature-code">/polish</code>
+                          {" "}tightens spacing and fixes token violations.{" "}
+                          <code className="intro-feature-code">/audit</code>
+                          {" "}flags every hardcoded hex and missing state.{" "}
+                          <code className="intro-feature-code">/scaffold</code>
+                          {" "}drops a complete page system in seconds.
+                        </p>
+                        <button
+                          type="button"
+                          className="intro-feature-card-link"
+                          onClick={() => {
+                            setTopTab("setup");
+                            setView("getting-started");
+                            setSetupTab("ai");
+                          }}
+                        >
+                          Read More
+                        </button>
+                      </div>
                     </div>
-                    <strong>21 slash commands</strong>
-                    <p>
-                      A full designer vocabulary built into your AI editor.{" "}
-                      <code>/polish</code> tightens spacing and fixes token
-                      violations. <code>/audit</code> flags every hardcoded hex
-                      and missing state. <code>/scaffold</code> drops a complete
-                      page system in seconds.
-                    </p>
-                    <div className="intro-feature-chips">
-                      <span className="intro-chip">/polish</span>
-                      <span className="intro-chip">/audit</span>
-                      <span className="intro-chip">/scaffold</span>
-                      <span className="intro-chip">/bolder</span>
-                      <span className="intro-chip">/harden</span>
-                      <span className="intro-chip">/tighten</span>
-                      <span className="intro-chip intro-chip--more">+15 more</span>
-                    </div>
-                    <p className="intro-feature-sub">
-                      Works in Claude Code, Cursor, and Codex. Install once with{" "}
-                      <code>zephr add-skills</code> — no config required.
-                    </p>
-                  </div>
-
-                  {/* 3 — Zephr Render */}
-                  <div className="intro-feature intro-feature--render">
-                    <div className="intro-feature-icon">
-                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="1" y="2" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                        <path d="M5 14H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M8 12V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                        <circle cx="8" cy="7" r="2" fill="currentColor" opacity="0.6"/>
-                      </svg>
-                    </div>
-                    <div className="intro-feature-badge">MCP Tool</div>
-                    <strong>Zephr Render</strong>
-                    <p>
-                      The AI sees exactly what you see. Pass any JSX snippet to
-                      the <code>zephr_render</code> MCP tool and get back a
-                      pixel-accurate screenshot — light and dark — before a
-                      single line lands in your codebase.
-                    </p>
-                    <p className="intro-feature-sub">
-                      Powered by a headless Playwright renderer bundled inside
-                      the MCP server. No browser setup. No external service. Just{" "}
-                      <code>npx @zephrui/mcp@latest</code>.
-                    </p>
                   </div>
 
                 </div>
@@ -5521,29 +5501,29 @@ export default function App() {
 
                 {/* Tool cards */}
                 <div className="mcp-section-grid">
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">search_components</code>
-                    <p className="mcp-tool-desc">Find components by keyword. Returns name, category, and AI hints for every match.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">search_components</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Find components by keyword. Returns name, category, and AI hints for every match.</p>
                   </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">get_component_spec</code>
-                    <p className="mcp-tool-desc">Full prop schema for any component — types, defaults, accepted values, accessibility notes.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">get_component_spec</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Full prop schema for any component — types, defaults, accepted values, accessibility notes.</p>
                   </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">generate_component</code>
-                    <p className="mcp-tool-desc">Generate a ready-to-paste component snippet + AI prompt tailored to your editor and style pack.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">generate_component</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Generate a ready-to-paste component snippet + AI prompt tailored to your editor and style pack.</p>
                   </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">scaffold_page</code>
-                    <p className="mcp-tool-desc">Compose a full page from a list of component IDs — returns source, config, and install command.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">scaffold_page</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Compose a full page from a list of component IDs — returns source, config, and install command.</p>
                   </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">install_plan</code>
-                    <p className="mcp-tool-desc">Step-by-step install guide tailored to your framework (Vite, Next.js, Remix) and package manager.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">install_plan</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Step-by-step install guide tailored to your framework (Vite, Next.js, Remix) and package manager.</p>
                   </div>
-                  <div className="mcp-tool-card">
-                    <code className="mcp-tool-name">zephr_render</code>
-                    <p className="mcp-tool-desc">Pass JSX, get a pixel-accurate screenshot back in light and dark mode — before any code lands in your repo.</p>
+                  <div className="mcp-tool-card mcp-tool-card--figma">
+                    <code className="mcp-tool-chip">zephr_render</code>
+                    <p className="mcp-tool-desc mcp-tool-desc--figma">Pass JSX, get a pixel-accurate screenshot back in light and dark mode — before any code lands in your repo.</p>
                   </div>
                 </div>
 
@@ -5628,31 +5608,37 @@ export default function App() {
                 </div>
                 <div className="gs-flow">
                   <div className="gs-flow-step">
-                    <div className="gs-flow-num">1</div>
-                    <p className="gs-flow-title">Initialise your project</p>
-                    <p className="gs-flow-desc">
-                      One command writes <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and <code>llms.txt</code> — context files that AI tools read automatically every session. Also generates your <code>zephr.css</code> token file.
-                    </p>
-                    <code className="gs-flow-code">npx zephr init</code>
-                    <p className="gs-flow-hint">Then run <strong>zephr add-skills</strong> to install all 21 slash commands into Claude Code, Cursor, or Codex.</p>
+                    <div className="gs-flow-step-inner">
+                      <div className="gs-flow-num">1</div>
+                      <p className="gs-flow-title">Initialise your project</p>
+                      <p className="gs-flow-desc">
+                        One command writes <code>CLAUDE.md</code>, <code>AGENTS.md</code>, and <code>llms.txt</code> — context files that AI tools read automatically every session. Also generates your <code>zephr.css</code> token file.
+                      </p>
+                      <code className="gs-flow-code">npx zephr init</code>
+                      <p className="gs-flow-hint">Then run <strong>zephr add-skills</strong> to install all 21 slash commands into Claude Code, Cursor, or Codex.</p>
+                    </div>
                   </div>
                   <div className="gs-flow-step">
-                    <div className="gs-flow-num">2</div>
-                    <p className="gs-flow-title">Describe what you want</p>
-                    <p className="gs-flow-desc">
-                      Your AI reads the full registry — every component{"'"}s prop schema, design tokens, and <code>aiHints</code> — and generates production-ready code on the first pass. No prompt engineering required.
-                    </p>
-                    <code className="gs-flow-code">"Build a CRM table with filters and a slide-over detail panel"</code>
-                    <p className="gs-flow-hint">The AI knows to use <strong>DataTable</strong> + <strong>FiltersBar</strong> + <strong>Sheet</strong> — because the registry told it to.</p>
+                    <div className="gs-flow-step-inner">
+                      <div className="gs-flow-num">2</div>
+                      <p className="gs-flow-title">Describe what you want</p>
+                      <p className="gs-flow-desc">
+                        Your AI reads the full registry — every component{"'"}s prop schema, design tokens, and <code>aiHints</code> — and generates production-ready code on the first pass. No prompt engineering required.
+                      </p>
+                      <code className="gs-flow-code">"Build a CRM table with filters and a slide-over detail panel"</code>
+                      <p className="gs-flow-hint">The AI knows to use <strong>DataTable</strong> + <strong>FiltersBar</strong> + <strong>Sheet</strong> — because the registry told it to.</p>
+                    </div>
                   </div>
                   <div className="gs-flow-step">
-                    <div className="gs-flow-num">3</div>
-                    <p className="gs-flow-title">Ship with confidence</p>
-                    <p className="gs-flow-desc">
-                      Every component self-styles via <code>--z-*</code> CSS variables. No token overrides, no style drift, no cleanup pass. Run <code>/audit</code> to catch violations before they ship.
-                    </p>
-                    <code className="gs-flow-code">npm run build → deploy</code>
-                    <p className="gs-flow-hint">Use <strong>zephr_render</strong> via MCP to visually verify your output before it ever hits your codebase.</p>
+                    <div className="gs-flow-step-inner">
+                      <div className="gs-flow-num">3</div>
+                      <p className="gs-flow-title">Ship with confidence</p>
+                      <p className="gs-flow-desc">
+                        Every component self-styles via <code>--z-*</code> CSS variables. No token overrides, no style drift, no cleanup pass. Run <code>/audit</code> to catch violations before they ship.
+                      </p>
+                      <code className="gs-flow-code">npm run build → deploy</code>
+                      <p className="gs-flow-hint">Use <strong>zephr_render</strong> via MCP to visually verify your output before it ever hits your codebase.</p>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -5660,8 +5646,9 @@ export default function App() {
               {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
               <section id="install" className="doc-section">
                 <div className="section-heading">
-                  <h2>Quickstart</h2>
-                  <p>Three steps from zero to AI-ready components in your React project.</p>
+                  <p className="section-eyebrow">Quickstart</p>
+                  <h2>Zero to AI-ready in three commands.</h2>
+                  <p>Install the package, initialise Zephr, and import tokens in your root layout.</p>
                 </div>
                 <div className="snippet-stack">
                   <SnippetItem
@@ -5685,8 +5672,8 @@ export default function App() {
               {/* ── EXPLORE ───────────────────────────────────────────────── */}
               <section id="explore" className="doc-section">
                 <div className="section-heading">
-                  <h2>Explore</h2>
-                  <p>Everything you need to build a complete SaaS product.</p>
+                  <p className="section-eyebrow">Explore</p>
+                  <h2>Everything you need to build a complete SaaS product.</h2>
                 </div>
                 <div className="intro-links intro-links-4">
                   <button
@@ -5698,12 +5685,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon ms">widgets</span>
-                    <span className="intro-link-label">Components</span>
-                    <span className="intro-link-desc">
-                      49 components across atoms, molecules, and organisms
-                    </span>
-                    <span className="intro-link-count">49 components</span>
+                    <div className="intro-link-card-inner">
+                      <span className="intro-link-icon ms">widgets</span>
+                      <span className="intro-link-label">Components</span>
+                      <span className="intro-link-desc">
+                        49 components across atoms, molecules, and organisms
+                      </span>
+                    </div>
                     <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
@@ -5715,12 +5703,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon ms">description</span>
-                    <span className="intro-link-label">Pages</span>
-                    <span className="intro-link-desc">
-                      Full-page SaaS templates — CRM, ops, analytics, support
-                    </span>
-                    <span className="intro-link-count">Full templates</span>
+                    <div className="intro-link-card-inner">
+                      <span className="intro-link-icon ms">description</span>
+                      <span className="intro-link-label">Pages</span>
+                      <span className="intro-link-desc">
+                        Full-page SaaS templates — CRM, ops, analytics, support
+                      </span>
+                    </div>
                     <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
@@ -5732,12 +5721,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon ms">bolt</span>
-                    <span className="intro-link-label">Widgets</span>
-                    <span className="intro-link-desc">
-                      60+ SaaS-focused widgets — drop in fully wired
-                    </span>
-                    <span className="intro-link-count">60 widgets</span>
+                    <div className="intro-link-card-inner">
+                      <span className="intro-link-icon ms">bolt</span>
+                      <span className="intro-link-label">Widgets</span>
+                      <span className="intro-link-desc">
+                        60+ SaaS-focused widgets — drop in fully wired
+                      </span>
+                    </div>
                     <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                   <button
@@ -5750,12 +5740,13 @@ export default function App() {
                       setMobileNavOpen(false);
                     }}
                   >
-                    <span className="intro-link-icon ms">smart_toy</span>
-                    <span className="intro-link-label">AI Setup</span>
-                    <span className="intro-link-desc">
-                      Claude, Cursor, Codex, Lovable — the exact prompt to use
-                    </span>
-                    <span className="intro-link-count">4 tools</span>
+                    <div className="intro-link-card-inner">
+                      <span className="intro-link-icon ms">smart_toy</span>
+                      <span className="intro-link-label">AI Setup</span>
+                      <span className="intro-link-desc">
+                        Claude, Cursor, Codex, Lovable — the exact prompt to use
+                      </span>
+                    </div>
                     <span className="intro-link-card-arrow ms">arrow_forward</span>
                   </button>
                 </div>

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCatalogLogoDataUri = createCatalogLogoDataUri;
 exports.createFallbackLogoDataUri = createFallbackLogoDataUri;
+const svgs_1 = require("./svgs");
 function hash(input) {
     let value = 0;
     for (const char of input) {
@@ -25,8 +26,18 @@ function defaultPalette(seed) {
     return { base, accent };
 }
 function createCatalogLogoDataUri(entry, size = 128) {
-    const mark = initials(entry.name);
     const radius = Math.floor(size * 0.16);
+    const brandSvg = (0, svgs_1.getBrandSvg)(entry.domain);
+    if (brandSvg) {
+        const pad = Math.floor(size * 0.17);
+        const inner = size - pad * 2;
+        const pathsMarkup = brandSvg.paths
+            .map(p => `<path d='${p.d}' fill='${p.fill}'${p.fillRule ? ` fill-rule='${p.fillRule}'` : ""}/>`)
+            .join("");
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><rect width='${size}' height='${size}' rx='${radius}' fill='${brandSvg.bg}'/><svg x='${pad}' y='${pad}' width='${inner}' height='${inner}' viewBox='${brandSvg.viewBox}'>${pathsMarkup}</svg></svg>`;
+        return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+    const mark = initials(entry.name);
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'>
     <defs>
       <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>

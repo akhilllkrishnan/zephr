@@ -60,7 +60,7 @@ export function Breadcrumbs({ items, separator = "/", className, style }: Breadc
                     style={{
                       color: isHovered
                         ? "var(--z-color-text, #171717)"
-                        : "var(--z-color-primary, #335cff)",
+                        : "var(--z-color-muted, #5c5c5c)",
                       textDecoration: isHovered ? "underline" : "none",
                       borderRadius: "4px",
                       outline: "none",
@@ -87,7 +87,7 @@ export function Breadcrumbs({ items, separator = "/", className, style }: Breadc
                       cursor: "pointer",
                       color: isHovered
                         ? "var(--z-color-text, #171717)"
-                        : "var(--z-color-primary, #335cff)",
+                        : "var(--z-color-muted, #5c5c5c)",
                       textDecoration: isHovered ? "underline" : "none",
                       fontSize: "inherit",
                       borderRadius: "4px",
@@ -114,7 +114,7 @@ export function Breadcrumbs({ items, separator = "/", className, style }: Breadc
                 </span>
               )}
               {!isLast ? (
-                <span aria-hidden style={{ color: "var(--z-color-muted, #5c5c5c)" }}>
+                <span aria-hidden style={{ color: "var(--z-color-sub, #d1d1d1)" }}>
                   {separator}
                 </span>
               ) : null}

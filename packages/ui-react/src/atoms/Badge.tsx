@@ -46,31 +46,31 @@ const colorPalettes: Record<BadgeColor, BadgePalette> = {
     onFilled: "#ffffff"
   },
   blue: {
-    filled: "var(--z-color-info, var(--z-color-primary, #335cff))",
-    lighter: "#eef4ff",
+    filled: "var(--z-color-primary, #335cff)",
+    lighter: "#ebf1ff",
     stroke: "#b9c8ff",
-    text: "var(--z-color-info, var(--z-color-primary, #335cff))",
+    text: "var(--z-color-primary, #335cff)",
     onFilled: "#ffffff"
   },
   orange: {
-    filled: "var(--z-color-warning, #f79009)",
+    filled: "var(--z-color-warning, #fa7319)",
     lighter: "#fff6e7",
     stroke: "#fecd8a",
     text: "#b54708",
     onFilled: "#ffffff"
   },
   red: {
-    filled: "var(--z-color-danger, #f04438)",
-    lighter: "#fff1f0",
+    filled: "var(--z-color-danger, #fb3748)",
+    lighter: "#fff0f2",
     stroke: "#fda29b",
-    text: "var(--z-color-danger, #f04438)",
+    text: "var(--z-color-danger, #fb3748)",
     onFilled: "#ffffff"
   },
   green: {
-    filled: "var(--z-color-success, #12b76a)",
-    lighter: "#ecfdf3",
+    filled: "var(--z-color-success, #1fc16b)",
+    lighter: "#ecfbf3",
     stroke: "#a6f4c5",
-    text: "var(--z-color-success, #12b76a)",
+    text: "var(--z-color-success, #1fc16b)",
     onFilled: "#ffffff"
   },
   yellow: {

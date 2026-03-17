@@ -205,10 +205,9 @@ export function DatePicker({
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "11px",
-                color: "var(--z-color-muted, #5c5c5c)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em"
+                fontSize: "12px",
+                fontWeight: 500,
+                color: "var(--z-color-text400, #a3a3a3)"
               }}
             >
               {label}
@@ -234,14 +233,14 @@ export function DatePicker({
                 style={{
                   height: "30px",
                   borderRadius: "8px",
-                  border: isActive ? "1px solid var(--z-color-primary, #121212)" : "1px solid transparent",
+                  border: "1px solid transparent",
                   background: isActive
-                    ? "var(--z-color-primary, #121212)"
+                    ? "var(--z-color-primary, #335cff)"
                     : isMidRange
-                      ? "color-mix(in srgb, var(--z-color-primary, #121212) 14%, transparent)"
+                      ? "rgba(71, 108, 255, 0.1)"
                       : "transparent",
                   color: isActive
-                    ? "var(--z-color-primaryContrast, #ffffff)"
+                    ? "#ffffff"
                     : "var(--z-color-text, #171717)",
                   fontSize: "13px",
                   fontWeight: 500,
@@ -271,8 +270,9 @@ export function DatePicker({
         width: "100%",
         maxWidth: mode === "range" ? "920px" : "520px",
         border: "1px solid var(--z-color-border, #ebebeb)",
-        borderRadius: "12px",
+        borderRadius: "20px",
         background: "var(--z-color-surface, #ffffff)",
+        boxShadow: "0px 16px 32px -12px rgba(14, 18, 27, 0.1)",
         padding: "12px",
         display: "grid",
         gap: "12px",
@@ -335,7 +335,7 @@ export function DatePicker({
                   borderRadius: "8px",
                   background:
                     preset === item
-                      ? "color-mix(in srgb, var(--z-color-primary, #121212) 12%, transparent)"
+                      ? "rgba(71, 108, 255, 0.1)"
                       : "transparent",
                   color: "var(--z-color-text, #171717)",
                   textAlign: "left",

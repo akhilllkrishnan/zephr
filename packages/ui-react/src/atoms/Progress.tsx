@@ -54,9 +54,9 @@ const CIRCLE_STROKE_MAP: Record<ProgressCircleSize, number> = {
 const TONE_COLOR_MAP: Record<ProgressTone, string> = {
   primary: "var(--z-color-primary, #335cff)",
   success: "var(--z-color-success, #1fc16b)",
-  danger: "var(--z-color-danger, #ef4444)",
-  warning: "var(--z-color-warning, #f59e0b)",
-  neutral: "var(--z-color-muted, #8b8b8b)"
+  danger: "var(--z-color-danger, #fb3748)",
+  warning: "var(--z-color-warning, #fa7319)",
+  neutral: "var(--z-color-sub, #d1d1d1)"
 };
 
 const indeterminateKeyframes = `
