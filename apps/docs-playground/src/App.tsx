@@ -2669,7 +2669,7 @@ function SnippetItem({ label, code, onCopy, beta }: { label: string; code: strin
   );
 }
 
-function Tag({ tone = "neutral", children }: { tone?: "neutral" | "info"; children: ReactNode }) {
+function StatusTag({ tone = "neutral", children }: { tone?: "neutral" | "info"; children: ReactNode }) {
   return <Badge tone={tone} size="sm">{children}</Badge>;
 }
 
