@@ -83,7 +83,8 @@ import zephrLogoDark from "../../../logo/zephr-dark.png";
 import zephrLogoLight from "../../../logo/zephr-light.png";
 import { widgetCatalogMeta, widgetsV2CatalogIds } from "./views/widgetsCatalog";
 import { templateCatalogMeta, templatesV2CatalogIds } from "./views/templatesCatalog";
-import { FeedbackWidget } from "./FeedbackWidget";
+import { TopNav } from "./components/TopNav";
+import type { TopTab, ShowcaseVersion, SearchResultItem, WorkspaceView } from "./types";
 // Theme CSS is injected dynamically via <style> tag — no static import needed
 
 const registry = registryData as unknown as RegistryEntry[];
@@ -92,33 +93,6 @@ const WidgetsPage = lazy(() => import("./views/WidgetsPage"));
 const TemplatesPage = lazy(() => import("./views/TemplatesPage"));
 const SlashCommandsPage = lazy(() => import("./views/SlashCommandsPage"));
 const IconsPage = lazy(() => import("./views/IconsPage").then((m) => ({ default: m.IconsPage })));
-
-type WorkspaceView =
-  "introduction" |
-  "getting-started" |
-  "slash-commands" |
-  "foundations" |
-  "icons" |
-  "component-gallery" |
-  "components" |
-  "api-reference" |
-  "widgets" |
-  "templates";
-type TopTab = "setup" | "components" | "pages" | "changelog";
-type ShowcaseVersion = "v1" | "v2";
-
-interface SearchResultItem {
-  id: string;
-  kind: "doc" | "component";
-  label: string;
-  detail: string;
-  /** Extra terms Fuse indexes but never displays */
-  keywords?: string;
-  tab: TopTab;
-  view: WorkspaceView;
-  anchor?: string;
-  componentId?: string;
-}
 
 interface TeamMember {
   id: string;
@@ -4522,133 +4496,32 @@ export default function App() {
   return (
     <div className="docs-root">
       <style>{globalThemeCss}</style>
-      <header className="top-nav">
-        <div className="top-main">
-          <button
-            type="button"
-            className="mobile-nav-toggle"
-            onClick={() => setMobileNavOpen((o) => !o)}
-            aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
-          >
-            <span className="ms">{mobileNavOpen ? "close" : "menu"}</span>
-          </button>
-          <div className="brand-wrap">
-            <button
-              type="button"
-              className="brand-home"
-              onClick={() => {
-                setTopTab("setup");
-                setView("introduction");
-                setMobileNavOpen(false);
-              }}
-              aria-label="Go to introduction"
-            >
-              <img src={brandLogoSrc} alt="Zephr" className="brand-logo" />
-            </button>
-          </div>
-
-          <div className="top-search-wrap">
-            <div className="top-search-inner" ref={searchPanelRef}>
-              <span className="ms top-search-icon" aria-hidden>search</span>
-              <input
-                ref={searchInputRef}
-                className="top-search"
-                value={catalogSearch}
-                onChange={(event) => setCatalogSearch(event.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onKeyDown={(event) => {
-                  if (event.key === "ArrowDown" && searchResults.length) {
-                    event.preventDefault();
-                    setSearchActiveIndex((index) => Math.min(index + 1, searchResults.length - 1));
-                    return;
-                  }
-                  if (event.key === "ArrowUp" && searchResults.length) {
-                    event.preventDefault();
-                    setSearchActiveIndex((index) => Math.max(index - 1, 0));
-                    return;
-                  }
-                  if (event.key === "Enter" && searchResults.length) {
-                    event.preventDefault();
-                    navigateToSearchResult(searchResults[searchActiveIndex] ?? searchResults[0]);
-                  }
-                }}
-                placeholder="Search..."
-                aria-label="Search"
-              />
-              {searchFocused && catalogSearch.trim() ? (
-                <div className="top-search-results" role="listbox" aria-label="Search results">
-                  {searchResults.length ? (
-                    searchResults.map((result) => (
-                      <button
-                        key={result.id}
-                        type="button"
-                        className={`top-search-result ${searchResults[searchActiveIndex]?.id === result.id ? "is-active" : ""}`}
-                        onClick={() => navigateToSearchResult(result)}
-                        onMouseEnter={() => {
-                          const index = searchResults.findIndex((item) => item.id === result.id);
-                          if (index >= 0) {
-                            setSearchActiveIndex(index);
-                          }
-                        }}
-                      >
-                        <span className="top-search-result-main">{result.label}</span>
-                        <span className="top-search-result-meta">{result.detail}</span>
-                      </button>
-                    ))
-                  ) : (
-                    <p className="top-search-empty">No matches found.</p>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="top-actions">
-            {topTab === "pages" ? (
-              <div className="top-version-control" aria-label="Pages showcase version">
-                <Select
-                  controlSize="xs"
-                  className="top-version-select"
-                  aria-label="Pages showcase version"
-                  value={showcaseVersion}
-                  onChange={(event) => setShowcaseVersion(event.target.value === "v2" ? "v2" : "v1")}
-                >
-                  <option value="v1">V1</option>
-                  <option value="v2">V2</option>
-                </Select>
-              </div>
-            ) : null}
-            <a
-              href="https://github.com/akhilllkrishnan/zephr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="top-icon-action"
-              aria-label="View Zephr on GitHub"
-              title="View on GitHub"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-            </a>
-            <button
-              type="button"
-              className="top-icon-action"
-              onClick={() => setDarkMode((d) => !d)}
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              <span className="ms">{darkMode ? "light_mode" : "dark_mode"}</span>
-            </button>
-          </div>
-        </div>
-
-        <nav className="top-tabs" aria-label="Top tabs">
-          <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => activateTopTab("setup")}>Setup</button>
-          <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => activateTopTab("components")}>Components</button>
-          <button type="button" className={`tab ${topTab === "pages" ? "active" : ""}`} onClick={() => activateTopTab("pages")}>Pages</button>
-          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => activateTopTab("changelog")}>Changelog</button>
-        </nav>
-      </header>
+      <TopNav
+        brandLogoSrc={brandLogoSrc}
+        onBrandClick={() => {
+          setTopTab("setup");
+          setView("introduction");
+          setMobileNavOpen(false);
+        }}
+        topTab={topTab}
+        onTabChange={activateTopTab}
+        catalogSearch={catalogSearch}
+        onSearchChange={setCatalogSearch}
+        searchFocused={searchFocused}
+        onSearchFocus={() => setSearchFocused(true)}
+        searchResults={searchResults}
+        searchActiveIndex={searchActiveIndex}
+        onSearchActiveIndexChange={setSearchActiveIndex}
+        onSearchResultNavigate={navigateToSearchResult}
+        searchPanelRef={searchPanelRef}
+        searchInputRef={searchInputRef}
+        darkMode={darkMode}
+        onDarkModeToggle={() => setDarkMode((d) => !d)}
+        showcaseVersion={showcaseVersion}
+        onShowcaseVersionChange={setShowcaseVersion}
+        mobileNavOpen={mobileNavOpen}
+        onMobileNavToggle={() => setMobileNavOpen((o) => !o)}
+      />
 
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
 
@@ -7525,7 +7398,6 @@ export default function App() {
         )}
       </div >
 
-      <FeedbackWidget />
     </div >
   );
 }
