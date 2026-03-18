@@ -2,8 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "corepack enable && corepack pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @zephrui/docs-playground build",
-  "outputDirectory": "apps/docs-playground/dist",
+  "buildCommand": "pnpm --filter @zephrui/docs-playground build && cp -r apps/docs-playground/dist dist",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
