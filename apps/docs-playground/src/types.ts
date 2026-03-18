@@ -10,7 +10,7 @@ export type WorkspaceView =
   | "widgets"
   | "templates";
 
-export type TopTab = "setup" | "components" | "pages" | "changelog";
+export type TopTab = "setup" | "components" | "icons" | "logos" | "changelog";
 export type ShowcaseVersion = "v1" | "v2";
 
 export interface SearchResultItem {

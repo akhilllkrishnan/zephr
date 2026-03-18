@@ -173,11 +173,11 @@ body {
 
 .sidebar-active-indicator {
   position: absolute;
-  left: 0;
+  right: 0;
   top: 0;
-  width: 3px;
+  width: 4px;
   height: 20px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px 0 0 4px;
   background: var(--accent);
   opacity: 0;
   transform: translateY(0);
@@ -227,8 +227,44 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
+  gap: 8px;
   position: relative;
   transition: background 140ms, color 140ms, border-color 140ms;
+}
+
+/* Icon inside sidebar nav items */
+.sidebar-nav-icon {
+  font-size: 20px !important;
+  font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 20 !important;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color 140ms;
+}
+
+.sidebar-link.is-active .sidebar-nav-icon,
+.component-link.is-active .sidebar-nav-icon {
+  color: var(--accent);
+}
+
+/* Right-pointing chevron for active sidebar item */
+.sidebar-nav-chevron {
+  font-size: 16px !important;
+  font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 20 !important;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--muted);
 }
 
 .sidebar-link.with-tag {
@@ -754,7 +790,7 @@ h1 {
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
-  font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 0, "opsz" 20;
+  font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 20;
   vertical-align: -0.125em;
   user-select: none;
 }
@@ -1213,9 +1249,9 @@ h1 {
 }
 
 .snippet-item {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--panel);
+  border: 1px solid #1e2030;
+  border-radius: 8px;
+  background: #0d0e12;
   overflow: hidden;
 }
 
@@ -1224,12 +1260,12 @@ h1 {
   align-items: center;
   justify-content: space-between;
   padding: 0.4rem 0.75rem 0.4rem 1rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--z-color-background100);
+  border-bottom: 1px solid #1e2030;
+  background: #141520;
 }
 
 .changelog-snippet-stack .snippet-item-head {
-  background: var(--z-color-background100);
+  background: #141520;
 }
 
 .snippet-item-label {
@@ -1237,34 +1273,35 @@ h1 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .snippet-item-copy {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
-  background: var(--panel);
-  color: var(--muted);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
   font: inherit;
   font-size: 0.68rem;
   padding: 0.15rem 0.5rem;
   cursor: pointer;
-  transition: background 100ms, color 100ms;
+  transition: background 100ms, color 100ms, border-color 100ms;
 }
 
 .snippet-item-copy:hover {
-  background: var(--line);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .snippet-item pre {
   margin: 0;
   padding: 1rem 1.1rem;
   background: transparent;
-  font-family: var(--z-type-family-mono, "IBM Plex Mono", "SFMono-Regular", Menlo, monospace);
+  font-family: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
   font-size: 0.8125rem;
   line-height: 1.65;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.88);
   overflow-x: auto;
 }
 

@@ -841,7 +841,8 @@ function updateSearchParams(
 }
 
 function getTopTabForView(view: WorkspaceView): TopTab {
-  if (view === "widgets" || view === "templates") return "pages";
+  if (view === "icons") return "icons";
+  if (view === "widgets" || view === "templates") return "components";
   if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
 }
@@ -4163,8 +4164,9 @@ export default function App() {
 
   const catalog = useMemo(() => {
     const normalized = catalogSearch.trim().toLowerCase();
-    // Always exclude templates from the flat catalog list — they live in the Templates nav
-    const components = registry.filter((e) => e.category !== "template");
+    // Exclude templates and library entries (icons/avatars/logos have dedicated tabs)
+    const LIBRARY_IDS = new Set(["icon-library", "avatar-library", "logo-library"]);
+    const components = registry.filter((e) => e.category !== "template" && !LIBRARY_IDS.has(e.id));
     if (!normalized) return components;
     return components.filter((entry) =>
       entry.id.toLowerCase().includes(normalized) ||
@@ -4180,8 +4182,8 @@ export default function App() {
       { id: "doc-setup-start", kind: "doc", label: "Get Started", detail: "Setup · AI quick start", keywords: "install setup quickstart", tab: "setup", view: "getting-started", anchor: "overview" },
       { id: "doc-setup-foundations", kind: "doc", label: "Foundations", detail: "Setup · Tokens & primitives", keywords: "design tokens colors spacing typography", tab: "setup", view: "foundations", anchor: "foundations-overview" },
       { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 21 AI editor commands", keywords: "ai commands editor shortcuts", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
-      { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Pages · Dashboards, auth, settings", keywords: "layouts pages scaffolds", tab: "pages", view: "templates", anchor: "templates-overview" },
-      { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Pages · Assembled widget examples", keywords: "assembled examples compositions", tab: "pages", view: "widgets", anchor: "widgets-overview" },
+      { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Components · Dashboards, auth, settings", keywords: "layouts pages scaffolds", tab: "components", view: "templates", anchor: "templates-overview" },
+      { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Components · Assembled widget examples", keywords: "assembled examples compositions", tab: "components", view: "widgets", anchor: "widgets-overview" },
       { id: "doc-components-api", kind: "doc", label: "API Reference", detail: "Components · Props, types, defaults", keywords: "props api types documentation", tab: "components", view: "api-reference", anchor: "api-overview" },
       { id: "doc-changelog", kind: "doc", label: "Release Notes", detail: "Changelog", keywords: "updates releases versions history", tab: "changelog", view: "introduction", anchor: "changelog-overview" },
       { id: "doc-changelog-roadmap", kind: "doc", label: "Roadmap", detail: "Changelog · Upcoming milestones", keywords: "future planned upcoming features", tab: "changelog", view: "introduction", anchor: "release-upcoming" },
@@ -4206,9 +4208,9 @@ export default function App() {
       id: `template-${t.id}`,
       kind: "doc" as const,
       label: t.label,
-      detail: t.category === "template" ? "Pages · Template" : "Pages · Example",
+      detail: t.category === "template" ? "Components · Template" : "Components · Example",
       keywords: t.id,
-      tab: "pages" as const,
+      tab: "components" as const,
       view: "templates" as const,
       anchor: t.id,
     }));
@@ -4279,8 +4281,12 @@ export default function App() {
       setView("component-gallery");
       return;
     }
-    if (tab === "pages") {
-      setView("widgets");
+    if (tab === "icons") {
+      setView("icons");
+      return;
+    }
+    if (tab === "logos") {
+      setView("component-gallery");
       return;
     }
   }
@@ -4517,15 +4523,13 @@ export default function App() {
         searchInputRef={searchInputRef}
         darkMode={darkMode}
         onDarkModeToggle={() => setDarkMode((d) => !d)}
-        showcaseVersion={showcaseVersion}
-        onShowcaseVersionChange={setShowcaseVersion}
         mobileNavOpen={mobileNavOpen}
         onMobileNavToggle={() => setMobileNavOpen((o) => !o)}
       />
 
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
 
-      <div className={`docs-layout${topTab === "pages" ? " docs-layout--pages" : ""}`}>
+      <div className="docs-layout">
         <aside ref={leftRailRef} className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
           <span
             className="sidebar-active-indicator"
@@ -4538,61 +4542,51 @@ export default function App() {
           />
           {topTab === "setup" && (
             <div className="nav-group">
-              <p className="group-title">Setup</p>
+              <p className="group-title">Main</p>
               <button
                 type="button"
                 className={`sidebar-link ${view === "introduction" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("introduction");
-                  setMobileNavOpen(false);
-                }}
+                onClick={() => { setTopTab("setup"); setView("introduction"); setMobileNavOpen(false); }}
               >
+                <span className="ms sidebar-nav-icon">view_list</span>
                 Introduction
+                {view === "introduction" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
               <button
                 type="button"
                 className={`sidebar-link ${view === "getting-started" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("getting-started");
-                  setMobileNavOpen(false);
-                }}
+                onClick={() => { setTopTab("setup"); setView("getting-started"); setMobileNavOpen(false); }}
               >
+                <span className="ms sidebar-nav-icon">rocket_launch</span>
                 Get Started
+                {view === "getting-started" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
               <button
                 type="button"
                 className={`sidebar-link ${view === "slash-commands" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("slash-commands");
-                  setMobileNavOpen(false);
-                }}
+                onClick={() => { setTopTab("setup"); setView("slash-commands"); setMobileNavOpen(false); }}
               >
+                <span className="ms sidebar-nav-icon">terminal</span>
                 Slash Commands
+                {view === "slash-commands" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
               <button
                 type="button"
                 className={`sidebar-link ${view === "foundations" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("foundations");
-                  setMobileNavOpen(false);
-                }}
+                onClick={() => { setTopTab("setup"); setView("foundations"); setMobileNavOpen(false); }}
               >
+                <span className="ms sidebar-nav-icon">layers</span>
                 Foundations
+                {view === "foundations" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
               <button
                 type="button"
-                className={`sidebar-link ${view === "icons" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("setup");
-                  setView("icons");
-                  setMobileNavOpen(false);
-                }}
+                className={`sidebar-link ${view === "api-reference" ? "is-active" : ""}`}
+                onClick={() => { setTopTab("setup"); setView("api-reference"); setMobileNavOpen(false); }}
               >
-                Icons
+                <span className="ms sidebar-nav-icon">star</span>
+                Benefits
+                {view === "api-reference" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
             </div>
           )}
@@ -4702,61 +4696,42 @@ export default function App() {
             </div>
           )}
 
-          {topTab === "pages" && (
+          {topTab === "icons" && (
             <div className="nav-group">
-              <p className="group-title">Pages</p>
-
+              <p className="group-title">Icons</p>
               <button
                 type="button"
-                className={`sidebar-link ${view === "widgets" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("widgets");
-                  setMobileNavOpen(false);
-                }}
+                className={`sidebar-link ${view === "icons" ? "is-active" : ""}`}
+                onClick={() => { setTopTab("icons"); setView("icons"); setMobileNavOpen(false); }}
               >
-                Widgets
+                <span className="ms sidebar-nav-icon">grid_view</span>
+                Icon Browser
+                {view === "icons" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
-              {pageWidgetNavItems.map((widget) => (
-                <a
-                  key={widget.id}
-                  className="sidebar-link"
-                  href={`#${widget.id}`}
-                  onClick={() => {
-                    setTopTab("pages");
-                    setView("widgets");
-                    setMobileNavOpen(false);
-                  }}
-                >
-                  {widget.label}
-                </a>
-              ))}
+            </div>
+          )}
 
+          {topTab === "logos" && (
+            <div className="nav-group">
+              <p className="group-title">Assets</p>
               <button
                 type="button"
-                className={`sidebar-link ${view === "templates" ? "is-active" : ""}`}
-                onClick={() => {
-                  setTopTab("pages");
-                  setView("templates");
-                  setMobileNavOpen(false);
-                }}
+                className={`sidebar-link ${activeRegistryId === "logo-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
+                onClick={() => { selectComponent("logo-library"); setTopTab("logos"); setMobileNavOpen(false); }}
               >
-                Templates Overview
+                <span className="ms sidebar-nav-icon">brand_family</span>
+                Logo Library
+                {activeRegistryId === "logo-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
-              {pageTemplateNavItems.map((template) => (
-                <a
-                  key={template.id}
-                  className="sidebar-link"
-                  href={`#${template.id}`}
-                  onClick={() => {
-                    setTopTab("pages");
-                    setView("templates");
-                    setMobileNavOpen(false);
-                  }}
-                >
-                  {template.label}
-                </a>
-              ))}
+              <button
+                type="button"
+                className={`sidebar-link ${activeRegistryId === "avatar-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
+                onClick={() => { selectComponent("avatar-library"); setTopTab("logos"); setMobileNavOpen(false); }}
+              >
+                <span className="ms sidebar-nav-icon">face</span>
+                Avatar Library
+                {activeRegistryId === "avatar-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
+              </button>
             </div>
           )}
 
@@ -5457,7 +5432,7 @@ export default function App() {
                     type="button"
                     className="intro-link-card"
                     onClick={() => {
-                      setTopTab("pages");
+                      setTopTab("components");
                       setView("templates");
                       setMobileNavOpen(false);
                     }}
@@ -5475,7 +5450,7 @@ export default function App() {
                     type="button"
                     className="intro-link-card"
                     onClick={() => {
-                      setTopTab("pages");
+                      setTopTab("components");
                       setView("widgets");
                       setMobileNavOpen(false);
                     }}
@@ -7306,7 +7281,7 @@ export default function App() {
           )}
         </main>
 
-        {topTab !== "pages" && topTab !== "changelog" && (
+        {topTab !== "icons" && topTab !== "logos" && topTab !== "changelog" && (
         <aside ref={rightRailRef} className="right-rail">
           <span
             className="toc-active-indicator"
