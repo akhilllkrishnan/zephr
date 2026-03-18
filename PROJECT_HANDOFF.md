@@ -1,6 +1,6 @@
 # Zephr Project Handoff
 
-Last updated: March 10, 2026
+Last updated: March 18, 2026
 
 ---
 
@@ -194,6 +194,27 @@ The docs currently do **not** expose public multi-theme switching. The visible p
     - repeated card-in-card patterns replaced with divider rows and simpler bands
     - premium/featured widgets cleaned first, then older utility widgets
     - current gap is now art direction and full-page SaaS fidelity, not raw structural clutter
+
+27. Docs content audit and fluff removal (March 18, 2026):
+    - **Removed pages**: Speed Insights (Vercel product, unrelated to Zephr), Mission (philosophy fluff), Team (low-value at this stage).
+    - **Removed content blocks**: `zephr_render` demo section, "How It Works" 3-step flow, `cloud-assets` section from component pages, raw JSON registry schema section from API Reference.
+    - **Removed stale TOC links**: `#cloud-assets` and `#api-examples` links from right-rail TOC.
+    - **Removed from sidebar nav**: Speed Insights button removed from Setup section.
+    - **Docs philosophy locked**: Content must be minimal, clear, and direct for Developers, Founders, and Early Vibe Coders. No fluff. No philosophy. No self-congratulatory copy.
+    - Net change: ~1200 lines removed from `App.tsx`.
+28. Docs CSS premium polish pass (March 18, 2026):
+    - Applied consistent white `#ffffff` bg + `1px solid #e5e7eb` border + `border-radius 16px` design language to all remaining docs pages: Slash Commands, Foundations, Widgets, Templates.
+    - Component page polish: larger hero h1 (`clamp(2rem, 3vw, 2.75rem) / 800 weight`), refined breadcrumbs, `.preview-browser` at 14px radius, `.api-meta-card` white bg, `.install-step-number` solid accent squircle, `.related-card` and `.gallery-card` white bg + 14px radius.
+    - Solid accent step numbers (no gradients) used consistently across all install/how-to step sequences.
+    - CSS corrections appended at end of file using `!important` source-order win to override older layered rules without refactoring specificity.
+29. Social meta image updated (March 18, 2026):
+    - OG and Twitter Card image updated to `/social/meta-image.png` (1800×945).
+    - `index.html` `og:image:width` / `og:image:height` corrected to match.
+30. Vercel deployment fixed (March 18, 2026):
+    - Changed `vercel.json` `buildCommand` from `pnpm docs:build` to `pnpm --filter @zephrui/docs-playground build` — the root alias was not being resolved when Vercel detected Turbo.
+    - Added `"framework": null` to `vercel.json` — Vercel's Turbo auto-detection was overriding `outputDirectory`, causing a "no dist found" failure even when the build succeeded.
+    - Vite output goes to `apps/docs-playground/dist`; `outputDirectory` in `vercel.json` must remain `apps/docs-playground/dist`.
+    - Turbo detection interference: any time Vercel logs "Detected Turbo. Adjusting default settings...", treat it as a flag that `framework: null` is needed to lock custom build/output settings.
 
 ### In progress / pending
 
@@ -498,6 +519,25 @@ Optional docs fallback only:
 ---
 
 ## 16) Deployment Direction (Cost-Optimized)
+
+### Vercel docs deployment config (locked, March 18 2026)
+
+`vercel.json` at repo root:
+
+```json
+{
+  "framework": null,
+  "installCommand": "corepack enable && corepack pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @zephrui/docs-playground build",
+  "outputDirectory": "apps/docs-playground/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+Key rules:
+- `framework: null` is required — Vercel's Turbo auto-detection overrides `outputDirectory` if not disabled.
+- `buildCommand` must use `--filter` directly, not the root `docs:build` alias, because the alias is not resolved under Turbo detection.
+- `outputDirectory` must be the full path from repo root (`apps/docs-playground/dist`).
 
 ### Recommended near-term deployment
 
