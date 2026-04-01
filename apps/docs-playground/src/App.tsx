@@ -93,6 +93,7 @@ const WidgetsPage = lazy(() => import("./views/WidgetsPage"));
 const TemplatesPage = lazy(() => import("./views/TemplatesPage"));
 const SlashCommandsPage = lazy(() => import("./views/SlashCommandsPage"));
 const IconsPage = lazy(() => import("./views/IconsPage").then((m) => ({ default: m.IconsPage })));
+const LogosPage = lazy(() => import("./views/LogosPage").then((m) => ({ default: m.LogosPage })));
 
 interface TeamMember {
   id: string;
@@ -842,6 +843,7 @@ function updateSearchParams(
 
 function getTopTabForView(view: WorkspaceView): TopTab {
   if (view === "icons") return "icons";
+  if (view === "logos") return "logos";
   if (view === "widgets" || view === "templates") return "components";
   if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
   return "setup";
@@ -4286,7 +4288,7 @@ export default function App() {
       return;
     }
     if (tab === "logos") {
-      setView("component-gallery");
+      setView("logos");
       return;
     }
   }
@@ -4713,24 +4715,15 @@ export default function App() {
 
           {topTab === "logos" && (
             <div className="nav-group">
-              <p className="group-title">Assets</p>
+              <p className="group-title">Logos</p>
               <button
                 type="button"
-                className={`sidebar-link ${activeRegistryId === "logo-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
-                onClick={() => { selectComponent("logo-library"); setTopTab("logos"); setMobileNavOpen(false); }}
+                className={`sidebar-link ${view === "logos" ? "is-active" : ""}`}
+                onClick={() => { setTopTab("logos"); setView("logos"); setMobileNavOpen(false); }}
               >
                 <span className="ms sidebar-nav-icon">brand_family</span>
-                Logo Library
-                {activeRegistryId === "logo-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
-              </button>
-              <button
-                type="button"
-                className={`sidebar-link ${activeRegistryId === "avatar-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
-                onClick={() => { selectComponent("avatar-library"); setTopTab("logos"); setMobileNavOpen(false); }}
-              >
-                <span className="ms sidebar-nav-icon">face</span>
-                Avatar Library
-                {activeRegistryId === "avatar-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
+                Logo Browser
+                {view === "logos" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
             </div>
           )}
@@ -5888,6 +5881,19 @@ export default function App() {
               )}
             >
               <IconsPage />
+            </Suspense>
+          ) : view === "logos" ? (
+            <Suspense
+              fallback={(
+                <section className="doc-section">
+                  <div className="widget-empty-state">
+                    <strong>Loading logos…</strong>
+                    <p>Preparing the logo library.</p>
+                  </div>
+                </section>
+              )}
+            >
+              <LogosPage />
             </Suspense>
           ) : view === "component-gallery" ? (
             <>

@@ -4,6 +4,7 @@ export type WorkspaceView =
   | "slash-commands"
   | "foundations"
   | "icons"
+  | "logos"
   | "component-gallery"
   | "components"
   | "api-reference"
