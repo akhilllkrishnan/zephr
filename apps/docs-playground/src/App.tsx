@@ -4725,6 +4725,15 @@ export default function App() {
                 Logo Browser
                 {view === "logos" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
+              <button
+                type="button"
+                className={`sidebar-link ${activeRegistryId === "avatar-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
+                onClick={() => { selectComponent("avatar-library"); setTopTab("logos"); setMobileNavOpen(false); }}
+              >
+                <span className="ms sidebar-nav-icon">face</span>
+                Avatar Library
+                {activeRegistryId === "avatar-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
+              </button>
             </div>
           )}
 
