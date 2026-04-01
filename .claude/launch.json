@@ -24,6 +24,12 @@
       "runtimeExecutable": "corepack",
       "runtimeArgs": ["pnpm", "run", "storybook"],
       "port": 6006
+    },
+    {
+      "name": "roaster",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["pnpm", "--filter", "@zephreco/roaster", "dev"],
+      "port": 4173
     }
   ]
 }

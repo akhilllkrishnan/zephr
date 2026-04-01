@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Roaster — Upload a UI. Get humbled.</title>
+  <meta name="description" content="Upload a UI screenshot. Receive a brutally honest design critique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #080808;
+      --surface:       #111111;
+      --surface-2:     #181818;
+      --border:        #252525;
+      --border-hover:  #383838;
+      --text:          #EBEBEB;
+      --text-muted:    #575757;
+      --text-dim:      #303030;
+      --accent:        #FF4500;
+      --accent-soft:   rgba(255, 69, 0, 0.10);
+      --accent-glow:   rgba(255, 69, 0, 0.22);
+      --green:         #22C55E;
+      --green-soft:    rgba(34, 197, 94, 0.10);
+      --font-display:  'Bebas Neue', sans-serif;
+      --font-body:     'DM Serif Text', Georgia, serif;
+      --font-mono:     'JetBrains Mono', 'Courier New', monospace;
+      --max-w:         660px;
+      --radius:        3px;
+      --radius-lg:     6px;
+      --ease:          200ms ease;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 90% 35% at 50% 0%, rgba(28, 7, 0, 0.85) 0%, transparent 100%);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1.5rem 5rem;
+      padding-top: 48px;
+    }
+
+    /* ─── NAVBAR ──────────────────────── */
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 8, 8, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      max-width: calc(var(--max-w) + 3rem);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* ─── APP SWITCHER ────────────────── */
+
+    .switcher-wrap {
+      position: relative;
+    }
+
+    .waffle-btn {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--ease);
+      flex-shrink: 0;
+    }
+
+    .waffle-btn:hover,
+    .waffle-btn[aria-expanded="true"] {
+      background: var(--surface-2);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .nav-brand {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    /* ─── SWITCHER PANEL ──────────────── */
+
+    .switcher-panel {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 232px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.03);
+      padding: 1rem;
+      z-index: 200;
+      animation: panel-drop 140ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes panel-drop {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .switcher-heading {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.875rem;
+      padding: 0 0.25rem;
+    }
+
+    .switcher-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.375rem;
+    }
+
+    .switcher-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 0.5rem 0.75rem;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: all var(--ease);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .switcher-card:hover {
+      background: var(--surface-2);
+      border-color: var(--border);
+    }
+
+    .switcher-card.current {
+      background: var(--surface-2);
+      border-color: var(--border);
+      cursor: default;
+    }
+
+    .switcher-card.current:hover { background: var(--surface-2); }
+
+    .s-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .s-icon-ui {
+      background: #14142a;
+    }
+
+    .s-icon-roaster {
+      background: #180900;
+      font-size: 1.5rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 8px rgba(255, 80, 0, 0.4));
+    }
+
+    .s-name {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .switcher-card.current .s-name { color: var(--text); }
+
+    .current-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    [hidden] { display: none !important; }
+
+    /* ─── WRAPPER ─────────────────────── */
+
+    .wrapper {
+      width: 100%;
+      max-width: var(--max-w);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HEADER ──────────────────────── */
+
+    header {
+      padding: 4.5rem 0 2.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.75rem;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(4.25rem, 15vw, 8rem);
+      letter-spacing: 0.025em;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    h1 .w-design  { color: var(--text); }
+    h1 .w-roaster { color: var(--accent); }
+
+    .subhead {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─── SECTION + LABEL ─────────────── */
+
+    .section { margin-bottom: 1.625rem; }
+
+    label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.675rem;
+      letter-spacing: 0.115em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.55rem;
+    }
+
+    /* ─── INPUTS ──────────────────────── */
+
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color var(--ease), background var(--ease);
+      -webkit-appearance: none;
+    }
+
+    input::placeholder { color: var(--text-dim); }
+
+    input:focus {
+      border-color: var(--border-hover);
+      background: var(--surface-2);
+    }
+
+    /* ─── UPLOAD ZONE ─────────────────── */
+
+    .upload-zone {
+      position: relative;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 192px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      background: var(--surface);
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent);
+      border-style: solid;
+      background: var(--accent-soft);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      pointer-events: none;
+      transition: opacity var(--ease);
+    }
+
+    .upload-zone.drag-over .upload-inner { opacity: 0; }
+
+    .upload-fire {
+      font-size: 2.75rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 14px rgba(255, 90, 0, 0.55));
+      animation: float 3.2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-5px); }
+    }
+
+    .upload-label {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .upload-hint {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .drag-label {
+      position: absolute;
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity var(--ease);
+      pointer-events: none;
+    }
+
+    .upload-zone.drag-over .drag-label { opacity: 1; }
+
+    /* ─── PREVIEW ─────────────────────── */
+
+    .preview-wrap {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      background: #0C0C0C;
+    }
+
+    .preview-wrap img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.68);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--ease);
+    }
+
+    .preview-wrap:hover .preview-overlay { opacity: 1; }
+
+    .preview-overlay span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text);
+      border: 1px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius);
+    }
+
+    .preview-wrap input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─── ROAST BUTTON ────────────────── */
+
+    .btn-roast {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.07em;
+      padding: 0.875rem 2rem;
+      cursor: pointer;
+      transition: filter var(--ease), transform var(--ease), background var(--ease), color var(--ease), border var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-roast:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-roast:active:not(:disabled) { transform: translateY(1px); }
+
+    .btn-roast:disabled {
+      background: var(--surface-2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    /* ─── ERROR ───────────────────────── */
+
+    .error-msg {
+      margin-top: 0.75rem;
+      padding: 0.7rem 0.9rem;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: var(--radius);
+      color: #FCA5A5;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+      animation: fade-in 180ms ease;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESULTS PANEL ───────────────── */
+
+    .results-panel {
+      margin-top: 2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      overflow: hidden;
+      animation: fade-in 280ms ease;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1.125rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse-dot 1.4s ease infinite;
+    }
+
+    .status-dot.done {
+      background: var(--green);
+      animation: none;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.25; }
+    }
+
+    .results-header .status-text {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .results-body {
+      padding: 1.5rem 1.375rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      min-height: 80px;
+    }
+
+    /* ─── ROAST LINE TYPES ────────────── */
+
+    .line-roast {
+      border-left: 2px solid var(--accent);
+      padding: 0.7rem 0 0.7rem 1rem;
+      margin-bottom: 0.125rem;
+      color: var(--text);
+    }
+
+    .line-fix {
+      border-left: 2px solid var(--green);
+      padding: 0.5rem 0 0.5rem 1rem;
+      margin-bottom: 1.375rem;
+      color: #8B9CAF;
+      font-style: italic;
+      font-size: 0.9375rem;
+    }
+
+    .line-verdict {
+      margin-top: 1.5rem;
+      padding: 1rem 1.125rem;
+      background: rgba(255, 69, 0, 0.055);
+      border: 1px solid rgba(255, 69, 0, 0.18);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-style: normal;
+    }
+
+    .line-plain { color: var(--text); }
+
+    .spacer { height: 0.875rem; }
+
+    .stream-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 750ms steps(1) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* ─── RESULT ACTIONS ──────────────── */
+
+    .result-actions {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.875rem 1.125rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .btn-copy,
+    .btn-reset {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-copy:hover { background: var(--accent-soft); }
+
+    .btn-copy.copied {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .btn-reset:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    /* ─── FOOTER ──────────────────────── */
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      width: 100%;
+      max-width: var(--max-w);
+    }
+
+    .footer-credit a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color var(--ease);
+    }
+
+    .footer-credit a:hover { color: var(--text-muted); }
+
+    /* ─── RESPONSIVE ──────────────────── */
+
+    @media (max-width: 600px) {
+      body { padding: 0 1rem 4rem; }
+      header { padding: 2.75rem 0 1.75rem; }
+      .result-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+
+    <div class="switcher-wrap">
+      <button class="waffle-btn" id="waffle-btn" aria-label="Switch apps" aria-expanded="false">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+          <rect x="0"  y="0"  width="3.5" height="3.5" rx="0.75"/>
+          <rect x="5.25" y="0"  width="3.5" height="3.5" rx="0.75"/>
+          <rect x="10.5" y="0"  width="3.5" height="3.5" rx="0.75"/>
+          <rect x="0"  y="5.25" width="3.5" height="3.5" rx="0.75"/>
+          <rect x="5.25" y="5.25" width="3.5" height="3.5" rx="0.75"/>
+          <rect x="10.5" y="5.25" width="3.5" height="3.5" rx="0.75"/>
+          <rect x="0"  y="10.5" width="3.5" height="3.5" rx="0.75"/>
+          <rect x="5.25" y="10.5" width="3.5" height="3.5" rx="0.75"/>
+          <rect x="10.5" y="10.5" width="3.5" height="3.5" rx="0.75"/>
+        </svg>
+      </button>
+
+      <div class="switcher-panel" id="switcher-panel" hidden>
+        <p class="switcher-heading">Zephr apps</p>
+        <div class="switcher-grid">
+
+          <a href="https://zephr.work" class="switcher-card">
+            <div class="s-icon s-icon-ui">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <rect x="2"  y="2"  width="9" height="9" rx="2" fill="#6366F1" opacity="0.9"/>
+                <rect x="15" y="2"  width="9" height="9" rx="2" fill="#6366F1" opacity="0.5"/>
+                <rect x="2"  y="15" width="9" height="9" rx="2" fill="#6366F1" opacity="0.5"/>
+                <rect x="15" y="15" width="9" height="9" rx="2" fill="#6366F1" opacity="0.25"/>
+              </svg>
+            </div>
+            <span class="s-name">Zephr UI</span>
+          </a>
+
+          <a href="/roaster" class="switcher-card current">
+            <div class="s-icon s-icon-roaster">🔥</div>
+            <span class="s-name">Roaster</span>
+            <span class="current-badge"></span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-sep"></div>
+    <a href="https://zephr.work" class="nav-brand">ZEPHR</a>
+
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <header>
+    <h1>
+      <span class="w-design">DESIGN</span>
+      <br>
+      <span class="w-roaster">ROASTER</span>
+    </h1>
+    <p class="subhead">Upload a UI. Get humbled.</p>
+  </header>
+
+  <main>
+
+    <!-- API Key -->
+    <div class="section">
+      <label for="api-key">Anthropic API Key</label>
+      <input
+        type="password"
+        id="api-key"
+        placeholder="Paste your key — it stays in your browser"
+        autocomplete="off"
+        spellcheck="false"
+      >
+    </div>
+
+    <!-- Upload -->
+    <div class="section">
+
+      <!-- Idle zone -->
+      <div class="upload-zone" id="upload-zone">
+        <div class="upload-inner">
+          <div class="upload-fire">🔥</div>
+          <div class="upload-label">Drop a screenshot here</div>
+          <div class="upload-hint">PNG or JPEG &nbsp;·&nbsp; or paste from clipboard</div>
+        </div>
+        <div class="drag-label">Let's see what we're working with</div>
+        <input type="file" id="file-input" accept="image/png,image/jpeg">
+      </div>
+
+      <!-- Preview (replaces zone after upload) -->
+      <div class="preview-wrap" id="preview-wrap" hidden>
+        <img id="preview-img" alt="Your uploaded UI">
+        <div class="preview-overlay"><span>Change image</span></div>
+        <input type="file" id="file-input-2" accept="image/png,image/jpeg">
+      </div>
+
+    </div>
+
+    <!-- Context -->
+    <div class="section">
+      <label for="context-input">
+        What is this UI supposed to do?
+        <span style="opacity:.5;font-size:.9em">(optional)</span>
+      </label>
+      <input
+        type="text"
+        id="context-input"
+        placeholder="e.g. A checkout flow for a furniture store"
+        autocomplete="off"
+      >
+    </div>
+
+    <!-- CTA -->
+    <div class="section">
+      <button class="btn-roast" id="roast-btn">Roast it</button>
+      <div id="error-msg" hidden></div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-panel" id="results-panel" hidden>
+      <div class="results-header">
+        <div class="status-dot" id="status-dot"></div>
+        <span class="status-text" id="status-text">Live critique</span>
+      </div>
+      <div class="results-body" id="results-body"></div>
+      <div class="result-actions" id="result-actions" hidden>
+        <button class="btn-copy" id="copy-btn">Copy roast</button>
+        <button class="btn-reset" id="reset-btn">Roast another</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-credit">
+      <a href="https://zephr.work">A Zephr experiment</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ─── SYSTEM PROMPT ─────────────────────────────────────────────────────────
+
+const SYSTEM_PROMPT = `You are the Design Roaster — a brutally honest but secretly helpful UI/UX critic. You roast bad design decisions with sharp wit (think Gordon Ramsay meets Nielsen Norman Group).
+
+Format your response exactly as:
+
+🔥 ROAST 1: [Funny, specific observation about a real flaw you can see]
+✅ Fix: [Concrete, actionable improvement]
+
+Repeat for 3 to 5 issues depending on what you find. Then end with:
+Overall verdict: [one punchy sentence]
+
+Rules:
+- Be specific — reference actual elements you can see in the screenshot
+- Be funny but never mean-spirited or personal
+- Every roast must be paired with a real, actionable fix
+- If the UI is actually good, still find things to nitpick — nothing is perfect`;
+
+// ─── APP SWITCHER ──────────────────────────────────────────────────────────
+
+const waffleBtn     = document.getElementById('waffle-btn');
+const switcherPanel = document.getElementById('switcher-panel');
+
+waffleBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const open = !switcherPanel.hidden;
+  switcherPanel.hidden = open;
+  waffleBtn.setAttribute('aria-expanded', String(!open));
+});
+
+document.addEventListener('click', (e) => {
+  if (!switcherPanel.hidden && !switcherPanel.contains(e.target) && e.target !== waffleBtn) {
+    switcherPanel.hidden = true;
+    waffleBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !switcherPanel.hidden) {
+    switcherPanel.hidden = true;
+    waffleBtn.setAttribute('aria-expanded', 'false');
+    waffleBtn.focus();
+  }
+});
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+
+let imageBase64   = null;
+let imageMediaType = null;
+let fullRoastText = '';
+
+// ─── ELEMENTS ──────────────────────────────────────────────────────────────
+
+const apiKeyEl      = document.getElementById('api-key');
+const uploadZone    = document.getElementById('upload-zone');
+const fileInput     = document.getElementById('file-input');
+const fileInput2    = document.getElementById('file-input-2');
+const previewWrap   = document.getElementById('preview-wrap');
+const previewImg    = document.getElementById('preview-img');
+const contextEl     = document.getElementById('context-input');
+const roastBtn      = document.getElementById('roast-btn');
+const errorMsgEl    = document.getElementById('error-msg');
+const resultsPanel  = document.getElementById('results-panel');
+const resultsBody   = document.getElementById('results-body');
+const statusDot     = document.getElementById('status-dot');
+const statusText    = document.getElementById('status-text');
+const resultActions = document.getElementById('result-actions');
+const copyBtn       = document.getElementById('copy-btn');
+const resetBtn      = document.getElementById('reset-btn');
+
+// ─── FILE HANDLING ─────────────────────────────────────────────────────────
+
+function handleFile(file) {
+  if (!file) return;
+  if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    showError('Only PNG and JPEG files are supported.');
+    return;
+  }
+  clearError();
+  imageMediaType = file.type;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    imageBase64 = dataUrl.split(',')[1];
+    previewImg.src = dataUrl;
+    uploadZone.hidden = true;
+    previewWrap.hidden = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+fileInput.addEventListener('change',  (e) => handleFile(e.target.files[0]));
+fileInput2.addEventListener('change', (e) => {
+  previewWrap.hidden = true;
+  uploadZone.hidden = false;
+  handleFile(e.target.files[0]);
+});
+
+// Drag & drop
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('drag-over');
+});
+uploadZone.addEventListener('dragleave', (e) => {
+  if (!uploadZone.contains(e.relatedTarget)) {
+    uploadZone.classList.remove('drag-over');
+  }
+});
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+// Paste from clipboard
+document.addEventListener('paste', (e) => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (file) {
+        if (!previewWrap.hidden) {
+          previewWrap.hidden = true;
+          uploadZone.hidden = false;
+        }
+        handleFile(file);
+        break;
+      }
+    }
+  }
+});
+
+// ─── VALIDATION ────────────────────────────────────────────────────────────
+
+function validate() {
+  if (!apiKeyEl.value.trim()) {
+    showError('You forgot the API key. Classic designer move.');
+    return false;
+  }
+  if (!imageBase64) {
+    showError('Upload something to roast first.');
+    return false;
+  }
+  return true;
+}
+
+function showError(msg) {
+  errorMsgEl.textContent = msg;
+  errorMsgEl.className = 'error-msg';
+  errorMsgEl.hidden = false;
+}
+
+function clearError() {
+  errorMsgEl.hidden = true;
+}
+
+// ─── RENDER ROAST ──────────────────────────────────────────────────────────
+
+function esc(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function classifyLine(line) {
+  if (/^🔥/.test(line) || /^ROAST\s*\d/i.test(line)) return 'line-roast';
+  if (/^✅/.test(line) || /^Fix:/i.test(line))         return 'line-fix';
+  if (/^Overall verdict/i.test(line))                   return 'line-verdict';
+  return 'line-plain';
+}
+
+function renderRoast(text, streaming) {
+  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = normalized.split('\n');
+  const tail  = streaming ? lines.pop() : null;   // in-progress line
+  const done  = streaming ? lines : lines;
+
+  let html = '';
+
+  for (const line of done) {
+    if (!line.trim()) { html += '<div class="spacer"></div>'; continue; }
+    html += `<div class="${classifyLine(line)}">${esc(line)}</div>`;
+  }
+
+  if (streaming && tail !== null) {
+    const cursor = '<span class="stream-cursor"></span>';
+    if (!tail.trim()) {
+      html += `<div class="spacer">${cursor}</div>`;
+    } else {
+      html += `<div class="${classifyLine(tail)}">${esc(tail)}${cursor}</div>`;
+    }
+  }
+
+  resultsBody.innerHTML = html;
+}
+
+// ─── API CALL ──────────────────────────────────────────────────────────────
+
+async function doRoast() {
+  if (!validate()) return;
+
+  const apiKey  = apiKeyEl.value.trim();
+  const context = contextEl.value.trim();
+
+  clearError();
+  fullRoastText = '';
+
+  // Loading state
+  roastBtn.disabled = true;
+  roastBtn.textContent = 'Sharpening the knives...';
+
+  resultsPanel.hidden = false;
+  resultActions.hidden = true;
+  statusDot.classList.remove('done');
+  statusText.textContent = 'Live critique';
+  resultsBody.innerHTML = '<span class="stream-cursor"></span>';
+
+  // Scroll results into view
+  setTimeout(() => {
+    resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+
+  const userContent = [
+    {
+      type: 'image',
+      source: { type: 'base64', media_type: imageMediaType, data: imageBase64 }
+    },
+    {
+      type: 'text',
+      text: context
+        ? `Context: ${context}\n\nPlease roast this UI.`
+        : 'Please roast this UI.'
+    }
+  ];
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key':                            apiKey,
+        'anthropic-version':                    '2023-06-01',
+        'content-type':                         'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model:      'claude-opus-4-5',
+        max_tokens: 1024,
+        stream:     true,
+        system:     SYSTEM_PROMPT,
+        messages:   [{ role: 'user', content: userContent }]
+      })
+    });
+
+    if (!res.ok) {
+      let msg = 'Even the roaster needs a break. Try again.';
+      try {
+        const j = await res.json();
+        if (j.error?.message) msg = j.error.message;
+      } catch (_) {}
+      throw new Error(msg);
+    }
+
+    const reader  = res.body.getReader();
+    const decoder = new TextDecoder();
+    let   buffer  = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (!raw || raw === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(raw);
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            fullRoastText += evt.delta.text;
+            renderRoast(fullRoastText, true);
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Done
+    renderRoast(fullRoastText, false);
+    statusDot.classList.add('done');
+    statusText.textContent = 'Done';
+    resultActions.hidden = false;
+
+  } catch (err) {
+    showError(err.message || 'Even the roaster needs a break. Try again.');
+    resultsPanel.hidden = true;
+  } finally {
+    roastBtn.disabled = false;
+    roastBtn.textContent = 'Roast it';
+  }
+}
+
+roastBtn.addEventListener('click', doRoast);
+
+// Enter to submit
+[apiKeyEl, contextEl].forEach(el => {
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter') doRoast(); });
+});
+
+// ─── COPY ──────────────────────────────────────────────────────────────────
+
+copyBtn.addEventListener('click', async () => {
+  if (!fullRoastText) return;
+  try {
+    await navigator.clipboard.writeText(fullRoastText);
+  } catch (_) {
+    // Fallback for older browsers
+    const ta = Object.assign(document.createElement('textarea'), {
+      value: fullRoastText,
+      style: 'position:fixed;opacity:0'
+    });
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  copyBtn.textContent = 'Copied!';
+  copyBtn.classList.add('copied');
+  setTimeout(() => {
+    copyBtn.textContent = 'Copy roast';
+    copyBtn.classList.remove('copied');
+  }, 2200);
+});
+
+// ─── RESET ─────────────────────────────────────────────────────────────────
+
+resetBtn.addEventListener('click', () => {
+  imageBase64    = null;
+  imageMediaType = null;
+  fullRoastText  = '';
+
+  fileInput.value  = '';
+  fileInput2.value = '';
+  previewWrap.hidden = true;
+  uploadZone.hidden  = false;
+
+  contextEl.value = '';
+  resultsPanel.hidden  = true;
+  resultActions.hidden = true;
+  resultsBody.innerHTML = '';
+
+  clearError();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
+</body>
+</html>

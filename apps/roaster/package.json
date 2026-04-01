@@ -1,0 +1,10 @@
+{
+  "name": "@zephreco/roaster",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design Roaster — brutally honest AI design critique tool",
+  "scripts": {
+    "dev": "npx serve . --listen 4173",
+    "preview": "npx serve . --listen 4173"
+  }
+}
