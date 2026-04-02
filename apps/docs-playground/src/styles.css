@@ -10792,3 +10792,148 @@ h1 {
   background: #f5f6f8 !important;
   border-bottom-color: #e5e7eb !important;
 }
+
+/* ── Style pack switcher ───────────────────────────────────────── */
+.style-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.style-pack-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1rem 1.125rem 1rem;
+  border: 1.5px solid var(--z-color-stroke200, #e5e5e5);
+  border-radius: 10px;
+  background: var(--z-color-background0, #fff);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.style-pack-card:hover {
+  border-color: var(--z-color-stroke400, #bbb);
+}
+
+.style-pack-card.is-active {
+  border-color: var(--accent, #5b5ef4);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #5b5ef4) 12%, transparent);
+}
+
+.style-pack-card-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--z-color-text950, #111);
+}
+
+.style-pack-card-desc {
+  font-size: 0.75rem;
+  color: var(--z-color-text500, #888);
+  line-height: 1.4;
+}
+
+.style-pack-card-preview {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+}
+
+.spp-btn {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 5px;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.spp-btn--primary {
+  color: #fff;
+}
+
+.spp-btn--secondary {
+  background: var(--z-color-background200, #f0f0f0);
+  color: var(--z-color-text700, #444);
+}
+
+.style-pack-card-check {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 1rem;
+  color: var(--accent, #5b5ef4);
+}
+
+[data-theme="dark"] .style-pack-card {
+  background: var(--z-color-background100, #1a1a1a);
+  border-color: var(--z-color-stroke200, #333);
+}
+
+[data-theme="dark"] .style-pack-card:hover {
+  border-color: var(--z-color-stroke400, #555);
+}
+
+/* ── States showcase ───────────────────────────────────────────── */
+.states-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.state-card {
+  border: 1px solid var(--z-color-stroke200, #e5e5e5);
+  border-radius: 10px;
+  padding: 1.125rem;
+  background: var(--z-color-background0, #fff);
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.state-card-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--z-color-text500, #888);
+  margin: 0;
+}
+
+.state-card-preview {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--z-color-background200, #f7f7f7);
+  border-radius: 6px;
+  border: 1px solid var(--z-color-stroke100, #efefef);
+}
+
+.state-card-snippet {
+  display: block;
+  font-size: 0.6875rem;
+  padding: 0.375rem 0.625rem;
+  background: var(--z-color-background200, #f5f5f5);
+  border-radius: 5px;
+  color: var(--z-color-text700, #333);
+  word-break: break-all;
+}
+
+.state-card-desc {
+  font-size: 0.8125rem;
+  color: var(--z-color-text500, #888);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.state-card-note {
+  font-size: 0.8125rem;
+  color: var(--z-color-text500, #888);
+  margin: 0;
+  line-height: 1.5;
+}

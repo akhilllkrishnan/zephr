@@ -40,13 +40,16 @@ function categoryLabel(cat: string): string {
   return CATEGORY_LABELS[cat] ?? cat.charAt(0).toUpperCase() + cat.slice(1);
 }
 
+type CopyMode = "domain" | "snippet";
+
 interface LogoTileProps {
   entry: LogoCatalogEntry;
-  onCopy: (entry: LogoCatalogEntry) => void;
+  onCopy: (entry: LogoCatalogEntry, mode: CopyMode) => void;
   copied: string | null;
+  copyMode: CopyMode;
 }
 
-function LogoTile({ entry, onCopy, copied }: LogoTileProps) {
+function LogoTile({ entry, onCopy, copied, copyMode }: LogoTileProps) {
   const src = useMemo(() => createCatalogLogoDataUri(entry, 96), [entry]);
   const isCopied = copied === entry.id;
 
@@ -54,9 +57,9 @@ function LogoTile({ entry, onCopy, copied }: LogoTileProps) {
     <button
       type="button"
       className={`logos-tile${isCopied ? " is-copied" : ""}`}
-      onClick={() => onCopy(entry)}
-      title={`${entry.name} — click to copy domain`}
-      aria-label={`Copy ${entry.name} domain`}
+      onClick={() => onCopy(entry, copyMode)}
+      title={`${entry.name} — click to copy ${copyMode === "snippet" ? "import snippet" : "domain"}`}
+      aria-label={`Copy ${entry.name} ${copyMode === "snippet" ? "snippet" : "domain"}`}
     >
       <span className="logos-tile-img-wrap">
         <img src={src} alt={entry.name} className="logos-tile-img" width={40} height={40} />
@@ -75,6 +78,7 @@ export function LogosPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [copied, setCopied] = useState<string | null>(null);
+  const [copyMode, setCopyMode] = useState<CopyMode>("domain");
   const searchRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
@@ -100,8 +104,11 @@ export function LogosPage() {
     return map;
   }, [filtered, query, category]);
 
-  const copyLogo = useCallback((entry: LogoCatalogEntry) => {
-    navigator.clipboard.writeText(entry.domain).catch(() => {});
+  const copyLogo = useCallback((entry: LogoCatalogEntry, mode: CopyMode) => {
+    const text = mode === "snippet"
+      ? `import { createCatalogLogoDataUri } from "@zephrui/logos";\n\nconst logoUri = createCatalogLogoDataUri({ domain: "${entry.domain}" }, 64);\n// <img src={logoUri} alt="${entry.name}" width={64} height={64} />`
+      : entry.domain;
+    navigator.clipboard.writeText(text).catch(() => {});
     setCopied(entry.id);
     setTimeout(() => setCopied(null), 1800);
   }, []);
@@ -160,12 +167,32 @@ export function LogosPage() {
             <strong>{filtered.length}</strong> logo{filtered.length !== 1 ? "s" : ""}
             {category !== "All" && <span> in {categoryLabel(category)}</span>}
           </p>
-          {copied && (
-            <span className="logos-copied-toast">
-              <span className="ms logos-toast-check-icon">check</span>
-              Domain copied
-            </span>
-          )}
+          <div className="logos-header-right">
+            {copied && (
+              <span className="logos-copied-toast">
+                <span className="ms logos-toast-check-icon">check</span>
+                {copyMode === "snippet" ? "Snippet copied" : "Domain copied"}
+              </span>
+            )}
+            <div className="logos-copy-mode" role="group" aria-label="Copy mode">
+              <button
+                type="button"
+                className={`logos-copy-mode-btn${copyMode === "domain" ? " is-active" : ""}`}
+                onClick={() => setCopyMode("domain")}
+                aria-pressed={copyMode === "domain"}
+              >
+                Domain
+              </button>
+              <button
+                type="button"
+                className={`logos-copy-mode-btn${copyMode === "snippet" ? " is-active" : ""}`}
+                onClick={() => setCopyMode("snippet")}
+                aria-pressed={copyMode === "snippet"}
+              >
+                Snippet
+              </button>
+            </div>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
@@ -180,7 +207,7 @@ export function LogosPage() {
               <h2 className="logos-group-title">{categoryLabel(cat)}</h2>
               <div className="logos-grid">
                 {logos.map((logo) => (
-                  <LogoTile key={logo.id} entry={logo} onCopy={copyLogo} copied={copied} />
+                  <LogoTile key={logo.id} entry={logo} onCopy={copyLogo} copied={copied} copyMode={copyMode} />
                 ))}
               </div>
             </div>
@@ -189,7 +216,7 @@ export function LogosPage() {
           // Flat grid when searching
           <div className="logos-grid">
             {filtered.map((logo) => (
-              <LogoTile key={logo.id} entry={logo} onCopy={copyLogo} copied={copied} />
+              <LogoTile key={logo.id} entry={logo} onCopy={copyLogo} copied={copied} copyMode={copyMode} />
             ))}
           </div>
         )}

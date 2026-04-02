@@ -307,3 +307,39 @@
   margin: 0;
   font-size: 0.875rem;
 }
+
+/* ── Copy mode toggle ──────────────────────────────────────────── */
+.logos-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logos-copy-mode {
+  display: flex;
+  border: 1px solid var(--z-color-stroke200, #e5e5e5);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--z-color-background200, #f5f5f5);
+}
+
+.logos-copy-mode-btn {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--z-color-text500, #888);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s;
+}
+
+.logos-copy-mode-btn.is-active {
+  background: var(--z-color-background0, #fff);
+  color: var(--z-color-text950, #111);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.logos-copy-mode-btn:hover:not(.is-active) {
+  color: var(--z-color-text700, #555);
+}
