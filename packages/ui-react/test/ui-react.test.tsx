@@ -15,7 +15,8 @@ describe("@zephrui/ui-react", () => {
   it("renders button classes and content", () => {
     const html = renderToStaticMarkup(<Button variant="primary">Save</Button>);
     expect(html).toContain("Save");
-    expect(html).toContain("linear-gradient");
+    // Button uses CSS custom properties (var(--z-color-primary)) rather than hardcoded gradients
+    expect(html).toContain("var(--z-color-primary");
     expect(html).toContain("inline-flex");
   });
 
