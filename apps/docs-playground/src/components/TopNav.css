@@ -6,7 +6,7 @@
   left: 0;
   right: 0;
   z-index: 40;
-  background: var(--z-color-background0);
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 
@@ -19,16 +19,21 @@
   height: 72px;
   min-height: 72px;
   padding: 0 44px;
-  background: var(--z-color-background0);
+  background: var(--bg);
 }
 
 /* ── App switcher ── */
+
+.top-app-switcher-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
 
 .top-app-switcher {
   flex-shrink: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--z-color-background0);
+  background: var(--bg);
   color: var(--muted);
   padding: 6px;
   cursor: pointer;
@@ -36,12 +41,105 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0px 1px 2px rgba(10, 13, 20, 0.03);
-  transition: background 120ms, color 120ms;
+  transition: background 120ms, color 120ms, border-color 120ms;
 }
 
-.top-app-switcher:hover {
-  background: var(--z-color-background100);
+.top-app-switcher:hover,
+.top-app-switcher.is-open {
+  background: var(--hover);
   color: var(--text);
+  border-color: var(--line-strong, var(--line));
+}
+
+/* ── App switcher panel ── */
+
+.app-switcher-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 200;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0.75rem;
+  min-width: 240px;
+  animation: switcher-in 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes switcher-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.app-switcher-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 0 0.25rem 0.5rem;
+  margin: 0;
+}
+
+.app-switcher-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-switcher-card {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0.625rem;
+  align-items: center;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 100ms, border-color 100ms;
+  color: var(--text);
+}
+
+.app-switcher-card:hover {
+  background: var(--hover);
+  border-color: var(--line);
+}
+
+.app-switcher-card--active {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.app-switcher-card--active:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.app-switcher-card-icon {
+  grid-row: 1 / 3;
+  font-size: 20px !important;
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20 !important;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.app-switcher-card-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.app-switcher-card-desc {
+  font-size: 0.725rem;
+  color: var(--muted);
+  line-height: 1.3;
 }
 
 /* 20px Material Symbols Rounded icons inside the nav bar */

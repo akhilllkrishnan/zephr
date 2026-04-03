@@ -166,7 +166,7 @@ body {
   overflow-x: hidden;
   padding: 20px;
   border-right: 1px solid var(--line);
-  background: var(--z-color-background0);
+  background: var(--bg);
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
 }
@@ -2189,7 +2189,7 @@ h1 {
     z-index: 60;
     border-right: 1px solid var(--line);
     border-bottom: 0;
-    background: var(--z-color-staticWhite);
+    background: var(--bg);
     box-shadow: none;
     animation: mobile-nav-slide-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -10936,4 +10936,179 @@ h1 {
   color: var(--z-color-text500, #888);
   margin: 0;
   line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — counterparts for all !important light-mode overrides
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Preview browser / canvas ── */
+[data-theme="dark"] .preview-browser {
+  border-color: var(--line) !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .preview-browser-top {
+  background: var(--panel) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+[data-theme="dark"] .preview-canvas {
+  background: var(--panel) !important;
+}
+
+[data-theme="dark"] .preview-address {
+  border-color: var(--line) !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--muted) !important;
+}
+
+/* ── Snippet items ── */
+[data-theme="dark"] .snippet-item {
+  border-color: var(--line) !important;
+  background: var(--panel) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .snippet-item-head {
+  background: rgba(255,255,255,0.03) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+[data-theme="dark"] .snippet-item-label {
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .snippet-item-copy {
+  border-color: var(--line) !important;
+  background: rgba(255,255,255,0.05) !important;
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .snippet-item-copy:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: var(--text) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+[data-theme="dark"] .snippet-item pre {
+  color: #e2e8f0 !important;
+}
+
+/* ── API table ── */
+[data-theme="dark"] .api-table-shell {
+  border-color: var(--line) !important;
+}
+
+[data-theme="dark"] .api-table th {
+  background: rgba(255,255,255,0.04) !important;
+  border-bottom-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .api-table td {
+  color: var(--muted) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+[data-theme="dark"] .api-table tbody tr:hover {
+  background: rgba(255,255,255,0.03) !important;
+}
+
+[data-theme="dark"] .api-table code {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: var(--line) !important;
+  color: #e2e8f0 !important;
+}
+
+/* ── API meta cards ── */
+[data-theme="dark"] .api-meta-card {
+  background: var(--panel) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .api-meta-card h3 {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .api-meta-card p {
+  color: var(--muted) !important;
+}
+
+/* ── "When to use" cards ── */
+[data-theme="dark"] .wtu-card--do {
+  border-color: hsl(148 30% 30%) !important;
+  background: hsl(148 25% 12%) !important;
+}
+
+[data-theme="dark"] .wtu-card--avoid {
+  border-color: hsl(0 30% 30%) !important;
+  background: hsl(0 25% 12%) !important;
+}
+
+[data-theme="dark"] .wtu-card--a11y {
+  border-color: hsl(218 30% 30%) !important;
+  background: hsl(218 25% 12%) !important;
+}
+
+/* ── Related cards ── */
+[data-theme="dark"] .related-card {
+  background: var(--panel) !important;
+  border-color: var(--line) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .related-card:hover {
+  border-color: color-mix(in srgb, var(--accent, #335cff) 50%, var(--line)) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .related-card-name {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .related-card-desc {
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .related-card-cat {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+/* ── Gallery cards ── */
+[data-theme="dark"] .gallery-card {
+  background: var(--panel) !important;
+  border-color: var(--line) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .gallery-card:hover {
+  border-color: rgba(255,255,255,0.18) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .gallery-card-preview {
+  background: rgba(255,255,255,0.04) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+/* ── doc-section separator ── */
+[data-theme="dark"] .doc-section {
+  border-bottom-color: var(--line) !important;
+}
+
+/* ── comp-hero-chip badges ── */
+[data-theme="dark"] .comp-hero-chip--free {
+  background: hsl(148 28% 15%) !important;
+  color: hsl(148 58% 52%) !important;
+  border-color: hsl(148 22% 23%) !important;
+}
+
+[data-theme="dark"] .comp-hero-chip--deps {
+  background: transparent !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
 }

@@ -1,4 +1,5 @@
 import type { KeyboardEvent, RefObject } from "react";
+import { useEffect, useRef } from "react";
 import { FeedbackWidget } from "../FeedbackWidget";
 import type { TopTab, SearchResultItem } from "../types";
 import "./TopNav.css";
@@ -22,6 +23,9 @@ interface TopNavProps {
   onDarkModeToggle: () => void;
   mobileNavOpen: boolean;
   onMobileNavToggle: () => void;
+  showAppSwitcher: boolean;
+  onAppSwitcherToggle: () => void;
+  onAppSwitcherClose: () => void;
 }
 
 export function TopNav({
@@ -43,7 +47,34 @@ export function TopNav({
   onDarkModeToggle,
   mobileNavOpen,
   onMobileNavToggle,
+  showAppSwitcher,
+  onAppSwitcherToggle,
+  onAppSwitcherClose,
 }: TopNavProps) {
+
+  const switcherRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!showAppSwitcher) return;
+    function handleOutside(e: MouseEvent) {
+      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
+        onAppSwitcherClose();
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [showAppSwitcher, onAppSwitcherClose]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!showAppSwitcher) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onAppSwitcherClose();
+    }
+    document.addEventListener("keydown", handleKey as unknown as EventListener);
+    return () => document.removeEventListener("keydown", handleKey as unknown as EventListener);
+  }, [showAppSwitcher, onAppSwitcherClose]);
 
   function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "ArrowDown" && searchResults.length) {
@@ -74,15 +105,37 @@ export function TopNav({
           <span className="ms">menu</span>
         </button>
 
-        {/* App switcher — grid_view, rounded, weight 100, not filled */}
-        <button
-          type="button"
-          className="top-app-switcher"
-          aria-label="Switch Zephr apps"
-          title="Switch Zephr apps"
-        >
-          <span className="ms top-nav-icon">grid_view</span>
-        </button>
+        {/* App switcher */}
+        <div className="top-app-switcher-wrap" ref={switcherRef}>
+          <button
+            type="button"
+            className={`top-app-switcher${showAppSwitcher ? " is-open" : ""}`}
+            aria-label="Switch Zephr apps"
+            aria-expanded={showAppSwitcher}
+            title="Switch Zephr apps"
+            onClick={onAppSwitcherToggle}
+          >
+            <span className="ms top-nav-icon">grid_view</span>
+          </button>
+
+          {showAppSwitcher && (
+            <div className="app-switcher-panel" role="dialog" aria-label="App switcher">
+              <p className="app-switcher-label">Zephr ecosystem</p>
+              <div className="app-switcher-grid">
+                <a className="app-switcher-card app-switcher-card--active" href="#" onClick={(e) => { e.preventDefault(); onAppSwitcherClose(); }}>
+                  <span className="app-switcher-card-icon ms">design_services</span>
+                  <span className="app-switcher-card-name">Zephr UI</span>
+                  <span className="app-switcher-card-desc">Design system &amp; components</span>
+                </a>
+                <a className="app-switcher-card" href="http://localhost:4173" target="_blank" rel="noopener noreferrer" onClick={onAppSwitcherClose}>
+                  <span className="app-switcher-card-icon ms">rate_review</span>
+                  <span className="app-switcher-card-name">Roaster</span>
+                  <span className="app-switcher-card-desc">AI design critique tool</span>
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="brand-wrap">
           <button

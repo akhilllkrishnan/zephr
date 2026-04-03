@@ -2815,6 +2815,7 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState("");
   const toastTimeoutRef = useRef<number | null>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [showAppSwitcher, setShowAppSwitcher] = useState(false);
   const [gallerySearch, setGallerySearch] = useState('');
   const [galleryCat, setGalleryCat] = useState<'all' | 'atom' | 'molecule' | 'organism'>('all');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -3673,6 +3674,9 @@ export default function App() {
         onDarkModeToggle={() => setDarkMode((d) => !d)}
         mobileNavOpen={mobileNavOpen}
         onMobileNavToggle={() => setMobileNavOpen((o) => !o)}
+        showAppSwitcher={showAppSwitcher}
+        onAppSwitcherToggle={() => setShowAppSwitcher((s) => !s)}
+        onAppSwitcherClose={() => setShowAppSwitcher(false)}
       />
 
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
