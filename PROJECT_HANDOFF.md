@@ -223,11 +223,12 @@ The docs currently do **not** expose public multi-theme switching. The visible p
 3. Continue component-depth pass (variant completeness + interaction states) with consistent token usage.
 4. Audit remaining packs (stripe/linear/framer) — confirm their JS token values in `stylePacks.ts` match their CSS theme files after the token pipeline fix.
 
-### Sprint 5 — pending (April 2026)
+### Sprint 5 — complete (April 7, 2026)
 
-1. **Export-to-code UI**: select component + tweak props → copy ready React snippet
-2. **Component Gallery**: currently a dead view alias, needs implementation as distinct curated showcase
-3. **CLI end-to-end**: verify `zephr init` flow still works after all recent changes
+1. **Export-to-code UI** ✓ — `ExportCodePage.tsx`: live prop editor (enum pills, text inputs, toggles) + React snippet copy
+2. **Component Gallery** ✓ — `ComponentGalleryPage.tsx`: curated showcase with Featured strip (Button, Card, FormField, DataTable, ModalDialog, CommandBar), search, category filter pills, grouped sections with counts
+3. **BenefitsPage** ✓ — "Why Zephr?" with 6 benefit cards, before/after comparison table, DocPageNav prev/next
+4. **CLI end-to-end** ✓ — `zephr init` verified: creates `zephr.config.ts` (managed block), `.env.example`, `src/styles/zephr.css`, `CLAUDE.md`, `AGENTS.md`, `llms.txt` — `--force` and rerun guard both work correctly
 
 ---
 
@@ -341,11 +342,7 @@ From repo root:
 
 ## 10) Immediate Next Steps
 
-1. **Sprint 5 items** (highest priority):
-   - Export-to-code UI: component selector + prop tweaker → copy React snippet
-   - Component Gallery view: implement as distinct curated showcase (not an alias)
-   - CLI: smoke-test `zephr init` end-to-end after all recent file changes
-2. **Sprint F — Token system overhaul** (architectural):
+1. **Sprint F — Token system overhaul** (architectural, next priority):
    - Rename `StylePackName` if not already finalized
    - Create `packages/ui-react/src/themes/` directory with CSS files loaded at mount (not JS-generated-at-runtime)
    - Docs playground chrome should consume its own `--z-*` tokens (sidebar, nav, header currently use raw hex)

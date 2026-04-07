@@ -1,6 +1,8 @@
 import type { RegistryEntry } from "@zephrui/ai-registry";
 import { ComponentThumbnail } from "../components/ComponentThumbnail";
 
+const FEATURED_IDS = ["button", "card", "form-field", "data-table", "modal-dialog", "command-bar"];
+
 interface ComponentGalleryPageProps {
   registry: RegistryEntry[];
   gallerySearch: string;
@@ -136,8 +138,42 @@ export function ComponentGalleryPage({
           );
         }
 
-        // Default — grouped by category with section headers
-        return (["atom", "molecule", "organism"] as const).map((cat) => {
+        // Default — featured strip + grouped by category with section headers
+        const featuredEntries = FEATURED_IDS
+          .map(id => registry.find(e => e.id === id))
+          .filter((e): e is RegistryEntry => e !== undefined);
+
+        return (
+          <>
+            {/* Featured strip */}
+            <section className="doc-section gallery-featured-section">
+              <div className="gallery-featured-header">
+                <h2 className="gallery-cat-title">Featured</h2>
+                <span className="gallery-featured-badge">
+                  <span className="ms" aria-hidden="true">auto_awesome</span>
+                  Popular picks
+                </span>
+              </div>
+              <div className="gallery-featured-grid">
+                {featuredEntries.map((entry) => (
+                  <button key={entry.id} type="button" className="gallery-card gallery-card--featured" onClick={() => onSelectComponent(entry.id)}>
+                    <div className="gallery-card-preview">
+                      <ComponentThumbnail name={entry.name} />
+                    </div>
+                    <div className="gallery-card-body">
+                      <div className="gallery-card-row">
+                        <span className="gallery-card-name">{entry.name}</span>
+                        <span className={`gallery-cat-chip gallery-cat-chip--${entry.category}`}>{entry.category}</span>
+                      </div>
+                      <p className="gallery-card-desc">{entry.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Grouped sections */}
+            {(["atom", "molecule", "organism"] as const).map((cat) => {
           const entries = filtered.filter((e) => e.category === cat);
           if (!entries.length) return null;
           const catLabel = cat === "atom" ? "Atoms" : cat === "molecule" ? "Molecules" : "Organisms";
@@ -172,7 +208,9 @@ export function ComponentGalleryPage({
               </div>
             </section>
           );
-        });
+            })}
+          </>
+        );
       })()}
     </>
   );

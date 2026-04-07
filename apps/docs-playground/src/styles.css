@@ -5331,6 +5331,48 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
+/* Featured section */
+.gallery-featured-section {
+  padding-bottom: 0;
+}
+
+.gallery-featured-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem 0.2rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--z-color-primary) 12%, transparent);
+  color: var(--z-color-primary);
+  line-height: 1;
+}
+
+.gallery-featured-badge .ms {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.gallery-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery-card--featured .gallery-card-preview {
+  height: 110px;
+}
+
 /* Empty state */
 .gallery-empty {
   text-align: center;
