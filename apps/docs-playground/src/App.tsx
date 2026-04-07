@@ -85,6 +85,7 @@ import { widgetCatalogMeta, widgetsV2CatalogIds } from "./views/widgetsCatalog";
 import { templateCatalogMeta, templatesV2CatalogIds } from "./views/templatesCatalog";
 import { TopNav } from "./components/TopNav";
 import { SnippetItem } from "./components/SnippetItem";
+import { DocPageNav } from "./components/DocPageNav";
 import type { TopTab, ShowcaseVersion, SearchResultItem, WorkspaceView } from "./types";
 // Theme CSS is injected dynamically via <style> tag — no static import needed
 
@@ -96,9 +97,11 @@ const SlashCommandsPage = lazy(() => import("./views/SlashCommandsPage"));
 const IconsPage = lazy(() => import("./views/IconsPage").then((m) => ({ default: m.IconsPage })));
 const LogosPage = lazy(() => import("./views/LogosPage").then((m) => ({ default: m.LogosPage })));
 const FoundationsPage = lazy(() => import("./views/FoundationsPage").then((m) => ({ default: m.FoundationsPage })));
+const BenefitsPage = lazy(() => import("./views/BenefitsPage").then((m) => ({ default: m.BenefitsPage })));
 const IntroductionPage = lazy(() => import("./views/IntroductionPage").then((m) => ({ default: m.IntroductionPage })));
 const ComponentGalleryPage = lazy(() => import("./views/ComponentGalleryPage").then((m) => ({ default: m.ComponentGalleryPage })));
 const ChangelogPage = lazy(() => import("./views/ChangelogPage").then((m) => ({ default: m.ChangelogPage })));
+const ExportCodePage = lazy(() => import("./views/ExportCodePage").then((m) => ({ default: m.ExportCodePage })));
 
 interface TeamMember {
   id: string;
@@ -805,6 +808,7 @@ function fromSearchParams(): {
               viewParam === "widgets" ? "widgets" :
                     viewParam === "templates" ? "templates" :
                     viewParam === "icons" ? "icons" :
+                    viewParam === "code-export" ? "code-export" :
                       "introduction";
 
   return {
@@ -850,7 +854,7 @@ function getTopTabForView(view: WorkspaceView): TopTab {
   if (view === "icons") return "icons";
   if (view === "logos") return "logos";
   if (view === "widgets" || view === "templates") return "components";
-  if (view === "component-gallery" || view === "components" || view === "api-reference") return "components";
+  if (view === "component-gallery" || view === "components" || view === "api-reference" || view === "code-export") return "components";
   return "setup";
 }
 
@@ -3328,7 +3332,7 @@ export default function App() {
       { id: "doc-setup-introduction", kind: "doc", label: "Introduction", detail: "Setup", keywords: "overview welcome start", tab: "setup", view: "introduction", anchor: "setup-introduction" },
       { id: "doc-setup-start", kind: "doc", label: "Get Started", detail: "Setup · AI quick start", keywords: "install setup quickstart", tab: "setup", view: "getting-started", anchor: "overview" },
       { id: "doc-setup-foundations", kind: "doc", label: "Foundations", detail: "Setup · Tokens & primitives", keywords: "design tokens colors spacing typography", tab: "setup", view: "foundations", anchor: "foundations-overview" },
-      { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 21 AI editor commands", keywords: "ai commands editor shortcuts", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
+      { id: "doc-setup-slash-commands", kind: "doc", label: "Slash Commands", detail: "Setup · 22 AI editor commands", keywords: "ai commands editor shortcuts", tab: "setup", view: "slash-commands", anchor: "slash-overview" },
       { id: "doc-pages-templates", kind: "doc", label: "Page Templates", detail: "Components · Dashboards, auth, settings", keywords: "layouts pages scaffolds", tab: "components", view: "templates", anchor: "templates-overview" },
       { id: "doc-pages-widgets", kind: "doc", label: "Widgets", detail: "Components · Assembled widget examples", keywords: "assembled examples compositions", tab: "components", view: "widgets", anchor: "widgets-overview" },
       { id: "doc-components-api", kind: "doc", label: "API Reference", detail: "Components · Props, types, defaults", keywords: "props api types documentation", tab: "components", view: "api-reference", anchor: "api-overview" },
@@ -3681,7 +3685,7 @@ export default function App() {
 
       {toastMessage ? <p className="copy-toast" role="status" aria-live="polite">{toastMessage}</p> : null}
 
-      <div className="docs-layout">
+      <div className={`docs-layout${(topTab === "icons" || topTab === "logos") ? " docs-layout--asset-browser" : ""}`}>
         <aside ref={leftRailRef} className={`left-rail ${mobileNavOpen ? "is-mobile-open" : ""}`}>
           <span
             className="sidebar-active-indicator"
@@ -3733,12 +3737,12 @@ export default function App() {
               </button>
               <button
                 type="button"
-                className={`sidebar-link ${view === "api-reference" ? "is-active" : ""}`}
-                onClick={() => { setTopTab("setup"); setView("api-reference"); setMobileNavOpen(false); }}
+                className={`sidebar-link ${view === "benefits" ? "is-active" : ""}`}
+                onClick={() => { setTopTab("setup"); setView("benefits"); setMobileNavOpen(false); }}
               >
                 <span className="ms sidebar-nav-icon">star</span>
                 Benefits
-                {view === "api-reference" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
+                {view === "benefits" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
             </div>
           )}
@@ -3875,15 +3879,6 @@ export default function App() {
                 Logo Browser
                 {view === "logos" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
               </button>
-              <button
-                type="button"
-                className={`sidebar-link ${activeRegistryId === "avatar-library" && (view === "components" || view === "api-reference") ? "is-active" : ""}`}
-                onClick={() => { selectComponent("avatar-library"); setTopTab("logos"); setMobileNavOpen(false); }}
-              >
-                <span className="ms sidebar-nav-icon">face</span>
-                Avatar Library
-                {activeRegistryId === "avatar-library" && <span className="ms sidebar-nav-chevron">chevron_right</span>}
-              </button>
             </div>
           )}
 
@@ -3997,8 +3992,8 @@ export default function App() {
                          "Motion-aware, expressive, bold"}
                       </span>
                       <div className="style-pack-card-preview" aria-hidden="true">
-                        <div className="spp-btn spp-btn--primary" style={{ background: defaultAccentForPack(pack) }}>Action</div>
-                        <div className="spp-btn spp-btn--secondary">Cancel</div>
+                        <div className="spp-btn spp-btn--primary" style={{ background: defaultAccentForPack(pack) }}>Save</div>
+                        <div className="spp-btn spp-btn--secondary">Dismiss</div>
                       </div>
                       {stylePack === pack && <span className="style-pack-card-check ms">check_circle</span>}
                     </button>
@@ -4244,11 +4239,15 @@ export default function App() {
                   </div>
                   <Button onClick={() => selectComponent("button")}>Browse components <span className="ms">arrow_forward</span></Button>
                 </div>
+                <DocPageNav
+                  prev={{ label: "Introduction", onClick: () => setView("introduction") }}
+                  next={{ label: "Slash Commands", onClick: () => setView("slash-commands") }}
+                />
               </section>
             </>
           ) : view === "slash-commands" ? (
             <Suspense fallback={<div className="doc-section" style={{ color: "var(--muted)" }}>Loading…</div>}>
-              <SlashCommandsPage onCopy={copyAndFlash} />
+              <SlashCommandsPage onCopy={copyAndFlash} onNavigate={(tab, v) => { setTopTab(tab as any); setView(v as any); }} />
             </Suspense>
           ) : view === "foundations" ? (
             <Suspense
@@ -4264,6 +4263,13 @@ export default function App() {
                 foundationColorGroups={foundationColorGroups}
                 typographyGroups={typographyGroups}
                 darkMode={darkMode}
+                onNavigate={(tab, v) => { setTopTab(tab as any); setView(v as any); }}
+              />
+            </Suspense>
+          ) : view === "benefits" ? (
+            <Suspense fallback={<div className="doc-section" style={{ color: "var(--muted)" }}>Loading…</div>}>
+              <BenefitsPage
+                onNavigate={(tab, v) => { setTopTab(tab as any); setView(v as any); }}
               />
             </Suspense>
           ) : view === "api-reference" ? (
@@ -4271,6 +4277,7 @@ export default function App() {
               <div className="component-page-tabs">
                 <button type="button" className="component-page-tab" onClick={() => setView("components")}>Guides</button>
                 <button type="button" className="component-page-tab is-active">API Reference</button>
+                <button type="button" className="component-page-tab" onClick={() => setView("code-export")}>Code</button>
               </div>
               <section id="api-overview" className="doc-section hero">
                 <p className="breadcrumbs">API Reference / Components</p>
@@ -4421,11 +4428,20 @@ export default function App() {
                 onSelectComponent={selectComponent}
               />
             </Suspense>
+          ) : view === "code-export" ? (
+            <Suspense fallback={<div className="doc-section" style={{ color: "var(--muted)" }}>Loading…</div>}>
+              <ExportCodePage
+                entry={selectedEntry}
+                importSnippet={importSnippet}
+                onViewChange={(v) => setView(v)}
+              />
+            </Suspense>
           ) : (
             <>
               <div className="component-page-tabs">
                 <button type="button" className="component-page-tab is-active">Guides</button>
                 <button type="button" className="component-page-tab" onClick={() => setView("api-reference")}>API Reference</button>
+                <button type="button" className="component-page-tab" onClick={() => setView("code-export")}>Code</button>
               </div>
               <section id="overview" className="doc-section hero">
                 <p className="breadcrumbs">Components / {selectedEntry.category.charAt(0).toUpperCase() + selectedEntry.category.slice(1)} / {selectedEntry.name}</p>
@@ -5811,6 +5827,13 @@ export default function App() {
               <a className="toc-link" href="#color-palette">Color palette</a>
               <a className="toc-link" href="#token-variables">Token variables</a>
               <a className="toc-link" href="#typography">Typography</a>
+            </>
+          )}
+          {view === "benefits" && (
+            <>
+              <a className="toc-link" href="#benefits-overview">Overview</a>
+              <a className="toc-link" href="#benefits-cards">Key benefits</a>
+              <a className="toc-link" href="#benefits-comparison">Before &amp; after</a>
             </>
           )}
           {view === "widgets" && (

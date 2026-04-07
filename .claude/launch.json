@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "docs-playground",
-      "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "--filter", "@zephrui/docs-playground", "dev", "--host", "127.0.0.1", "--port", "4172"],
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["/Users/akhilkrishnan/Documents/Design System Library/.claude/start-docs.js"],
       "port": 4172
     },
     {

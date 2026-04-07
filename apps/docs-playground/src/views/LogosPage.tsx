@@ -1,7 +1,32 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { listLogoCatalog, searchLogoCatalog, createCatalogLogoDataUri } from "@zephrui/logos";
+import { listLogoCatalog, searchLogoCatalog } from "@zephrui/logos";
 import type { LogoCatalogEntry } from "@zephrui/logos";
 import "./LogosPage.css";
+
+/**
+ * Returns a Clearbit logo URL — free, no auth, high-quality PNGs.
+ * Falls back to Google's favicon service if Clearbit 404s.
+ */
+function getLogoUrl(domain: string, size = 128): string {
+  // Strip path suffixes (e.g. "framer.com/sites" → "framer.com")
+  const cleanDomain = domain.split("/")[0];
+  return `https://logo.clearbit.com/${cleanDomain}?size=${size}`;
+}
+
+function getGoogleFaviconUrl(domain: string): string {
+  const cleanDomain = domain.split("/")[0];
+  return `https://www.google.com/s2/favicons?domain=${cleanDomain}&sz=128`;
+}
+
+function getInitialsFallback(name: string, color: string, size = 40): string {
+  const initials = name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${size * 0.2}" fill="${color}"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${size * 0.38}" font-weight="600" fill="white">${initials}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
 
 const ALL_LOGOS = listLogoCatalog();
 
@@ -49,20 +74,40 @@ interface LogoTileProps {
   copyMode: CopyMode;
 }
 
+type FallbackStage = "clearbit" | "google" | "initials";
+
 function LogoTile({ entry, onCopy, copied, copyMode }: LogoTileProps) {
-  const src = useMemo(() => createCatalogLogoDataUri(entry, 96), [entry]);
+  const [stage, setStage] = useState<FallbackStage>("clearbit");
   const isCopied = copied === entry.id;
+  const modeLabel = copyMode === "snippet" ? "HTML tag" : "domain";
+
+  const src = useMemo(() => {
+    if (stage === "clearbit") return getLogoUrl(entry.domain, 128);
+    if (stage === "google")   return getGoogleFaviconUrl(entry.domain);
+    return getInitialsFallback(entry.name, entry.color, 40);
+  }, [stage, entry]);
+
+  function handleError() {
+    setStage((s) => s === "clearbit" ? "google" : "initials");
+  }
 
   return (
     <button
       type="button"
       className={`logos-tile${isCopied ? " is-copied" : ""}`}
       onClick={() => onCopy(entry, copyMode)}
-      title={`${entry.name} — click to copy ${copyMode === "snippet" ? "import snippet" : "domain"}`}
-      aria-label={`Copy ${entry.name} ${copyMode === "snippet" ? "snippet" : "domain"}`}
+      title={`${entry.name} — click to copy ${modeLabel}`}
+      aria-label={`Copy ${entry.name} ${modeLabel}`}
     >
       <span className="logos-tile-img-wrap">
-        <img src={src} alt={entry.name} className="logos-tile-img" width={40} height={40} />
+        <img
+          src={src}
+          alt={entry.name}
+          className="logos-tile-img"
+          width={40}
+          height={40}
+          onError={handleError}
+        />
       </span>
       <span className="logos-tile-label">{entry.name}</span>
       {isCopied && (
@@ -78,7 +123,7 @@ export function LogosPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [copied, setCopied] = useState<string | null>(null);
-  const [copyMode, setCopyMode] = useState<CopyMode>("domain");
+  const [copyMode, setCopyMode] = useState<CopyMode>("snippet");
   const searchRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
@@ -105,9 +150,11 @@ export function LogosPage() {
   }, [filtered, query, category]);
 
   const copyLogo = useCallback((entry: LogoCatalogEntry, mode: CopyMode) => {
+    const cleanDomain = entry.domain.split("/")[0];
+    const logoUrl = `https://logo.clearbit.com/${cleanDomain}?size=64`;
     const text = mode === "snippet"
-      ? `import { createCatalogLogoDataUri } from "@zephrui/logos";\n\nconst logoUri = createCatalogLogoDataUri({ domain: "${entry.domain}" }, 64);\n// <img src={logoUri} alt="${entry.name}" width={64} height={64} />`
-      : entry.domain;
+      ? `<img src="${logoUrl}" alt="${entry.name}" width="64" height="64" />`
+      : cleanDomain;
     navigator.clipboard.writeText(text).catch(() => {});
     setCopied(entry.id);
     setTimeout(() => setCopied(null), 1800);
@@ -171,7 +218,7 @@ export function LogosPage() {
             {copied && (
               <span className="logos-copied-toast">
                 <span className="ms logos-toast-check-icon">check</span>
-                {copyMode === "snippet" ? "Snippet copied" : "Domain copied"}
+                {copyMode === "snippet" ? "HTML tag copied" : "Domain copied"}
               </span>
             )}
             <div className="logos-copy-mode" role="group" aria-label="Copy mode">
@@ -180,6 +227,7 @@ export function LogosPage() {
                 className={`logos-copy-mode-btn${copyMode === "domain" ? " is-active" : ""}`}
                 onClick={() => setCopyMode("domain")}
                 aria-pressed={copyMode === "domain"}
+                title="Copy domain name (e.g. openai.com)"
               >
                 Domain
               </button>
@@ -188,8 +236,9 @@ export function LogosPage() {
                 className={`logos-copy-mode-btn${copyMode === "snippet" ? " is-active" : ""}`}
                 onClick={() => setCopyMode("snippet")}
                 aria-pressed={copyMode === "snippet"}
+                title="Copy ready-to-use HTML img tag"
               >
-                Snippet
+                HTML tag
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { Button } from "@zephrui/ui-react";
 import type { TopTab, WorkspaceView } from "../types";
 import { SnippetItem } from "../components/SnippetItem";
+import { DocPageNav } from "../components/DocPageNav";
 
 interface IntroductionPageProps {
   onNavigate: (tab: TopTab, view: WorkspaceView, setupTab?: "npm" | "pnpm" | "cli" | "ai") => void;
@@ -422,6 +423,9 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
             <span className="intro-link-card-arrow ms">arrow_forward</span>
           </button>
         </div>
+        <DocPageNav
+          next={{ label: "Get Started", onClick: () => onNavigate("setup", "getting-started") }}
+        />
       </section>
     </>
   );

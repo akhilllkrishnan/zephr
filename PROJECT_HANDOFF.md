@@ -1,6 +1,6 @@
 # Zephr Project Handoff
 
-Last updated: March 18, 2026
+Last updated: April 6, 2026
 
 ---
 
@@ -223,6 +223,12 @@ The docs currently do **not** expose public multi-theme switching. The visible p
 3. Continue component-depth pass (variant completeness + interaction states) with consistent token usage.
 4. Audit remaining packs (stripe/linear/framer) — confirm their JS token values in `stylePacks.ts` match their CSS theme files after the token pipeline fix.
 
+### Sprint 5 — pending (April 2026)
+
+1. **Export-to-code UI**: select component + tweak props → copy ready React snippet
+2. **Component Gallery**: currently a dead view alias, needs implementation as distinct curated showcase
+3. **CLI end-to-end**: verify `zephr init` flow still works after all recent changes
+
 ---
 
 ## 5) Component Surface (as of March 10, 2026)
@@ -335,16 +341,19 @@ From repo root:
 
 ## 10) Immediate Next Steps
 
-1. Rebuild `Pages > V2` full-page examples around Attio-style SaaS patterns:
-   - record detail
-   - recruiting / CRM tables
-   - split activity/detail views
-   - pipelines / kanban boards
-   - support queue / detail shells
-2. Redesign the top V2 widgets so their internals match the same product language as the page examples.
-3. Keep V2 curated; do not add more breadth until visual consistency is solved.
-4. Finalize docs-shell token parity and remove remaining local visual exceptions where possible.
+1. **Sprint 5 items** (highest priority):
+   - Export-to-code UI: component selector + prop tweaker → copy React snippet
+   - Component Gallery view: implement as distinct curated showcase (not an alias)
+   - CLI: smoke-test `zephr init` end-to-end after all recent file changes
+2. **Sprint F — Token system overhaul** (architectural):
+   - Rename `StylePackName` if not already finalized
+   - Create `packages/ui-react/src/themes/` directory with CSS files loaded at mount (not JS-generated-at-runtime)
+   - Docs playground chrome should consume its own `--z-*` tokens (sidebar, nav, header currently use raw hex)
+3. Rebuild `Pages > V2` full-page examples around Attio-style SaaS patterns:
+   - record detail, recruiting/CRM tables, split activity/detail views, pipelines/kanban, support queue shells
+4. Keep V2 curated; do not add breadth until visual consistency is solved.
 5. Tighten AI output quality with richer `aiHints` negative guidance and scaffold examples.
+6. **Roaster** (deferred — user said "not now"): React/Vite migration, backend proxy, multiple critique modes, scoring system — see Section 19.
 
 ---
 
@@ -395,6 +404,10 @@ Changes to `notion.css` do **not** affect the playground (it uses JS-generated v
 10. `packages/ai-registry/src/index.ts`
 11. `packages/mcp-server/src/tools.ts`
 12. `packages/cli/src/index.ts`
+13. `apps/docs-playground/src/views/LogosPage.tsx` — logo/icon browser, Clearbit fallback chain
+14. `apps/docs-playground/src/views/LogosPage.css` — sticky sidebar, tile layout
+15. `apps/docs-playground/src/components/TopNav.css` — dark mode overrides for search kbd + fbw-trigger
+16. `packages/logos/src/catalog.ts` — ~195+ brand logo entries
 
 ---
 
@@ -405,6 +418,10 @@ Changes to `notion.css` do **not** affect the playground (it uses JS-generated v
 3. Do not hardcode shell theme colors where token aliases can be used.
 4. Do not generate raw HTML controls in snippets when Zephr component equivalents exist.
 5. Keep docs, CLI, registry, and MCP terminology aligned to the same pack names and token contract.
+6. **Never use `overflow: hidden` on a flex/grid container that has a `position: sticky` child.** Use `overflow-x: clip` instead — it clips without creating a scroll container, preserving sticky positioning.
+7. **Sticky elements inside the docs layout must use `top: var(--top-nav-stack-height)` (120px), not `top: 0`.** Using `top: 0` hides content behind the top nav stack.
+8. **Dark mode overrides in `styles.css` must use `!important`** because the large design-refinement block (appended ~line 10400+) sets light-mode values with `!important`. Dark overrides that lack `!important` will lose the specificity war.
+9. **Do not use `--z-color-staticWhite` or other always-light Zephr tokens in docs shell dark mode styles.** Use the semantic aliases: `var(--text)`, `var(--muted)`, `var(--bg)`, `var(--panel)`, `var(--line)` which are dark-mode-aware.
 
 ---
 
@@ -597,6 +614,114 @@ Convert `apps/cloud-api` from a manually hosted Node server into request-based h
 3. Gate file fallback to development only
 4. Re-run current API tests against handler entrypoints
 5. Deploy API on Vercel only after webhook + validation smoke tests pass
+
+---
+
+## 18) Logos / Icons Browser — April 2026 Overhaul
+
+### What changed
+
+1. **Removed secondary nav** — Avatar Library link stripped from the logos tab nav group (`App.tsx`). Only search + category filter remain in the sidebar.
+2. **Asset browser layout mode** — `docs-layout--asset-browser` CSS class applied to outer `.docs-layout` when `topTab === "icons" || topTab === "logos"`. This hides `.left-rail` and collapses to single full-width column, giving the browser a proper full-bleed canvas.
+3. **Real logos via Clearbit** — switched from `createCatalogLogoDataUri` (SVG placeholders) to `https://logo.clearbit.com/{domain}?size=128` (free, no auth, high-quality PNGs).
+4. **Three-stage fallback chain** — if Clearbit 404s: Google Favicon API (`https://www.google.com/s2/favicons?domain={domain}&sz=128`) → colored initials SVG (generated inline). State machine in `LogoTile` component via `FallbackStage = "clearbit" | "google" | "initials"`.
+5. **Default copy = HTML snippet** — clicking a logo tile now copies a ready-to-paste `<img>` tag, not the domain. Default `copyMode` changed from `"domain"` to `"snippet"`.
+6. **Centering** — `.icons-page` and `.logos-page` get `max-width: 1440px; width: 100%; margin: 0 auto` so they don't stretch edge-to-edge on wide screens.
+7. **Sticky sidebar** — `.icons-sidebar` and `.logos-sidebar` use `position: sticky`, `top: var(--top-nav-stack-height)`, `height: calc(100vh - var(--top-nav-stack-height))`, `align-self: flex-start`. Parent containers changed from `overflow: hidden` to `overflow-x: clip`.
+8. **Catalog expansion** — `packages/logos/src/catalog.ts` grew from ~141 → ~195+ entries. New additions: Mistral AI, Cohere, HuggingFace, Cursor, Windsurf, Bolt, v0, Lovable, Postman, Docker, Kubernetes, Terraform, Vite, Turborepo, Adobe, Zeplin, Penpot, Spline, Maze, Mixpanel, Amplitude, PostHog, Segment, Hotjar, FullStory, LogRocket, ClickHouse, CockroachDB, Turso, Upstash, Convex, Twitch, Product Hunt, Dribbble, Behance, and more.
+
+### Key files
+
+| File | What changed |
+|---|---|
+| `apps/docs-playground/src/App.tsx` | `docs-layout--asset-browser` class; Avatar Library button removed |
+| `apps/docs-playground/src/styles.css` | Asset browser layout class; sticky sidebar fixes; centering |
+| `apps/docs-playground/src/views/LogosPage.tsx` | Clearbit fallback chain; `copyMode` default; copy produces `<img>` tag |
+| `apps/docs-playground/src/views/LogosPage.css` | Sticky sidebar; centering; tile image wrap (48px, white bg, box-shadow) |
+| `packages/logos/src/catalog.ts` | ~55 new brand entries |
+| `apps/docs-playground/.env.example` | `VITE_LOGO_DEV_TOKEN=` added (kept for reference; Clearbit needs no token) |
+
+### Copy output format
+
+```html
+<img src="https://logo.clearbit.com/{domain}?size=64" alt="{Name}" width="64" height="64" />
+```
+
+---
+
+## 19) Dark Mode Accessibility Audit — April 2026
+
+### Methodology
+
+Used `preview_eval` to run JavaScript that walks the ancestor DOM chain, alpha-compositing each background layer to compute the true rendered color — not just the raw CSS value. This correctly handled `rgba()` backgrounds (e.g. `rgba(255,255,255,0.05)`) that appear to fail when measured against white but actually pass when composited through the real ancestor chain.
+
+### Fixed elements (all now pass WCAG AA ≥ 4.5:1)
+
+| Element | Problem | Fix |
+|---|---|---|
+| `.fbw-trigger` | `color: #171717 !important` (near-black) on dark bg → ratio ~1.05 | `[data-theme="dark"] color: var(--text) !important` |
+| `.comp-hero-chip--cat` | `background: #f3f4f6 !important` in dark mode | `[data-theme="dark"] background: rgba(255,255,255,0.08); color: var(--muted)` |
+| `.comp-hero-chip--pkg` | `background: #f9fafb !important` in dark mode | `[data-theme="dark"] background: transparent; color: var(--muted)` |
+| `.component-page-tab.is-active` | `color: #111827` (near-black) on dark bg | `[data-theme="dark"] color: var(--text) !important` |
+| `.component-link.is-active` | blue-600 `#2563eb` on dark panel → ratio 2.39 | Switched to blue-300 `#93c5fd` in dark mode → ratio 9.12:1 |
+| `.sidebar-link.is-active` | Same blue-600 issue | Same fix → `#93c5fd` |
+| `.section-heading p` | `#6b7280` (gray-500) on near-black → ratio 3.91 (below AA) | `[data-theme="dark"] color: var(--muted)` → ratio 5.78:1 |
+| `.related-card` | Dark bg leaked through transparent card bg | `[data-theme="dark"] color: var(--text) !important` |
+| `.top-search-kbd` | Default light kbd styles not overridden | `background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); box-shadow: none` |
+| `.component-page-tabs` | Border too light to see in dark mode | `[data-theme="dark"] border-bottom-color: var(--line) !important` |
+| `.component-page-tab` | Inactive tab text too faint | `[data-theme="dark"] color: var(--muted) !important` |
+| `.component-page-tab:hover` | No visible hover in dark mode | `[data-theme="dark"] color: var(--text) !important` |
+
+### Critical lesson: alpha-composited contrast
+
+Raw `rgba(255,255,255,0.05)` read in isolation appears to fail (contrast ratio ~2.5 against white). But when composited through the actual ancestor chain (dark bg `rgb(15,17,21)`), the effective background is near-black and foreground text passes at 7–8:1. Always composite through the full ancestor chain before reporting failures.
+
+### Where overrides live
+
+All dark mode overrides are appended at the **end** of `apps/docs-playground/src/styles.css` and `apps/docs-playground/src/components/TopNav.css`. They all use `!important` to override the large design-refinement block that appears ~line 10400+ in `styles.css` (which itself uses `!important` for all light-mode rules).
+
+---
+
+## 20) Roaster — Product Vision (Deferred)
+
+### Current state
+
+`apps/roaster/index.html` — single-file vanilla JS app (1176 lines). Features:
+- User supplies their own Claude API key (stored in localStorage)
+- Drag-drop / paste image upload
+- Optional context text input
+- Claude API with SSE streaming (`claude-opus-4-5`)
+- Dark theme (`#080808` bg, `#FF4500` accent)
+- Runs on port 4173
+
+### Why keep in monorepo
+
+The user decided **not** to move Roaster to a separate GitHub repo (at least not now). Rationale: it shares the monorepo toolchain (pnpm, Turbo), and is a first-class ecosystem product alongside docs-playground.
+
+### Proposed roadmap (deferred — user said "not now")
+
+**Phase 1 — Real product foundation**
+- Migrate to React + Vite (remove single-file constraint)
+- Backend proxy for API key (remove user-supplied key UX)
+- Multiple critique modes: Layout, Copy, Accessibility, Brand, Overall
+- Scoring system: 0–100 per dimension with actionable callouts
+- Before/after comparison view
+
+**Phase 2 — Collaboration and history**
+- Critique history with persistence
+- Share links (read-only public URL)
+- Figma URL input (screenshot via Figma API)
+- Export critique as PDF/Markdown
+
+**Phase 3 — Ecosystem integration**
+- Figma plugin (critique from within Figma)
+- GitHub PR integration (auto-critique UI screenshots on PR open)
+- Slack bot (`/roast <figma-url>`)
+- Team workspace with shared history
+
+### Key constraint
+
+Do not start Phase 1 until Zephr Sprint 5 and Sprint F are complete.
 
 ### Not required for this refactor
 

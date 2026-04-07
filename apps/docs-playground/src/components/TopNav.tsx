@@ -158,7 +158,7 @@ export function TopNav({
               onChange={(event) => onSearchChange(event.target.value)}
               onFocus={onSearchFocus}
               onKeyDown={handleSearchKeyDown}
-              placeholder="Search tokens or pairs…"
+              placeholder="Search components, commands, docs…"
               aria-label="Search"
             />
             {!catalogSearch && (

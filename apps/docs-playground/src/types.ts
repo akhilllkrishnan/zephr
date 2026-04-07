@@ -3,11 +3,13 @@ export type WorkspaceView =
   | "getting-started"
   | "slash-commands"
   | "foundations"
+  | "benefits"
   | "icons"
   | "logos"
   | "component-gallery"
   | "components"
   | "api-reference"
+  | "code-export"
   | "widgets"
   | "templates";
 

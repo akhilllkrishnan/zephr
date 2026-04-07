@@ -33,6 +33,34 @@
   background: var(--z-color-background0, #fff);
 }
 
+.foundations-token-tile--copyable {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  padding: 0;
+  transition: border-color 120ms, box-shadow 120ms, transform 80ms;
+}
+
+.foundations-token-tile--copyable:hover {
+  border-color: var(--z-color-stroke400, #aaa);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.foundations-token-tile--copyable:active {
+  transform: scale(0.98);
+}
+
+.foundations-token-tile--copyable.is-copied {
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, #6366f1) 15%, transparent);
+}
+
+.foundations-token-tile--copyable.is-copied .foundations-token-value {
+  color: var(--accent, #6366f1);
+  font-weight: 500;
+}
+
 .foundations-token-swatch {
   height: 52px;
   width: 100%;

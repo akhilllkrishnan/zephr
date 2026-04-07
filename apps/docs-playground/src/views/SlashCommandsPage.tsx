@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { DocPageNav } from "../components/DocPageNav";
 
 interface SlashCommand {
   name: string;
@@ -188,9 +189,10 @@ const CATEGORIES: Array<{
 
 interface SlashCommandsPageProps {
   onCopy: (label: string, value: string) => void;
+  onNavigate?: (tab: string, view: string) => void;
 }
 
-export default function SlashCommandsPage({ onCopy }: SlashCommandsPageProps) {
+export default function SlashCommandsPage({ onCopy, onNavigate }: SlashCommandsPageProps) {
   const [activeCategory, setActiveCategory] = useState<SlashCommand["category"] | "all">("all");
   const [query, setQuery] = useState("");
 
@@ -209,7 +211,7 @@ export default function SlashCommandsPage({ onCopy }: SlashCommandsPageProps) {
         <p className="breadcrumbs">Setup / Slash Commands</p>
         <h1>Slash commands</h1>
         <p className="lead">
-          21 design operations built directly into your AI editor. Each command is a focused, repeatable action — from scaffolding full pages to auditing token violations to sharpening the primary CTA.
+          22 design operations built directly into your AI editor. Each command is a focused, repeatable action — from scaffolding full pages to auditing token violations to sharpening the primary CTA.
         </p>
         <div className="sc-hero-stats">
           {CATEGORIES.map(cat => (
@@ -329,7 +331,7 @@ export default function SlashCommandsPage({ onCopy }: SlashCommandsPageProps) {
             <div className="sc-how-num">1</div>
             <div>
               <strong>Install the skill pack</strong>
-              <p>Run <code>zephr add-skills</code> once. This registers all 21 commands with your AI editor.</p>
+              <p>Run <code>zephr add-skills</code> once. This registers all 22 commands with your AI editor.</p>
             </div>
           </div>
           <div className="sc-how-card">
@@ -347,6 +349,12 @@ export default function SlashCommandsPage({ onCopy }: SlashCommandsPageProps) {
             </div>
           </div>
         </div>
+        {onNavigate && (
+          <DocPageNav
+            prev={{ label: "Get Started", onClick: () => onNavigate("setup", "getting-started") }}
+            next={{ label: "Foundations", onClick: () => onNavigate("setup", "foundations") }}
+          />
+        )}
       </section>
     </>
   );

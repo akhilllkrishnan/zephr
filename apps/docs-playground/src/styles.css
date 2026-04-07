@@ -153,6 +153,14 @@ body {
   grid-template-columns: 272px minmax(0, 1fr);
 }
 
+.docs-layout--asset-browser {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.docs-layout--asset-browser .left-rail {
+  display: none !important;
+}
+
 
 
 /* ─── Left rail ───────────────────────────────────────────────── */
@@ -9658,8 +9666,11 @@ h1 {
 
 .icons-page {
   display: flex;
-  min-height: calc(100vh - 60px);
-  overflow: hidden;
+  min-height: calc(100vh - var(--top-nav-stack-height));
+  overflow-x: clip; /* clip, not hidden — preserves sticky positioning */
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .icons-sidebar {
@@ -9670,8 +9681,9 @@ h1 {
   padding: 1.25rem 0;
   background: var(--panel);
   position: sticky;
-  top: 0;
-  max-height: calc(100vh - 60px);
+  top: var(--top-nav-stack-height);
+  height: calc(100vh - var(--top-nav-stack-height));
+  align-self: flex-start;
 }
 
 .icons-sidebar-section {
@@ -11111,4 +11123,1023 @@ h1 {
   background: transparent !important;
   border-color: var(--line) !important;
   color: var(--muted) !important;
+}
+
+/* ── comp-hero-chip cat/pkg — hardcoded white backgrounds, no dark override ── */
+[data-theme="dark"] .comp-hero-chip--cat {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--muted) !important;
+  border-color: var(--line) !important;
+}
+
+[data-theme="dark"] .comp-hero-chip--pkg {
+  background: transparent !important;
+  color: var(--muted) !important;
+  border-color: var(--line) !important;
+}
+
+/* ── Related card — button element resolves to black text, needs explicit override ── */
+[data-theme="dark"] .related-card {
+  color: var(--text) !important;
+}
+
+/* ── Active sidebar/component link — blue-600 (#2563eb) has 2.39:1 on dark panel ── */
+[data-theme="dark"] .sidebar-link.is-active,
+[data-theme="dark"] .component-link.is-active {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .sidebar-link.is-active .sidebar-nav-icon,
+[data-theme="dark"] .component-link.is-active .sidebar-nav-icon {
+  color: #93c5fd !important;
+}
+
+/* ── Component page tabs — active tab is #111827 (near-black) on dark bg ── */
+[data-theme="dark"] .component-page-tabs {
+  border-bottom-color: var(--line) !important;
+}
+
+[data-theme="dark"] .component-page-tab {
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .component-page-tab:hover {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .component-page-tab.is-active {
+  color: var(--text) !important;
+  border-bottom-color: var(--accent) !important;
+}
+
+/* ── Section heading paragraph — #6b7280 = 3.91:1 on near-black bg (WCAG fail) ── */
+[data-theme="dark"] .section-heading p {
+  color: var(--muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Export Code Page — Sprint 5
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.export-code-page {
+  padding-bottom: 64px;
+}
+
+/* Hero */
+.export-hero {
+  padding-bottom: 24px !important;
+}
+
+.export-hero h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.export-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--accent);
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+/* Two-panel layout */
+.export-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+  padding: 0 32px 32px;
+}
+
+@media (max-width: 860px) {
+  .export-layout {
+    grid-template-columns: 1fr;
+    padding: 0 16px 32px;
+  }
+}
+
+/* ── Props panel (left) ─────────────────────────────────────────────────── */
+
+.export-props-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  position: sticky;
+  top: var(--top-nav-stack-height);
+}
+
+.export-props-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.export-props-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.export-reset-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.export-reset-btn:hover {
+  background: rgba(var(--accent-rgb, 59, 130, 246), 0.08);
+}
+
+.export-props-list {
+  padding: 8px 0;
+  max-height: calc(100vh - var(--top-nav-stack-height) - 180px);
+  overflow-y: auto;
+}
+
+.export-no-props {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.export-no-props .ms {
+  font-size: 24px;
+  opacity: 0.4;
+}
+
+.export-no-props p {
+  margin: 0;
+}
+
+/* ── Prop row ─────────────────────────────────────────────────────────── */
+
+.export-prop-row {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.1s;
+}
+
+.export-prop-row:last-child {
+  border-bottom: none;
+}
+
+.export-prop-row.is-modified {
+  background: rgba(var(--accent-rgb, 59, 130, 246), 0.04);
+}
+
+.export-prop-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.export-prop-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.export-prop-type {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.export-prop-type--enum   { background: rgba(139,92,246,0.12); color: #7c3aed; }
+.export-prop-type--boolean{ background: rgba(16,185,129,0.12); color: #059669; }
+.export-prop-type--string { background: rgba(245,158,11,0.12); color: #d97706; }
+.export-prop-type--number { background: rgba(59,130,246,0.12); color: #2563eb; }
+
+[data-theme="dark"] .export-prop-type--enum   { background: rgba(139,92,246,0.18); color: #a78bfa; }
+[data-theme="dark"] .export-prop-type--boolean{ background: rgba(16,185,129,0.18); color: #34d399; }
+[data-theme="dark"] .export-prop-type--string { background: rgba(245,158,11,0.18); color: #fbbf24; }
+[data-theme="dark"] .export-prop-type--number { background: rgba(59,130,246,0.18); color: #60a5fa; }
+
+.export-prop-reset {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.export-prop-reset:hover {
+  color: var(--accent);
+  background: rgba(var(--accent-rgb, 59, 130, 246), 0.08);
+}
+
+.export-prop-desc {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.export-prop-control {
+  /* container for the input/pills */
+}
+
+/* Pill group */
+.export-prop-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.export-prop-pill {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.export-prop-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb, 59, 130, 246), 0.06);
+}
+
+.export-prop-pill.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Select */
+.export-prop-select {
+  width: 100%;
+  font-size: 0.8125rem;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+
+.export-prop-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 59, 130, 246), 0.15);
+}
+
+/* Text / number input */
+.export-prop-input {
+  width: 100%;
+  font-size: 0.8125rem;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  box-sizing: border-box;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.export-prop-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 59, 130, 246), 0.15);
+}
+
+.export-prop-input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+/* ── Code panel (right) ──────────────────────────────────────────────── */
+
+.export-code-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.export-code-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.export-code-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+/* macOS-style window dots */
+.export-code-card-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.export-code-card-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.export-code-card-dots span:nth-child(1) { background: #ff5f57; }
+.export-code-card-dots span:nth-child(2) { background: #febc2e; }
+.export-code-card-dots span:nth-child(3) { background: #28c840; }
+
+.export-code-card-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-family: "SF Mono", "Fira Code", monospace;
+  flex: 1;
+}
+
+/* Copy button */
+.export-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 7px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: opacity 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.export-copy-btn:hover {
+  opacity: 0.88;
+}
+
+.export-copy-btn:active {
+  transform: scale(0.97);
+}
+
+.export-copy-btn.is-copied {
+  background: #16a34a;
+}
+
+/* Code body */
+.export-code-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.export-code-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.export-code-comment {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: "SF Mono", "Fira Code", monospace;
+  opacity: 0.7;
+}
+
+.export-code-separator {
+  height: 1px;
+  background: var(--line);
+  margin: 16px 0;
+}
+
+.export-pre {
+  margin: 0;
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.export-pre--import {
+  color: var(--muted);
+}
+
+.export-pre--usage {
+  color: var(--text);
+}
+
+/* Hint row */
+.export-hint-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.export-hint-icon {
+  font-size: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.export-hint-text {
+  flex: 1;
+}
+
+.export-hint-code {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--accent);
+}
+
+/* ─── Doc Page Nav (Prev / Next) ───────────────────────────────────────────── */
+
+.doc-page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem 0 3rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.doc-page-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  transition: background 130ms, border-color 130ms, box-shadow 130ms;
+  min-width: 160px;
+  max-width: 260px;
+}
+
+.doc-page-nav-btn:hover {
+  background: var(--hover);
+  border-color: var(--line-strong, var(--line));
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.doc-page-nav-next {
+  margin-left: auto;
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.doc-page-nav-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.doc-page-nav-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.doc-page-nav-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-page-nav-icon {
+  font-size: 18px !important;
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20 !important;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ─── Benefits Page ────────────────────────────────────────────────────────── */
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.benefit-card {
+  padding: 1.25rem 1.375rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 140ms, box-shadow 140ms;
+}
+
+.benefit-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.benefit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.benefit-icon {
+  font-size: 20px !important;
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20 !important;
+  color: var(--accent);
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.benefit-metric {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius: 100px;
+  padding: 2px 8px;
+}
+
+.benefit-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.benefit-desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Comparison table */
+.comparison-table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.comparison-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-soft);
+}
+
+.comparison-table th:first-child {
+  border-right: 1px solid var(--line);
+}
+
+.comparison-table td {
+  padding: 0.875rem 1rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-table td:first-child {
+  border-right: 1px solid var(--line);
+}
+
+.comparison-aspect {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.comparison-before {
+  display: block;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.comparison-after {
+  display: block;
+  color: var(--text);
+  line-height: 1.5;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.comparison-after::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.benefits-cta-section {
+  text-align: center;
+  padding-top: 3rem !important;
+  padding-bottom: 4rem !important;
+}
+
+.benefits-cta-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.benefits-cta-section p {
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.benefits-cta-section .hero-actions {
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MINTLIFY LAYOUT + STRIPE VISUAL QUALITY — Design Overhaul
+   Applied as final override block so specificity always wins.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. Global token update: nav height ─────────────────────────────────── */
+
+:root {
+  --top-nav-stack-height: 100px; /* 60px top-main + 40px top-tabs */
+  --sidebar-width: 280px;
+  --right-rail-width: 240px;
+  --content-padding-x: 72px;    /* padding on content column → ~776px prose at 1440px */
+}
+
+/* ── 2. Layout: full-width flush edges — exactly how Mintlify works ──────── */
+
+/* The grid fills the full viewport width. Sidebar is flush left, TOC flush right.
+   Only the prose *inside* the content column is capped at --docs-content-max. */
+.docs-layout {
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--right-rail-width) !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+/* Asset browser (Icons / Logos): single-column, no rails, no padding */
+.docs-layout--asset-browser {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.docs-layout--asset-browser .left-rail,
+.docs-layout--asset-browser .right-rail {
+  display: none !important;
+}
+
+.docs-layout--asset-browser .content-column {
+  padding: 0 !important;
+}
+
+/* Left rail: flush to viewport left edge */
+.left-rail {
+  width: var(--sidebar-width) !important;
+  padding: 20px 12px 20px 16px !important;
+  border-right: 1px solid var(--line) !important;
+  background: var(--bg) !important;
+}
+
+/* Content column: horizontal padding centers prose — no inner max-width needed */
+.content-column {
+  padding: 0 var(--content-padding-x) !important;
+  max-width: none !important;
+}
+
+/* Prose sections: inherit column padding, no artificial max-width */
+.content-column .doc-section,
+.content-column .hero,
+.content-column section.doc-section {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Component page tabs bar: naturally bounded by column padding */
+.component-page-tabs {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Right rail: tighter */
+.right-rail {
+  width: var(--right-rail-width) !important;
+  padding: 1.5rem 16px 1.5rem 12px !important;
+}
+
+/* ── 3. Top nav fine-tuning ──────────────────────────────────────────────── */
+
+.top-nav {
+  border-bottom: 1px solid var(--line) !important;
+  backdrop-filter: blur(12px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(1.5) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+[data-theme="dark"] .top-nav {
+  background: rgba(10, 10, 12, 0.92) !important;
+}
+
+/* ── 4. Sidebar: Mintlify active state ───────────────────────────────────── */
+
+.sidebar-link,
+.component-link {
+  border-radius: 6px !important;
+  font-size: 13.5px !important;
+  padding: 6px 10px !important;
+  min-height: 32px !important;
+}
+
+.sidebar-link.is-active,
+.component-link.is-active {
+  background: color-mix(in srgb, var(--accent) 8%, transparent) !important;
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+  border-left: 2px solid var(--accent) !important;
+  padding-left: 8px !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+[data-theme="dark"] .sidebar-link.is-active,
+[data-theme="dark"] .component-link.is-active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+  color: #93c5fd !important;
+  border-left-color: #93c5fd !important;
+}
+
+/* Nav group title: Mintlify uses slightly larger, bolder labels */
+.group-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  color: var(--muted) !important;
+  padding: 0 10px 6px !important;
+  text-transform: uppercase !important;
+}
+
+.nav-group {
+  margin-bottom: 24px !important;
+}
+
+/* ── 5. Stripe-quality hero gradient ─────────────────────────────────────── */
+
+/* Subtle indigo radial at the very top of each page — Stripe's signature */
+.content-column::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 480px;
+  background: radial-gradient(ellipse 80% 300px at 50% -60px,
+    rgba(99, 91, 255, 0.055) 0%,
+    rgba(99, 91, 255, 0.02) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.content-column {
+  position: relative !important;
+}
+
+.content-column > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 6. Typography: Stripe-level polish ──────────────────────────────────── */
+
+/* Base font size bump */
+.content-column,
+.content-column p,
+.content-column li {
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
+
+/* Hero H1: Stripe-weight */
+.content-column h1 {
+  font-size: clamp(2rem, 3vw, 2.75rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.08 !important;
+}
+
+/* Section H2 */
+.content-column .section-heading h2,
+.content-column h2 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.3 !important;
+}
+
+/* H3 */
+.content-column h3 {
+  font-size: 1.0625rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Lead text */
+.content-column .lead {
+  font-size: 1.0625rem !important;
+  line-height: 1.7 !important;
+  color: var(--muted) !important;
+  max-width: 56ch !important;
+}
+
+/* Breadcrumbs: Mintlify uses accent color for the active crumb */
+.breadcrumbs {
+  font-size: 0.8125rem !important;
+  color: var(--muted) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+/* ── 7. Cards and surfaces polish ────────────────────────────────────────── */
+
+/* Make install steps and cards use consistent border-radius */
+.install-step,
+.api-meta-card,
+.related-card,
+.gallery-card {
+  border-radius: 10px !important;
+}
+
+/* Code / snippet items: Stripe dark treatment */
+.snippet-item {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.snippet-item pre {
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+/* ── 8. Content column panel background: white ───────────────────────────── */
+
+.content-column {
+  background: var(--bg) !important;
+}
+
+/* ── 9. Right TOC: Mintlify heading ─────────────────────────────────────── */
+
+.toc-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+  margin-bottom: 8px !important;
+}
+
+.toc-link {
+  font-size: 13px !important;
+  padding: 3px 0 !important;
+  color: var(--muted) !important;
+  transition: color 120ms !important;
+}
+
+.toc-link:hover,
+.toc-link.is-active {
+  color: var(--text) !important;
+}
+
+.toc-link.is-active {
+  color: var(--accent) !important;
+  font-weight: 500 !important;
+}
+
+/* ── 10. Responsive: keep layout clean at mid-widths ─────────────────────── */
+
+@media (max-width: 1100px) {
+  .docs-layout {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr) !important;
+  }
+  .right-rail {
+    display: none !important;
+  }
+  .content-column {
+    padding: 0 40px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .left-rail {
+    display: none !important;
+  }
+  .content-column {
+    padding: 0 20px !important;
+  }
+  :root {
+    --top-nav-stack-height: 100px;
+  }
 }

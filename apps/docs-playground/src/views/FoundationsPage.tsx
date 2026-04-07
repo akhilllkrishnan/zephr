@@ -1,4 +1,6 @@
+import { useState, useCallback } from "react";
 import "./FoundationsPage.css";
+import { DocPageNav } from "../components/DocPageNav";
 
 interface ColorToken {
   token: string;
@@ -39,9 +41,22 @@ interface FoundationsPageProps {
   foundationColorGroups: ColorTokenGroup[];
   typographyGroups: TypographyGroup[];
   darkMode: boolean;
+  onNavigate?: (tab: string, view: string) => void;
 }
 
-export function FoundationsPage({ foundationColorGroups, typographyGroups, darkMode }: FoundationsPageProps) {
+export function FoundationsPage({ foundationColorGroups, typographyGroups, darkMode, onNavigate }: FoundationsPageProps) {
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  const copyToken = useCallback(async (variable: string) => {
+    try {
+      await navigator.clipboard.writeText(`var(${variable})`);
+      setCopiedToken(variable);
+      setTimeout(() => setCopiedToken(null), 1500);
+    } catch {
+      // fallback: select text
+    }
+  }, []);
+
   return (
     <>
       {/* ── Overview ───────────────────────────────────────────────── */}
@@ -76,19 +91,24 @@ export function FoundationsPage({ foundationColorGroups, typographyGroups, darkM
             </div>
             <div className="foundations-token-grid">
               {group.tokens.map((tok) => (
-                <div key={tok.token} className="foundations-token-tile">
+                <button
+                  key={tok.token}
+                  type="button"
+                  className={`foundations-token-tile foundations-token-tile--copyable${copiedToken === tok.variable ? " is-copied" : ""}`}
+                  onClick={() => copyToken(tok.variable)}
+                  title={`Click to copy var(${tok.variable})`}
+                >
                   <div
                     className="foundations-token-swatch"
                     style={{ background: tok.activeColor }}
-                    title={tok.activeColor}
                   />
                   <div className="foundations-token-meta">
                     <code className="foundations-token-var">{tok.variable}</code>
                     <span className="foundations-token-value">
-                      {darkMode ? tok.dark : tok.light}
+                      {copiedToken === tok.variable ? "Copied!" : (darkMode ? tok.dark : tok.light)}
                     </span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -203,6 +223,12 @@ export function FoundationsPage({ foundationColorGroups, typographyGroups, darkM
             </div>
           </div>
         ))}
+        {onNavigate && (
+          <DocPageNav
+            prev={{ label: "Slash Commands", onClick: () => onNavigate("setup", "slash-commands") }}
+            next={{ label: "Benefits", onClick: () => onNavigate("setup", "benefits") }}
+          />
+        )}
       </section>
     </>
   );

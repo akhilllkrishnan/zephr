@@ -16,9 +16,9 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  height: 72px;
-  min-height: 72px;
-  padding: 0 44px;
+  height: 60px;
+  min-height: 60px;
+  padding: 0 32px;
   background: var(--bg);
 }
 
@@ -199,26 +199,26 @@
   align-items: center;
 }
 
-/* Search pill — matches Figma exactly: pl-8 pr-6 py-6, 96px radius */
 .top-search {
   width: 100%;
   height: auto;
   padding: 6px 32px 6px 28px;
-  border: 1px solid transparent;
-  border-radius: 96px;
-  background: #f7f7f7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
   color: var(--text);
   font-family: "Inter", sans-serif;
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: -0.078px;
+  font-weight: 400;
+  letter-spacing: 0;
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   transition: border-color 140ms, box-shadow 140ms, background 140ms;
 }
 
 [data-theme="dark"] .top-search {
-  background: var(--z-color-background100);
+  background: var(--panel);
+  border-color: var(--line);
 }
 
 .top-search::placeholder {
@@ -247,13 +247,12 @@
   line-height: 1;
 }
 
-/* Shortcut badge — pill shape with shadow, matches Figma */
 .top-search-kbd {
   position: absolute;
   right: 6px;
-  background: white;
-  border-radius: 96px;
-  padding: 2px 9px;
+  background: var(--panel-soft);
+  border-radius: 5px;
+  padding: 2px 7px;
   font-size: 12px;
   font-weight: 500;
   font-family: "Inter", sans-serif;
@@ -272,8 +271,20 @@
 }
 
 [data-theme="dark"] .top-search-kbd {
-  background: var(--z-color-background200);
-  color: var(--muted);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+/* Feedback button — hardcoded #171717 text is invisible on dark bg */
+[data-theme="dark"] .top-actions .fbw-trigger {
+  color: var(--text) !important;
+  background: var(--bg) !important;
+  border-color: var(--line) !important;
+}
+
+[data-theme="dark"] .top-actions .fbw-trigger:hover {
+  background: var(--hover) !important;
 }
 
 .top-search-results {
@@ -462,9 +473,9 @@
 .top-tabs {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 0 40px;
-  height: 49px;
+  gap: 0;
+  padding: 0 28px;
+  height: 40px;
   border-top: 1px solid var(--line);
   background: var(--z-color-background0);
   overflow-x: auto;
@@ -480,24 +491,24 @@
   border-bottom: 2px solid transparent;
   border-radius: 0;
   background: transparent;
-  color: #5c5c5c;
+  color: var(--muted);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: -0.084px;
-  padding: 0;
-  height: 49px;
+  letter-spacing: 0;
+  padding: 0 14px;
+  height: 40px;
   cursor: pointer;
   white-space: nowrap;
   transition: color 140ms, border-color 140ms;
 }
 
 .tab:hover {
-  color: #171717;
+  color: var(--text);
 }
 
 .tab.active {
-  color: #171717;
+  color: var(--text);
   background: transparent;
   border-bottom-color: var(--accent);
 }
@@ -586,10 +597,10 @@
 
 @media (min-width: 1025px) and (max-width: 1280px) {
   .top-main {
-    padding: 0 24px;
+    padding: 0 20px;
   }
 
   .top-tabs {
-    padding: 0 24px;
+    padding: 0 16px;
   }
 }
