@@ -14,12 +14,35 @@
 
 .top-main {
   display: flex;
-  align-items: center;
-  gap: 24px;
-  height: 60px;
-  min-height: 60px;
-  padding: 0 32px;
+  align-items: stretch;
+  height: 56px;
+  min-height: 56px;
+  padding: 0 20px;
+  gap: 0;
   background: var(--bg);
+}
+
+/* ── Left group: mobile toggle + switcher + logo ── */
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-right: 16px;
+  border-right: 1px solid var(--line);
+  margin-right: 8px;
+}
+
+/* ── Right group: search + actions ── */
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-left: 12px;
+  margin-left: auto;
 }
 
 /* ── App switcher ── */
@@ -186,15 +209,14 @@
 /* ── Search ── */
 
 .top-search-wrap {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  align-items: center;
   min-width: 0;
 }
 
 .top-search-inner {
   position: relative;
-  width: min(364px, 100%);
+  width: min(180px, 100%);
   display: flex;
   align-items: center;
 }
@@ -348,10 +370,8 @@
 .top-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
-  justify-content: flex-end;
-  margin-left: auto;
 }
 
 .top-version-control {
@@ -472,14 +492,14 @@
 
 .top-tabs {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0;
-  padding: 0 28px;
-  height: 40px;
-  border-top: 1px solid var(--line);
-  background: var(--z-color-background0);
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+  padding: 0 4px;
+  height: 56px;
+  border-top: none;
+  background: transparent;
 }
 
 .top-tabs::-webkit-scrollbar {
@@ -496,8 +516,8 @@
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0;
-  padding: 0 14px;
-  height: 40px;
+  padding: 0 12px;
+  height: 56px;
   cursor: pointer;
   white-space: nowrap;
   transition: color 140ms, border-color 140ms;
@@ -547,12 +567,12 @@
   }
 
   .top-main {
-    height: auto;
-    min-height: 52px;
-    padding: 0.5rem 1rem;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 0 12px;
+  }
+
+  .top-left {
+    padding-right: 10px;
+    gap: 4px;
   }
 
   .top-app-switcher {
@@ -560,47 +580,32 @@
   }
 
   .top-search-wrap {
-    order: 3;
-    flex: 1 1 100%;
-    min-width: 0;
-    justify-content: flex-start;
-  }
-
-  .top-search-inner {
-    width: 100%;
-    max-width: none;
-  }
-
-  .top-actions {
-    gap: 0.375rem;
-    margin-left: auto;
-  }
-
-  .top-tabs {
-    padding: 0 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .top-search-wrap {
     display: none;
   }
 
-  .brand-wrap {
-    order: 2;
+  .top-right {
+    gap: 4px;
+    padding-left: 8px;
   }
 
-  .top-main {
-    flex-wrap: nowrap;
+  .top-tabs {
+    padding: 0 2px;
+  }
+
+  .tab {
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-tabs {
+    overflow-x: auto;
   }
 }
 
 @media (min-width: 1025px) and (max-width: 1280px) {
   .top-main {
-    padding: 0 20px;
-  }
-
-  .top-tabs {
     padding: 0 16px;
   }
 }

@@ -214,7 +214,7 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
       {/* ── 2-FEATURE CARDS ────────────────────────────────────────── */}
       <section className="doc-section intro-feature-section">
         <div className="intro-section-divider" />
-        <p className="section-eyebrow" style={{ marginBottom: "1rem" }}>What makes it different</p>
+        <p className="section-eyebrow">What makes it different</p>
         <div className="intro-feature-cards">
 
           {/* Card 1 — AI-native tokens */}

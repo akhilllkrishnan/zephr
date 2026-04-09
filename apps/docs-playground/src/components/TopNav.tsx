@@ -96,101 +96,115 @@ export function TopNav({
   return (
     <header className="top-nav">
       <div className="top-main">
-        <button
-          type="button"
-          className="mobile-nav-toggle"
-          onClick={onMobileNavToggle}
-          aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
-        >
-          <span className="ms">menu</span>
-        </button>
-
-        {/* App switcher */}
-        <div className="top-app-switcher-wrap" ref={switcherRef}>
+        {/* ── Left: mobile toggle + app switcher + logo ── */}
+        <div className="top-left">
           <button
             type="button"
-            className={`top-app-switcher${showAppSwitcher ? " is-open" : ""}`}
-            aria-label="Switch Zephr apps"
-            aria-expanded={showAppSwitcher}
-            title="Switch Zephr apps"
-            onClick={onAppSwitcherToggle}
+            className="mobile-nav-toggle"
+            onClick={onMobileNavToggle}
+            aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
           >
-            <span className="ms top-nav-icon">grid_view</span>
+            <span className="ms">menu</span>
           </button>
 
-          {showAppSwitcher && (
-            <div className="app-switcher-panel" role="dialog" aria-label="App switcher">
-              <p className="app-switcher-label">Zephr ecosystem</p>
-              <div className="app-switcher-grid">
-                <a className="app-switcher-card app-switcher-card--active" href="#" onClick={(e) => { e.preventDefault(); onAppSwitcherClose(); }}>
-                  <span className="app-switcher-card-icon ms">design_services</span>
-                  <span className="app-switcher-card-name">Zephr UI</span>
-                  <span className="app-switcher-card-desc">Design system &amp; components</span>
-                </a>
-                <a className="app-switcher-card" href="http://localhost:4173" target="_blank" rel="noopener noreferrer" onClick={onAppSwitcherClose}>
-                  <span className="app-switcher-card-icon ms">rate_review</span>
-                  <span className="app-switcher-card-name">Roaster</span>
-                  <span className="app-switcher-card-desc">AI design critique tool</span>
-                </a>
+          {/* App switcher */}
+          <div className="top-app-switcher-wrap" ref={switcherRef}>
+            <button
+              type="button"
+              className={`top-app-switcher${showAppSwitcher ? " is-open" : ""}`}
+              aria-label="Switch Zephr apps"
+              aria-expanded={showAppSwitcher}
+              title="Switch Zephr apps"
+              onClick={onAppSwitcherToggle}
+            >
+              <span className="ms top-nav-icon">grid_view</span>
+            </button>
+
+            {showAppSwitcher && (
+              <div className="app-switcher-panel" role="dialog" aria-label="App switcher">
+                <p className="app-switcher-label">Zephr ecosystem</p>
+                <div className="app-switcher-grid">
+                  <a className="app-switcher-card app-switcher-card--active" href="#" onClick={(e) => { e.preventDefault(); onAppSwitcherClose(); }}>
+                    <span className="app-switcher-card-icon ms">design_services</span>
+                    <span className="app-switcher-card-name">Zephr UI</span>
+                    <span className="app-switcher-card-desc">Design system &amp; components</span>
+                  </a>
+                  <a className="app-switcher-card" href="http://localhost:4173" target="_blank" rel="noopener noreferrer" onClick={onAppSwitcherClose}>
+                    <span className="app-switcher-card-icon ms">rate_review</span>
+                    <span className="app-switcher-card-name">Roaster</span>
+                    <span className="app-switcher-card-desc">AI design critique tool</span>
+                  </a>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-
-        <div className="brand-wrap">
-          <button
-            type="button"
-            className="brand-home"
-            onClick={onBrandClick}
-            aria-label="Go to introduction"
-          >
-            <img src={brandLogoSrc} alt="Zephr" className="brand-logo" />
-          </button>
-        </div>
-
-        <div className="top-search-wrap">
-          <div className="top-search-inner" ref={searchPanelRef}>
-            <span className="ms top-search-icon" aria-hidden>search</span>
-            <input
-              ref={searchInputRef}
-              className="top-search"
-              value={catalogSearch}
-              onChange={(event) => onSearchChange(event.target.value)}
-              onFocus={onSearchFocus}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Search components, commands, docs…"
-              aria-label="Search"
-            />
-            {!catalogSearch && (
-              <kbd className="top-search-kbd">/</kbd>
             )}
-            {searchFocused && catalogSearch.trim() ? (
-              <div className="top-search-results" role="listbox" aria-label="Search results">
-                {searchResults.length ? (
-                  searchResults.map((result) => (
-                    <button
-                      key={result.id}
-                      type="button"
-                      className={`top-search-result ${searchResults[searchActiveIndex]?.id === result.id ? "is-active" : ""}`}
-                      onClick={() => onSearchResultNavigate(result)}
-                      onMouseEnter={() => {
-                        const index = searchResults.findIndex((item) => item.id === result.id);
-                        if (index >= 0) onSearchActiveIndexChange(index);
-                      }}
-                    >
-                      <span className="top-search-result-main">{result.label}</span>
-                      <span className="top-search-result-meta">{result.detail}</span>
-                    </button>
-                  ))
-                ) : (
-                  <p className="top-search-empty">No matches found.</p>
-                )}
-              </div>
-            ) : null}
+          </div>
+
+          <div className="brand-wrap">
+            <button
+              type="button"
+              className="brand-home"
+              onClick={onBrandClick}
+              aria-label="Go to introduction"
+            >
+              <img src={brandLogoSrc} alt="Zephr" className="brand-logo" />
+            </button>
           </div>
         </div>
 
-        <div className="top-actions">
+        {/* ── Center: tab navigation ── */}
+        <nav className="top-tabs" aria-label="Top tabs">
+          <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => onTabChange("setup")}>Setup</button>
+          <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => onTabChange("components")}>Components</button>
+          <button type="button" className={`tab ${topTab === "icons" ? "active" : ""}`} onClick={() => onTabChange("icons")}>Icons</button>
+          <button type="button" className={`tab ${topTab === "logos" ? "active" : ""}`} onClick={() => onTabChange("logos")}>Logos</button>
+          <button type="button" className={`tab ${topTab === "avatars" ? "active" : ""}`} onClick={() => onTabChange("avatars")}>Avatars</button>
+          <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => onTabChange("changelog")}>Change Log</button>
+        </nav>
+
+        {/* ── Right: search + actions ── */}
+        <div className="top-right top-actions">
+          <div className="top-search-wrap">
+            <div className="top-search-inner" ref={searchPanelRef}>
+              <span className="ms top-search-icon" aria-hidden>search</span>
+              <input
+                ref={searchInputRef}
+                className="top-search"
+                value={catalogSearch}
+                onChange={(event) => onSearchChange(event.target.value)}
+                onFocus={onSearchFocus}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Search…"
+                aria-label="Search"
+              />
+              {!catalogSearch && (
+                <kbd className="top-search-kbd">/</kbd>
+              )}
+              {searchFocused && catalogSearch.trim() ? (
+                <div className="top-search-results" role="listbox" aria-label="Search results">
+                  {searchResults.length ? (
+                    searchResults.map((result) => (
+                      <button
+                        key={result.id}
+                        type="button"
+                        className={`top-search-result ${searchResults[searchActiveIndex]?.id === result.id ? "is-active" : ""}`}
+                        onClick={() => onSearchResultNavigate(result)}
+                        onMouseEnter={() => {
+                          const index = searchResults.findIndex((item) => item.id === result.id);
+                          if (index >= 0) onSearchActiveIndexChange(index);
+                        }}
+                      >
+                        <span className="top-search-result-main">{result.label}</span>
+                        <span className="top-search-result-meta">{result.detail}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="top-search-empty">No matches found.</p>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </div>
+
           <FeedbackWidget />
 
           <a
@@ -201,7 +215,6 @@ export function TopNav({
             aria-label="View Zephr on GitHub"
             title="View on GitHub"
           >
-            {/* GitHub brand logo — no Material Symbols equivalent */}
             <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
             </svg>
@@ -218,14 +231,6 @@ export function TopNav({
           </button>
         </div>
       </div>
-
-      <nav className="top-tabs" aria-label="Top tabs">
-        <button type="button" className={`tab ${topTab === "setup" ? "active" : ""}`} onClick={() => onTabChange("setup")}>Setup</button>
-        <button type="button" className={`tab ${topTab === "components" ? "active" : ""}`} onClick={() => onTabChange("components")}>Components</button>
-        <button type="button" className={`tab ${topTab === "icons" ? "active" : ""}`} onClick={() => onTabChange("icons")}>Icons</button>
-        <button type="button" className={`tab ${topTab === "logos" ? "active" : ""}`} onClick={() => onTabChange("logos")}>Logos</button>
-        <button type="button" className={`tab ${topTab === "changelog" ? "active" : ""}`} onClick={() => onTabChange("changelog")}>Change Log</button>
-      </nav>
     </header>
   );
 }
