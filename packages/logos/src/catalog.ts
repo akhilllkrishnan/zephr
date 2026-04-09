@@ -166,7 +166,7 @@ const seedLogos: SeedLogo[] = [
   { name: "Kubernetes", domain: "kubernetes.io", category: "developer", color: "#2563eb", tags: ["containers", "orchestration", "devops"] },
   { name: "Terraform", domain: "terraform.io", category: "developer", color: "#7c3aed", tags: ["infra", "devops", "iac"] },
   { name: "CircleCI", domain: "circleci.com", category: "developer", color: "#22c55e", tags: ["ci", "cd", "devops"] },
-  { name: "GitHub Actions", domain: "github.com", category: "developer", color: "#111827", tags: ["ci", "cd", "github"] },
+  { name: "GitHub Actions", domain: "github.com/features/actions", category: "developer", color: "#111827", tags: ["ci", "cd", "github"] },
   { name: "Jenkins", domain: "jenkins.io", category: "developer", color: "#dc2626", tags: ["ci", "cd", "automation"] },
   { name: "Vite", domain: "vitejs.dev", category: "developer", color: "#7c3aed", tags: ["build", "frontend", "tooling"] },
   { name: "Webpack", domain: "webpack.js.org", category: "developer", color: "#2563eb", tags: ["build", "bundler", "javascript"] },
