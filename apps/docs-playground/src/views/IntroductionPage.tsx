@@ -26,7 +26,7 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
         </p>
         <div className="hero-cta-row">
           <Button
-            style={{ background: "#262626", borderColor: "#262626", color: "#ffffff" }}
+            variant="primary"
             onClick={() => onNavigate("components", "component-gallery")}
           >
             Browse Components
@@ -212,7 +212,9 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
       </div>
 
       {/* ── 2-FEATURE CARDS ────────────────────────────────────────── */}
-      <section className="doc-section">
+      <section className="doc-section intro-feature-section">
+        <div className="intro-section-divider" />
+        <p className="section-eyebrow" style={{ marginBottom: "1rem" }}>What makes it different</p>
         <div className="intro-feature-cards">
 
           {/* Card 1 — AI-native tokens */}
@@ -239,7 +241,7 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
             </div>
           </div>
 
-          {/* Card 2 — 21 slash commands */}
+          {/* Card 2 — 22 slash commands */}
           <div className="intro-feature-card">
             <div className="intro-feature-card-inner">
               <div className="intro-feature-card-icon">
@@ -248,7 +250,7 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
                 </svg>
               </div>
               <div className="intro-feature-card-text">
-                <p className="intro-feature-card-title">21 slash commands</p>
+                <p className="intro-feature-card-title">22 slash commands</p>
                 <p className="intro-feature-card-body">
                   A full designer vocabulary built into your AI editor.{" "}
                   <code className="intro-feature-code">/polish</code>
@@ -272,8 +274,36 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
         </div>
       </section>
 
+      {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
+      <section id="install" className="doc-section">
+        <div className="intro-section-divider" />
+        <div className="section-heading">
+          <p className="section-eyebrow">Quickstart</p>
+          <h2>Zero to AI-ready in three commands.</h2>
+          <p>Install the package, initialise Zephr, and import tokens in your root layout.</p>
+        </div>
+        <div className="snippet-stack">
+          <SnippetItem
+            label="1 — Install the package"
+            code="npm install @zephrui/ui-react"
+            onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")}
+          />
+          <SnippetItem
+            label="2 — Initialise Zephr (writes AI context + CSS tokens)"
+            code="npx zephr init"
+            onCopy={() => copyAndFlash("Init", "npx zephr init")}
+          />
+          <SnippetItem
+            label="3 — Import tokens in your root layout"
+            code={`import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';\n\nexport default function App() {\n  return <Button variant="primary">Get started</Button>;\n}`}
+            onCopy={() => copyAndFlash("Import snippet", `import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';`)}
+          />
+        </div>
+      </section>
+
       {/* ── MCP SERVER SETUP ──────────────────────────────────────── */}
       <section id="mcp-section" className="doc-section">
+        <div className="intro-section-divider" />
         <div className="section-heading">
           <p className="section-eyebrow">MCP Integration</p>
           <h2>Give your AI direct access to the full registry.</h2>
@@ -333,37 +363,12 @@ export function IntroductionPage({ onNavigate, copyAndFlash }: IntroductionPageP
         </div>
       </section>
 
-      {/* ── QUICK INSTALL ─────────────────────────────────────────── */}
-      <section id="install" className="doc-section">
-        <div className="section-heading">
-          <p className="section-eyebrow">Quickstart</p>
-          <h2>Zero to AI-ready in three commands.</h2>
-          <p>Install the package, initialise Zephr, and import tokens in your root layout.</p>
-        </div>
-        <div className="snippet-stack">
-          <SnippetItem
-            label="1 — Install the package"
-            code="npm install @zephrui/ui-react"
-            onCopy={() => copyAndFlash("Install", "npm install @zephrui/ui-react")}
-          />
-          <SnippetItem
-            label="2 — Initialise Zephr (writes AI context + CSS tokens)"
-            code="npx zephr init"
-            onCopy={() => copyAndFlash("Init", "npx zephr init")}
-          />
-          <SnippetItem
-            label="3 — Import tokens in your root layout"
-            code={`import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';\n\nexport default function App() {\n  return <Button variant="primary">Get started</Button>;\n}`}
-            onCopy={() => copyAndFlash("Import snippet", `import './src/styles/zephr.css';\nimport { Button } from '@zephrui/ui-react';`)}
-          />
-        </div>
-      </section>
-
       {/* ── EXPLORE ───────────────────────────────────────────────── */}
       <section id="explore" className="doc-section">
+        <div className="intro-section-divider" />
         <div className="section-heading">
           <p className="section-eyebrow">Explore</p>
-          <h2>Everything you need to build a complete SaaS product.</h2>
+          <h2>What's in the box</h2>
         </div>
         <div className="intro-links intro-links-4">
           <button

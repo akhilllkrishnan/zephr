@@ -242,10 +242,11 @@ body {
 
 /* Icon inside sidebar nav items */
 .sidebar-nav-icon {
-  font-size: 20px !important;
-  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20 !important;
-  width: 20px;
-  height: 20px;
+  font-size: 15px !important;
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 16 !important;
+  width: 16px;
+  height: 16px;
+  opacity: 0.65;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5010,6 +5011,10 @@ h1 {
 .gallery-hero-num {
   color: var(--accent);
   font-variant-numeric: tabular-nums;
+  font-size: 1.15em;
+  font-weight: 900;
+  display: inline-block;
+  letter-spacing: -0.05em;
 }
 
 /* Search */
@@ -7230,14 +7235,14 @@ h1 {
   animation: intro-fade-up 0.45s cubic-bezier(0,0,0.2,1) both;
 }
 
-/* h1 — much bigger, tighter tracking */
+/* h1 — hero, but still a doc page */
 #setup-introduction > h1 {
   grid-column: 1;
   grid-row: 2;
-  font-size: clamp(2.25rem, 4vw, 3.75rem) !important;
-  line-height: 1.05 !important;
-  letter-spacing: -0.045em !important;
-  font-weight: 800 !important;
+  font-size: clamp(1.875rem, 2.75vw, 2.375rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.03em !important;
+  font-weight: 700 !important;
   max-width: 20ch;
   margin: 0;
   animation: intro-fade-up 0.5s 0.06s cubic-bezier(0,0,0.2,1) both;
@@ -7591,6 +7596,18 @@ h1 {
   gap: 16px;
 }
 
+/* Section divider — subtle rule to separate major Introduction sections */
+.intro-section-divider {
+  height: 1px;
+  background: var(--line);
+  margin-bottom: 2.5rem;
+  opacity: 0.6;
+}
+
+.intro-feature-section {
+  padding-top: 0 !important;
+}
+
 .intro-feature-card {
   background: #f7f7f7;
   border: 1px solid #ebebeb;
@@ -7918,13 +7935,13 @@ h1 {
 /* ── Section eyebrow – refined ─────────────────────────────────────────── */
 
 .section-eyebrow {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  font-family: "DM Mono", "IBM Plex Mono", ui-monospace, monospace !important;
-  letter-spacing: 0.02em !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
-  color: var(--z-color-primary, #335cff) !important;
-  line-height: 20px !important;
+  color: var(--z-color-primary, var(--accent)) !important;
+  line-height: 16px !important;
   margin: 0 !important;
 }
 
@@ -7938,8 +7955,8 @@ h1 {
 }
 
 .gs-flow-step {
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--panel, var(--surface)) !important;
+  border: 1px solid var(--line) !important;
   border-radius: 16px !important;
   padding: 0 !important;
   display: flex !important;
@@ -7949,14 +7966,9 @@ h1 {
 }
 
 .gs-flow-step:hover {
-  border-color: color-mix(in srgb, var(--accent, #335cff) 40%, #e5e7eb) !important;
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line)) !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.07) !important;
   transform: none !important;
-}
-
-[data-theme="dark"] .gs-flow-step {
-  background: var(--panel) !important;
-  border-color: var(--line) !important;
 }
 
 .gs-flow-step-inner {
@@ -8002,7 +8014,7 @@ h1 {
 
 .gs-flow-desc {
   font-size: 13.5px !important;
-  color: #697386 !important;
+  color: var(--muted) !important;
   line-height: 1.65 !important;
   margin: 0;
   overflow-wrap: break-word;
@@ -8012,17 +8024,12 @@ h1 {
 .gs-flow-desc code {
   font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
   font-size: 12px;
-  background: #ffebec;
-  color: #fb3748;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
   border-radius: 4px;
   padding: 1px 5px;
   border: none;
   white-space: nowrap;
-}
-
-[data-theme="dark"] .gs-flow-desc code {
-  background: rgba(251, 55, 72, 0.15);
-  color: #ff6b78;
 }
 
 .gs-flow-code {
@@ -8489,10 +8496,10 @@ h1 {
 }
 
 #overview.hero h1 {
-  font-size: clamp(2rem, 3.5vw, 3rem) !important;
-  font-weight: 800 !important;
+  font-size: clamp(1.625rem, 2.25vw, 2rem) !important;
+  font-weight: 700 !important;
   line-height: 1.1 !important;
-  letter-spacing: -0.04em !important;
+  letter-spacing: -0.025em !important;
   max-width: 18ch;
 }
 
@@ -10437,12 +10444,12 @@ h1 {
   font-weight: 500 !important;
 }
 
-/* Component h1 — larger, tighter, more presence */
+/* Component h1 — doc-weight, not marketing-weight */
 .doc-section.hero h1 {
-  font-size: clamp(2rem, 3vw, 2.75rem) !important;
-  letter-spacing: -0.04em !important;
-  font-weight: 800 !important;
-  line-height: 1.08 !important;
+  font-size: clamp(1.625rem, 2.25vw, 2rem) !important;
+  letter-spacing: -0.025em !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
 }
 
 /* Lead text — slightly larger, more breathing room */
@@ -11769,15 +11776,19 @@ h1 {
 }
 
 .benefit-metric {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
   border-radius: 100px;
-  padding: 2px 8px;
+  padding: 0.2em 0.65em;
+  white-space: nowrap;
+  line-height: 1.6;
 }
 
 .benefit-title {
@@ -11994,17 +12005,17 @@ h1 {
 
 .sidebar-link.is-active,
 .component-link.is-active {
-  background: color-mix(in srgb, var(--accent) 8%, transparent) !important;
+  background: transparent !important;
   color: var(--accent) !important;
   font-weight: 600 !important;
   border-left: 2px solid var(--accent) !important;
   padding-left: 8px !important;
-  border-radius: 0 6px 6px 0 !important;
+  border-radius: 0 !important;
 }
 
 [data-theme="dark"] .sidebar-link.is-active,
 [data-theme="dark"] .component-link.is-active {
-  background: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+  background: transparent !important;
   color: #93c5fd !important;
   border-left-color: #93c5fd !important;
 }
@@ -12062,28 +12073,39 @@ h1 {
   line-height: 1.7 !important;
 }
 
-/* Hero H1: Stripe-weight */
+/* H1 — doc page weight, not marketing weight */
 .content-column h1 {
-  font-size: clamp(2rem, 3vw, 2.75rem) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.04em !important;
-  line-height: 1.08 !important;
+  font-size: clamp(1.625rem, 2.25vw, 2rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.1 !important;
+  margin-bottom: 0.375rem !important;
 }
 
-/* Section H2 */
+/* Section H2 — needs breathing room above */
 .content-column .section-heading h2,
 .content-column h2 {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.03em !important;
+  font-size: 1.375rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
   line-height: 1.3 !important;
+  margin-top: 2.75rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
-/* H3 */
+/* First H2 in a section needs no top gap */
+.doc-section > h2:first-child,
+.content-column > section > h2:first-child {
+  margin-top: 0.25rem !important;
+}
+
+/* H3 — clear but not shouty */
 .content-column h3 {
   font-size: 1.0625rem !important;
   font-weight: 600 !important;
-  letter-spacing: -0.02em !important;
+  letter-spacing: -0.015em !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 /* Lead text */
@@ -12094,12 +12116,19 @@ h1 {
   max-width: 56ch !important;
 }
 
-/* Breadcrumbs: Mintlify uses accent color for the active crumb */
+/* Breadcrumbs — quiet location indicator, not competing with H1 */
+/* Higher specificity to beat injected component CSS */
+.doc-section .breadcrumbs,
+.content-column .breadcrumbs,
+.left-rail ~ * .breadcrumbs,
 .breadcrumbs {
-  font-size: 0.8125rem !important;
+  font-size: 12px !important;
   color: var(--muted) !important;
   font-weight: 400 !important;
-  letter-spacing: 0 !important;
+  letter-spacing: 0.02em !important;
+  margin-bottom: 14px !important;
+  opacity: 0.75 !important;
+  text-transform: none !important;
 }
 
 /* ── 7. Cards and surfaces polish ────────────────────────────────────────── */
@@ -12184,4 +12213,322 @@ h1 {
   :root {
     --top-nav-stack-height: 100px;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MINTLIFY-PARITY POLISH — body text, inline code, code blocks
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Body text: gray-700 (#374151) instead of zinc-500 ──────────────────── */
+.content-column p,
+.doc-section p,
+.doc-section li,
+.content-column li {
+  color: #374151 !important;
+  line-height: 1.75 !important;
+}
+
+/* Preserve muted intent for lead, breadcrumbs, section eyebrows */
+.content-column .lead,
+.content-column .breadcrumbs,
+.doc-section .lead,
+.doc-section .breadcrumbs,
+.doc-section .section-eyebrow,
+.content-column .section-eyebrow,
+.section-heading p,
+.comparison-aspect,
+.benefit-desc,
+.doc-page-nav-label {
+  color: var(--muted) !important;
+}
+
+[data-theme="dark"] .content-column p,
+[data-theme="dark"] .doc-section p,
+[data-theme="dark"] .content-column li,
+[data-theme="dark"] .doc-section li {
+  color: #d1d5db !important;
+}
+
+/* ── Inline code: proper pill ────────────────────────────────────────────── */
+.content-column p code,
+.content-column li code,
+.content-column h2 code,
+.content-column h3 code,
+.doc-section p code,
+.doc-section li code {
+  font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace !important;
+  font-size: 0.8125em !important;
+  background: rgba(0, 0, 0, 0.055) !important;
+  color: #1f2937 !important;
+  padding: 0.15em 0.45em !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  font-weight: 400 !important;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .content-column p code,
+[data-theme="dark"] .content-column li code,
+[data-theme="dark"] .doc-section p code,
+[data-theme="dark"] .doc-section li code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* ── Code blocks: visual container ──────────────────────────────────────── */
+/* Only target standalone pre blocks, not snippet-item or code-block wrappers */
+.doc-section > pre,
+.content-column > pre,
+.doc-section .install-section pre:not(.snippet-item pre),
+.mcp-section pre {
+  background: #f8f9fb !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 1rem 1.25rem !important;
+  overflow-x: auto !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.65 !important;
+}
+
+[data-theme="dark"] .doc-section > pre,
+[data-theme="dark"] .content-column > pre {
+  background: #1a1c20 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+}
+
+/* ── Sidebar active icon: match accent, full opacity ────────────────────── */
+.sidebar-link.is-active .sidebar-nav-icon,
+.component-link.is-active .sidebar-nav-icon {
+  opacity: 1 !important;
+}
+
+/* ── TOC label: clearly separate heading from links ─────────────────────── */
+.toc-label {
+  display: block !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: var(--subtle) !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 6px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+/* ── Gallery hero h1: keep big but not 800-weight ───────────────────────── */
+.gallery-hero h1 {
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   APPLE-LEVEL POLISH PASS — Spacing, labels, sticky tabs, typographic rhythm
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Reduce inter-section gap: 2.75rem → 1.875rem (30px each side) ─────── */
+.doc-section {
+  padding: 1.875rem 0 !important;
+}
+.doc-section:first-child {
+  padding-top: 1.875rem !important;
+}
+/* Hero: more breathing at top, tight at bottom so "When to use" sits close */
+.doc-section.hero {
+  padding-top: 2rem !important;
+  padding-bottom: 1rem !important;
+  gap: 0.75rem !important;
+}
+
+/* ── 2. Sidebar group titles: remove uppercase — JSX already has title case ─ */
+.group-title {
+  text-transform: none !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--subtle) !important;
+  padding: 0 10px 4px !important;
+}
+
+/* ── 3. Sidebar category accordions (Atoms/Molecules/Organisms): remove caps ─ */
+.nav-collapse-btn {
+  text-transform: none !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  color: var(--muted) !important;
+  padding: 1px 2px 5px !important;
+}
+
+/* ── 4. Tighten sidebar section spacing ──────────────────────────────────── */
+.nav-group {
+  margin-bottom: 10px !important;
+}
+.left-rail .nav-group > div + div {
+  margin-top: 2px !important;
+}
+
+/* ── 5. Component page tabs: sticky just below the top-nav ──────────────── */
+.component-page-tabs {
+  position: sticky !important;
+  top: var(--top-nav-stack-height) !important;
+  background: var(--bg) !important;
+  z-index: 30 !important;
+  margin-bottom: 0 !important;
+}
+[data-theme="dark"] .component-page-tabs {
+  background: var(--bg) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── 6. "Works with" label — remove uppercase, make natural ──────────────── */
+.hero-tools-label {
+  text-transform: none !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  color: var(--subtle) !important;
+}
+/* Tighter padding on the standalone "Works with" row */
+.hero-tools-row--standalone {
+  padding: 0.75rem 0 !important;
+}
+
+/* ── 7. Sidebar component links: slightly tighter ───────────────────────── */
+.sidebar-link,
+.component-link {
+  padding: 5px 10px !important;
+  min-height: 30px !important;
+}
+/* Preserve the left-border offset on active items */
+.sidebar-link.is-active,
+.component-link.is-active {
+  padding-left: 8px !important;
+}
+
+/* ── 8. Component page tab: slightly tighter text ───────────────────────── */
+.component-page-tab {
+  padding: 0.625rem 1rem !important;
+  font-size: 0.8125rem !important;
+}
+
+/* ── 9. Section dividers: barely visible — keep them subtle ─────────────── */
+.doc-section {
+  border-bottom-color: #f3f4f6 !important;
+}
+[data-theme="dark"] .doc-section {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ── 10. wtu-grid (When to use cards) tighter gap ───────────────────────── */
+.wtu-grid {
+  gap: 12px !important;
+}
+.wtu-card {
+  padding: 1rem !important;
+}
+.wtu-card-header {
+  margin-bottom: 0.625rem !important;
+}
+
+/* ── 11. Inside-section gap tighter for component pages ─────────────────── */
+.content-column .doc-section {
+  gap: 1.375rem !important;
+}
+/* Except hero stays with tighter internal gap */
+.content-column .doc-section.hero {
+  gap: 0.75rem !important;
+}
+
+/* ── 12. comp-hero-meta: tighter from lead text ─────────────────────────── */
+.comp-hero-meta {
+  margin-top: 0 !important;
+  gap: 0.375rem !important;
+}
+
+/* ── 13. hero-actions: no extra margin-top ───────────────────────────────── */
+.doc-section.hero .hero-actions {
+  margin-top: 0.125rem !important;
+  gap: 0.5rem !important;
+}
+
+/* ── 14. Section heading h2 top margin from section padding ─────────────── */
+.content-column > section > h2:first-child,
+.doc-section > .section-heading:first-child {
+  margin-top: 0 !important;
+}
+
+/* ── Works-with label: prevent wrap, fix alignment ───────────────────────── */
+.hero-tools-label {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  min-width: 5rem !important;
+}
+/* Tighten the gap between Works-with row and next section */
+.hero-tools-row--standalone {
+  padding: 0.625rem 0 !important;
+  gap: 0.875rem !important;
+}
+
+/* ── ID-specificity overrides (must come last to win over earlier #id rules) ── */
+/* Component hero: reduce the generous 3.5rem/2.5rem padding to tighter values */
+#overview.hero {
+  padding-top: 1.875rem !important;
+  padding-bottom: 1.25rem !important;
+  gap: 0.75rem !important;
+}
+/* Getting started intro: reduce 4rem/3rem to tighter values */
+#setup-introduction {
+  padding-top: 2.5rem !important;
+  padding-bottom: 2rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COMPREHENSIVE H2 MARGIN + LAYOUT POLISH
+   Root cause: .content-column h2 { margin-top: 2.75rem !important } is too
+   broad — it hits h2s inside flex/grid components causing misalignment, and
+   creates 74px of space (30px section-pt + 44px h2-mt) before every heading.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Flex-layout components: reset h2 margin-top to prevent misalignment
+      (.sc-section-head: colored dot sits far above heading text)
+      (.gallery-featured-header: heading detaches from badge row)         */
+.content-column .sc-section-head h2,
+.content-column .gallery-featured-header h2 {
+  margin-top: 0 !important;
+}
+
+/* 2. Browser category headers: compact 44px → 1.5rem
+      (logos-group, gallery-cat-header — scannable lists need tighter gaps) */
+.content-column .gallery-cat-header h2,
+.content-column .logos-group h2 {
+  margin-top: 1.5rem !important;
+}
+
+/* 3. Section-heading h2 first-child: 44px → 1rem
+      Reduces 74px total top-gap (section-pt + h2-mt) to a refined 46px    */
+.content-column .section-heading h2:first-child,
+.content-column .section-heading-row h2:first-child {
+  margin-top: 1rem !important;
+}
+
+/* 4. Intro feature section divider: 40px margin-bottom → 20px */
+.intro-section-divider {
+  margin-bottom: 1.25rem !important;
+}
+
+/* ── Cross-page polish (Sprint 5 wrap-up) ────────────────────────────────── */
+
+/* Breathing room between sticky component tabs and page content beneath */
+.component-page-tabs + * {
+  padding-top: 0.5rem !important;
+}
+
+/* Icon action buttons: nudge up to 36px for better touch ergonomics */
+.top-icon-action {
+  width: 36px !important;
+  height: 36px !important;
 }
