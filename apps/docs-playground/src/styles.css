@@ -19,7 +19,7 @@
   --radius-lg: var(--z-radius-lg);
   --radius-md: var(--z-radius-md);
   --radius-sm: var(--z-radius-sm);
-  --top-nav-stack-height: 56px;
+  --top-nav-stack-height: 100px;
 }
 
 [data-theme="dark"] {
@@ -11909,7 +11909,7 @@ h1 {
 /* ── 1. Global token update: nav height ─────────────────────────────────── */
 
 :root {
-  --top-nav-stack-height: 56px; /* single unified bar */
+  --top-nav-stack-height: 100px; /* double bar: 60px top-main + 40px tabs */
   --sidebar-width: 280px;
   --right-rail-width: 240px;
   --content-padding-x: 72px;    /* padding on content column → ~776px prose at 1440px */
@@ -12212,7 +12212,7 @@ h1 {
     padding: 0 20px !important;
   }
   :root {
-    --top-nav-stack-height: 56px;
+    --top-nav-stack-height: 100px;
   }
 }
 

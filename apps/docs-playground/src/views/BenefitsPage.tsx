@@ -39,7 +39,7 @@ const benefits = [
     title: "21 design operations built in",
     description:
       "From /scaffold to /critique to /polish — a full designer vocabulary runs in any AI editor. Fix spacing, add missing states, or generate entire page systems in one command.",
-    metric: "21 slash commands",
+    metric: "22 slash commands",
   },
   {
     icon: "construction",
