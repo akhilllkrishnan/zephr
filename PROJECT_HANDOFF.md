@@ -1,6 +1,6 @@
 # Zephr Project Handoff
 
-Last updated: April 6, 2026
+Last updated: April 9, 2026
 
 ---
 
@@ -230,6 +230,41 @@ The docs currently do **not** expose public multi-theme switching. The visible p
 3. **BenefitsPage** ✓ — "Why Zephr?" with 6 benefit cards, before/after comparison table, DocPageNav prev/next
 4. **CLI end-to-end** ✓ — `zephr init` verified: creates `zephr.config.ts` (managed block), `.env.example`, `src/styles/zephr.css`, `CLAUDE.md`, `AGENTS.md`, `llms.txt` — `--force` and rerun guard both work correctly
 
+### Premium UI Polish Pass — complete (April 9, 2026)
+
+A multi-session polish effort targeting the four structural gaps that made the UI feel developer-assembled rather than professionally designed.
+
+**A — Unified single-bar header** ✓
+- Collapsed the two-row nav (60px utility bar + 40px tab row) into a single 56px bar.
+- JSX restructured in `TopNav.tsx`: `.top-left` (switcher + logo) | `<nav.top-tabs>` (tabs, inline) | `.top-right` (search + actions).
+- `TopNav.css`: `.top-main` → `align-items: stretch; height: 56px;`; `.top-tabs` → `flex: 1; height: 56px; border-top: none; background: transparent;`; `.tab` → `height: 56px`.
+- Key bug: `overflow-x: auto` on the tab container caused tab buttons to be invisible. Fixed by using `overflow: hidden` on `.top-main` instead.
+- `--top-nav-stack-height` updated from `100px` → `56px` at all three definition sites in `styles.css` (lines ~22, ~11911, ~12214).
+
+**B — Eyebrow ↔ H2 tight coupling** ✓
+- `.section-heading` changed from `gap: 8px` to `gap: 0.4rem` and `margin-top: 4px` → `0` on `.section-eyebrow + h2`.
+- Added `.intro-feature-section > .section-eyebrow { margin-bottom: 0.75rem; }` for the standalone eyebrow case.
+- Removed inline `style={{ marginBottom: "1rem" }}` from `IntroductionPage.tsx` line 217.
+
+**C — Component metadata chip consistency** ✓
+- `.comp-hero-chip--pkg`: removed `font-family: "IBM Plex Mono"`, added `background: var(--z-color-background100); border-color: transparent`.
+- `.comp-hero-chip--deps`: added `background: var(--z-color-background100); border-color: transparent`.
+- Updated all `!important` override blocks and dark mode overrides to match: all three gray chips now share the same quiet pill treatment. `--free` stays green.
+
+**D — Introduction feature cards upgrade** ✓
+- `.intro-feature-card`: changed from hardcoded `#f7f7f7 / border-radius: 32px` to `background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem` with hover elevation.
+- `.intro-feature-card-inner`: changed layout from column to row (`flex-direction` removed, `gap: 1.25rem`).
+- `.intro-feature-card-icon`: replaced white box with 48×48 accent-tinted circle (`color-mix(in srgb, var(--accent) 10%, transparent)`). Added `stroke: currentColor` override to fix hardcoded `stroke="#171717"` in SVG paths.
+- `.intro-feature-card-title`: upgraded to `1rem / 600 weight`. `.intro-feature-card-body`: tokenized to `var(--muted)`.
+
+**Cross-session polishes also shipped (April 9)**
+- Section eyebrows (`section-eyebrow`): removed injected `font-family: "DM Mono"` monospace override — now `font-family: inherit`.
+- Gallery stat number (`.gallery-hero-num`): `font-size: 1.15em; font-weight: 900; letter-spacing: -0.05em`.
+- Benefit metric badges (`.benefit-metric`): upgraded to proper pill with `color-mix` accent tint.
+- Browse Components button: removed hardcoded dark inline style, switched to `variant="primary"`.
+- Search placeholder/icon colors: tokenized to `var(--muted)`.
+- Getting Started flow step colors (`gs-flow-step`, `gs-flow-desc`): tokenized from hardcoded hex to `var(--panel)`, `var(--line)`, `var(--muted)`.
+
 ---
 
 ## 5) Component Surface (as of March 10, 2026)
@@ -280,22 +315,31 @@ The docs playground is the single visual QA and demonstration surface:
 - `Pages` does not show the right-rail "On this page" sidebar
 - shared `Preview / Code / Copy` shell should be visually consistent across Components and Pages
 
-### Architecture (as of March 10, 2026)
+### Architecture (as of April 9, 2026)
 
 Key files and sizes:
 
-| File | Lines | Purpose |
+| File | Lines (approx) | Purpose |
 |---|---|---|
-| `App.tsx` | ~7544 | Main app shell, routing, showcase mode state, component detail views |
-| `styles.css` | ~6064 | Structural layout, docs shell, V2 showcase styling, token-bridge aliases |
+| `App.tsx` | ~4800 | Main app shell, routing, showcase mode state; component detail views extracted to separate view files |
+| `styles.css` | ~12500 | Structural layout, docs shell, V2 showcase, token-bridge aliases, override blocks |
+| `components/TopNav.tsx` | ~230 | Single-bar 56px unified nav: left (switcher+logo) / center (tabs) / right (search+actions) |
+| `components/TopNav.css` | ~630 | Nav layout, tab styling, responsive overrides |
+| `views/IntroductionPage.tsx` | ~300 | Landing page with hero, feature cards, quickstart, MCP integration |
+| `views/ComponentDetailsView.tsx` | — | Component detail pages (Guides/API Ref/Code tabs) |
+| `views/ComponentGalleryPage.tsx` | — | Gallery with Featured strip, category filter, search |
+| `views/BenefitsPage.tsx` | — | "Why Zephr?" with benefit cards + comparison table |
+| `views/ExportCodePage.tsx` | — | Live prop editor + React snippet copy |
+| `views/GettingStartedView.tsx` | — | Quickstart install/init steps |
+| `views/ApiReferenceView.tsx` | — | MCP + REST API reference |
 | `views/WidgetsPage.tsx` | ~1190 | Widget showcase with V1/V2 behavior, curation, category filtering, and search |
 | `views/TemplatesPage.tsx` | ~2506 | Template/page showcase with V1/V2 behavior and curated premium previews |
 | `views/widgetsCatalog.ts` | 50 entries | Widget navigation metadata + curated V2 widget subset IDs |
 | `views/templatesCatalog.ts` | 25 entries | Template/example navigation metadata + curated V2 template subset IDs |
 
-Public navigation emphasis: Setup, Components, Pages, Changelog.
+Public navigation emphasis: Setup, Components, Icons, Logos, Avatars, Changelog (all in single top-bar tab row).
 
-WidgetsPage and TemplatesPage are lazy-loaded from App.tsx.
+Heavy views (WidgetsPage, TemplatesPage, LogosPage, etc.) are lazy-loaded from App.tsx.
 
 ### Current V2 showcase state
 
@@ -346,6 +390,11 @@ From repo root:
    - Rename `StylePackName` if not already finalized
    - Create `packages/ui-react/src/themes/` directory with CSS files loaded at mount (not JS-generated-at-runtime)
    - Docs playground chrome should consume its own `--z-*` tokens (sidebar, nav, header currently use raw hex)
+2. **Docs UI quality pass** — now that structure is solid (single-bar nav, unified chips, tight eyebrows, premium cards), next focus areas:
+   - Responsive nav: at sub-1024px, search is hidden and tabs are visible but cramped — consider a compact logo-only left side with overflow tab scrolling
+   - Getting Started page: `gs-flow` CSS class exists in styles.css but the view may have been refactored; audit for dead CSS
+   - Audit remaining hardcoded hex values in styles.css using `/audit` slash command
+   - Section heading `p` (lead text): still has `color: #697386` in some places — tokenize to `var(--muted)`
 3. Rebuild `Pages > V2` full-page examples around Attio-style SaaS patterns:
    - record detail, recruiting/CRM tables, split activity/detail views, pipelines/kanban, support queue shells
 4. Keep V2 curated; do not add breadth until visual consistency is solved.
@@ -416,9 +465,13 @@ Changes to `notion.css` do **not** affect the playground (it uses JS-generated v
 4. Do not generate raw HTML controls in snippets when Zephr component equivalents exist.
 5. Keep docs, CLI, registry, and MCP terminology aligned to the same pack names and token contract.
 6. **Never use `overflow: hidden` on a flex/grid container that has a `position: sticky` child.** Use `overflow-x: clip` instead — it clips without creating a scroll container, preserving sticky positioning.
-7. **Sticky elements inside the docs layout must use `top: var(--top-nav-stack-height)` (120px), not `top: 0`.** Using `top: 0` hides content behind the top nav stack.
+7. **Sticky elements inside the docs layout must use `top: var(--top-nav-stack-height)` (56px as of April 9, 2026), not `top: 0`.** Using `top: 0` hides content behind the nav bar.
 8. **Dark mode overrides in `styles.css` must use `!important`** because the large design-refinement block (appended ~line 10400+) sets light-mode values with `!important`. Dark overrides that lack `!important` will lose the specificity war.
 9. **Do not use `--z-color-staticWhite` or other always-light Zephr tokens in docs shell dark mode styles.** Use the semantic aliases: `var(--text)`, `var(--muted)`, `var(--bg)`, `var(--panel)`, `var(--line)` which are dark-mode-aware.
+10. **`overflow-x: auto` on a flex container whose children have an explicit `height` will make those children invisible.** The scroll container intercepts layout in a way that prevents the children from rendering at their stated height. Use `overflow: hidden` on the parent wrapper instead, and let child `height` resolve normally.
+11. **`--top-nav-stack-height` is defined in three places in `styles.css`** — at `:root` (line ~22), inside the overhaul override block (line ~11911), and inside a responsive media query (line ~12214). All three must be updated together or sticky elements will offset incorrectly in some viewport ranges.
+12. **Do not hardcode `stroke="#171717"` in inline SVG icons inside themed containers.** Set `color: var(--accent)` on the icon container and use `svg path, svg circle { stroke: currentColor }` — tokens propagate correctly in both light and dark mode.
+13. **`color-mix(in srgb, ...)` is the right tool for tinted surfaces.** `color-mix(in srgb, var(--accent) 10%, transparent)` produces accent-tinted fills that adapt correctly in both themes without needing separate dark mode overrides.
 
 ---
 
