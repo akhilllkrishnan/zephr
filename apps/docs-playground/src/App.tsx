@@ -2124,7 +2124,7 @@ export default function App() {
                 seed={avatarSeed}
                 onSeedChange={setAvatarSeed}
                 styles={avatarCloudResults}
-                onCopy={(value) => copyAndFlash(`avatar style: ${value}`)}
+                onCopy={(value) => copyAndFlash(`avatar style: ${value}`, value)}
               />
             </section>
           ) : view === "component-gallery" ? (
